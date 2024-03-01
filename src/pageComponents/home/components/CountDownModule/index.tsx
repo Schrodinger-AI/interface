@@ -1,9 +1,10 @@
 import { useCountDown } from 'ahooks';
 import styles from './style.module.css';
+import dayjs from 'dayjs';
 
-export default function CountDownModule({ targetDate }: { targetDate: Date }) {
+export default function CountDownModule({ targetDate }: { targetDate: string }) {
   const [countdown, formattedRes] = useCountDown({
-    targetDate,
+    targetDate: dayjs(Number(targetDate)).format('YYYY-MM-DD'),
   });
   return (
     <div className="flex gap-[4px] items-center">

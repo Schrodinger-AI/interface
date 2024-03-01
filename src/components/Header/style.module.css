@@ -1,5 +1,5 @@
 .dropdown{
-  @apply !min-w-[260px] hidden md:block;
+  @apply !min-w-[260px];
   :global(.aelfd-dropdown-menu){
     @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none;
   }

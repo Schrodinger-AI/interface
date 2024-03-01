@@ -2,13 +2,19 @@ import { Button } from 'aelf-design';
 import CountDownModule from './components/CountDownModule';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { timeStamp } from 'console';
+import { cmsInfo } from '../../../mock';
+import Image from 'next/image';
+import { useResponsive } from 'ahooks';
+import SocialMedia from './components/SocialMedia';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const { isLogin } = useWalletService();
 
-  const socialList = store.getState().info.cmsInfo;
+  //TODO:
+  const { socialMediaList, openTimeStamp } = cmsInfo;
+
+  const responsive = useResponsive();
 
   const handleJoinUs = () => {
     if (isOK) {
@@ -17,7 +23,7 @@ export default function CountDownPage() {
     }
   };
   return (
-    <section className="pt-[64px] md:pt-[80px] flex flex-col items-center w-full">
+    <section className="py-[64px] md:py-[80px] flex flex-col items-center w-full">
       <img
         src={require('assets/img/schrodinger.png').default.src}
         alt="schrodinger"
@@ -27,7 +33,7 @@ export default function CountDownPage() {
         The first aelf Al Inscriptions 404 coming soon...
       </h1>
       <section className="mt-[24px] md:mt-[40px]">
-        <CountDownModule targetDate={'2024-02-30' as unknown as Date} />
+        <CountDownModule targetDate={openTimeStamp} />
       </section>
       <section className="mt-[64px] md:mt-[100px] mx-auto w-full">
         {!isLogin ? (
@@ -45,13 +51,11 @@ export default function CountDownPage() {
           </div>
         )}
       </section>
-      <section className="mt-[32px] md:mt-[40px] flex justify-center gap-[16px]">
-        {socialList?.map((item, index) => {
-          return (
-            <div className="w-[40px] h-[40px] md:w-[48px] md:h-[48px] rounded-[24px] bg-white"></div>
-          );
-        })}
-      </section>
+      {cmsInfo.socialMediaList?.length && (
+        <section className="mt-[32px] md:mt-[40px]">
+          <SocialMedia data={cmsInfo.socialMediaList} />
+        </section>
+      )}
     </section>
   );
 }

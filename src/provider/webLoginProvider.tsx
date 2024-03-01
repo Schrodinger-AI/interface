@@ -1,7 +1,8 @@
 'use client';
-import { NetworkType } from '@portkey/provider-types';
+import { ChainId, NetworkType } from '@portkey/provider-types';
 import dynamic from 'next/dynamic';
 import { store } from 'redux/store';
+import { cmsInfo } from '../../mock';
 
 const APP_NAME = 'schrodinger';
 
@@ -15,7 +16,8 @@ const PortkeyProviderDynamic = dynamic(
 
 const WebLoginProviderDynamic = dynamic(
   async () => {
-    const cmsInfo = store.getState().info.cmsInfo;
+    //TODO:
+    // const cmsInfo = store.getState().info.cmsInfo;
     const serverV2 = cmsInfo?.portkeyServerV2;
     const connectUrlV2 = cmsInfo?.connectUrlV2;
 
@@ -55,10 +57,10 @@ const WebLoginProviderDynamic = dynamic(
         },
       },
       defaultRpcUrl:
-        (cmsInfo?.[`rpcUrl${String(cmsInfo?.curChain).toUpperCase()}`] as unknown as string) ||
+        (cmsInfo?.[`rpcUrl${String(cmsInfo.curChain).toUpperCase()}`] as string) ||
         cmsInfo?.rpcUrlTDVW ||
         '',
-      networkType: cmsInfo?.networkType || 'TESTNET',
+      networkType: (cmsInfo?.networkType as 'TESTNET' | 'MAIN') || 'TESTNET',
     });
     return webLogin.WebLoginProvider;
   },
@@ -66,9 +68,11 @@ const WebLoginProviderDynamic = dynamic(
 );
 
 export default ({ children }: { children: React.ReactNode }) => {
-  const info = store.getState().info.cmsInfo;
   return (
-    <PortkeyProviderDynamic networkType={info?.networkType} networkTypeV2={info?.networkTypeV2}>
+    <PortkeyProviderDynamic
+      networkType={cmsInfo?.networkType}
+      networkTypeV2={cmsInfo?.networkTypeV2}
+    >
       <WebLoginProviderDynamic
         nightElf={{
           useMultiChain: true,

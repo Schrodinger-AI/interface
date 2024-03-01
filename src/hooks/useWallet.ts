@@ -20,7 +20,6 @@ import { useLocalStorage } from 'react-use';
 import { cloneDeep } from 'lodash-es';
 import { WalletInfoType } from 'types';
 import { storages } from 'storages';
-import { useRegisterContractServiceMethod } from 'contract/baseContract';
 import useBackToHomeByRoute from './useBackToHomeByRoute';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
@@ -38,7 +37,8 @@ export const useWalletInit = () => {
   const backToHomeByRoute = useBackToHomeByRoute();
 
   // register Contract method
-  useRegisterContractServiceMethod();
+  //TODO:
+  // useRegisterContractServiceMethod();
   const callBack = useCallback(
     (state: WebLoginState) => {
       if (state === WebLoginState.lock) {

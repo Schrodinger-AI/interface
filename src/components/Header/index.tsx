@@ -65,32 +65,42 @@ export default function Header() {
   ];
 
   const MyDropDown = () => {
+    if (responsive.md) {
+      return (
+        <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
+          <Button
+            type="default"
+            className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
+            size="large"
+          >
+            <MenuMySVG className="mr-[8px]" />
+            My
+          </Button>
+        </Dropdown>
+      );
+    }
     return (
-      <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-        <Button
-          onClick={() => {
-            if (!responsive.md) {
-              setMenuModalVisible(true);
-            }
-          }}
-          type="default"
-          className="!rounded-lg md:!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
-          size={responsive.md ? 'large' : 'small'}
-        >
-          <MenuMySVG className="mr-[8px]" />
-          My
-        </Button>
-      </Dropdown>
+      <Button
+        type="default"
+        className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+        size="small"
+        onClick={() => {
+          setMenuModalVisible(true);
+        }}
+      >
+        <MenuMySVG className="mr-[8px]" />
+        My
+      </Button>
     );
   };
   return (
-    <section className="bg-white">
+    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         <Image
           src={require('assets/img/website-logo.svg').default}
           alt="logo"
-          width={responsive.md ? 186 : 116.25}
-          height={responsive.md ? 32 : 20}
+          width={responsive.md ? 200 : 150}
+          height={responsive.md ? 32 : 24}
         />
         {!isLogin ? (
           <Button

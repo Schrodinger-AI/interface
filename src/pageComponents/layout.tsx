@@ -2,7 +2,6 @@
 import React, { useEffect, Suspense, useState } from 'react';
 import { Layout as AntdLayout } from 'antd';
 import Header from 'components/Header';
-import Loading from 'components/Loading';
 import dynamic from 'next/dynamic';
 
 import { store } from 'redux/store';
@@ -44,12 +43,12 @@ const Layout = dynamic(async () => {
     return (
       <>
         {isCorrectUrl ? (
-          <AntdLayout className="bg-[#FAFAFA] h-full">
+          <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
             <Header />
             <AntdLayout.Content
-              className={`schrodinger-content flex flex-1 justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}
+              className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}
             >
-              <Suspense fallback={<Loading />}>{children}</Suspense>
+              {children}
             </AntdLayout.Content>
             <Footer />
           </AntdLayout>

@@ -1,4 +1,5 @@
 import { store } from 'redux/store';
+import { cmsInfo } from '../../mock';
 
 export enum OmittedType {
   ADDRESS = 'address',
@@ -32,7 +33,8 @@ export const getOmittedStr = (
 
 export const addPrefixSuffix = (str: string, ChainId?: string) => {
   if (!str) return str;
-  const info = store.getState().info.cmsInfo;
+  //TODO:
+  const info = cmsInfo;
   let resStr = str;
   const prefix = 'ELF_';
   const suffix = `_${ChainId || info?.curChain}`;
