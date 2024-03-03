@@ -9,6 +9,7 @@ import SocialMedia from './components/SocialMedia';
 import useLoading from 'hooks/useLoading';
 import { cloneElement, useEffect, useState } from 'react';
 import useCheckJoinStatus from './hooks/useCheckJoinStatus';
+import { useWalletSyncCompleted } from 'hooks/useWallet';
 
 export type TriggerType = 'login' | 'join';
 
@@ -21,16 +22,19 @@ export default function CountDownPage() {
 
   const [trigger, setTrigger] = useState<TriggerType>('login');
 
-  useCheckJoinStatus({
+  const { isJoin } = useCheckJoinStatus({
     trigger,
   });
 
   const responsive = useResponsive();
 
+  const { pollingRequestSync } = useWalletSyncCompleted();
+
   const { showLoading, closeLoading } = useLoading();
 
-  const handleJoinUs = () => {
+  const handleJoinUs = async () => {
     if (isOK) {
+      await pollingRequestSync();
     } else {
       checkLogin();
     }
@@ -49,7 +53,7 @@ export default function CountDownPage() {
         <CountDownModule targetDate={openTimeStamp} />
       </section>
       <section className="mt-[64px] md:mt-[100px] mx-auto w-full">
-        {!isLogin ? (
+        {!isJoin ? (
           <Button
             type="primary"
             size="ultra"
