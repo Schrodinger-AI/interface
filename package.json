@@ -12,6 +12,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@ebay/nice-modal-react": "^1.2.13",
     "@portkey-v1/did-ui-react": "^1.5.4-alpha.22",
     "@portkey/contracts": "2.0.0-alpha.26",
     "@portkey/detect-provider": "^2.0.0-alpha.5",

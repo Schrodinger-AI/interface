@@ -10,6 +10,7 @@ import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
 import NotFoundPage from 'pageComponents/notFound/index';
+import { checkDoman } from 'api/request';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } =
@@ -18,6 +19,21 @@ const Layout = dynamic(async () => {
     const { children } = props;
 
     const [isCorrectUrl, setIsCorrectUrl] = useState(true);
+
+    const checkHost = async () => {
+      try {
+        const res = await checkDoman();
+        if (res) {
+          setIsCorrectUrl(true);
+        }
+      } catch (err) {
+        console.error('checkHost err', err);
+      }
+    };
+
+    useEffect(() => {
+      // checkHost();
+    }, []);
 
     useWalletInit();
     useBroadcastChannel();

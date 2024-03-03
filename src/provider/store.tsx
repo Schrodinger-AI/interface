@@ -8,7 +8,10 @@ import Loading from 'components/Loading';
 export default ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={store.__persistor} loading={<Loading />}>
+      <PersistGate
+        persistor={store.__persistor}
+        loading={<Loading content="Enrollment in progress" />}
+      >
         {children}
       </PersistGate>
     </Provider>

@@ -6,3 +6,11 @@
     }
   }
 }
+
+.loadingWithClose {
+  :global{
+    .aelfd-modal-content {
+      @apply !w-[295px];
+    }
+  }
+}

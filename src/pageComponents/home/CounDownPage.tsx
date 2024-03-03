@@ -6,15 +6,28 @@ import { cmsInfo } from '../../../mock';
 import Image from 'next/image';
 import { useResponsive } from 'ahooks';
 import SocialMedia from './components/SocialMedia';
+import useLoading from 'hooks/useLoading';
+import { cloneElement, useEffect, useState } from 'react';
+import useCheckJoinStatus from './hooks/useCheckJoinStatus';
+
+export type TriggerType = 'login' | 'join';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const { isLogin } = useWalletService();
 
   //TODO:
-  const { socialMediaList, openTimeStamp } = cmsInfo;
+  const { openTimeStamp } = cmsInfo;
+
+  const [trigger, setTrigger] = useState<TriggerType>('login');
+
+  useCheckJoinStatus({
+    trigger,
+  });
 
   const responsive = useResponsive();
+
+  const { showLoading, closeLoading } = useLoading();
 
   const handleJoinUs = () => {
     if (isOK) {

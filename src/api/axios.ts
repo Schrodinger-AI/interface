@@ -117,5 +117,7 @@ const tokenRequest = new Request({
   baseURL: '/connect',
 });
 
+const cmsRequest = new Request({ baseURL: '/cms' });
+
 export default new Request({});
-export { tokenRequest };
+export { tokenRequest, cmsRequest };
