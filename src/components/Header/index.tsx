@@ -7,18 +7,23 @@ import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
 import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
+import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
+import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
 import { MenuProps, message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { WalletType } from 'aelf-web-login';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const { isOK, checkLogin } = useCheckLoginAndToken();
-  const { logout, wallet, isLogin } = useWalletService();
+  const { logout, wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
+  const router = useRouter();
 
   const [menuModalVisible, setMenuModalVisible] = useState(false);
 
@@ -53,16 +58,50 @@ export default function Header() {
     );
   };
 
-  const items = [
-    {
-      key: 'address',
-      label: <CopyAddressItem />,
-    },
-    {
-      key: 'logout',
-      label: <LogoutItem />,
-    },
-  ];
+  const PointsItem = () => {
+    return (
+      <div className="flex gap-[8px] items-center">
+        <AssetSVG />
+        <span
+          onClick={() => {
+            router.push('/points');
+          }}
+        >
+          My Points
+        </span>
+      </div>
+    );
+  };
+
+  const AssetItem = () => {
+    return (
+      <div className="flex gap-[8px] items-center">
+        <PointsSVG />
+        <span
+          onClick={() => {
+            router.push('/assets');
+          }}
+        >
+          My Asset
+        </span>
+      </div>
+    );
+  };
+
+  const items = useMemo(() => {
+    return [
+      {
+        key: 'address',
+        label: <CopyAddressItem />,
+      },
+      walletType === WalletType.portkey && { key: 'asset', label: <AssetItem /> },
+      { key: 'points', label: <PointsItem /> },
+      {
+        key: 'logout',
+        label: <LogoutItem />,
+      },
+    ].filter((i) => i);
+  }, [walletType]);
 
   const MyDropDown = () => {
     if (responsive.md) {
