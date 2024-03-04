@@ -173,9 +173,7 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
           chainId: contractChainId as ChainId,
           caHash: caHash as string,
         });
-        const filteredHolders = holder.managerInfos.filter(
-          (manager: any) => manager?.address === address,
-        );
+        const filteredHolders = holder.managerInfos.filter((manager: any) => manager?.address === address);
         if (filteredHolders.length) {
           return await getAccount();
         } else {
@@ -211,6 +209,7 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
 
   const pollingRequestSync = useCallback(async (): Promise<string> => {
     return new Promise((resolve, reject) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const checkSync = useCallback(async () => {
         const targetAddress = await getAccountInfoSync();
         if (targetAddress) {
@@ -220,6 +219,7 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
         }
       }, [getAccountInfoSync]);
 
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { runAsync, cancel } = useRequest(checkSync, {
         pollingInterval: 1000,
         // manual: true,

@@ -58,8 +58,7 @@ export default function CountDownPage() {
             type="primary"
             size="ultra"
             className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-            onClick={handleJoinUs}
-          >
+            onClick={handleJoinUs}>
             Join Us Now
           </Button>
         ) : (

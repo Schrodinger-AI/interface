@@ -22,8 +22,7 @@ export const getOmittedStr = (
     [OmittedType.CUSTOM]: { prevLen: 6, endLen: 4, limitLen: 10 },
   };
 
-  const { prevLen, endLen, limitLen } =
-    type === OmittedType.CUSTOM ? params || defaults[type] : defaults[type];
+  const { prevLen, endLen, limitLen } = type === OmittedType.CUSTOM ? params || defaults[type] : defaults[type];
 
   if (str?.length > limitLen) {
     return `${str.slice(0, prevLen)}...${str.slice(-endLen)}`;

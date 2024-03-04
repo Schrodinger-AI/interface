@@ -31,11 +31,7 @@ export const useGetToken = () => {
   const getToken = useCallback(async () => {
     if (loginState !== WebLoginState.logined) return;
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
-    if (
-      accountInfo?.token &&
-      Date.now() < accountInfo?.expirationTime &&
-      accountInfo.account === wallet.address
-    ) {
+    if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === wallet.address) {
       return;
     } else {
       localStorage.removeItem(storages.accountInfo);

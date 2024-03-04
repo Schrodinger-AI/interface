@@ -57,9 +57,7 @@ const WebLoginProviderDynamic = dynamic(
         },
       },
       defaultRpcUrl:
-        (cmsInfo?.[`rpcUrl${String(cmsInfo.curChain).toUpperCase()}`] as string) ||
-        cmsInfo?.rpcUrlTDVW ||
-        '',
+        (cmsInfo?.[`rpcUrl${String(cmsInfo.curChain).toUpperCase()}`] as string) || cmsInfo?.rpcUrlTDVW || '',
       networkType: (cmsInfo?.networkType as 'TESTNET' | 'MAIN') || 'TESTNET',
     });
     return webLogin.WebLoginProvider;
@@ -69,10 +67,7 @@ const WebLoginProviderDynamic = dynamic(
 
 export default ({ children }: { children: React.ReactNode }) => {
   return (
-    <PortkeyProviderDynamic
-      networkType={cmsInfo?.networkType}
-      networkTypeV2={cmsInfo?.networkTypeV2}
-    >
+    <PortkeyProviderDynamic networkType={cmsInfo?.networkType} networkTypeV2={cmsInfo?.networkTypeV2}>
       <WebLoginProviderDynamic
         nightElf={{
           useMultiChain: true,
@@ -93,8 +88,7 @@ export default ({ children }: { children: React.ReactNode }) => {
           autoLogoutOnNetworkMismatch: true,
           autoLogoutOnAccountMismatch: true,
           autoLogoutOnChainMismatch: true,
-        }}
-      >
+        }}>
         {children}
       </WebLoginProviderDynamic>
     </PortkeyProviderDynamic>

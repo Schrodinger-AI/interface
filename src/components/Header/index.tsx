@@ -45,8 +45,7 @@ export default function Header() {
           onClick={() => {
             logout();
             setMenuModalVisible(false);
-          }}
-        >
+          }}>
           logout
         </span>
       </div>
@@ -68,11 +67,7 @@ export default function Header() {
     if (responsive.md) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button
-            type="default"
-            className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
-            size="large"
-          >
+          <Button type="default" className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]" size="large">
             <MenuMySVG className="mr-[8px]" />
             My
           </Button>
@@ -86,8 +81,7 @@ export default function Header() {
         size="small"
         onClick={() => {
           setMenuModalVisible(true);
-        }}
-      >
+        }}>
         <MenuMySVG className="mr-[8px]" />
         My
       </Button>
@@ -109,8 +103,7 @@ export default function Header() {
             className="!rounded-lg md:!rounded-[12px]"
             onClick={() => {
               checkLogin();
-            }}
-          >
+            }}>
             Log In
           </Button>
         ) : (
@@ -127,14 +120,12 @@ export default function Header() {
         destroyOnClose
         onCancel={() => {
           setMenuModalVisible(false);
-        }}
-      >
+        }}>
         {items.map((item, index) => {
           return (
             <div
               className="w-full h-[64px] flex items-center border-x-0 border-t-0 border-b-[1px] border-solid border-[#EDEDED] text-[16px] font-medium text-[#1A1A1A]"
-              key={index}
-            >
+              key={index}>
               {item.label}
             </div>
           );

@@ -13,8 +13,9 @@ import NotFoundPage from 'pageComponents/notFound/index';
 import { checkDoman } from 'api/request';
 
 const Layout = dynamic(async () => {
-  const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } =
-    await import('aelf-web-login').then((module) => module);
+  const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
+    'aelf-web-login'
+  ).then((module) => module);
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
 
@@ -43,10 +44,7 @@ const Layout = dynamic(async () => {
         const ua = navigator.userAgent;
         const mobileType = isMobile(ua);
         const isMobileDevice =
-          mobileType.apple.phone ||
-          mobileType.android.phone ||
-          mobileType.apple.tablet ||
-          mobileType.android.tablet;
+          mobileType.apple.phone || mobileType.android.phone || mobileType.apple.tablet || mobileType.android.tablet;
         store.dispatch(setIsMobile(isMobileDevice));
       };
       resize();
@@ -62,8 +60,7 @@ const Layout = dynamic(async () => {
           <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
             <Header />
             <AntdLayout.Content
-              className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}
-            >
+              className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
               {children}
             </AntdLayout.Content>
             <Footer />

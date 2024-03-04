@@ -100,11 +100,7 @@ class Request {
     return this.instance.post(url, data, config);
   }
 
-  public put<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: AxiosRequestConfig,
-  ): Promise<R> {
+  public put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: AxiosRequestConfig): Promise<R> {
     return this.instance.put(url, data, config);
   }
 

@@ -48,8 +48,7 @@ export default function SocialMedia({ data }: SocialMediaProps) {
             onClick={() => {
               window.open(item.link, item.target || '_blank');
             }}
-            className={`${styles.icon} ${styles[item.name.toLocaleLowerCase()]}`}
-          >
+            className={`${styles.icon} ${styles[item.name.toLocaleLowerCase()]}`}>
             {getMediaItem(item.name.toLocaleLowerCase())}
           </div>
         );
