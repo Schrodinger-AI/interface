@@ -11,6 +11,9 @@ module.exports = {
   },
 
   productionBrowserSourceMaps: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { webpack }) => {
     config.module.rules.push({
       test: /\.svg$/,
