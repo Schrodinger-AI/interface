@@ -45,3 +45,11 @@ export const addPrefixSuffix = (str: string, ChainId?: string) => {
   }
   return resStr;
 };
+
+export const sleep = (time: number) => {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};

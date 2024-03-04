@@ -11,6 +11,9 @@ import Footer from 'components/Footer';
 import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
 import NotFoundPage from 'pageComponents/notFound/index';
 import { checkDoman } from 'api/request';
+import WebLoginInstance from 'contract/webLogin';
+import { SupportedELFChainId } from 'types';
+import { cmsInfo } from '../../mock';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -18,6 +21,23 @@ const Layout = dynamic(async () => {
   ).then((module) => module);
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
+
+    const info = cmsInfo;
+
+    const webLoginContext = useWebLogin();
+
+    const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
+      chainId: SupportedELFChainId.MAIN_NET,
+      rpcUrl: info?.rpcUrlAELF,
+    });
+    const { callSendMethod: callTDVVSendMethod, callViewMethod: callTDVVViewMethod } = useCallContract({
+      chainId: SupportedELFChainId.TDVV_NET,
+      rpcUrl: info?.rpcUrlTDVV,
+    });
+    const { callSendMethod: callTDVWSendMethod, callViewMethod: callTDVWViewMethod } = useCallContract({
+      chainId: SupportedELFChainId.TDVW_NET,
+      rpcUrl: info?.rpcUrlTDVW,
+    });
 
     const [isCorrectUrl, setIsCorrectUrl] = useState(true);
 
@@ -53,6 +73,27 @@ const Layout = dynamic(async () => {
         window.removeEventListener('resize', resize);
       };
     }, []);
+
+    useEffect(() => {
+      console.log('webLoginContext.loginState', webLoginContext.loginState);
+      WebLoginInstance.get().setContractMethod([
+        {
+          chain: SupportedELFChainId.MAIN_NET,
+          sendMethod: callAELFSendMethod,
+          viewMethod: callAELFViewMethod,
+        },
+        {
+          chain: SupportedELFChainId.TDVV_NET,
+          sendMethod: callTDVVSendMethod,
+          viewMethod: callTDVVViewMethod,
+        },
+        {
+          chain: SupportedELFChainId.TDVW_NET,
+          sendMethod: callTDVWSendMethod,
+          viewMethod: callTDVWViewMethod,
+        },
+      ]);
+    }, [webLoginContext.loginState]);
 
     return (
       <>

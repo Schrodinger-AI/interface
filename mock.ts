@@ -5,11 +5,13 @@ export const cmsInfo: {
   connectUrlV2?: string;
   portkeyServerV2?: string;
   graphqlServerV2?: string;
-  curChain?: Chain;
+  curChain: Chain;
   rpcUrlAELF?: string;
   rpcUrlTDVW?: string;
   rpcUrlTDVV?: string;
   socialMediaList?: Array<SocialMediaItem>;
+  schrodingerMainAddress: string;
+  schrodingerSideAddress: string;
   [key: string]: any;
 } = {
   networkTypeV2: 'TESTNET',
@@ -17,7 +19,7 @@ export const cmsInfo: {
   connectUrlV2: 'https://auth-aa-portkey-test.portkey.finance',
   portkeyServerV2: 'https://aa-portkey-test.portkey.finance',
   graphqlServerV2: 'https://dapp-aa-portkey-test.portkey.finance/Portkey_V2_DID/PortKeyIndexerCASchema/graphql',
-  curChain: 'tDVW',
+  curChain: 'tDVV',
   rpcUrlAELF: 'https://aelf-test-node.aelf.io',
   rpcUrlTDVW: 'https://tdvw-test-node.aelf.io',
   rpcUrlTDVV: 'https://tdvw-test-node.aelf.io',
@@ -59,4 +61,6 @@ export const cmsInfo: {
     },
   ],
   openTimeStamp: '1710028800000',
+  schrodingerSideAddress: 'Ln1QJEkvVC35PLWjjRfP4cWaEXo7ejC8gstJAQWgH3cugR8zZ',
+  schrodingerMainAddress: 'Ln1QJEkvVC35PLWjjRfP4cWaEXo7ejC8gstJAQWgH3cugR8zZ',
 };
