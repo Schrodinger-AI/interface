@@ -19,7 +19,7 @@ export const cmsInfo: {
   connectUrlV2: 'https://auth-aa-portkey-test.portkey.finance',
   portkeyServerV2: 'https://aa-portkey-test.portkey.finance',
   graphqlServerV2: 'https://dapp-aa-portkey-test.portkey.finance/Portkey_V2_DID/PortKeyIndexerCASchema/graphql',
-  curChain: 'tDVV',
+  curChain: 'tDVW',
   rpcUrlAELF: 'https://aelf-test-node.aelf.io',
   rpcUrlTDVW: 'https://tdvw-test-node.aelf.io',
   rpcUrlTDVV: 'https://tdvw-test-node.aelf.io',

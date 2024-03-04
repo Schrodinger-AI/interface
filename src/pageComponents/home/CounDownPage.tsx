@@ -10,12 +10,13 @@ import useLoading from 'hooks/useLoading';
 import { cloneElement, useEffect, useState } from 'react';
 import useCheckJoinStatus from './hooks/useCheckJoinStatus';
 import { useWalletSyncCompleted } from 'hooks/useWallet';
+import { GetJoinRecord, Join } from 'contract/schrodinger';
 
 export type TriggerType = 'login' | 'join';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
-  const { isLogin } = useWalletService();
+  const { isLogin, wallet } = useWalletService();
 
   //TODO:
   const { openTimeStamp } = cmsInfo;
@@ -33,6 +34,14 @@ export default function CountDownPage() {
   const { showLoading, closeLoading } = useLoading();
 
   const handleJoinUs = async () => {
+    // TODO
+    // if (wallet.address) {
+    //   const isJoin = await GetJoinRecord(wallet.address);
+    //   const res = await Join({
+    //     domain: 'www.schrödinger.com',
+    //   });
+    // }
+
     if (isOK) {
       await pollingRequestSync();
     } else {
