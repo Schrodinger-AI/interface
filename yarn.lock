@@ -5116,6 +5116,13 @@ eslint-plugin-jsx-a11y@^6.5.1:
     object.entries "^1.1.7"
     object.fromentries "^2.0.7"
 
+eslint-plugin-no-inline-styles@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-inline-styles/-/eslint-plugin-no-inline-styles-1.0.5.tgz#c37a7e7a53b46312852d2c44c02cac0df2e700c3"
+  integrity sha512-nftOfHV/ag0P0vEPQ3p54HVpGCp6k/E+pHdYnRm2wDK8QhClfmMjrCw+POL5RH/SN1AmTifCTh5VzkeubLgMpA==
+  dependencies:
+    lodash.get "^4.4.2"
+
 eslint-plugin-prettier@^4.2.1:
   version "4.2.1"
   resolved "https://registry.npmjs.org/eslint-plugin-prettier/-/eslint-plugin-prettier-4.2.1.tgz#651cbb88b1dab98bfd42f017a12fa6b2d993f94b"
@@ -5913,9 +5920,9 @@ human-signals@^4.3.0:
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
 
-husky@^8.0.3:
+husky@^8.0.1:
   version "8.0.3"
-  resolved "https://registry.npmjs.org/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
   integrity sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==
 
 hyphenate-style-name@^1.0.3:
@@ -6613,6 +6620,11 @@ lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
+
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
 
 lodash.isequal@^4.5.0:
   version "4.5.0"
