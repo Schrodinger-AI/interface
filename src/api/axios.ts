@@ -82,7 +82,9 @@ class Request {
             break;
         }
 
-        message.error(errMessage);
+        if (!error.response.config.baseURL?.includes('connect')) {
+          message.error(errMessage);
+        }
         return Promise.reject(errMessage);
       },
     );
