@@ -1,7 +1,6 @@
 'use client';
 import { ChainId, NetworkType } from '@portkey/provider-types';
 import dynamic from 'next/dynamic';
-import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { store } from 'redux/store';
 
 const APP_NAME = 'schrodinger';
@@ -16,7 +15,7 @@ const PortkeyProviderDynamic = dynamic(
 
 const WebLoginProviderDynamic = dynamic(
   async () => {
-    const { cmsInfo } = useGetStoreInfo();
+    const cmsInfo = store.getState().info.cmsInfo;
     const serverV2 = cmsInfo?.portkeyServerV2;
     const connectUrlV2 = cmsInfo?.connectUrlV2;
 
@@ -65,7 +64,7 @@ const WebLoginProviderDynamic = dynamic(
 );
 
 export default ({ children }: { children: React.ReactNode }) => {
-  const { cmsInfo } = useGetStoreInfo();
+  const cmsInfo = store.getState().info.cmsInfo;
   return (
     <PortkeyProviderDynamic networkType={cmsInfo?.networkType} networkTypeV2={cmsInfo?.networkTypeV2}>
       <WebLoginProviderDynamic

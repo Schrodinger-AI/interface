@@ -44,13 +44,13 @@ export default function CountDownPage() {
       target: '',
       name: 'discord',
     },
-    {
-      index: 3,
-      icon: '',
-      link: '',
-      target: '',
-      name: 'gitbook',
-    },
+    // {
+    //   index: 3,
+    //   icon: '',
+    //   link: '',
+    //   target: '',
+    //   name: 'gitbook',
+    // },
     {
       index: 4,
       icon: '',

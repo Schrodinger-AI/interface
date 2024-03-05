@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 import { selectInfo } from 'redux/reducer/info';
 
-export default function useGetStoreInfo() {
+const useGetStoreInfo = () => {
   const info = useSelector(selectInfo);
   return {
     cmsInfo: info.cmsInfo,
   };
-}
+};
+
+export default useGetStoreInfo;
