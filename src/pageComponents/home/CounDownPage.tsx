@@ -71,11 +71,13 @@ export default function CountDownPage() {
     <section className="py-[64px] md:py-[80px] flex flex-col items-center w-full">
       <img
         src={require('assets/img/schrodinger.png').default.src}
-        alt="schrodinger"
+        alt="Schrödinger"
         className="rounded-lg md:rounded-xl w-[80px] h-[80px] md:w-[120px] md:h-[120px]"
       />
       <h1 className="mt-[24px] md:mt-[40px] text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] font-semibold text-[#1A1A1A] text-center">
-        The first aelf Al Inscriptions 404 coming soon...
+        Generate AI-Powered ERC-404 Inscriptions
+        <br />
+        First Inscription Coming Soon
       </h1>
       <section className="mt-[24px] md:mt-[40px]">
         <CountDownModule targetDate={cmsInfo?.openTimeStamp || ''} />
@@ -83,7 +85,7 @@ export default function CountDownPage() {
       <section className="mt-[64px] md:mt-[100px] mx-auto w-full">
         {isOK && isJoin ? (
           <div className="text-[#434343] text-[16px] leading-[24px] font-medium text-center">
-            You are enrolled, please wait for CAT coming!
+            {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
           </div>
         ) : (
           <Button
@@ -91,7 +93,7 @@ export default function CountDownPage() {
             size="ultra"
             className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
             onClick={handleJoinUs}>
-            Join Us Now
+            Enrol
           </Button>
         )}
       </section>

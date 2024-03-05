@@ -46,7 +46,7 @@ export default function Header() {
           setMenuModalVisible(false);
         }}>
         <ExitSVG />
-        <span>logout</span>
+        <span>Log out</span>
       </div>
     );
   };
@@ -103,7 +103,7 @@ export default function Header() {
             onClick={() => {
               checkLogin();
             }}>
-            Log In
+            Log in
           </Button>
         ) : (
           <MyDropDown />

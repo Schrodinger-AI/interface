@@ -11,8 +11,8 @@ import 'styles/theme.css';
 import Provider from 'provider';
 
 export const metadata = {
-  title: 'schrodinger',
-  description: 'schrodinger',
+  title: 'Schrödinger',
+  description: 'Schrödinger',
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {

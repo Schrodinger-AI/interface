@@ -90,7 +90,7 @@ export default function useCheckJoinStatus({ trigger }: IProps) {
         }
       }
     } catch (err) {
-      message.error('Failed to join the Early Access programme. Please try again.');
+      message.error('Failed to be enrolled. Please try again.');
       closeLoading();
       return;
     }

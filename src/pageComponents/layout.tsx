@@ -42,7 +42,7 @@ const Layout = dynamic(async () => {
       rpcUrl: cmsInfo?.rpcUrlTDVW,
     });
 
-    const [isCorrectUrl, setIsCorrectUrl] = useState(true);
+    const [isCorrectUrl, setIsCorrectUrl] = useState(false);
 
     const checkHost = async () => {
       try {
@@ -58,7 +58,7 @@ const Layout = dynamic(async () => {
     };
 
     useEffect(() => {
-      // checkHost();
+      checkHost();
     }, []);
 
     useWalletInit();
