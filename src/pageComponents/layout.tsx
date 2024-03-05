@@ -15,6 +15,7 @@ import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import { usePathname } from 'next/navigation';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import Loading from 'components/Loading';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -43,18 +44,21 @@ const Layout = dynamic(async () => {
     });
 
     const [isCorrectUrl, setIsCorrectUrl] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const checkHost = async () => {
+      setLoading(true);
       try {
         const res = await checkDomain();
         if (res && res === 'Success') {
           setIsCorrectUrl(true);
-          return;
+        } else {
+          setIsCorrectUrl(false);
         }
-        setIsCorrectUrl(false);
       } catch (err) {
         console.error('checkHost err', err);
       }
+      setLoading(false);
     };
 
     useEffect(() => {
@@ -106,7 +110,9 @@ const Layout = dynamic(async () => {
 
     return (
       <>
-        {showPage ? (
+        {loading ? (
+          <Loading />
+        ) : showPage ? (
           <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
             <Header />
             <AntdLayout.Content
