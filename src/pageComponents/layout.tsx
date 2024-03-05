@@ -13,9 +13,7 @@ import NotFoundPage from 'components/notFound/index';
 import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
-import { usePathname } from 'next/navigation';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
-import Loading from 'components/Loading';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -25,8 +23,6 @@ const Layout = dynamic(async () => {
     const { children } = props;
 
     const { cmsInfo } = useGetStoreInfo();
-
-    const pathname = usePathname();
 
     const webLoginContext = useWebLogin();
 
@@ -42,28 +38,6 @@ const Layout = dynamic(async () => {
       chainId: SupportedELFChainId.TDVW_NET,
       rpcUrl: cmsInfo?.rpcUrlTDVW,
     });
-
-    const [isCorrectUrl, setIsCorrectUrl] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const checkHost = async () => {
-      setLoading(true);
-      try {
-        const res = await checkDomain();
-        if (res && res === 'Success') {
-          setIsCorrectUrl(true);
-        } else {
-          setIsCorrectUrl(false);
-        }
-      } catch (err) {
-        console.error('checkHost err', err);
-      }
-      setLoading(false);
-    };
-
-    useEffect(() => {
-      checkHost();
-    }, []);
 
     useWalletInit();
     useBroadcastChannel();
@@ -104,26 +78,16 @@ const Layout = dynamic(async () => {
       ]);
     }, [webLoginContext.loginState]);
 
-    const showPage = useMemo(() => {
-      return isCorrectUrl && ['/'].includes(pathname);
-    }, [pathname, isCorrectUrl]);
-
     return (
       <>
-        {loading ? (
-          <Loading />
-        ) : showPage ? (
-          <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
-            <Header />
-            <AntdLayout.Content
-              className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
-              {children}
-            </AntdLayout.Content>
-            <Footer />
-          </AntdLayout>
-        ) : (
-          <NotFoundPage />
-        )}
+        <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
+          <Header />
+          <AntdLayout.Content
+            className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
+            {children}
+          </AntdLayout.Content>
+          <Footer />
+        </AntdLayout>
       </>
     );
   };
