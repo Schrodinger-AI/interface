@@ -7,6 +7,7 @@ export type InfoStateType = {
     identityPoolID?: string;
     // some config
   };
+  loginTrigger?: 'join' | 'login';
   cmsInfo?: {
     networkType: 'TESTNET' | 'MAIN';
     networkTypeV2: 'TESTNET' | 'MAINNET';

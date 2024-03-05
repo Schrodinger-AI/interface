@@ -5,23 +5,20 @@ import SocialMedia, { SocialMediaItem } from './components/SocialMedia';
 import { useState } from 'react';
 import useCheckJoinStatus from './hooks/useCheckJoinStatus';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
-
-export type TriggerType = 'login' | 'join';
+import { store } from 'redux/store';
+import { setLoginTrigger } from 'redux/reducer/info';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
+
   const { isLogin, wallet } = useWalletService();
 
   const { cmsInfo } = useGetStoreInfo();
 
-  const [trigger, setTrigger] = useState<TriggerType>('login');
-
-  const { isJoin, pollingRequestSync } = useCheckJoinStatus({
-    trigger,
-  });
+  const { isJoin, pollingRequestSync } = useCheckJoinStatus();
 
   const handleJoinUs = async () => {
-    setTrigger('join');
+    store.dispatch(setLoginTrigger('join'));
     if (isLogin) {
       await pollingRequestSync();
     } else {
@@ -83,7 +80,7 @@ export default function CountDownPage() {
         <CountDownModule targetDate={cmsInfo?.openTimeStamp || ''} />
       </section>
       <section className="mt-[64px] md:mt-[100px] mx-auto w-full">
-        {isOK && isJoin ? (
+        {isLogin && isJoin ? (
           <div className="text-[#434343] text-[16px] leading-[24px] font-medium text-center">
             {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
           </div>

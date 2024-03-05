@@ -3,18 +3,13 @@ import { useWalletService, useWalletSyncCompleted } from 'hooks/useWallet';
 import useLoading from 'hooks/useLoading';
 import { useCallback, useState } from 'react';
 import { useRequest } from 'ahooks';
-import { TriggerType } from '../CounDownPage';
 import { GetJoinRecord, Join } from 'contract/schrodinger';
 import { message } from 'antd';
 import { addPrefixSuffix, getOmittedStr } from 'utils';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
-export interface IProps {
-  trigger: TriggerType;
-}
-
-export default function useCheckJoinStatus({ trigger }: IProps) {
-  const { cmsInfo } = useGetStoreInfo();
+export default function useCheckJoinStatus() {
+  const { cmsInfo, loginTrigger } = useGetStoreInfo();
   const { getAccountInfoSync } = useWalletSyncCompleted(cmsInfo?.curChain);
 
   const { showLoading, closeLoading, visible } = useLoading();
@@ -68,7 +63,8 @@ export default function useCheckJoinStatus({ trigger }: IProps) {
       }
 
       if (isJoin) return;
-      if (trigger === 'join') {
+
+      if (loginTrigger === 'join') {
         await pollingRequestSync();
       }
     }

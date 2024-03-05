@@ -13,6 +13,8 @@ import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
 import { useState } from 'react';
+import { store } from 'redux/store';
+import { setLoginTrigger } from 'redux/reducer/info';
 
 export default function Header() {
   const { isOK, checkLogin } = useCheckLoginAndToken();
@@ -101,6 +103,7 @@ export default function Header() {
             size={responsive.md ? 'large' : 'small'}
             className="!rounded-lg md:!rounded-[12px]"
             onClick={() => {
+              store.dispatch(setLoginTrigger('login'));
               checkLogin();
             }}>
             Log in

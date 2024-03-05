@@ -40,6 +40,7 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
 
   return (
     <Modal
+      maskClosable={false}
       className={`${styles.loading} ${showClose && styles.loadingWithClose}`}
       open={modal.visible}
       footer={null}

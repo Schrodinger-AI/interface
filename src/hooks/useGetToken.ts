@@ -14,7 +14,7 @@ export const useGetToken = () => {
   const { getSignatureAndPublicKey } = useDiscoverProvider();
 
   const { runAsync } = useRequest(fetchToken, {
-    retryCount: 3,
+    retryCount: 20,
     manual: true,
     onSuccess(res) {
       localStorage.setItem(
