@@ -1,9 +1,9 @@
 import { SupportedELFChainId } from 'types';
-import { cmsInfo } from '../../mock';
+import { store } from 'redux/store';
 
 export const getRpcUrls = () => {
   // const info = store.getState().aelfInfo.aelfInfo;
-  const info = cmsInfo;
+  const info = store.getState().info.cmsInfo;
 
   return {
     [SupportedELFChainId.MAIN_NET]: info?.rpcUrlAELF,

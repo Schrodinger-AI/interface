@@ -4,8 +4,8 @@ import NiceLoading from 'components/Loading/NiceLoading';
 export default function useLoading() {
   const modal = useModal(NiceLoading);
 
-  const showLoading = (props?: { showClose?: boolean; content?: string }) => {
-    modal.show({ showClose: props?.showClose, content: props?.content });
+  const showLoading = (props?: { showClose?: boolean; content?: string; onClose?: () => void }) => {
+    modal.show({ showClose: props?.showClose, content: props?.content, onClose: props?.onClose });
   };
 
   const closeLoading = () => {
@@ -15,5 +15,6 @@ export default function useLoading() {
   return {
     showLoading,
     closeLoading,
+    visible: modal.visible,
   };
 }

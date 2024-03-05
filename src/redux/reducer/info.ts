@@ -43,4 +43,5 @@ export const infoSlice = createSlice({
 
 export const { setIsMobile, setItemsFromLocal, setCmsInfo } = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
+
 export default infoSlice.reducer;

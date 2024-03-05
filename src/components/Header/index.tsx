@@ -39,15 +39,14 @@ export default function Header() {
 
   const LogoutItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div
+        className="flex gap-[8px] items-center"
+        onClick={() => {
+          logout();
+          setMenuModalVisible(false);
+        }}>
         <ExitSVG />
-        <span
-          onClick={() => {
-            logout();
-            setMenuModalVisible(false);
-          }}>
-          logout
-        </span>
+        <span>logout</span>
       </div>
     );
   };

@@ -38,6 +38,8 @@ export const useGetToken = () => {
     }
     const timestamp = Date.now();
 
+    console.log('wallet', wallet.address);
+
     const signInfo = AElf.utils.sha256(`${wallet.address}-${timestamp}`);
 
     let publicKey = '';
@@ -58,12 +60,15 @@ export const useGetToken = () => {
       const sign = await getSignature({
         appName: 'schrodinger',
         address: wallet.address,
-        signInfo,
+        signInfo:
+          walletType === WalletType.portkey ? Buffer.from(`${wallet.address}-${timestamp}`).toString('hex') : signInfo,
       });
       if (sign?.errorMessage) {
         message.error(sign.errorMessage);
         return;
       }
+      console.log('sign', sign, wallet);
+
       publicKey = wallet.publicKey || '';
       signature = sign.signature;
       if (walletType === WalletType.elf) {

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, Suspense, useState } from 'react';
+import React, { useEffect, Suspense, useState, useMemo } from 'react';
 import { Layout as AntdLayout } from 'antd';
 import Header from 'components/Header';
 import dynamic from 'next/dynamic';
@@ -9,11 +9,12 @@ import { setIsMobile } from 'redux/reducer/info';
 import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
-import NotFoundPage from 'pageComponents/notFound/index';
-import { checkDoman } from 'api/request';
+import NotFoundPage from 'components/notFound/index';
+import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
-import { cmsInfo } from '../../mock';
+import { usePathname } from 'next/navigation';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -22,31 +23,35 @@ const Layout = dynamic(async () => {
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
 
-    const info = cmsInfo;
+    const { cmsInfo } = useGetStoreInfo();
+
+    const pathname = usePathname();
 
     const webLoginContext = useWebLogin();
 
     const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
       chainId: SupportedELFChainId.MAIN_NET,
-      rpcUrl: info?.rpcUrlAELF,
+      rpcUrl: cmsInfo?.rpcUrlAELF,
     });
     const { callSendMethod: callTDVVSendMethod, callViewMethod: callTDVVViewMethod } = useCallContract({
       chainId: SupportedELFChainId.TDVV_NET,
-      rpcUrl: info?.rpcUrlTDVV,
+      rpcUrl: cmsInfo?.rpcUrlTDVV,
     });
     const { callSendMethod: callTDVWSendMethod, callViewMethod: callTDVWViewMethod } = useCallContract({
       chainId: SupportedELFChainId.TDVW_NET,
-      rpcUrl: info?.rpcUrlTDVW,
+      rpcUrl: cmsInfo?.rpcUrlTDVW,
     });
 
     const [isCorrectUrl, setIsCorrectUrl] = useState(true);
 
     const checkHost = async () => {
       try {
-        const res = await checkDoman();
-        if (res) {
+        const res = await checkDomain();
+        if (res && res === 'Success') {
           setIsCorrectUrl(true);
+          return;
         }
+        setIsCorrectUrl(false);
       } catch (err) {
         console.error('checkHost err', err);
       }
@@ -95,9 +100,13 @@ const Layout = dynamic(async () => {
       ]);
     }, [webLoginContext.loginState]);
 
+    const showPage = useMemo(() => {
+      return isCorrectUrl && ['/'].includes(pathname);
+    }, [pathname, isCorrectUrl]);
+
     return (
       <>
-        {isCorrectUrl ? (
+        {showPage ? (
           <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
             <Header />
             <AntdLayout.Content

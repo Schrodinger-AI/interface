@@ -18,8 +18,8 @@ function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const fetchGlobalConfig = async () => {
     try {
-      // const { result } = await fetchCmsConfigInfo();
-      // store.dispatch(setCmsInfo(result));
+      const res = await fetchCmsConfigInfo();
+      store.dispatch(setCmsInfo(res));
       setLoading(false);
     } catch (err) {
       console.error('fetchGlobalConfig err', err);

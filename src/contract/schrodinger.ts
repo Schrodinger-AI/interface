@@ -3,25 +3,25 @@ import { sleep } from 'utils';
 import { formatErrorMsg } from 'utils/formattError';
 import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
 import { getTxResult } from 'utils/aelfUtils';
-import { cmsInfo } from '../../mock';
+import { store } from 'redux/store';
 
 const schrodingerContractRequest = async <T, R>(
   method: string,
   params: T,
   options?: IContractOptions,
 ): Promise<R | ISendResult> => {
-  const info = cmsInfo;
+  const info = store.getState().info.cmsInfo;
 
   const addressList = {
-    main: info.schrodingerMainAddress,
-    side: info.schrodingerSideAddress,
+    main: info?.schrodingerMainAddress,
+    side: info?.schrodingerSideAddress,
   };
 
   try {
     const address = (options?.chain === SupportedELFChainId.MAIN_NET
       ? addressList.main
       : addressList.side) as unknown as string;
-    const curChain: Chain = options?.chain || info.curChain;
+    const curChain: Chain = options?.chain || info!.curChain;
 
     console.log('=====schrodingerContractRequest type: ', method, options?.type);
     console.log('=====schrodingerContractRequest address: ', method, address);
@@ -63,7 +63,7 @@ const schrodingerContractRequest = async <T, R>(
       const { transactionId, TransactionId } = result.result || result;
       const resTransactionId = TransactionId || transactionId;
       await sleep(1000);
-      const transaction = await getTxResult(resTransactionId!, info.curChain);
+      const transaction = await getTxResult(resTransactionId!, info!.curChain);
 
       console.log('=====schrodingerContractRequest transaction: ', method, transaction);
 
