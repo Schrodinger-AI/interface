@@ -17,6 +17,8 @@ import { useResponsive } from 'ahooks';
 import { useMemo, useState } from 'react';
 import { WalletType } from 'aelf-web-login';
 import { useRouter } from 'next/navigation';
+import { store } from 'redux/store';
+import { setLoginTrigger } from 'redux/reducer/info';
 
 export default function Header() {
   const { isOK, checkLogin } = useCheckLoginAndToken();
@@ -44,16 +46,14 @@ export default function Header() {
 
   const LogoutItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div
+        className="flex gap-[8px] items-center"
+        onClick={() => {
+          logout();
+          setMenuModalVisible(false);
+        }}>
         <ExitSVG />
-        <span
-          onClick={() => {
-            logout();
-            setMenuModalVisible(false);
-          }}
-        >
-          logout
-        </span>
+        <span>Log out</span>
       </div>
     );
   };
@@ -65,8 +65,7 @@ export default function Header() {
         <span
           onClick={() => {
             router.push('/points');
-          }}
-        >
+          }}>
           My Points
         </span>
       </div>
@@ -80,8 +79,7 @@ export default function Header() {
         <span
           onClick={() => {
             router.push('/assets');
-          }}
-        >
+          }}>
           My Asset
         </span>
       </div>
@@ -89,29 +87,29 @@ export default function Header() {
   };
 
   const items = useMemo(() => {
-    return [
+    const menuItems = [
       {
         key: 'address',
         label: <CopyAddressItem />,
       },
-      walletType === WalletType.portkey && { key: 'asset', label: <AssetItem /> },
+      { key: 'asset', label: <AssetItem /> },
       { key: 'points', label: <PointsItem /> },
       {
         key: 'logout',
         label: <LogoutItem />,
       },
-    ].filter((i) => i);
+    ];
+    if (walletType !== WalletType.portkey) {
+      return menuItems.splice(1, 1);
+    }
+    return menuItems;
   }, [walletType]);
 
   const MyDropDown = () => {
     if (responsive.md) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button
-            type="default"
-            className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
-            size="large"
-          >
+          <Button type="default" className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]" size="large">
             <MenuMySVG className="mr-[8px]" />
             My
           </Button>
@@ -125,8 +123,7 @@ export default function Header() {
         size="small"
         onClick={() => {
           setMenuModalVisible(true);
-        }}
-      >
+        }}>
         <MenuMySVG className="mr-[8px]" />
         My
       </Button>
@@ -147,10 +144,10 @@ export default function Header() {
             size={responsive.md ? 'large' : 'small'}
             className="!rounded-lg md:!rounded-[12px]"
             onClick={() => {
+              store.dispatch(setLoginTrigger('login'));
               checkLogin();
-            }}
-          >
-            Log In
+            }}>
+            Log in
           </Button>
         ) : (
           <MyDropDown />
@@ -166,14 +163,12 @@ export default function Header() {
         destroyOnClose
         onCancel={() => {
           setMenuModalVisible(false);
-        }}
-      >
+        }}>
         {items.map((item, index) => {
           return (
             <div
               className="w-full h-[64px] flex items-center border-x-0 border-t-0 border-b-[1px] border-solid border-[#EDEDED] text-[16px] font-medium text-[#1A1A1A]"
-              key={index}
-            >
+              key={index}>
               {item.label}
             </div>
           );

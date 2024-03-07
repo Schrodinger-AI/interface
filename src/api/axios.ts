@@ -74,15 +74,17 @@ class Request {
           case 502:
           case 503:
           case 504:
-            errMessage = `${error.response.status}: something is wrong in server`;
+            errMessage = `${error.response.status}: something went wrong in server`;
             break;
 
           default:
-            errMessage = `${error.response.status}: something is wrong, please try again later`;
+            errMessage = `${error.response.status}: something went wrong, please try again later`;
             break;
         }
 
-        message.error(errMessage);
+        if (!error.response.config.baseURL?.includes('connect')) {
+          message.error(errMessage);
+        }
         return Promise.reject(errMessage);
       },
     );
@@ -100,11 +102,7 @@ class Request {
     return this.instance.post(url, data, config);
   }
 
-  public put<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: AxiosRequestConfig,
-  ): Promise<R> {
+  public put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: AxiosRequestConfig): Promise<R> {
     return this.instance.put(url, data, config);
   }
 

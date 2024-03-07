@@ -1,9 +1,9 @@
-import { ReactComponent as DisCard } from 'assets/img/social/discard.svg';
+import { ReactComponent as DisCord } from 'assets/img/social/discord.svg';
 import { ReactComponent as GitBook } from 'assets/img/social/gitbook.svg';
 import { ReactComponent as LinkTree } from 'assets/img/social/linktree.svg';
 import { ReactComponent as Telegram } from 'assets/img/social/telegram.svg';
 import { ReactComponent as Twitter } from 'assets/img/social/twitter.svg';
-import { ReactComponent as DisCardMobile } from 'assets/img/social/discard-s.svg';
+import { ReactComponent as DisCordMobile } from 'assets/img/social/discord-s.svg';
 import { ReactComponent as GitBookMobile } from 'assets/img/social/gitbook-s.svg';
 import { ReactComponent as LinkTreeMobile } from 'assets/img/social/linktree-s.svg';
 import { ReactComponent as TelegramMobile } from 'assets/img/social/telegram-s.svg';
@@ -27,7 +27,7 @@ export default function SocialMedia({ data }: SocialMediaProps) {
   const responsive = useResponsive();
 
   const socialMediaIcons: Record<string, any> = {
-    discard: responsive.md ? DisCard : DisCardMobile,
+    discord: responsive.md ? DisCord : DisCordMobile,
     gitbook: responsive.md ? GitBook : GitBookMobile,
     linktree: responsive.md ? LinkTree : LinkTreeMobile,
     telegram: responsive.md ? Telegram : TelegramMobile,
@@ -48,8 +48,7 @@ export default function SocialMedia({ data }: SocialMediaProps) {
             onClick={() => {
               window.open(item.link, item.target || '_blank');
             }}
-            className={`${styles.icon} ${styles[item.name.toLocaleLowerCase()]}`}
-          >
+            className={`${styles.icon} ${styles[item.name.toLocaleLowerCase()]}`}>
             {getMediaItem(item.name.toLocaleLowerCase())}
           </div>
         );

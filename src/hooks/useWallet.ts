@@ -26,9 +26,7 @@ import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
 import { setItemsFromLocal } from 'redux/reducer/info';
-import { cmsInfo } from '../../mock';
-import { useRequest } from 'ahooks';
-import useLoading from './useLoading';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -39,9 +37,6 @@ export const useWalletInit = () => {
 
   const backToHomeByRoute = useBackToHomeByRoute();
 
-  // register Contract method
-  //TODO:
-  // useRegisterContractServiceMethod();
   const callBack = useCallback(
     (state: WebLoginState) => {
       if (state === WebLoginState.lock) {
@@ -66,7 +61,7 @@ export const useWalletInit = () => {
         if (walletType === WalletType.portkey) {
           walletInfo.portkeyInfo = wallet.portkeyInfo as PortkeyInfo;
         }
-        // getToken();
+        getToken();
         dispatch(setWalletInfo(cloneDeep(walletInfo)));
         setLocalWalletInfo(cloneDeep(walletInfo));
       }
@@ -78,10 +73,6 @@ export const useWalletInit = () => {
 
   useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, (error) => {
     message.error(`${error.message || 'LOGIN_ERROR'}`);
-  });
-  useWebLoginEvent(WebLoginEvents.LOGINED, () => {
-    console.log('log in');
-    // message.success('log in');
   });
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
@@ -113,17 +104,15 @@ export const useWalletService = () => {
 // Example Query whether the synchronization of the main sidechain is successful
 export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
   const loading = useRef<boolean>(false);
-  const info = cmsInfo;
+  const { cmsInfo } = useGetStoreInfo();
   const { did } = useComponentFlex();
   const getAccountByChainId = useGetAccount('AELF');
   const { wallet, walletType, version } = useWebLogin();
   const { walletInfo } = cloneDeep(useSelector((store: any) => store.userInfo));
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
   const { discoverProvider } = useDiscoverProvider();
-  const { showLoading, closeLoading } = useLoading();
 
   const errorFunc = () => {
-    showLoading({ content: 'Synchronising data on the blockchain...', showClose: true });
     loading.current = false;
     return '';
   };
@@ -173,9 +162,7 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
           chainId: contractChainId as ChainId,
           caHash: caHash as string,
         });
-        const filteredHolders = holder.managerInfos.filter(
-          (manager: any) => manager?.address === address,
-        );
+        const filteredHolders = holder.managerInfos.filter((manager: any) => manager?.address === address);
         if (filteredHolders.length) {
           return await getAccount();
         } else {
@@ -209,25 +196,7 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
     }
   }, [wallet, walletType, walletInfo]);
 
-  const pollingRequestSync = useCallback(async (): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const checkSync = useCallback(async () => {
-        const targetAddress = await getAccountInfoSync();
-        if (targetAddress) {
-          closeLoading();
-          cancel();
-          resolve(targetAddress);
-        }
-      }, [getAccountInfoSync]);
-
-      const { runAsync, cancel } = useRequest(checkSync, {
-        pollingInterval: 1000,
-        // manual: true,
-      });
-    });
-  }, [getAccountInfoSync]);
-
-  return { getAccountInfoSync, pollingRequestSync };
+  return { getAccountInfoSync };
 };
 
 export const useCheckLoginAndToken = () => {
@@ -268,10 +237,10 @@ export const useElfWebLoginLifeCircleHookService = () => {
   const { login } = useWebLogin();
 
   const [hooksMap, setHooksMap] = useState<{
-    [key in WebLoginState]?: CallBackType[];
+    [key in WebLoginEvents]?: CallBackType[];
   }>({});
 
-  const registerHook = (name: WebLoginState, callBack: CallBackType) => {
+  const registerHook = (name: WebLoginEvents, callBack: CallBackType) => {
     const hooks = (hooksMap[name] || []).concat(callBack);
     setHooksMap({
       ...hooksMap,
@@ -279,15 +248,15 @@ export const useElfWebLoginLifeCircleHookService = () => {
     });
   };
 
-  useWebLoginEvent(WebLoginEvents.LOGINED, async () => {
-    const hooks = hooksMap[WebLoginState.logined];
-    if (hooks?.length) {
-      for (let i = 0; i < hooks.length; ++i) {
-        console.log(`await hooks ${i} execute`);
-        await hooks[i]();
-      }
-    }
-  });
+  // useWebLoginEvent(WebLoginEvents.LOGINED, async () => {
+  //   const hooks = hooksMap[WebLoginState.logined];
+  //   if (hooks?.length) {
+  //     for (let i = 0; i < hooks.length; ++i) {
+  //       console.log(`await hooks ${i} execute`);
+  //       await hooks[i]();
+  //     }
+  //   }
+  // });
 
   return {
     login,

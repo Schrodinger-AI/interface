@@ -1,13 +1,13 @@
-.dropdown{
+.dropdown {
   @apply !min-w-[260px];
-  :global(.aelfd-dropdown-menu){
+  :global(.aelfd-dropdown-menu) {
     @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none;
   }
-  :global(.aelfd-dropdown-menu-item){
+  :global(.aelfd-dropdown-menu-item) {
     @apply h-[48px];
   }
-  :global(.aelfd-dropdown-menu-title-content){
-    span{
+  :global(.aelfd-dropdown-menu-title-content) {
+    span {
       @apply text-[16px] font-medium text-[#1A1A1A];
     }
   }
@@ -15,17 +15,17 @@
 
 .menuModal {
   @apply h-screen top-0 !m-0 !p-0 !w-screen !max-w-[100vw];
-  :global{
-    .aelfd-modal-content{
+  :global {
+    .aelfd-modal-content {
       @apply w-full  h-full rounded-none !px-[16px] !py-[20px];
     }
-    .aelfd-modal-title{
+    .aelfd-modal-title {
       @apply !font-semibold;
     }
     .aelfd-modal-header {
       @apply !mb-[16px];
     }
-    .aelfd-modal-close{
+    .aelfd-modal-close {
       @apply !top-[23px];
     }
   }
