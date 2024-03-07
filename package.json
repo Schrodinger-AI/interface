@@ -28,7 +28,7 @@
     "@sentry/nextjs": "^7.19.0",
     "@types/elliptic": "^6.4.18",
     "@types/lodash-es": "^4.17.9",
-    "aelf-design": "^0.1.70-alpha.0",
+    "aelf-design": "^0.1.73-alpha.0",
     "aelf-sdk": "^3.2.40",
     "aelf-web-login": "^2.0.0-beta.29",
     "ahooks": "^3.7.10",
