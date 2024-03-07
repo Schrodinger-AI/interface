@@ -67,7 +67,7 @@ export default function CountDownPage() {
   return (
     <section className="pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full">
       <img
-        src={require('assets/img/schrodinger.png').default.src}
+        src={require('assets/img/schrodinger.jpeg').default.src}
         alt="Schrödinger"
         className="rounded-lg md:rounded-xl w-[80px] h-[80px] md:w-[120px] md:h-[120px]"
       />
