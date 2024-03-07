@@ -3361,10 +3361,10 @@ aelf-bridge@^0.0.10:
     socket.io-client "^2.3.0"
     uuid "^3.3.3"
 
-aelf-design@^0.1.70-alpha.0:
-  version "0.1.70-alpha.0"
-  resolved "https://registry.npmmirror.com/aelf-design/-/aelf-design-0.1.70-alpha.0.tgz#815988f6ac97fa9be4e1185ae3725ac1562ff521"
-  integrity sha512-bN9FXXPhDx0VY2fPzBzhoj1gT6dRkLDKWtGHpwhfYB32K8rfGtISUcaQH6z7ZNYUqVSrjlxbbKKBXnpIBY5Klg==
+aelf-design@^0.1.73-alpha.0:
+  version "0.1.73-alpha.0"
+  resolved "https://registry.yarnpkg.com/aelf-design/-/aelf-design-0.1.73-alpha.0.tgz#23c74bb6a6bfd8116d1f1b1fef26817200463f56"
+  integrity sha512-8Ftks9x2xpwTssOKUSCzIW4VJO2PkHZoET9sJn0R2IzsmyhCb9SyBpOTqizTOw4poecUmzjumChQAuSSzrsKFA==
   dependencies:
     "@svgr/babel-plugin-transform-svg-component" "^8.0.0"
     "@svgr/plugin-jsx" "^8.1.0"
@@ -4335,7 +4335,7 @@ clsx@^1.2.1:
 
 clsx@^2.1.0:
   version "2.1.0"
-  resolved "https://registry.npmmirror.com/clsx/-/clsx-2.1.0.tgz#e851283bcb5c80ee7608db18487433f7b23f77cb"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.0.tgz#e851283bcb5c80ee7608db18487433f7b23f77cb"
   integrity sha512-m3iNNWpd9rl3jvvcBnu70ylMdrXt8Vlq4HYadnU5fwcOtvkSQWPmj7amUcDT2qYI7risszBjI5AUIUox9D16pg==
 
 color-convert@^1.9.0:

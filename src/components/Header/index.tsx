@@ -15,6 +15,7 @@ import { useResponsive } from 'ahooks';
 import { useState } from 'react';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
+import { NavHostTag } from 'components/HostTag';
 
 export default function Header() {
   const { isOK, checkLogin } = useCheckLoginAndToken();
@@ -91,11 +92,14 @@ export default function Header() {
   return (
     <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <img
-          src={require('assets/img/logo.png').default.src}
-          alt="logo"
-          className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
-        />
+        <div className="flex justify-start items-center">
+          <img
+            src={require('assets/img/logo.png').default.src}
+            alt="logo"
+            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px] m"
+          />
+          <NavHostTag />
+        </div>
         {!isLogin ? (
           <Button
             type="primary"
