@@ -15,20 +15,21 @@ import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import { usePathname } from 'next/navigation';
 import NotFoundPage from 'components/notFound';
+import { NotFoundType } from 'constants/index';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [isCorrectUrl, setIsCorrectUrl] = useState(false);
+  const [isCorrectDomain, setIsCorrectDomain] = useState(false);
   const pathname = usePathname();
 
   const checkHost = async () => {
     try {
       const res = await checkDomain();
       if (res && res === 'Success') {
-        setIsCorrectUrl(true);
+        setIsCorrectDomain(true);
         return true;
       } else {
-        setIsCorrectUrl(false);
+        setIsCorrectDomain(false);
         return false;
       }
     } catch (err) {
@@ -60,9 +61,13 @@ function Provider({ children }: { children: React.ReactNode }) {
     initPageData();
   }, []);
 
+  const isCorrectPath = useMemo(() => {
+    return ['/'].includes(pathname);
+  }, [pathname]);
+
   const showPage = useMemo(() => {
-    return isCorrectUrl && ['/'].includes(pathname);
-  }, [pathname, isCorrectUrl]);
+    return isCorrectDomain && isCorrectPath;
+  }, [isCorrectDomain, isCorrectPath]);
 
   return (
     <>
@@ -76,7 +81,7 @@ function Provider({ children }: { children: React.ReactNode }) {
                 <NiceModal.Provider>{children}</NiceModal.Provider>
               </WebLoginProvider>
             ) : (
-              <NotFoundPage />
+              <NotFoundPage type={isCorrectDomain ? NotFoundType.path : NotFoundType.domain} />
             )}
           </ConfigProvider>
         </AELFDProvider>

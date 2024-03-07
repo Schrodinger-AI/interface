@@ -91,11 +91,10 @@ export default function Header() {
   return (
     <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <Image
-          src={require('assets/img/website-logo.svg').default}
+        <img
+          src={require('assets/img/logo.png').default.src}
           alt="logo"
-          width={responsive.md ? 200 : 150}
-          height={responsive.md ? 32 : 24}
+          className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
         />
         {!isLogin ? (
           <Button

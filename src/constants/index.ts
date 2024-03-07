@@ -10,3 +10,15 @@ export enum NetworkType {
 }
 
 export const SECONDS_60 = 60000;
+
+export enum NotFoundType {
+  domain = 'domain',
+  path = 'path',
+}
+
+export const notFoundErrorTip = {
+  [NotFoundType.domain]: 'The specified customised link does not exist.',
+  [NotFoundType.path]: '',
+};
+
+export const ewellUrl = 'https://ewell.finance/';
