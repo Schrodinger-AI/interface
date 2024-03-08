@@ -11,7 +11,7 @@ import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
 import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
 import { MenuProps, message, Modal } from 'antd';
 import styles from './style.module.css';
-import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils';
+import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
 import { useMemo, useState } from 'react';
