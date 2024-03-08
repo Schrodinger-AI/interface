@@ -13,7 +13,7 @@
 }
 
 .homeHostTag {
-  position: relative;
+  position: absolute;
   padding: 6px 16px;
   color: #FFF;
   text-align: center;
@@ -24,8 +24,8 @@
   border: 1px solid #7936e5;
   background: #7936e5;
   cursor: pointer;
-  top: -136px;
-  left: 128px;
+  top: -19px;
+  left: calc(50% + 68px);
 }
 
 @media screen and (max-width: 767px) {
@@ -45,8 +45,8 @@
     font-weight: 500;
     line-height: 20px;
     max-width: 159px;
-    top: -90px;
-    left: 88px;
+    top: -12px;
+    left: calc(50% + 48px);
     max-height: 24px;
  } 
 }

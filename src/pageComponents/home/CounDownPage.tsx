@@ -71,9 +71,8 @@ export default function CountDownPage() {
 
   return (
     <div className="relative">
-      {/* <HomeHostTag /> */}
       <section className="pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
-        <div className="relative">
+        <div className="relative flex w-full justify-center">
           <img
             src={require('assets/img/schrodinger.png').default.src}
             alt="Schrödinger"
