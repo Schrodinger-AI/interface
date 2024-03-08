@@ -16,12 +16,14 @@ import { useState } from 'react';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { NavHostTag } from 'components/HostTag';
+import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 export default function Header() {
   const { isOK, checkLogin } = useCheckLoginAndToken();
   const { logout, wallet, isLogin } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
+  const { topSafeHeight } = useSafeAreaHeight();
 
   const [menuModalVisible, setMenuModalVisible] = useState(false);
 
@@ -90,7 +92,7 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
+    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0" style={{ paddingTop: topSafeHeight }}>
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex justify-start items-center">
           <img
