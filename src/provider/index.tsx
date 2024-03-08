@@ -1,6 +1,5 @@
 'use client';
 import StoreProvider from './store';
-import { ConfigProvider } from 'antd';
 import { AELFDProvider } from 'aelf-design';
 import enUS from 'antd/lib/locale/en_US';
 import WebLoginProvider from './webLoginProvider';
@@ -15,6 +14,7 @@ import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import { usePathname } from 'next/navigation';
 import NotFoundPage from 'components/notFound';
+import { AELFDProviderTheme } from './config';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -67,18 +67,16 @@ function Provider({ children }: { children: React.ReactNode }) {
   return (
     <>
       <StoreProvider>
-        <AELFDProvider>
-          <ConfigProvider locale={enUS} autoInsertSpaceInButton={false}>
-            {loading ? (
-              <Loading content="Enrollment in progress"></Loading>
-            ) : showPage ? (
-              <WebLoginProvider>
-                <NiceModal.Provider>{children}</NiceModal.Provider>
-              </WebLoginProvider>
-            ) : (
-              <NotFoundPage />
-            )}
-          </ConfigProvider>
+        <AELFDProvider theme={AELFDProviderTheme}>
+          {loading ? (
+            <Loading content="Enrollment in progress"></Loading>
+          ) : showPage ? (
+            <WebLoginProvider>
+              <NiceModal.Provider>{children}</NiceModal.Provider>
+            </WebLoginProvider>
+          ) : (
+            <NotFoundPage />
+          )}
         </AELFDProvider>
       </StoreProvider>
     </>
