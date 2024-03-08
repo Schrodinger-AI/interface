@@ -2,17 +2,15 @@
 import { Modal, Button, Tooltip } from 'antd';
 import { getSecondHostName, dotString } from 'utils/common';
 import { useMemo, useState } from 'react';
-import { isMobileDevices } from 'utils/isMobile';
 import { useResponsive } from 'ahooks';
 import styles from './style.module.css';
 
 export function NavHostTag() {
   const [open, setOpen] = useState(false);
   const hostName = useMemo(() => getSecondHostName(), []);
-  const isMobile = useMemo(() => !!isMobileDevices(), []);
   const responsive = useResponsive();
 
-  const hostStr = useMemo(() => dotString(hostName, isMobile ? 10 : 16), [hostName, isMobile]);
+  const hostStr = useMemo(() => dotString(hostName, responsive.md ? 16 : 10), [hostName, responsive.md]);
 
   return (
     <>
@@ -49,10 +47,12 @@ export function NavHostTag() {
 export function HomeHostTag() {
   const [open, setOpen] = useState(false);
   const hostName = useMemo(() => getSecondHostName(), []);
-  const isMobile = useMemo(() => !!isMobileDevices(), []);
   const responsive = useResponsive();
 
-  const hostStr = useMemo(() => 'Invited by ' + dotString(hostName, isMobile ? 10 : 16), [hostName, isMobile]);
+  const hostStr = useMemo(
+    () => 'Invited by ' + dotString(hostName, responsive.md ? 16 : 10),
+    [hostName, responsive.md],
+  );
 
   return (
     <>
