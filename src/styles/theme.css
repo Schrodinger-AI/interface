@@ -1,9 +1,9 @@
 :root {
-  --brand-default: #2A4BF0;
-  --brand-hover: #4564FF;
-  --brand-click: #2242E3;
-  --brand-disable: #BFC9FB;
-  --brand-bg: #EAEDFE;
+  --brand-default: #3888FF;
+  --brand-hover: #5A9CFF;
+  --brand-pressed: #267AF8;
+  --brand-disable: #ADCEFF;
+  --brand-bg: #EBF3FF;
   --neutral-title: #1A1A1A;
   --neutral-primary: #434343;
   --neutral-secondary: #919191;
@@ -14,27 +14,24 @@
   --neutral-default-bg: #F6F6F6;
   --neutral-hover-bg: #FAFAFA;
   --neutral-white-bg: #FFF;
-  --functional-success: #04a039;
-  --functional-warning: #dd8604;
-  --functional-link-bg: #192737;
-  --functional-success-bg: #172e1f;
-  --functional-warning-bg: #372a17;
-  --functional-danger: #d43939;
-  --functional-danger-bg: #361f1f;
-  --functional-danger-hover: #e86262;
-  --functional-danger-click: #b72c2c;
-  --functional-danger-disable: #f3a8a8;
+  --functional-warning: #F90;
+  --functional-warning-bg: #FFF3E0;
+  --functional-error: #F53F3F;
+  --functional-error-bg: #FEE8E8;
+  --functional-error-hover: #FC7373;
+  --functional-error-pressed: #CF3737;
+  --functional-success: #00B73E;
+  --functional-success-bg: #E0F6E8;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
-  --share-svg-hover: #000;
 }
 
 .dark-theme {
-  --brand-default: #2A4BF0;
-  --brand-hover: #4564FF;
-  --brand-click: #2242E3;
-  --brand-disable: #BFC9FB;
-  --brand-bg: #EAEDFE;
+  --brand-default: #3888FF;
+  --brand-hover: #5A9CFF;
+  --brand-pressed: #267AF8;
+  --brand-disable: #ADCEFF;
+  --brand-bg: #EBF3FF;
   --neutral-title: #1A1A1A;
   --neutral-primary: #434343;
   --neutral-secondary: #919191;
@@ -45,17 +42,15 @@
   --neutral-default-bg: #F6F6F6;
   --neutral-hover-bg: #FAFAFA;
   --neutral-white-bg: #FFF;
-  --functional-success: #04a039;
-  --functional-warning: #dd8604;
-  --functional-link-bg: #192737;
-  --functional-success-bg: #172e1f;
-  --functional-warning-bg: #372a17;
-  --functional-danger: #d43939;
-  --functional-danger-bg: #361f1f;
-  --functional-danger-hover: #e86262;
-  --functional-danger-click: #b72c2c;
-  --functional-danger-disable: #f3a8a8;
+  --functional-warning: #F90;
+  --functional-warning-bg: #FFF3E0;
+  --functional-error: #F53F3F;
+  --functional-error-bg: #FEE8E8;
+  --functional-error-hover: #FC7373;
+  --functional-error-pressed: #CF3737;
+  --functional-success: #00B73E;
+  --functional-success-bg: #E0F6E8;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
-  --share-svg-hover: #fff;
 }
+

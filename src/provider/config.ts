@@ -2,9 +2,9 @@ import { ThemeConfig } from 'antd';
 
 export const AELFDProviderTheme: ThemeConfig = {
   token: {
-    colorPrimary: '#2A4BF0',
-    colorPrimaryHover: '#4564FF',
-    colorPrimaryActive: '#2242E3',
+    colorPrimary: '#3888FF',
+    colorPrimaryHover: '#5A9CFF',
+    colorPrimaryActive: '#267AF8',
   },
   components: {
     Input: {
