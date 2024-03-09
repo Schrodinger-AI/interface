@@ -1,10 +1,9 @@
-import { GET_TOKEN_INFO_QUERY } from '../queries';
-import { TGetTokenInfo } from '../types';
+import { GET_TRAITS_QUERY } from '../queries';
+import { TGetTraits } from '../types';
 
-export const getTokenInfo: TGetTokenInfo = (client, params) => {
-  console.log('getTokenInfo, params', params);
+export const getTraits: TGetTraits = (client, params) => {
   return client.query({
-    query: GET_TOKEN_INFO_QUERY,
+    query: GET_TRAITS_QUERY,
     variables: params,
   });
 };

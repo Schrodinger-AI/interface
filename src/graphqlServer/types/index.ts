@@ -3,7 +3,7 @@ import { TGraphQLClient } from './common';
 
 export type TCommonGraphQLResult<T> = Promise<ApolloQueryResult<T>>;
 
-export type TGetTokenInfoParams = {
+export type TGetTraitsParams = {
   dto: {
     chainId?: string;
     maxResultCount: number;
@@ -11,10 +11,7 @@ export type TGetTokenInfoParams = {
     symbol?: string;
   };
 };
-export type TGetTokenInfoResult = {};
-export type TGetTokenInfo = (
-  client: TGraphQLClient,
-  params: TGetTokenInfoParams,
-) => TCommonGraphQLResult<TGetTokenInfoResult>;
+export type TGetTraitsResult = {};
+export type TGetTraits = (client: TGraphQLClient, params: TGetTraitsParams) => TCommonGraphQLResult<TGetTraitsResult>;
 
 export * from './common';
