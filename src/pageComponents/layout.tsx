@@ -14,6 +14,7 @@ import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import { PAGE_CONTAINER_ID } from 'constants/index';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -80,10 +81,9 @@ const Layout = dynamic(async () => {
 
     return (
       <>
-        <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
+        <AntdLayout id={PAGE_CONTAINER_ID} className="bg-[#FAFAFA] h-full overflow-scroll">
           <Header />
-          <AntdLayout.Content
-            className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
+          <AntdLayout.Content className={`schrodinger-content flex-shrink-0 bg-[#FAFAFA] md:px-[40px] w-full`}>
             {children}
           </AntdLayout.Content>
           <Footer />

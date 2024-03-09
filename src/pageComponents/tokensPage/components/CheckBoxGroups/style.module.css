@@ -1,0 +1,10 @@
+.checkbox {
+  @apply w-full;
+  :global(.elf-checkbox + span) {
+    @apply text-white text-sm leading-[20px] pr-0 pl-[8px];
+  }
+
+  :global(.ant-checkbox + span) {
+    @apply pl-[12px] pr-0 text-[var(--color-primary)] text-[14px] font-medium leading-[22px];
+  }
+}

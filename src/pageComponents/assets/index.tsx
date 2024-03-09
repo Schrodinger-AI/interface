@@ -38,10 +38,7 @@ export default function MyAsset() {
 
   return (
     <div className={styles.asset}>
-      <PortkeyAssetProvider
-        originChainId={wallet?.portkeyInfo?.chainId as Chain}
-        pin={wallet?.portkeyInfo?.pin}
-      >
+      <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
         <Asset
           isShowRamp={info.isShowRampBuy || info.isShowRampSell}
           isShowRampBuy={info.isShowRampBuy}
