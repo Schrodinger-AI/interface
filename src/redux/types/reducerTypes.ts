@@ -20,6 +20,8 @@ export type InfoStateType = {
     rpcUrlTDVV: string;
     schrodingerMainAddress: string;
     schrodingerSideAddress: string;
+    tokenMainAddress: string;
+    tokenSideAddress: string;
     openTimeStamp: string;
     [key: string]: any;
   };

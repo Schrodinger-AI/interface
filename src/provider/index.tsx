@@ -5,7 +5,7 @@ import WebLoginProvider from './webLoginProvider';
 
 import { useEffect, useState } from 'react';
 import { store } from 'redux/store';
-import Loading from 'components/Loading';
+import PageLoading from 'components/PageLoading';
 
 import { checkDomain, fetchCmsConfigInfo } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
@@ -61,7 +61,7 @@ function Provider({ children }: { children: React.ReactNode }) {
       <StoreProvider>
         <AELFDProvider theme={AELFDProviderTheme}>
           {loading ? (
-            <Loading content="Enrollment in progress"></Loading>
+            <PageLoading content="Enrollment in progress"></PageLoading>
           ) : isCorrectUrl ? (
             <WebLoginProvider>
               <NiceModal.Provider>{children}</NiceModal.Provider>

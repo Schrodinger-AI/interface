@@ -5,3 +5,5 @@ export const currentRpcUrl = {
   tDVW: 'rpcUrlTDVW',
   tDVV: 'rpcUrlTDVV',
 };
+
+export const CONTRACT_AMOUNT = '1000000000000000000';

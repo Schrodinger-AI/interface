@@ -1,5 +1,5 @@
-import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import NiceLoading from 'components/Loading/NiceLoading';
+import { useModal } from '@ebay/nice-modal-react';
+import NiceLoading from 'components/PageLoading/NiceLoading';
 
 export default function useLoading() {
   const modal = useModal(NiceLoading);
