@@ -1,25 +1,21 @@
 'use client';
 import StoreProvider from './store';
 import { AELFDProvider } from 'aelf-design';
-import enUS from 'antd/lib/locale/en_US';
 import WebLoginProvider from './webLoginProvider';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { store } from 'redux/store';
 import Loading from 'components/Loading';
-import { setEthData } from 'redux/reducer/data';
 
-import { checkDomain, fetchCmsConfigInfo, fetchEtherscan } from 'api/request';
+import { checkDomain, fetchCmsConfigInfo } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
-import { usePathname } from 'next/navigation';
 import NotFoundPage from 'components/notFound';
 import { AELFDProviderTheme } from './config';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isCorrectUrl, setIsCorrectUrl] = useState(false);
-  const pathname = usePathname();
 
   const checkHost = async () => {
     try {
@@ -60,17 +56,13 @@ function Provider({ children }: { children: React.ReactNode }) {
     initPageData();
   }, []);
 
-  const showPage = useMemo(() => {
-    return isCorrectUrl && ['/'].includes(pathname);
-  }, [pathname, isCorrectUrl]);
-
   return (
     <>
       <StoreProvider>
         <AELFDProvider theme={AELFDProviderTheme}>
           {loading ? (
             <Loading content="Enrollment in progress"></Loading>
-          ) : showPage ? (
+          ) : isCorrectUrl ? (
             <WebLoginProvider>
               <NiceModal.Provider>{children}</NiceModal.Provider>
             </WebLoginProvider>
