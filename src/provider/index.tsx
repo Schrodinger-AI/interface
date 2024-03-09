@@ -60,9 +60,13 @@ function Provider({ children }: { children: React.ReactNode }) {
     initPageData();
   }, []);
 
+  const isCorrectPath = useMemo(() => {
+    return ['/', '/assets', '/points'].includes(pathname);
+  }, [pathname]);
+
   const showPage = useMemo(() => {
-    return isCorrectUrl && ['/'].includes(pathname);
-  }, [pathname, isCorrectUrl]);
+    return isCorrectUrl && isCorrectPath;
+  }, [isCorrectPath, isCorrectUrl]);
 
   return (
     <>

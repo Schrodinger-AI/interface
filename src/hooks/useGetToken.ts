@@ -8,7 +8,7 @@ import useDiscoverProvider from './useDiscoverProvider';
 
 const AElf = require('aelf-sdk');
 
-export const useGetToken = () => {
+export const useGetToken = (callBack?: (flag: boolean) => void) => {
   const { loginState, wallet, getSignature, walletType, version } = useWebLogin();
 
   const { getSignatureAndPublicKey } = useDiscoverProvider();
@@ -17,6 +17,7 @@ export const useGetToken = () => {
     retryCount: 20,
     manual: true,
     onSuccess(res) {
+      callBack?.(true);
       localStorage.setItem(
         storages.accountInfo,
         JSON.stringify({

@@ -21,3 +21,7 @@ export const fetchToken = async (data: ITokenParams) => {
 export const fetchCmsConfigInfo = async (): Promise<any> => {
   return request.get('/app/config');
 };
+
+export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsData> => {
+  return request.get('/app/my/points', { params });
+};

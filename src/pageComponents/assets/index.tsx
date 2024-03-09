@@ -2,27 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { WalletType, useWebLogin, useComponentFlex } from 'aelf-web-login';
+import { useWebLogin, useComponentFlex } from 'aelf-web-login';
 import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
 import { useWalletService } from 'hooks/useWallet';
-// import { useSelector } from 'redux/store';
 
 export default function MyAsset() {
   const router = useRouter();
-  const { wallet, walletType, login } = useWebLogin();
+  const { wallet } = useWebLogin();
   const { isLogin } = useWalletService();
-
-  // const info = useSelector((store) => store.elfInfo.elfInfo);
-
-  // const { isShowRampBuy, isShowRampSell } = info;
-
-  //TODO:
-  const info = {
-    isShowRampBuy: true,
-    isShowRampSell: false,
-  };
 
   const { PortkeyAssetProvider, Asset } = useComponentFlex();
 
@@ -38,14 +27,11 @@ export default function MyAsset() {
 
   return (
     <div className={styles.asset}>
-      <PortkeyAssetProvider
-        originChainId={wallet?.portkeyInfo?.chainId as Chain}
-        pin={wallet?.portkeyInfo?.pin}
-      >
+      <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
         <Asset
-          isShowRamp={info.isShowRampBuy || info.isShowRampSell}
-          isShowRampBuy={info.isShowRampBuy}
-          isShowRampSell={info.isShowRampSell}
+          // isShowRamp={info.isShowRampBuy || info.isShowRampSell}
+          // isShowRampBuy={info.isShowRampBuy}
+          // isShowRampSell={info.isShowRampSell}
           // faucet={{
           //   faucetContractAddress: configInfo?.faucetContractAddress,
           // }}

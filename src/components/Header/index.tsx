@@ -31,7 +31,7 @@ export default function Header() {
 
   const CopyAddressItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div className={styles.menuItem}>
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -47,7 +47,7 @@ export default function Header() {
   const LogoutItem = () => {
     return (
       <div
-        className="flex gap-[8px] items-center"
+        className={styles.menuItem}
         onClick={() => {
           logout();
           setMenuModalVisible(false);
@@ -60,28 +60,32 @@ export default function Header() {
 
   const PointsItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <AssetSVG />
-        <span
-          onClick={() => {
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (isOK) {
             router.push('/points');
-          }}>
-          My Points
-        </span>
+            setMenuModalVisible(false);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <PointsSVG />
+        <span>My Points</span>
       </div>
     );
   };
 
   const AssetItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <PointsSVG />
-        <span
-          onClick={() => {
-            router.push('/assets');
-          }}>
-          My Asset
-        </span>
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          router.push('/assets');
+          setMenuModalVisible(false);
+        }}>
+        <AssetSVG />
+        <span>My Asset</span>
       </div>
     );
   };
@@ -100,7 +104,7 @@ export default function Header() {
       },
     ];
     if (walletType !== WalletType.portkey) {
-      return menuItems.splice(1, 1);
+      return [menuItems[0], ...menuItems.slice(2)];
     }
     return menuItems;
   }, [walletType]);

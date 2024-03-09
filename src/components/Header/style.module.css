@@ -1,14 +1,26 @@
+/* stylelint-disable no-descending-specificity */
 .dropdown {
   @apply !min-w-[260px];
   :global(.aelfd-dropdown-menu) {
-    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none;
+    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none !p-0 overflow-hidden;
   }
   :global(.aelfd-dropdown-menu-item) {
+    transition: none !important;
     @apply h-[48px];
-  }
-  :global(.aelfd-dropdown-menu-title-content) {
     span {
       @apply text-[16px] font-medium text-[#1A1A1A];
+    }
+    * {
+      transition: none !important;
+    }
+
+    &:active {
+      span {
+        @apply text-[#5A9CFF];
+      }
+      svg path {
+        @apply fill-[#5A9CFF];
+      }
     }
   }
 }
@@ -27,6 +39,18 @@
     }
     .aelfd-modal-close {
       @apply !top-[23px];
+    }
+  }
+}
+
+.menuItem {
+  @apply flex gap-[8px] items-center w-full;
+  &:active {
+    span {
+      @apply text-[#5A9CFF];
+    }
+    svg path {
+      @apply fill-[#5A9CFF];
     }
   }
 }

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_APP_ENV=development next dev",
+    "dev": "NEXT_PUBLIC_APP_ENV=development NODE_ENV=development next dev",
+    "dev:test": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next dev",
     "build:dev": "NEXT_PUBLIC_APP_ENV=development next build",
     "build:test": "NEXT_PUBLIC_APP_ENV=test next build",
     "build": "NEXT_PUBLIC_APP_ENV=production next build",
@@ -31,7 +32,7 @@
     "@types/lodash-es": "^4.17.9",
     "aelf-design": "^0.1.70-alpha.0",
     "aelf-sdk": "^3.2.40",
-    "aelf-web-login": "^2.0.1-beta.0",
+    "aelf-web-login": "^2.0.1-beta.1",
     "ahooks": "^3.7.10",
     "antd": "^5.x",
     "antd-style": "^3.6.1",
