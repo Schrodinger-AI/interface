@@ -1,6 +1,13 @@
 import { getRpcUrls } from 'constants/url';
 import { sleep } from 'utils';
 import AElf from 'aelf-sdk';
+import { Approve, GetAllowance } from 'contract/multiToken';
+import { message } from 'antd';
+import { DEFAULT_ERROR } from './formattError';
+import { timesDecimals } from './calculate';
+import BigNumber from 'bignumber.js';
+import { IContractError } from 'types';
+import { CONTRACT_AMOUNT } from 'constants/common';
 
 const httpProviders: any = {};
 export function getAElf(rpcUrl?: string) {
@@ -52,3 +59,93 @@ export async function getTxResult(
 
   throw Error({ ...txResult.Error, TransactionId } || 'Transaction error');
 }
+
+const isNightEl = () => {
+  const walletInfo = localStorage.getItem('wallet-info');
+  const walletInfoObj = walletInfo ? JSON.parse(walletInfo) : {};
+  let isNightElStatus = true;
+  if (walletInfoObj?.discoverInfo || walletInfoObj?.portkeyInfo) {
+    isNightElStatus = false;
+  }
+
+  return isNightElStatus;
+};
+
+export const approve = async (spender: string, symbol: string, amount: string, chainId?: Chain) => {
+  try {
+    const approveResult = await Approve(
+      {
+        spender: spender,
+        symbol,
+        amount: Number(amount),
+      },
+      {
+        chain: chainId,
+      },
+    );
+
+    if (approveResult.error) {
+      message.error(approveResult?.errorMessage?.message || DEFAULT_ERROR);
+      return false;
+    }
+
+    // const { TransactionId } = approveResult.result || approveResult;
+
+    // if (chainId) {
+    //   await MessageTxToExplore(TransactionId!, chainId);
+    // }
+
+    return true;
+  } catch (error) {
+    const resError = error as unknown as IContractError;
+    if (resError) {
+      message.error(resError?.errorMessage?.message || DEFAULT_ERROR);
+    }
+    return false;
+  }
+};
+
+export const checkAllowance = async (options: {
+  spender: string;
+  address: string;
+  chainId?: Chain;
+  symbol?: string;
+  decimals?: number;
+  amount: string;
+}) => {
+  const { chainId, symbol = 'ELF', address, spender, amount, decimals = 8 } = options;
+  try {
+    const allowance = await GetAllowance(
+      {
+        symbol: symbol,
+        owner: address,
+        spender: spender,
+      },
+      {
+        chain: chainId,
+      },
+    );
+
+    if (allowance.error) {
+      message.error(allowance.errorMessage?.message || allowance.error.toString() || DEFAULT_ERROR);
+      return false;
+    }
+
+    const bigA = timesDecimals(amount, decimals ?? 8);
+
+    const allowanceBN = new BigNumber(allowance?.allowance);
+
+    if (allowanceBN.lt(bigA)) {
+      const approveAmount = isNightEl() ? CONTRACT_AMOUNT : bigA.toNumber();
+      return await approve(spender, symbol, `${approveAmount}`, chainId);
+    }
+    return true;
+  } catch (error) {
+    message.destroy();
+    const resError = error as unknown as IContractError;
+    if (resError) {
+      message.error(resError.errorMessage?.message || DEFAULT_ERROR);
+    }
+    return false;
+  }
+};

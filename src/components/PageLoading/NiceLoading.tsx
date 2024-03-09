@@ -2,11 +2,10 @@ import NiceModal, { useModal } from '@ebay/nice-modal-react';
 
 import { Modal } from 'antd';
 import styles from './style.module.css';
-import { useLottie } from 'lottie-react';
-import LoadingAnimation from 'assets/img/loading-animation.json';
 import { useMount } from 'ahooks';
 import { useState } from 'react';
 import { ReactComponent as Close } from 'assets/img/modal-close.svg';
+import Loading from 'components/Loading';
 
 export interface ILoadingProps {
   visible?: boolean;
@@ -24,18 +23,6 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
     setIsMount(true);
   });
 
-  const Animation = () => {
-    const options = {
-      animationData: LoadingAnimation,
-      loop: true,
-      autoplay: true,
-    };
-
-    const { View } = useLottie(options, { width: '40px', height: '40px' });
-
-    return View;
-  };
-
   if (!isMount) return null;
 
   return (
@@ -48,7 +35,7 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
       closable={false}
       closeIcon={null}>
       <section className="flex flex-col justify-center items-center">
-        <Animation />
+        <Loading />
         <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">
           {content || 'loading...'}
         </span>
@@ -57,8 +44,6 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
         <Close
           className="absolute right-[12px] top-[12px] cursor-pointer"
           onClick={() => {
-            console.log('close', onClose);
-
             onClose?.();
             modal.hide();
           }}
