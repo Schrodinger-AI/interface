@@ -7,9 +7,17 @@ import useCheckJoinStatus from './hooks/useCheckJoinStatus';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
+import { useModal } from '@ebay/nice-modal-react';
+import PromptModal from 'components/PromptModal';
+import ResultModal, { Status } from 'components/ResultModal';
+import ResetModal from 'components/ResetModal';
+import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
+  const promptModal = useModal(PromptModal);
+  const resultModal = useModal(ResultModal);
+  const resetModal = useModal(ResetModal);
 
   const { isLogin, wallet } = useWalletService();
 
@@ -24,6 +32,65 @@ export default function CountDownPage() {
     } else {
       checkLogin();
     }
+  };
+
+  const modal = async () => {
+    // console.log('=====adopt');
+    // resultModal.show({
+    //   modalTitle: 'You have failed create tier 2 operational domain',
+    //   info: {
+    //     name: 'name',
+    //   },
+    //   status: Status.ERROR,
+    //   description:
+    //     'If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it',
+    //   link: {
+    //     href: 'llll',
+    //   },
+    // });
+    resetModal.show({
+      modalTitle: 'Adopt',
+      info: {
+        name: 'name',
+        // logo: '',
+        subName: 'ssss',
+        // tag: 'GEN 1',
+      },
+      onConfirm: () => {
+        resetModal.hide();
+        promptModal.show({
+          info: {
+            name: 'name',
+            subName: 'subName',
+          },
+          title: 'message title',
+          content: {
+            title: 'content title',
+            content: 'content content',
+          },
+          initialization: async () => {
+            try {
+              await adoptStep1Handler({
+                params: {
+                  parent: '',
+                  amount: '10',
+                  domain: '',
+                },
+                address: '',
+                decimals: 8,
+              });
+              promptModal.hide();
+              // show step2 modal
+            } catch (error) {
+              return Promise.reject(error);
+            }
+          },
+          onClose: () => {
+            promptModal.hide();
+          },
+        });
+      },
+    });
   };
 
   const socialMediaList: SocialMediaItem[] = [
@@ -85,13 +152,22 @@ export default function CountDownPage() {
             {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
           </div>
         ) : (
-          <Button
-            type="primary"
-            size="ultra"
-            className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-            onClick={handleJoinUs}>
-            Enrol
-          </Button>
+          <>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={handleJoinUs}>
+              Enrol
+            </Button>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={modal}>
+              modal
+            </Button>
+          </>
         )}
       </section>
       {socialMediaList?.length && (

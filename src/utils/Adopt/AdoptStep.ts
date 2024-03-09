@@ -1,7 +1,7 @@
-import { ChainId } from '@portkey/types';
 import { sleep } from '@portkey/utils';
 import { fetchSchrodingerImagesByAdoptId } from 'api/request';
 import { Adopt, confirmAdopt } from 'contract/schrodinger';
+import { store } from 'redux/store';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { timesDecimals } from 'utils/calculate';
 import ProtoInstance from 'utils/initializeProto';
@@ -27,16 +27,12 @@ export interface IAdopted {
 }
 
 export const adoptStep1Handler = async ({
-  contractAddress,
   params,
   address,
-  chainId,
   decimals,
 }: {
   address: string;
   decimals: number;
-  chainId: ChainId;
-  contractAddress: string;
   params: {
     parent: string;
     amount: string;
@@ -45,6 +41,8 @@ export const adoptStep1Handler = async ({
 }) => {
   try {
     const amount = params.amount;
+    const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState().info.cmsInfo || {};
+    if (!contractAddress || !chainId) throw 'Missing contractAddress or chainId';
     const check = await checkAllowanceAndApprove({
       spender: contractAddress,
       address,

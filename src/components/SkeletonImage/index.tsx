@@ -5,12 +5,13 @@ import { useState } from 'react';
 
 interface ISkeletonImage {
   img?: string;
+  tag?: string;
   className?: string;
   imageSizeType?: 'cover' | 'contain';
 }
 
 function SkeletonImage(props: ISkeletonImage) {
-  const { img, className, imageSizeType = 'cover' } = props;
+  const { img, className, imageSizeType = 'cover', tag } = props;
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,20 +27,27 @@ function SkeletonImage(props: ISkeletonImage) {
         <Skeleton.Image className="absolute top-0 left-0 !w-full !h-full" active={img ? skeletonActive : false} />
       )}
       {img && (
-        <img
-          width={120}
-          height={120}
-          src={img}
-          alt="image"
-          className={clsx('w-full h-full', imageType[imageSizeType])}
-          onLoad={() => {
-            setLoading(false);
-            setSkeletonActive(false);
-          }}
-          onError={() => {
-            setSkeletonActive(false);
-          }}
-        />
+        <div className="w-full h-full relative">
+          <img
+            width={120}
+            height={120}
+            src={img}
+            alt="image"
+            className={clsx('w-full h-full', imageType[imageSizeType])}
+            onLoad={() => {
+              setLoading(false);
+              setSkeletonActive(false);
+            }}
+            onError={() => {
+              setSkeletonActive(false);
+            }}
+          />
+          {tag && (
+            <div className="absolute top-[4px] text-white left-[4px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium">
+              {tag}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
