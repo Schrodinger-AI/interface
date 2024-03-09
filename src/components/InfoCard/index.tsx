@@ -5,19 +5,21 @@ import React from 'react';
 export interface IInfoCard {
   logo?: string;
   name: string;
+  tag?: string;
   subName?: string;
   className?: string;
   layout?: 'horizontal' | 'vertical';
 }
 
 function InfoCard(params: IInfoCard) {
-  const { logo, name, subName, className, layout = 'horizontal' } = params;
+  const { logo, name, tag, subName, className, layout = 'horizontal' } = params;
   return (
     <div className={clsx('flex items-center', layout === 'vertical' ? 'flex-col' : 'flex-row', className)}>
-      <div>
+      <div className="flex items-center">
         {logo ? (
           <SkeletonImage
             img={logo}
+            tag={tag}
             className={clsx(
               'w-[72px] md:w-[84px] h-[72px] md:h-[84px]',
               layout === 'vertical' ? 'mb-[16px]' : 'mr-[16px]',

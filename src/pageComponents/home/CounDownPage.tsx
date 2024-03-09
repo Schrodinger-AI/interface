@@ -7,9 +7,16 @@ import useCheckJoinStatus from './hooks/useCheckJoinStatus';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
+import { useModal } from '@ebay/nice-modal-react';
+import PromptModal from 'components/PromptModal';
+import ResultModal, { Status } from 'components/ResultModal';
+import ResetModal from 'components/ResetModal';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
+  const promptModal = useModal(PromptModal);
+  const resultModal = useModal(ResultModal);
+  const resetModal = useModal(ResetModal);
 
   const { isLogin, wallet } = useWalletService();
 
@@ -24,6 +31,46 @@ export default function CountDownPage() {
     } else {
       checkLogin();
     }
+  };
+
+  const modal = async () => {
+    // console.log('=====adopt');
+    // promptModal.show({
+    //   info: {
+    //     name: 'name',
+    //     subName: 'subName',
+    //   },
+    //   title: 'message title',
+    //   content: {
+    //     title: 'content title',
+    //     content: 'content content',
+    //   },
+    //   // initialization: () => {},
+    //   onClose: () => {
+    //     promptModal.hide();
+    //   },
+    // });
+    // resultModal.show({
+    //   modalTitle: 'You have failed create tier 2 operational domain',
+    //   info: {
+    //     name: 'name',
+    //   },
+    //   status: Status.ERROR,
+    //   description:
+    //     'If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it',
+    //   link: {
+    //     href: 'llll',
+    //   },
+    // });
+    // resetModal.show({
+    //   modalTitle: 'Reset',
+    //   info: {
+    //     name: 'name',
+    //     logo: 'https://test.eforest.finance/_next/image?url=https%3A%2F%2Fforest-testnet.s3.ap-northeast-1.amazonaws.com%2F1693571987153-20230901-203249.png&w=828&q=75',
+    //     subName: 'ssss',
+    //     tag: 'GEN 1',
+    //   },
+    // });
   };
 
   const socialMediaList: SocialMediaItem[] = [
@@ -85,13 +132,22 @@ export default function CountDownPage() {
             {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
           </div>
         ) : (
-          <Button
-            type="primary"
-            size="ultra"
-            className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-            onClick={handleJoinUs}>
-            Enrol
-          </Button>
+          <>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={handleJoinUs}>
+              Enrol
+            </Button>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={modal}>
+              modal
+            </Button>
+          </>
         )}
       </section>
       {socialMediaList?.length && (

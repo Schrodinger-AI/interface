@@ -1,11 +1,28 @@
-import { formatTokenPrice } from 'utils/format';
-
-export default function Balance(props: { amount: number | string; itemDesc?: string; suffix?: string }) {
-  const { itemDesc, amount, suffix } = props;
+export default function Balance(props: {
+  itemDesc?: string;
+  className?: string;
+  items?: {
+    amount: string;
+    suffix?: string;
+    usd?: string;
+  }[];
+}) {
+  const { itemDesc, items, className } = props;
   return (
-    <div className="flex justify-between  p-[24px] rounded-lg bg-[var(--fill-hover-bg)] text-[18px] leading-[26px] font-semibold text-[var(--text-primary)]">
-      <span>{itemDesc || 'Balance'}</span>
-      <span>{`${formatTokenPrice(amount)}${suffix ? ` ${suffix}` : ''}`}</span>
+    <div className={`flex justify-between p-[16px] rounded-lg bg-neutralHoverBg ${className}`}>
+      <span className=" text-lg text-neutralPrimary font-medium">{itemDesc || 'Balance'}</span>
+      <div>
+        {items?.map((item, index) => {
+          return (
+            <span key={index} className="flex flex-col items-end justify-center mb-[8px]">
+              <span className="text-neutralPrimary text-base font-medium">{`${item.amount} ${
+                item?.suffix ? ` ${item.suffix}` : ''
+              }`}</span>
+              {item.usd && <span className="text-neutralSecondary text-base">{`$ ${item.usd}`}</span>}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 }
