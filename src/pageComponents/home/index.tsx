@@ -5,6 +5,7 @@ import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export default function Home() {
   const { cmsInfo } = useGetStoreInfo();
+
   if (BigNumber(new Date().getTime()).lt(BigNumber(cmsInfo?.openTimeStamp || ''))) {
     return <CountDownPage />;
   }
