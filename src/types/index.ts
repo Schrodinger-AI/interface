@@ -58,9 +58,9 @@ export interface IContractOptions {
   type?: ContractMethodType;
 }
 
-export interface ISendResult {
+export interface ISendResult<T = any> {
   TransactionId: string;
-  TransactionResult: string;
+  TransactionResult: T;
 }
 
 export interface CallContractParams<T> {

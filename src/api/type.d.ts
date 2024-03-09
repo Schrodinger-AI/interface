@@ -25,3 +25,33 @@ interface IUsersAddressRes {
   twitter: string;
   instagram: string;
 }
+
+interface IBaseTrait {
+  traitType: string;
+  value: string;
+}
+
+interface ISchrodingerImages {
+  items: [
+    {
+      generation: number;
+      traits: [
+        IBaseTrait & {
+          percent: number;
+        },
+      ];
+    },
+  ];
+  images: [
+    {
+      traits: IBaseTrait[];
+      name: string;
+      value: string;
+      image: string;
+      waterMarkImage: string;
+      secretImage: string;
+      secretWaterMarkImage: string;
+    },
+  ];
+  extraData: any;
+}
