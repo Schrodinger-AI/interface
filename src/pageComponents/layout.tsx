@@ -83,7 +83,8 @@ const Layout = dynamic(async () => {
         <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
           <Header />
           <AntdLayout.Content
-            className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
+            // className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
+            className={`schrodinger-content bg-[#FAFAFA] w-full px-[16px]`}>
             {children}
           </AntdLayout.Content>
           <Footer />
