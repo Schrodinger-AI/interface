@@ -1,4 +1,4 @@
-import { getTokenInfo } from '../request';
+import { getTraits } from '../request';
 import { getGraphQLClient } from '../client';
 import { useCallback } from 'react';
 import { TGraphQLParamsType } from '../types';
@@ -10,7 +10,7 @@ export const useGraphQLClient = () => {
   return getGraphQLClient(cmsInfo?.graphqlServerV2 || '');
 };
 
-export const useGetTokenInfo = () => {
+export const useGetTraits = () => {
   const client = useGraphQLClient();
-  return useCallback((params: TGraphQLParamsType<typeof getTokenInfo>) => getTokenInfo(client, params), [client]);
+  return useCallback((params: TGraphQLParamsType<typeof getTraits>) => getTraits(client, params), [client]);
 };
