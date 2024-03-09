@@ -1,11 +1,14 @@
 import { Accounts, ChainId } from '@portkey/provider-types';
 import { IBlockchainWallet } from '@portkey/types';
 import { ManagerInfoType } from '@portkey/did-ui-react';
-import type { Manager } from '@portkey/services';
 import { DiscoverInfo, PortkeyInfo } from 'aelf-web-login';
-export type TokenInfo = {
+
+export type TBaseTokenInfo = {
   decimals: number;
   symbol: string;
+};
+
+export type TTokenInfo = TBaseTokenInfo & {
   tokenName?: string;
   address?: string;
   issueChainId?: number;
@@ -55,9 +58,9 @@ export interface IContractOptions {
   type?: ContractMethodType;
 }
 
-export interface ISendResult {
+export interface ISendResult<T = any> {
   TransactionId: string;
-  TransactionResult: string;
+  TransactionResult: T;
 }
 
 export interface CallContractParams<T> {

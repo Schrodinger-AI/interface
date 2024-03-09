@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.1",
+    "@apollo/client": "^3.9.6",
     "@ebay/nice-modal-react": "^1.2.13",
     "@portkey-v1/did-ui-react": "^1.5.4-alpha.22",
     "@portkey/contracts": "2.0.0-alpha.26",
@@ -42,6 +43,7 @@
     "elliptic": "^6.5.4",
     "eslint-plugin-no-inline-styles": "^1.0.5",
     "firebase": "^9.23.0",
+    "graphql": "^16.8.1",
     "lodash-es": "^4.17.21",
     "lottie-react": "^2.4.0",
     "next": "14.0.4",

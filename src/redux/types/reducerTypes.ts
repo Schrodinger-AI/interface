@@ -20,10 +20,17 @@ export type InfoStateType = {
     rpcUrlTDVV: string;
     schrodingerMainAddress: string;
     schrodingerSideAddress: string;
+    tokenMainAddress: string;
+    tokenSideAddress: string;
     openTimeStamp: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];
 };
 
-expect;
+export type TAssetsStateType = {
+  txFee?: {
+    common: number;
+  };
+  tokenPriceMap?: Record<string, string>;
+};
