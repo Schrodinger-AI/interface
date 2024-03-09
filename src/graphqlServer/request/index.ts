@@ -1,9 +1,9 @@
-import { GET_TRAITS_QUERY } from '../queries';
-import { TGetTraits } from '../types';
+import { GET_SCHRODINGER_LIST_QUERY } from '../queries';
+import { TGetSchrodingerList } from '../types';
 
-export const getTraits: TGetTraits = (client, params) => {
+export const getSchrodingerList: TGetSchrodingerList = (client, params) => {
   return client.query({
-    query: GET_TRAITS_QUERY,
+    query: GET_SCHRODINGER_LIST_QUERY,
     variables: params,
   });
 };
