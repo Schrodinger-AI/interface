@@ -11,6 +11,7 @@ import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
 import ResetModal from 'components/ResetModal';
+import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
@@ -35,21 +36,6 @@ export default function CountDownPage() {
 
   const modal = async () => {
     // console.log('=====adopt');
-    // promptModal.show({
-    //   info: {
-    //     name: 'name',
-    //     subName: 'subName',
-    //   },
-    //   title: 'message title',
-    //   content: {
-    //     title: 'content title',
-    //     content: 'content content',
-    //   },
-    //   // initialization: () => {},
-    //   onClose: () => {
-    //     promptModal.hide();
-    //   },
-    // });
     // resultModal.show({
     //   modalTitle: 'You have failed create tier 2 operational domain',
     //   info: {
@@ -62,15 +48,49 @@ export default function CountDownPage() {
     //     href: 'llll',
     //   },
     // });
-    // resetModal.show({
-    //   modalTitle: 'Reset',
-    //   info: {
-    //     name: 'name',
-    //     logo: 'https://test.eforest.finance/_next/image?url=https%3A%2F%2Fforest-testnet.s3.ap-northeast-1.amazonaws.com%2F1693571987153-20230901-203249.png&w=828&q=75',
-    //     subName: 'ssss',
-    //     tag: 'GEN 1',
-    //   },
-    // });
+    resetModal.show({
+      modalTitle: 'Adopt',
+      info: {
+        name: 'name',
+        // logo: '',
+        subName: 'ssss',
+        // tag: 'GEN 1',
+      },
+      onConfirm: () => {
+        resetModal.hide();
+        promptModal.show({
+          info: {
+            name: 'name',
+            subName: 'subName',
+          },
+          title: 'message title',
+          content: {
+            title: 'content title',
+            content: 'content content',
+          },
+          initialization: async () => {
+            try {
+              await adoptStep1Handler({
+                params: {
+                  parent: '',
+                  amount: '10',
+                  domain: '',
+                },
+                address: '',
+                decimals: 8,
+              });
+              promptModal.hide();
+              // show step2 modal
+            } catch (error) {
+              return Promise.reject(error);
+            }
+          },
+          onClose: () => {
+            promptModal.hide();
+          },
+        });
+      },
+    });
   };
 
   const socialMediaList: SocialMediaItem[] = [

@@ -105,7 +105,7 @@ export const approve = async (spender: string, symbol: string, amount: string, c
   }
 };
 
-export const checkAllowance = async (options: {
+export const checkAllowanceAndApprove = async (options: {
   spender: string;
   address: string;
   chainId?: Chain;

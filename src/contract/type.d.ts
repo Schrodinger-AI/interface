@@ -15,3 +15,9 @@ interface IClaimDropResult {
   TransactionId: string;
   address: string;
 }
+
+interface IConfirmAdoptParams {
+  adoptId: string;
+  image: string;
+  signature: string;
+}
