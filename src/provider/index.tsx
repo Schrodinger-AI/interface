@@ -12,6 +12,8 @@ import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import NotFoundPage from 'components/notFound';
 import { AELFDProviderTheme } from './config';
+import BigNumber from 'bignumber.js';
+import { useEffectOnce } from 'react-use';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -55,6 +57,10 @@ function Provider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     initPageData();
   }, []);
+
+  useEffectOnce(() => {
+    BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
+  });
 
   return (
     <>

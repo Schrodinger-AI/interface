@@ -75,7 +75,7 @@ export async function deserializeLog(log: ITransactionLog, proto: any) {
   }
 }
 
-export const getResult = async ({
+export const getResult = async <T = any>({
   contractAddress,
   logsName,
   TransactionResult,
@@ -83,7 +83,7 @@ export const getResult = async ({
   contractAddress: string;
   logsName: string;
   TransactionResult: ITransactionResult;
-}) => {
+}): Promise<T | false> => {
   const proto = Proto.getInstance().getProto();
   const currentProto = proto[contractAddress];
   if (currentProto) {
@@ -92,7 +92,7 @@ export const getResult = async ({
     })?.[0];
     if (log) {
       try {
-        const logResult: IClaimDropResult = await deserializeLog(log, currentProto);
+        const logResult = await deserializeLog(log, currentProto);
         return logResult;
       } catch (error) {
         return false;
