@@ -26,4 +26,9 @@ export type InfoStateType = {
   itemsFromLocal?: string[];
 };
 
-expect;
+export type TAssetsStateType = {
+  txFee?: {
+    common: number;
+  };
+  tokenPriceMap?: Record<string, string>;
+};

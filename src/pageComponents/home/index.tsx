@@ -8,6 +8,7 @@ export default function Home() {
   const { cmsInfo } = useGetStoreInfo();
   console.log('cmsInfo', cmsInfo);
   return <HomePage />;
+
   if (BigNumber(new Date().getTime()).lt(BigNumber(cmsInfo?.openTimeStamp || ''))) {
     return <CountDownPage />;
   }
