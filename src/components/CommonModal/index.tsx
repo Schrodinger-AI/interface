@@ -6,7 +6,7 @@ import useResponsive from 'hooks/useResponsive';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
 }
-function Modal(props: ModalProps) {
+function CommonModal(props: ModalProps) {
   const { children, className, title, subTitle, wrapClassName } = props;
 
   const { isLG } = useResponsive();
@@ -33,4 +33,4 @@ function Modal(props: ModalProps) {
   );
 }
 
-export default React.memo(Modal);
+export default React.memo(CommonModal);

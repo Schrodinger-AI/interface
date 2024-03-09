@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import Modal from 'components/Modal';
+import CommonModal from 'components/CommonModal';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import Loading from 'components/Loading';
 import useResponsive from 'hooks/useResponsive';
@@ -125,7 +125,7 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
   }, [modal.visible, title, buttonConfig, initialization, content, onClose]);
 
   return (
-    <Modal
+    <CommonModal
       title={title}
       open={modal.visible}
       onOk={() => onConfirm()}
@@ -150,7 +150,7 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
           </div>
         )}
       </div>
-    </Modal>
+    </CommonModal>
   );
 }
 

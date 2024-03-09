@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useMemo, useState } from 'react';
-import Modal from 'components/Modal';
+import CommonModal from 'components/CommonModal';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
 import { useResponsive } from 'hooks/useResponsive';
@@ -118,7 +118,7 @@ function ResultModal({
   };
 
   return (
-    <Modal
+    <CommonModal
       title={
         modalTitle ? (
           <p className="flex flex-col md:flex-row items-center">
@@ -159,7 +159,7 @@ function ResultModal({
           </div>
         )}
       </div>
-    </Modal>
+    </CommonModal>
   );
 }
 
