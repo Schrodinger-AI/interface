@@ -102,3 +102,15 @@ export const GetJoinRecord = async (address: string, options?: IContractOptions)
     return Promise.reject(error);
   }
 };
+
+export const Adopt = async (
+  params: {
+    parent: string;
+    amount: string;
+    domain: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('Adopt', params, options);
+
+export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>
+  await schrodingerContractRequest('Confirm', params, options);

@@ -5,13 +5,15 @@ import WebLoginProvider from './webLoginProvider';
 
 import { useEffect, useState } from 'react';
 import { store } from 'redux/store';
-import Loading from 'components/Loading';
+import PageLoading from 'components/PageLoading';
 
 import { checkDomain, fetchCmsConfigInfo } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import NotFoundPage from 'components/notFound';
 import { AELFDProviderTheme } from './config';
+import BigNumber from 'bignumber.js';
+import { useEffectOnce } from 'react-use';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -56,12 +58,16 @@ function Provider({ children }: { children: React.ReactNode }) {
     initPageData();
   }, []);
 
+  useEffectOnce(() => {
+    BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
+  });
+
   return (
     <>
       <StoreProvider>
         <AELFDProvider theme={AELFDProviderTheme}>
           {loading ? (
-            <Loading content="Enrollment in progress"></Loading>
+            <PageLoading content="Enrollment in progress"></PageLoading>
           ) : isCorrectUrl ? (
             <WebLoginProvider>
               <NiceModal.Provider>{children}</NiceModal.Provider>

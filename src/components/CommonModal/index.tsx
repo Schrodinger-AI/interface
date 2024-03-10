@@ -1,26 +1,26 @@
 import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
-import { ReactComponent as Close } from 'assets/images/icons/clear.svg';
+import { ReactComponent as Close } from 'assets/img/clear.svg';
 import useResponsive from 'hooks/useResponsive';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
 }
-function Modal(props: ModalProps) {
+function CommonModal(props: ModalProps) {
   const { children, className, title, subTitle, wrapClassName } = props;
 
-  const { isMD } = useResponsive();
+  const { isLG } = useResponsive();
 
   return (
     <AntdModal
       keyboard={false}
       maskClosable={false}
       destroyOnClose={true}
-      closeIcon={<Close />}
+      closeIcon={<Close width={24} height={24} />}
       width={800}
       centered
       {...props}
-      className={`${styles.modal} ${isMD && styles['modal-mobile']} ${className || ''}`}
+      className={`${styles.modal} ${isLG && styles['modal-mobile']} ${className || ''}`}
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
@@ -33,4 +33,4 @@ function Modal(props: ModalProps) {
   );
 }
 
-export default React.memo(Modal);
+export default React.memo(CommonModal);
