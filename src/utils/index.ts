@@ -44,3 +44,8 @@ export const handleLoopFetch = async <T>({
     checkIsInvalid,
   });
 };
+
+export const POTENTIAL_NUMBER = /^(0|[1-9]\d*)(\.\d*)?$/;
+export const isPotentialNumber = (str: string) => {
+  return POTENTIAL_NUMBER.test(str);
+};
