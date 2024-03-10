@@ -1,11 +1,13 @@
-import mockData from './mock.json';
 import { Button } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
+import { useResponsive } from 'ahooks';
+import { Breadcrumb } from 'antd';
+import mockData from './mock.json';
 
 export default function DetailPage() {
-  const detailData = mockData;
+  const responsive = useResponsive();
 
   const onAdoptNextGeneration = () => {
     // todo
@@ -19,39 +21,97 @@ export default function DetailPage() {
     // todo
   };
 
+  const adoptAndResetButton = () => {
+    return (
+      <div className="flex flex-row">
+        <Button
+          type="default"
+          className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
+          size="medium"
+          onClick={onAdoptNextGeneration}>
+          Adopt Next Generation
+        </Button>
+        <Button
+          type="default"
+          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] mr-[12px]"
+          size="medium"
+          onClick={onReset}>
+          Reset
+        </Button>
+      </div>
+    );
+  };
+
+  const adoptAndResetButtonSamll = () => {
+    return (
+      <div className="flex flex-row w-full justify-end mb-[16px]">
+        <Button
+          type="default"
+          className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] flex-1"
+          size="medium"
+          onClick={onAdoptNextGeneration}>
+          Adopt Next Generation
+        </Button>
+        <Button
+          type="default"
+          className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+          size="medium"
+          onClick={onReset}>
+          Reset
+        </Button>
+      </div>
+    );
+  };
+
   return (
-    <div className="w-full max-w-[1360px] mt-[48px]">
-      <div className="font-semibold text-2xl">Schrodinger SGR-2GEN1</div>
-      <div className="w-full h-[68px] mt-[40px] flex flex-row justify-between">
-        <DetailTitle />
-        <div className="h-full flex flex-row items-end">
+    <section className="mt-[48px] flex flex-col items-center w-full">
+      {responsive.lg ? (
+        <div className="w-full max-w-[1360px]">
+          <Breadcrumb
+            items={[
+              {
+                title: <a href="">Schrodinger</a>,
+              },
+              {
+                title: <div>{mockData.symbol}</div>,
+              },
+            ]}
+          />
+          <div className="w-full h-[68px] mt-[40px] flex flex-row justify-between">
+            <DetailTitle />
+            <div className="h-full flex flex-row items-end">
+              {adoptAndResetButton()}
+              <Button
+                type="default"
+                className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px]"
+                size="medium"
+                onClick={onTrade}>
+                Trade
+              </Button>
+            </div>
+          </div>
+          <div className="w-full mt-[24px] flex flex-row justify-between">
+            <ItemImage />
+            <ItemInfo />
+          </div>
+        </div>
+      ) : (
+        <div className="w-full max-w-[1360px] flex flex-col items-center">
+          <div className="font-semibold text-sm w-full">Back</div>
+          <div className="mt-[16px]" />
+          <DetailTitle />
+          <ItemImage />
           <Button
             type="default"
-            className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
-            size="medium"
-            onClick={onAdoptNextGeneration}>
-            Adopt Next Generation
-          </Button>
-          <Button
-            type="default"
-            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] mr-[12px]"
-            size="medium"
-            onClick={onReset}>
-            Reset
-          </Button>
-          <Button
-            type="default"
-            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px]"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
             size="medium"
             onClick={onTrade}>
             Trade
           </Button>
+          <ItemInfo />
+          {adoptAndResetButtonSamll()}
         </div>
-      </div>
-      <div className="w-full mt-[24px] flex flex-row justify-between">
-        <ItemImage />
-        <ItemInfo />
-      </div>
-    </div>
+      )}
+    </section>
   );
 }
