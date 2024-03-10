@@ -132,7 +132,7 @@ export default function CountDownPage() {
   ];
 
   return (
-    <section className="py-[64px] md:py-[80px] flex flex-col items-center w-full">
+    <section className="md:px-6 lg:px-0 py-[64px] md:py-[80px] flex flex-col items-center w-full">
       <img
         src={require('assets/img/schrodinger.png').default.src}
         alt="Schrödinger"
