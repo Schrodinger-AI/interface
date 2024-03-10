@@ -9,6 +9,5 @@ export default function Home() {
   if (BigNumber(new Date().getTime()).lt(BigNumber(cmsInfo?.openTimeStamp || ''))) {
     return <CountDownPage />;
   }
-
   return <ErrorPage />;
 }

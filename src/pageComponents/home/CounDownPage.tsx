@@ -10,14 +10,18 @@ import { setLoginTrigger } from 'redux/reducer/info';
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
-import ResetModal from 'components/ResetModal';
+import AdoptActionModal from 'components/AdoptActionModal';
 import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
+import SyncAdoptModal from 'components/SyncAdoptModal';
+import AdoptedNextModal from 'components/AdoptedNextModal';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
-  const resetModal = useModal(ResetModal);
+  const adoptedNextModal = useModal(AdoptedNextModal);
+  const [open, setOpen] = useState(false);
+  const adoptActionModal = useModal(AdoptActionModal);
 
   const { isLogin, wallet } = useWalletService();
 
@@ -48,7 +52,7 @@ export default function CountDownPage() {
     //     href: 'llll',
     //   },
     // });
-    resetModal.show({
+    adoptActionModal.show({
       modalTitle: 'Adopt',
       info: {
         name: 'name',
@@ -57,7 +61,7 @@ export default function CountDownPage() {
         // tag: 'GEN 1',
       },
       onConfirm: () => {
-        resetModal.hide();
+        adoptActionModal.hide();
         promptModal.show({
           info: {
             name: 'name',
@@ -90,6 +94,12 @@ export default function CountDownPage() {
           },
         });
       },
+    });
+  };
+
+  const adoptNext = async () => {
+    adoptedNextModal.show({
+      title: 'Successfully Adopted the Next Generation Item!',
     });
   };
 
@@ -167,6 +177,20 @@ export default function CountDownPage() {
               onClick={modal}>
               modal
             </Button>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={() => setOpen(true)}>
+              asyc modal
+            </Button>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={adoptNext}>
+              adopt next
+            </Button>
           </>
         )}
       </section>
@@ -175,6 +199,7 @@ export default function CountDownPage() {
           <SocialMedia data={socialMediaList} />
         </section>
       )}
+      <SyncAdoptModal open={open} />
     </section>
   );
 }
