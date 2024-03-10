@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import { Flex, Layout } from 'antd';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import ScrollContent from '../ScrollContent';
-import { getPageNumber } from 'utils/calculate';
+import { divDecimals, getPageNumber } from 'utils/calculate';
 import { ITokenListParams } from 'api/types';
 import { TSGRToken } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
@@ -23,19 +23,13 @@ import { store } from 'redux/store';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 
 const mockData: TSGRToken[] = new Array(32).fill({
-  name: 'name',
+  tokenName: 'tokenName',
   symbol: 'symbol',
-  image: 'image',
-  amount: '12345',
+  inscriptionImage: 'inscriptionImage',
+  decimals: 8,
+  amount: '123456789',
   generation: 2,
   blockTime: 1,
-  traits: [
-    {
-      traitType: 'traitType',
-      value: 'value',
-      percent: 1.1,
-    },
-  ],
 });
 
 export default function OwnedItems() {
@@ -102,11 +96,17 @@ export default function OwnedItems() {
           data: mockData,
         };
         setTotal(res.total);
+        const data = res.data.map((item) => {
+          return {
+            ...item,
+            amount: divDecimals(item.amount, item.decimals).toFixed(),
+          };
+        });
         if (isLoadMore.current) {
-          setDataSource((preData) => [...preData, ...res.data]);
+          setDataSource((preData) => [...preData, ...data]);
           setLoadingMore(true);
         } else {
-          setDataSource(res.data);
+          setDataSource(data);
           setLoadingMore(false);
         }
       } finally {

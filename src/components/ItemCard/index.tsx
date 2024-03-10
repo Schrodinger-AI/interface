@@ -14,7 +14,7 @@ export default function ItemCard(props: { item: TSGRToken; onPress: () => void }
     symbol,
     amount,
   } = props.item || {};
-  const transformedAmount = BigNumber(amount).toFormat(0);
+  const transformedAmount = BigNumber(amount).toFormat();
   const containsInscriptionCode = false;
   // try {
   //   JSON.parse(inscriptionInfo);
