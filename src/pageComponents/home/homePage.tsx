@@ -5,10 +5,13 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import styles from './style.module.css';
+import { useState } from 'react';
+import SyncAdoptModal from 'components/SyncAdoptModal';
 
 export default function Home() {
   const { checkLogin } = useCheckLoginAndToken();
   const { isLG } = useResponsive();
+  const [open, setOpen] = useState(false);
   return (
     <div className="pt-[24px]">
       <div className="lg:fixed lg:top-[200px] lg:left-[36px]">{isLG ? <LeftMobile /> : <LeftSVG />}</div>
@@ -37,11 +40,13 @@ export default function Home() {
           <div className="max-w-[188px] lg:max-w-[334px] text-sm leading-[22px] text-[#919191] text-center">
             Wallet not connected yet. Link the wallet, view assets, and mint inscription.
           </div>
+          <Button onClick={() => setOpen(true)}>progress</Button>
         </Flex>
       </Flex>
       <div className="flex justify-end pr-[28px] lg:fixed lg:top-[540px] lg:right-[140px]">
         {isLG ? <ELFMobile /> : <ELFSVG />}
       </div>
+      <SyncAdoptModal open={open} />
     </div>
   );
 }
