@@ -25,7 +25,7 @@ import { addPrefixSuffix } from 'utils/addressFormatting';
 const mockData: TSGRToken[] = new Array(32).fill({
   tokenName: 'tokenName',
   symbol: 'symbol',
-  inscriptionImage: 'inscriptionImage',
+  inscriptionImage: '',
   decimals: 8,
   amount: '123456789',
   generation: 2,

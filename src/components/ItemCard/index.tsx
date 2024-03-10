@@ -22,7 +22,7 @@ export default function ItemCard(props: { item: TSGRToken; onPress: () => void }
   // } catch (ignored) {}
   return (
     <div
-      className="w-full overflow-hidden border-2 border-black rounded-md"
+      className="w-full overflow-hidden border-2 border-black rounded-md cursor-pointer"
       onClick={props.onPress}
       style={styles.border}>
       <div>

@@ -4,6 +4,7 @@ import { Flex, List, ListProps } from 'antd';
 import ItemCard from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
 import { TSGRToken } from 'types/tokens';
+import { useRouter } from 'next/navigation';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
 import { useDebounceFn } from 'ahooks';
@@ -28,6 +29,7 @@ interface IContentProps {
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
   const { loading, hasMore, loadingMore, loadMore } = InfiniteScrollProps;
+  const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
@@ -63,7 +65,7 @@ function ScrollContent(props: IContentProps) {
         }}
         renderItem={(item) => (
           <List.Item>
-            <ItemCard item={item} onPress={() => void 0} />
+            <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
         {...ListProps}
