@@ -29,6 +29,17 @@ export const useGetToken = (callBack?: (flag: boolean) => void) => {
     },
   });
 
+  const checkTokenValid = useCallback(() => {
+    if (loginState !== WebLoginState.logined) return false;
+    const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
+
+    if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === wallet.address) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [loginState, wallet.address]);
+
   const getToken = useCallback(async () => {
     if (loginState !== WebLoginState.logined) return;
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
@@ -90,5 +101,5 @@ export const useGetToken = (callBack?: (flag: boolean) => void) => {
     } as ITokenParams);
   }, [loginState, getSignature, wallet]);
 
-  return { getToken };
+  return { getToken, checkTokenValid };
 };

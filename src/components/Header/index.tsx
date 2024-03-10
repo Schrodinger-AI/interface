@@ -9,7 +9,7 @@ import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
 import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
-import { MenuProps, message, Modal } from 'antd';
+import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
@@ -22,8 +22,8 @@ import { setLoginTrigger } from 'redux/reducer/info';
 import { NavHostTag } from 'components/HostTag';
 
 export default function Header() {
-  const { isOK, checkLogin } = useCheckLoginAndToken();
-  const { logout, wallet, isLogin, walletType } = useWalletService();
+  const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
+  const { wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
   const router = useRouter();
@@ -64,7 +64,7 @@ export default function Header() {
       <div
         className={styles.menuItem}
         onClick={() => {
-          if (isOK) {
+          if (checkTokenValid()) {
             router.push('/points');
             setMenuModalVisible(false);
           } else {
