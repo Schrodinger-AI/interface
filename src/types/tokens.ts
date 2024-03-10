@@ -4,12 +4,16 @@ interface ITrait {
   percent: number;
 }
 
-export interface IToken {
-  name: string;
+export type TBaseSGRToken = {
+  tick: string;
   symbol: string;
-  image: string;
+  tokenName: string;
+  inscriptionImage: string;
   amount: string;
   generation: number;
   blockTime: number;
+};
+
+export type TSGRToken = TBaseSGRToken & {
   traits: ITrait[];
-}
+};

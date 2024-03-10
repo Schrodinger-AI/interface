@@ -14,7 +14,7 @@ import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import ScrollContent from '../ScrollContent';
 import { getPageNumber } from 'utils/calculate';
 import { ITokenListParams } from 'api/types';
-import { IToken } from 'types/tokens';
+import { TSGRToken } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import useLoading from 'hooks/useLoading';
@@ -22,7 +22,7 @@ import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 
-const mockData: IToken[] = new Array(10).fill({
+const mockData: TSGRToken[] = new Array(10).fill({
   name: 'name',
   symbol: 'symbol',
   image: 'image',
@@ -50,7 +50,7 @@ export default function OwnedItems() {
   const defaultFilter = getDefaultFilter(curChain);
   const [filterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
-  const [dataSource, setDataSource] = useState<IToken[]>([]);
+  const [dataSource, setDataSource] = useState<TSGRToken[]>([]);
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
