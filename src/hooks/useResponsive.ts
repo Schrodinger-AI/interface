@@ -11,22 +11,22 @@ export default function useResponsive() {
   }, [width]);
 
   const isSM = useMemo(() => {
-    return width < 640;
+    return width <= 640;
   }, [width]);
   const isPcMin = useMemo(() => {
     return width <= 500;
   }, [width]);
   const isMD = useMemo(() => {
-    return width < 768;
+    return width <= 768;
   }, [width]);
   const isLG = useMemo(() => {
-    return width < 1024;
+    return width <= 1024;
   }, [width]);
   const isXL = useMemo(() => {
     return width < 1360;
   }, [width]);
   const is2XL = useMemo(() => {
-    return width < 1440;
+    return width <= 1440;
   }, [width]);
   const is3XL = useMemo(() => {
     return width < 1760;
