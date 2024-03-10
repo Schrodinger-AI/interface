@@ -1,3 +1,5 @@
+import { TEmptyChannelInfo, TEmptyChannelGroup } from 'types/misc';
+
 export type InfoStateType = {
   isMobile?: boolean;
   isSmallScreen?: boolean;
@@ -23,6 +25,9 @@ export type InfoStateType = {
     tokenMainAddress: string;
     tokenSideAddress: string;
     openTimeStamp: string;
+
+    emptyChannelGroupDescription: string;
+    emptyChannelGroupList: TEmptyChannelGroup[];
     [key: string]: any;
   };
   itemsFromLocal?: string[];
