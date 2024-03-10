@@ -3,9 +3,17 @@ import SkeletonImage from 'components/SkeletonImage';
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { ReactComponent as TimesSignSvg } from 'assets/img/timesSign.svg';
+import { TSGRToken } from 'types/tokens';
 
-export default function ItemCard(props: { item: ICatItemModel; onPress: () => void }) {
-  const { image: imageUrl, inscriptionInfo = '', generation = '1', name, symbol, amount } = props.item || {};
+export default function ItemCard(props: { item: TSGRToken; onPress: () => void }) {
+  const {
+    inscriptionImage: imageUrl,
+    inscriptionInfo = '',
+    generation = '1',
+    tokenName,
+    symbol,
+    amount,
+  } = props.item || {};
   const transformedAmount = BigNumber(amount).toFormat(0);
   const containsInscriptionCode = false;
   // try {
@@ -23,8 +31,7 @@ export default function ItemCard(props: { item: ICatItemModel; onPress: () => vo
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
-            // img={imageUrl}
-            img={require('assets/img/arrow.svg').default}
+            img={imageUrl}
             imageSizeType="contain"
             className="w-full h-auto aspect-square object-contain"
           />
@@ -38,7 +45,7 @@ export default function ItemCard(props: { item: ICatItemModel; onPress: () => vo
         </div>
 
         <div className="px-4 py-4 flex flex-col">
-          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{name}</div>
+          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{tokenName}</div>
           <div className="flex flex-row pt-1">
             <div className="text-sm leading-5">{symbol}</div>
             <div className="ml-1 text-sm leading-5">{`(GEN-${generation})`}</div>
@@ -91,19 +98,4 @@ export function CodeBlock({
       {...params}
     />
   );
-}
-
-export interface ICatItemModel {
-  name: string;
-  symbol: string;
-  image: string;
-  amount: string;
-  generation: number;
-  blockTime: number;
-  inscriptionInfo?: string; // if exists, it will be shown above the Image
-  traits: Array<{
-    traitType: string;
-    value: string;
-    percent: number;
-  }>;
 }

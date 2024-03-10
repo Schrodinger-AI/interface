@@ -11,6 +11,7 @@ export interface ISGRAmountInputProps {
   min?: string;
   decimals?: number | string;
   onInvalidChange?: (isInvalid: boolean) => void;
+  onChange?: (value: string) => void;
 }
 
 export interface ISGRAmountInputInterface {
@@ -19,7 +20,16 @@ export interface ISGRAmountInputInterface {
 
 export const SGRAmountInput = forwardRef(
   (
-    { title, description, className, min = '0', max = '100', decimals = '8', onInvalidChange }: ISGRAmountInputProps,
+    {
+      title,
+      description,
+      className,
+      min = '0',
+      max,
+      decimals = '8',
+      onInvalidChange,
+      onChange: onChangeProps,
+    }: ISGRAmountInputProps,
     ref,
   ) => {
     const [amount, setAmount] = useState<string>('');
@@ -62,9 +72,13 @@ export const SGRAmountInput = forwardRef(
       onInvalidChange(false);
     }, [amount, max, min, onInvalidChange]);
 
+    useEffect(() => {
+      onChangeProps && onChangeProps(amount);
+    }, [amount, onChangeProps]);
+
     const suffix = useMemo(() => {
       return (
-        <span onClick={getMax} className="text-brandDefault text-lg font-medium cursor-pointer">
+        <span onClick={getMax} className="text-brandDefault font-medium cursor-pointer text-base">
           MAX
         </span>
       );

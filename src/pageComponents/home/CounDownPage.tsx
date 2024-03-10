@@ -12,16 +12,16 @@ import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
-import SyncAdoptModal from 'components/SyncAdoptModal';
 import AdoptedNextModal from 'components/AdoptedNextModal';
+import SyncAdoptModal from 'components/SyncAdoptModal';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
   const adoptedNextModal = useModal(AdoptedNextModal);
-  const [open, setOpen] = useState(false);
   const adoptActionModal = useModal(AdoptActionModal);
+  const asynModal = useModal(SyncAdoptModal);
 
   const { isLogin, wallet } = useWalletService();
 
@@ -103,6 +103,10 @@ export default function CountDownPage() {
     });
   };
 
+  const onShowModal = async () => {
+    asynModal.show();
+  };
+
   const socialMediaList: SocialMediaItem[] = [
     {
       index: 1,
@@ -181,7 +185,7 @@ export default function CountDownPage() {
               type="primary"
               size="ultra"
               className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-              onClick={() => setOpen(true)}>
+              onClick={onShowModal}>
               asyc modal
             </Button>
             <Button
@@ -199,7 +203,6 @@ export default function CountDownPage() {
           <SocialMedia data={socialMediaList} />
         </section>
       )}
-      <SyncAdoptModal open={open} />
     </section>
   );
 }

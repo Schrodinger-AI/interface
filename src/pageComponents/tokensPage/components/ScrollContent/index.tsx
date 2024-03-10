@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
 import ItemCard from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
-import { IToken } from 'types/tokens';
+import { TSGRToken } from 'types/tokens';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
 import { useDebounceFn } from 'ahooks';
@@ -22,7 +22,7 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
-  ListProps: ListProps<IToken>;
+  ListProps: ListProps<TSGRToken>;
 }
 
 function ScrollContent(props: IContentProps) {

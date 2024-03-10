@@ -1,5 +1,5 @@
 import { ChainId } from '@portkey/types';
-import { IToken } from 'types/tokens';
+import { TSGRToken } from 'types/tokens';
 
 export interface ITokenListParams {
   chainId: ChainId;
@@ -13,6 +13,6 @@ export interface ITokenListParams {
 }
 
 export interface ITokenListRes {
-  data: IToken[];
+  data: TSGRToken[];
   totalCount: number;
 }
