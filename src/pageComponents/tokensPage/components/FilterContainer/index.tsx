@@ -7,7 +7,6 @@ function CollapseForPC(props: MenuProps) {
   return (
     <Menu
       {...props}
-      // TODO: rotate
       expandIcon={<ArrowSVG className="!size-4" />}
       className={`${styles['items-side-menu']}`}
       selectable={false}
@@ -26,12 +25,12 @@ interface IDropMenu extends MenuProps {
 const CollapseForPhone = ({ showDropMenu, items, onCloseHandler, titleTxt = 'Filters', ...params }: IDropMenu) => {
   return (
     <Drawer
-      className={`${styles['elf-dropdown-phone-dark']} ${params.wrapClassName || ''}`}
+      className={`${styles['dropdown-phone-dark']} ${params.wrapClassName || ''}`}
       placement="top"
       maskClosable={false}
       title={
-        <div className="flex items-center justify-between pr-[20px]">
-          <span className="text-[24px] leading-[32px] font-medium text-[var(--text-item)]">{titleTxt}</span>
+        <div className="flex items-center justify-between">
+          <span className="text-xl font-semibold text-neutralTitle">{titleTxt}</span>
           <CloseSVG onClick={onCloseHandler} />
         </div>
       }
@@ -40,7 +39,7 @@ const CollapseForPhone = ({ showDropMenu, items, onCloseHandler, titleTxt = 'Fil
       open={showDropMenu}
       height={'100%'}
       onClose={onCloseHandler}>
-      <div className="px-[8px] pt-[16px]">
+      <div>
         <CollapseForPC items={items} {...params} />
       </div>
     </Drawer>

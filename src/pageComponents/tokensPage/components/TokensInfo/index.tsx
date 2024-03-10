@@ -1,15 +1,16 @@
 import clsx from 'clsx';
 import { Flex } from 'antd';
 import { Ellipsis } from 'antd-mobile';
+import SkeletonImage from 'components/SkeletonImage';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import styles from './styles.module.css';
 
 function EllipsisController({ isCollapseController = false }: { isCollapseController?: boolean }) {
   return (
     <Flex className="inline-flex ml-1 text-brandDefault" gap={4} align="center">
-      <span className="font-medium hover:rotate-90">Show {isCollapseController ? 'Less' : 'More'}</span>
+      <span className="font-medium">Show {isCollapseController ? 'Less' : 'More'}</span>
       {/* TODO: rotate */}
-      <ArrowSVG className={clsx('size-3', { ['rotate-180']: isCollapseController })} />
+      <ArrowSVG className={clsx('size-3', { ['common-revert-180']: isCollapseController })} />
     </Flex>
   );
 }
@@ -17,11 +18,7 @@ function EllipsisController({ isCollapseController = false }: { isCollapseContro
 export default function TokensInfo() {
   return (
     <Flex className={styles.tokensInfo} gap={16}>
-      <img
-        className={styles.schrodingerImg}
-        src={require('assets/img/schrodinger.png').default.src}
-        alt="Schrödinger"
-      />
+      <SkeletonImage className={styles.schrodingerImg} img={require('assets/img/schrodinger.png').default.src} />
       <Flex vertical>
         <span className={styles.title}>Schrödinger</span>
         <Ellipsis

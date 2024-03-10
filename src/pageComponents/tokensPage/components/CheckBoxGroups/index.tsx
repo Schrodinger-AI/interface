@@ -31,7 +31,7 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
     const data = dataSource?.data || [];
     return data.map((item: SourceItemType) => {
       return (
-        <Col className="px-[8px] py-[17px]" key={item.value} span={24}>
+        <Col key={item.value} span={24}>
           <Checkbox value={item.value} disabled={item.disabled}>
             {item.label}
           </Checkbox>
