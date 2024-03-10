@@ -1,3 +1,5 @@
+import { GenerateType } from './utils';
+
 interface ITrait {
   traitType: string;
   value: string;
@@ -12,8 +14,11 @@ export type TBaseSGRToken = {
   amount: string;
   generation: number;
   blockTime: number;
+  decimals: number;
 };
 
-export type TSGRToken = TBaseSGRToken & {
-  traits: ITrait[];
-};
+export type TSGRToken = GenerateType<
+  TBaseSGRToken & {
+    traits: ITrait[];
+  }
+>;

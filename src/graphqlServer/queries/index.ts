@@ -12,6 +12,7 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
         amount
         generation
         blockTime
+        decimals
       }
     }
   }
@@ -27,6 +28,7 @@ export const GET_SCHRODINGER_DETAIL_QUERY = gql`
       amount
       generation
       blockTime
+      decimals
       traits {
         traitType
         value
