@@ -10,6 +10,7 @@ import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+import { useCmsInfo } from 'redux/hooks';
 
 export type TBalanceItem = {
   amount: string;
@@ -65,6 +66,8 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
+  const cmsInfo = useCmsInfo();
+  const adoptRuleUrl = useMemo(() => cmsInfo?.adoptRuleUrl, [cmsInfo]);
 
   const [isInvalid, setIsInvalid] = useState(true);
   const isInvalidRef = useRef(isInvalid);
@@ -136,9 +139,11 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
           <InfoSVG className="flex-shrink-0" />
           <span className="ml-[8px] text-neutralPrimary">
             Adopt releases the next generation Item with more Tarits.{' '}
-            <a href="/" target="_blank" rel="noreferrer">
-              Adopt rules
-            </a>
+            {adoptRuleUrl && (
+              <a href={adoptRuleUrl} target="_blank" rel="noreferrer">
+                Adopt rules
+              </a>
+            )}
           </span>
         </div>
       )}
