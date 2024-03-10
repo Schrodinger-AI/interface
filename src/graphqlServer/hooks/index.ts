@@ -1,4 +1,4 @@
-import { getSchrodingerList } from '../request';
+import { getSchrodingerDetail, getSchrodingerList } from '../request';
 import { getGraphQLClient } from '../client';
 import { useCallback } from 'react';
 import { TGraphQLParamsType } from '../types';
@@ -14,6 +14,14 @@ export const useGetSchrodingerList = () => {
   const client = useGraphQLClient();
   return useCallback(
     (params: TGraphQLParamsType<typeof getSchrodingerList>) => getSchrodingerList(client, params),
+    [client],
+  );
+};
+
+export const useGetSchrodingerDetail = () => {
+  const client = useGraphQLClient();
+  return useCallback(
+    (params: TGraphQLParamsType<typeof getSchrodingerDetail>) => getSchrodingerDetail(client, params),
     [client],
   );
 };

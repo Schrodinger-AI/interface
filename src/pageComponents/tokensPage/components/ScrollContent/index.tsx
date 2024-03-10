@@ -1,6 +1,6 @@
 import { List, ListProps } from 'antd';
 import { useCallback, useEffect } from 'react';
-import { IToken } from 'types/tokens';
+import { TSGRToken } from 'types/tokens';
 import useColumns from 'hooks/useColumns';
 import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
@@ -23,7 +23,7 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
-  ListProps: ListProps<IToken>;
+  ListProps: ListProps<TSGRToken>;
 }
 
 function ScrollContent(props: IContentProps) {
