@@ -7,7 +7,7 @@ import { useCmsInfo } from 'redux/hooks';
 export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
 
-  return getGraphQLClient(cmsInfo?.graphqlServerV2 || '');
+  return getGraphQLClient(cmsInfo?.graphqlSchrodinger || '');
 };
 
 export const useGetSchrodingerList = () => {
