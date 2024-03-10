@@ -114,3 +114,6 @@ export const Adopt = async (
 
 export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>
   await schrodingerContractRequest('Confirm', params, options);
+
+export const resetSGR = async (params: IResetSGRParams, options?: IContractOptions): Promise<ISendResult> =>
+  await schrodingerContractRequest('Reset', params, options);

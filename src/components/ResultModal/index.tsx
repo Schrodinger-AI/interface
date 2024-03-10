@@ -7,6 +7,8 @@ import { Button } from 'aelf-design';
 import { ReactComponent as SuccessIcon } from 'assets/img/icons/success.svg';
 import { ReactComponent as FailedIcon } from 'assets/img/icons/failed.svg';
 import { ReactComponent as ExportOutlined } from 'assets/img/icons/exportOutlined.svg';
+import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
+import { message } from 'antd';
 
 export enum Status {
   ERROR = 'error',
@@ -24,7 +26,8 @@ interface IProps {
   buttonInfo?: {
     btnText?: string;
     openLoading?: boolean;
-    onConfirm?: <T, R>(params?: T) => R | void | Promise<void>;
+    isRetry?: boolean;
+    onConfirm?: () => void | Promise<any>;
   };
   info: IInfoCard;
   card?: {
@@ -60,8 +63,22 @@ function ResultModal({
       if (buttonInfo.openLoading) {
         setLoading(true);
       }
-      await buttonInfo.onConfirm();
+      try {
+        await buttonInfo.onConfirm();
+        setLoading(false);
+      } catch (error) {
+        console.log(error, 'error==');
+        const _error = getAdoptErrorMessage(error);
+        console.log(_error, 'error==');
+
+        message.error(_error);
+        if (buttonInfo.isRetry) {
+          setLoading(false);
+          return;
+        }
+      }
       setLoading(false);
+
       return;
     }
     modal.hide();

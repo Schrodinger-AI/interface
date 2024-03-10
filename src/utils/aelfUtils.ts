@@ -60,15 +60,15 @@ export async function getTxResult(
   throw Error({ ...txResult.Error, TransactionId } || 'Transaction error');
 }
 
-const isNightEl = () => {
+const isNightElf = () => {
   const walletInfo = localStorage.getItem('wallet-info');
   const walletInfoObj = walletInfo ? JSON.parse(walletInfo) : {};
-  let isNightElStatus = true;
+  let isNightElfStatus = true;
   if (walletInfoObj?.discoverInfo || walletInfoObj?.portkeyInfo) {
-    isNightElStatus = false;
+    isNightElfStatus = false;
   }
 
-  return isNightElStatus;
+  return isNightElfStatus;
 };
 
 export const approve = async (spender: string, symbol: string, amount: string, chainId?: Chain) => {
@@ -136,7 +136,7 @@ export const checkAllowanceAndApprove = async (options: {
     const allowanceBN = new BigNumber(allowance?.allowance);
 
     if (allowanceBN.lt(bigA)) {
-      const approveAmount = isNightEl() ? CONTRACT_AMOUNT : bigA.toNumber();
+      const approveAmount = isNightElf() ? CONTRACT_AMOUNT : bigA.toNumber();
       return await approve(spender, symbol, `${approveAmount}`, chainId);
     }
     return true;

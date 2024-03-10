@@ -11,9 +11,10 @@ import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
-import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
-import AdoptedNextModal from 'components/AdoptedNextModal';
+import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
+import AdoptedNextModal from 'components/AdoptedNextModal';
+import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
@@ -22,6 +23,8 @@ export default function CountDownPage() {
   const adoptedNextModal = useModal(AdoptedNextModal);
   const adoptActionModal = useModal(AdoptActionModal);
   const asynModal = useModal(SyncAdoptModal);
+
+  const adoptHandler = useAdoptHandler();
 
   const { isLogin, wallet } = useWalletService();
 
@@ -194,6 +197,14 @@ export default function CountDownPage() {
               className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
               onClick={adoptNext}>
               adopt next
+            </Button>
+
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={adoptHandler}>
+              adoptHandler
             </Button>
           </>
         )}
