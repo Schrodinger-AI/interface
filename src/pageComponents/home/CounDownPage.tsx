@@ -94,15 +94,16 @@ export default function CountDownPage() {
                 {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
               </p>
               <p>
-                In preparation for the inscription, you can now acquire the token needed, $SGR, on the IDO launchpad{' '}
-                <span
+                In preparation for the inscription, you can acquire the token needed ,$SGR, on Launchpads on ethereum
+                and aelf soon.
+                {/* <span
                   className="text-[#3888FF] cursor-pointer"
                   onClick={() => {
                     window.open(ewellUrl, '_blank');
                   }}>
                   ewell
                 </span>
-                .
+                . */}
               </p>
             </div>
           ) : (
