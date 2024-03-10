@@ -26,8 +26,8 @@ export default function DetailPage() {
     return (
       <div className="flex flex-row">
         <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
+          type="primary"
+          className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
           size="medium"
           onClick={onAdoptNextGeneration}>
           Adopt Next Generation
@@ -45,7 +45,7 @@ export default function DetailPage() {
 
   const adoptAndResetButtonSamll = () => {
     return (
-      <div className="flex flex-row w-full justify-end mb-[16px]">
+      <div className="flex flex-row w-full justify-end mt-[40px] mb-[16px]">
         <Button
           type="default"
           className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] flex-1"
@@ -55,7 +55,7 @@ export default function DetailPage() {
         </Button>
         <Button
           type="default"
-          className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] flex-1"
           size="medium"
           onClick={onReset}>
           Reset
