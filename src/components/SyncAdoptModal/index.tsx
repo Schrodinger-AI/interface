@@ -1,17 +1,16 @@
 import { Modal } from 'aelf-design';
 import NoticeBar from 'components/NoticeBar';
 import Loading from 'components/Loading';
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
 
-interface ISyncAdoptModal {
-  open: boolean;
-}
-
-export default function SyncAdoptModal({ open }: ISyncAdoptModal) {
+function SyncAdoptModal() {
+  const modal = useModal();
   return (
     <Modal
-      open={open}
+      open={modal.visible}
       closable={false}
       maskClosable={true}
+      afterClose={modal.remove}
       title={<div className="pb-[8px] text-2xl font-semibold">Pending Adopt</div>}
       footer={null}>
       <NoticeBar text="Please do not close this pop-up window." />
@@ -23,3 +22,5 @@ export default function SyncAdoptModal({ open }: ISyncAdoptModal) {
     </Modal>
   );
 }
+
+export default NiceModal.create(SyncAdoptModal);
