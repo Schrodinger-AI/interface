@@ -8,7 +8,7 @@ import styles from './style.module.css';
 import { useState } from 'react';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 
-export default function Home() {
+export default function TokensHome() {
   const { checkLogin } = useCheckLoginAndToken();
   const { isLG } = useResponsive();
   const [open, setOpen] = useState(false);
