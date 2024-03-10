@@ -5,6 +5,10 @@ import { useResponsive } from 'ahooks';
 export default function ItemInfo() {
   const responsive = useResponsive();
 
+  const onLearnMore = () => {
+    alert('onLearnMore');
+  };
+
   return (
     <div className="flex flex-col w-full lg:w-[660px] mt-[16px] lg:mt-[0px]">
       <div className="w-full h-[72px] rounded-2xl border-solid border border-[#E1E1E1] flex flex-row justify-between items-center px-[24px]">
@@ -36,7 +40,7 @@ export default function ItemInfo() {
           )}
         </div>
       </div>
-      <div className="w-full flex flex-row justify-end items-center mt-[16px] mb-[24px] h-[24px]">
+      <div className="w-full flex flex-row justify-end items-center mt-[16px] mb-[24px] h-[24px]" onClick={onLearnMore}>
         <div className="text-[#1A1A1A] text-base mr-[8px]">Learn more</div>
         <div className="w-[24px] h-[24px] flex justify-center items-center">
           <ArrowSVG className="!size-4" />

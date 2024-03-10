@@ -4,6 +4,7 @@ import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
 import { useResponsive } from 'ahooks';
 import { Breadcrumb } from 'antd';
+import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import mockData from './mock.json';
 
 export default function DetailPage() {
@@ -64,7 +65,7 @@ export default function DetailPage() {
   };
 
   return (
-    <section className="mt-[48px] flex flex-col items-center w-full">
+    <section className="mt-[24px] lg:mt-[48px] flex flex-col items-center w-full">
       {responsive.lg ? (
         <div className="w-full max-w-[1360px]">
           <Breadcrumb
@@ -97,7 +98,10 @@ export default function DetailPage() {
         </div>
       ) : (
         <div className="w-full max-w-[1360px] flex flex-col items-center">
-          <div className="font-semibold text-sm w-full">Back</div>
+          <div className="w-full flex flex-row justify-start items-center">
+            <ArrowSVG className="!size-4" />
+            <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
+          </div>
           <div className="mt-[16px]" />
           <DetailTitle />
           <ItemImage />
