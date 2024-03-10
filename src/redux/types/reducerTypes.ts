@@ -26,6 +26,7 @@ export type InfoStateType = {
     tokenSideAddress: string;
     openTimeStamp: string;
 
+    adoptRuleUrl?: string;
     emptyChannelGroupDescription: string;
     emptyChannelGroupList: TEmptyChannelGroup[];
     [key: string]: any;
