@@ -65,7 +65,7 @@ export default function OwnedItems() {
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
     };
-  }, [current, filterSelect]);
+  }, [current, filterSelect, walletAddress]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ITokenListParams; loadMore?: boolean }) => {
@@ -80,7 +80,7 @@ export default function OwnedItems() {
         // TODO: fetch data from server
         // const res = await fetchCompositeNftInfos(params);
         const res = {
-          total: 100,
+          total: 10,
           data: mockData,
         };
         setTotal(res.total);
@@ -104,7 +104,7 @@ export default function OwnedItems() {
     fetchData({
       params: requestParams,
     });
-  }, []);
+  }, [fetchData, requestParams]);
 
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
@@ -143,11 +143,14 @@ export default function OwnedItems() {
       },
       loadMore: true,
     });
-  }, [hasMore, isLoading, current, moreLoading]);
+  }, [isLoading, hasMore, moreLoading, current, fetchData, requestParams]);
 
   return (
     <div>
-      <Flex className="pb-2 mb-5 border-0 border-b border-solid border-neutralDivider" gap={8} align="center">
+      <Flex
+        className="pb-2 mb-5 border-0 border-b border-solid border-neutralDivider text-neutralTitle"
+        gap={8}
+        align="center">
         <span className="text-2xl font-semibold">Owned Items</span>
         <span className="text-base font-semibold">({total})</span>
       </Flex>
