@@ -1,15 +1,15 @@
-import { List, ListProps } from 'antd';
-import { useCallback, useEffect } from 'react';
-import { TSGRToken } from 'types/tokens';
-import useColumns from 'hooks/useColumns';
-import { useDebounceFn } from 'ahooks';
+import { useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
+import { Flex, List, ListProps } from 'antd';
+import ItemCard from 'components/ItemCard';
+import { EmptyList } from 'components/EmptyList';
+import { TSGRToken } from 'types/tokens';
+import { useRouter } from 'next/navigation';
+import useColumns from 'hooks/useColumns';
+import useResponsive from 'hooks/useResponsive';
+import { useDebounceFn } from 'ahooks';
 import { PAGE_CONTAINER_ID } from 'constants/index';
-
-export function ItemsCard() {
-  // TODO: card component
-  return <div className="h-[316px] border border-solid">card</div>;
-}
+import styles from './index.module.css';
 
 interface IContentProps {
   collapsed: boolean;
@@ -29,9 +29,12 @@ interface IContentProps {
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
   const { loading, hasMore, loadingMore, loadMore } = InfiniteScrollProps;
+  const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
+  const { isLG } = useResponsive();
+  const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
   const column = useColumns(props.collapsed);
   const handleScroll = useCallback(
     async (event: Event) => {
@@ -50,29 +53,24 @@ function ScrollContent(props: IContentProps) {
   }, [handleScroll]);
 
   return (
-    <div className={clsx('item-card-wrapper', props.className)}>
+    <div className={clsx(styles.cardListWrapper, props.className)}>
       <List
-        grid={{ gutter: 20, column }}
-        // locale={{
-        //   emptyText: (
-        //     <TableEmpty
-        //       type={emptyEnum.nft}
-        //       searchText={(hasSearch && 'search') || ''}
-        //       clearFilter={clearFilter && clearFilter}
-        //     />
-        //   ),
-        // }}
-        renderItem={() => (
+        grid={{ gutter, column }}
+        locale={{
+          emptyText: (
+            <Flex justify="center" align="center">
+              <EmptyList isChannelShow />
+            </Flex>
+          ),
+        }}
+        renderItem={(item) => (
           <List.Item>
-            <ItemsCard />
+            <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
         {...ListProps}
       />
       {loading && <div>Loading</div>}
-      {!hasMore && loadingMore && ListProps?.dataSource?.length && (
-        <div className="text-center w-full text-textDisable font-medium text-base pb-[20px]">No more data</div>
-      )}
     </div>
   );
 }

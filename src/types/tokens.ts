@@ -15,6 +15,7 @@ export type TBaseSGRToken = {
   generation: number;
   blockTime: number;
   decimals: number;
+  inscriptionInfo?: string;
 };
 
 export type TSGRToken = GenerateType<
