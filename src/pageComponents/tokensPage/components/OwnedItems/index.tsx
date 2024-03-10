@@ -22,11 +22,11 @@ import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 
-const mockData: IToken[] = new Array(10).fill({
+const mockData: IToken[] = new Array(32).fill({
   name: 'name',
   symbol: 'symbol',
   image: 'image',
-  amount: 'amount',
+  amount: '12345',
   generation: 2,
   blockTime: 1,
   traits: [
@@ -41,13 +41,13 @@ const mockData: IToken[] = new Array(10).fill({
 export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
-  const { isLG } = useResponsive();
+  const { isLG, is2XL, is3XL } = useResponsive();
   const [collapsed, setCollapsed] = useState(!isLG);
   const [total, setTotal] = useState(0);
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
   const filterList = getFilterList(curChain);
-  const defaultFilter = getDefaultFilter(curChain);
+  const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<IToken[]>([]);
@@ -56,7 +56,25 @@ export default function OwnedItems() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
-  const walletAddress = useMemo(() => addPrefixSuffix(wallet.address), []);
+  const walletAddress = useMemo(() => addPrefixSuffix(wallet.address), [wallet.address]);
+  const siderWidth = useMemo(() => {
+    if (is2XL) {
+      return 440;
+    } else if (is3XL) {
+      return 420;
+    } else {
+      return 445;
+    }
+  }, [is2XL, is3XL]);
+  const defaultRequestParams = useMemo(() => {
+    const filter = getFilter(defaultFilter);
+    return {
+      ...filter,
+      address: walletAddress,
+      skipCount: 0,
+      maxResultCount: pageSize,
+    };
+  }, [defaultFilter, walletAddress]);
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
     return {
@@ -80,12 +98,12 @@ export default function OwnedItems() {
         // TODO: fetch data from server
         // const res = await fetchCompositeNftInfos(params);
         const res = {
-          total: 10,
+          total: 100,
           data: mockData,
         };
         setTotal(res.total);
         if (isLoadMore.current) {
-          setDataSource([...dataSource, ...res.data]);
+          setDataSource((preData) => [...preData, ...res.data]);
           setLoadingMore(true);
         } else {
           setDataSource(res.data);
@@ -97,14 +115,14 @@ export default function OwnedItems() {
         setMoreLoading(false);
       }
     },
-    [dataSource],
+    [],
   );
 
   useEffect(() => {
     fetchData({
-      params: requestParams,
+      params: defaultRequestParams,
     });
-  }, [fetchData, requestParams]);
+  }, [fetchData, defaultRequestParams]);
 
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
@@ -154,7 +172,7 @@ export default function OwnedItems() {
         <span className="text-2xl font-semibold">Owned Items</span>
         <span className="text-base font-semibold">({total})</span>
       </Flex>
-      <Layout className="!bg-[var(--bg-page)]">
+      <Layout>
         {isLG ? (
           <CollapseForPhone
             items={collapseItems}
@@ -168,7 +186,7 @@ export default function OwnedItems() {
           <Layout.Sider
             collapsedWidth={0}
             className={clsx('!bg-[var(--bg-page)] m-0', collapsed && '!mr-5')}
-            width={collapsed ? 445 : 0}
+            width={collapsed ? siderWidth : 0}
             trigger={null}>
             {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={Object.values(FilterKeyEnum)} />}
           </Layout.Sider>

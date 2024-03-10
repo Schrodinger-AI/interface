@@ -4,7 +4,7 @@ import { useWindowSize } from 'react-use';
 export default function useResponsive() {
   const { width } = useWindowSize();
   const isMin = useMemo(() => {
-    return width < 500;
+    return width <= 480;
   }, [width]);
   const isXS = useMemo(() => {
     return width < 600;
@@ -29,7 +29,7 @@ export default function useResponsive() {
     return width <= 1440;
   }, [width]);
   const is3XL = useMemo(() => {
-    return width < 1760;
+    return width <= 1600;
   }, [width]);
   const is4XL = useMemo(() => {
     return width < 1920;
