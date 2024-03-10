@@ -135,7 +135,7 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky z-[9999] top-0 left-0 z-5 flex-shrink-0">
+    <section className="bg-white sticky z-[999] top-0 left-0 z-5 flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
           <img
