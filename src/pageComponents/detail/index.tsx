@@ -7,22 +7,37 @@ import { useResponsive } from 'ahooks';
 import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import mockData from './mock.json';
-import { useParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
+import { useEffectOnce } from 'react-use';
+import clsx from 'clsx';
 
 export default function DetailPage() {
   const responsive = useResponsive();
-  const { symbol } = useParams<{ symbol: string }>();
+  const route = useRouter();
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
 
+  useEffectOnce(() => {
+    // if (!isLogin) {
+    //   route.push('/');
+    // }
+  });
+
   useEffect(() => {
-    const data = getSchrodingerDetail({ input: { symbol, chainId: cmsInfo?.curChain || '', address: wallet.address } });
-    console.log('aaaa');
-    console.log('data', data);
+    getSchrodingerDetail({ input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address } })
+      .then((data) => {
+        console.log('aaaa');
+        console.log('data : ' + JSON.stringify(data));
+      })
+      .catch((err) => {
+        console.log('err : ' + JSON.stringify(err));
+      });
   }, [symbol, getSchrodingerDetail, wallet.address, cmsInfo?.curChain]);
 
   const onAdoptNextGeneration = () => {
@@ -35,6 +50,10 @@ export default function DetailPage() {
 
   const onTrade = () => {
     // todo
+  };
+
+  const onBack = () => {
+    route.back();
   };
 
   const adoptAndResetButton = () => {
@@ -121,8 +140,8 @@ export default function DetailPage() {
         </div>
       ) : (
         <div className="w-full max-w-[1360px] flex flex-col items-center">
-          <div className="w-full flex flex-row justify-start items-center">
-            <ArrowSVG className="!size-4" />
+          <div className="w-full flex flex-row justify-start items-center" onClick={onBack}>
+            <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
             <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
           </div>
           <div className="mt-[16px]" />

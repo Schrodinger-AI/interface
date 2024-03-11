@@ -40,7 +40,7 @@ export default function TokensInfo() {
   return (
     <Flex className={styles.tokensInfo} vertical gap={12}>
       <Flex gap={16}>
-        <SkeletonImage className={styles.schrodingerImg} img={require('assets/img/schrodinger.png').default.src} />
+        <SkeletonImage className={styles.schrodingerImg} img={require('assets/img/schrodinger.jpeg').default.src} />
         <Flex vertical justify={isLG ? 'center' : 'flex-start'}>
           <span className={styles.title}>Schrödinger</span>
           {!isLG && <Description />}
