@@ -1,5 +1,5 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button, Tooltip } from 'aelf-design';
+import { Button } from 'aelf-design';
 import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
@@ -11,6 +11,7 @@ import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { useCmsInfo } from 'redux/hooks';
+import { Tooltip } from 'antd';
 
 export type TBalanceItem = {
   amount: string;
@@ -164,7 +165,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <div className="flex justify-between mb-[16px]">
         <span className="text-neutralSecondary flex items-center gap-[8px]">
           Rate
-          <Tooltip title={'rate'}>
+          <Tooltip color="black" title={'rate'} overlayInnerStyle={{ color: 'white' }}>
             <QuestionSVG />
           </Tooltip>
         </span>

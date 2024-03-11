@@ -8,7 +8,7 @@ import { useTokenPriceMapStore, useTxFeeStore } from 'redux/hooks';
 
 export function useAssets() {
   const refreshTokenPrice = useCallback(async (symbol = DEFAULT_TOKEN_SYMBOL) => {
-    const { price } = await request.get<any>('', {
+    const { price } = await request.get<{ price: string }>('/app/schrodinger/token-price', {
       params: {
         symbol,
       },
@@ -24,7 +24,7 @@ export function useAssets() {
   }, []);
 
   const refreshTxFee = useCallback(async () => {
-    const { transactionFee } = await request.get<any>('');
+    const { transactionFee } = await request.get<{ transactionFee: string }>('/app/schrodinger/transaction-fee');
     store.dispatch(
       setTxFee({
         common: transactionFee,
@@ -39,7 +39,7 @@ export function useAssets() {
         fetch: () => {
           return refreshTxFee();
         },
-        times: 5,
+        times: 2,
         interval: 1000,
         checkIsContinue: (result) => !result,
       });
@@ -55,7 +55,7 @@ export function useAssets() {
           fetch: () => {
             return refreshTokenPrice(symbol);
           },
-          times: 5,
+          times: 2,
           interval: 1000,
           checkIsContinue: (result) => !result,
         });
@@ -85,7 +85,7 @@ export function useGetTokenPrice() {
   const tokenPriceMap = useTokenPriceMapStore();
 
   return useCallback(
-    (symbol = DEFAULT_TOKEN_SYMBOL) => {
+    async (symbol = DEFAULT_TOKEN_SYMBOL) => {
       const tokenPrice = tokenPriceMap?.[`${symbol}_${PRICE_QUOTE_COIN}`];
       if (tokenPrice) return tokenPrice;
       return refreshTokenPrice(symbol);
@@ -98,7 +98,7 @@ export function useTokenPrice(symbol = DEFAULT_TOKEN_SYMBOL) {
   const tokenPriceMap = useTokenPriceMapStore();
   const getTokenPrice = useGetTokenPrice();
 
-  const tokenPrice = useMemo(() => tokenPriceMap?.[`${symbol}_USD`], [symbol, tokenPriceMap]);
+  const tokenPrice = useMemo(() => tokenPriceMap?.[`${symbol}_${PRICE_QUOTE_COIN}`], [symbol, tokenPriceMap]);
 
   return {
     tokenPrice,
