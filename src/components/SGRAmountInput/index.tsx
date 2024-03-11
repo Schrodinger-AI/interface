@@ -12,6 +12,7 @@ export interface ISGRAmountInputProps {
   decimals?: number | string;
   onInvalidChange?: (isInvalid: boolean) => void;
   onChange?: (value: string) => void;
+  placeholder?: string;
 }
 
 export interface ISGRAmountInputInterface {
@@ -29,6 +30,7 @@ export const SGRAmountInput = forwardRef(
       decimals = '8',
       onInvalidChange,
       onChange: onChangeProps,
+      placeholder,
     }: ISGRAmountInputProps,
     ref,
   ) => {
@@ -79,7 +81,7 @@ export const SGRAmountInput = forwardRef(
     const suffix = useMemo(() => {
       return (
         <span onClick={getMax} className="text-brandDefault font-medium cursor-pointer text-base">
-          MAX
+          Max
         </span>
       );
     }, [getMax]);
@@ -96,7 +98,13 @@ export const SGRAmountInput = forwardRef(
       <div className={`flex flex-col ${className}`}>
         <span className="text-neutralPrimary text-lg">{title}</span>
         <span className="mt-[4px] text-neutralSecondary text-base">{description}</span>
-        <Input className="mt-[16px]" value={amount} onChange={onChange} suffix={suffix} placeholder="Enter amount" />
+        <Input
+          className="mt-[16px]"
+          value={amount}
+          onChange={onChange}
+          suffix={suffix}
+          placeholder={placeholder || 'Enter amount'}
+        />
       </div>
     );
   },
