@@ -2,6 +2,7 @@ import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { ISGRDetailRes } from '../types';
 import { useResponsive } from 'ahooks';
 import { Button } from 'aelf-design';
+import clsx from 'clsx';
 
 export default function ItemInfo({
   detail,
@@ -65,7 +66,7 @@ export default function ItemInfo({
       <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] flex flex-col px-[16px] mt-[16px]">
         <div className="ml-[8px] w-full h-[72px] flex flex-row justify-between items-center">
           <div className="text-[#1A1A1A] font-medium	text-lg">Traits</div>
-          <ArrowSVG className="!size-4 mr-[16px]" />
+          <ArrowSVG className={clsx('size-4', 'mr-[16px]', { ['common-revert-180']: true })} />
         </div>
         {detail.generation == 0 ? noTraits() : traits()}
       </div>
