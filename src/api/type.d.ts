@@ -66,14 +66,14 @@ interface IGetPointsData {
   pointDetails: Array<IPointItem>;
 }
 
-export interface ICompassProps {
+interface ICompassProps {
   title?: string;
   schema?: string;
   type?: 'out' | 'inner'; // default is inner
   items?: Array<ICompassProps>;
 }
 
-export interface ICatItemModel {
+interface ICatItemModel {
   name: string;
   symbol: string;
   image: string;

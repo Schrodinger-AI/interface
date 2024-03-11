@@ -7,6 +7,7 @@ export const fetchEtherscan = async (): Promise<any> => {
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
+  // return 'Success';
 };
 
 export const fetchToken = async (data: ITokenParams) => {
@@ -40,29 +41,14 @@ export const fetchInscriptionDetail = async (): Promise<any> => {
 };
 
 export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: string }): Promise<IAdoptImageInfo> => {
-  // return request.get(`/api/app/schrodinger/adopt/imageInfo?adoptId=${adoptId}`);
-  return {
-    adoptImageInfo: {
-      generation: 1,
-      attributes: [
-        {
-          traitType: '',
-          value: '',
-          percent: 11,
-        },
-      ],
-      images: ['', ''],
-    },
-  };
+  return request.get(`/app/schrodinger/imageInfo?adoptId=${adoptId}`);
 };
 
 export const fetchWaterImageRequest = async (data: IWaterImageRequest): Promise<IWaterImage> => {
-  // const params = qs.stringify(data);
-  // return request.get(`/api/app/schrodinger/adopt/waterMarkImageInfo?${params}`);
-  return {
-    image: '',
-    signature: '',
-  };
+  // const params = qs.stringify(data, { encode: false });
+  return request.post(`/app/schrodinger/waterMarkImageInfo`, data, {
+    headers: { Accept: 'text/plain;v=1.0', 'Content-Type': 'application/json' },
+  });
 };
 
 export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsData> => {

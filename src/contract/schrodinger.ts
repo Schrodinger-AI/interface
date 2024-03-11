@@ -63,7 +63,7 @@ const schrodingerContractRequest = async <T, R>(
       const { transactionId, TransactionId } = result.result || result;
       const resTransactionId = TransactionId || transactionId;
       await sleep(1000);
-      const transaction = await getTxResult(resTransactionId!, info!.curChain);
+      const transaction = await getTxResult(resTransactionId!, info!.curChain, options?.reGetCount);
 
       console.log('=====schrodingerContractRequest transaction: ', method, transaction);
 
@@ -109,7 +109,7 @@ export const Adopt = async (
     amount: string;
     domain: string;
   },
-  options?: IContractOptions,
+  options: IContractOptions = { reGetCount: -280 },
 ): Promise<ISendResult> => await schrodingerContractRequest('Adopt', params, options);
 
 export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>

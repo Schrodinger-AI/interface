@@ -56,6 +56,7 @@ export interface IContractError extends Error {
 export interface IContractOptions {
   chain?: Chain | null;
   type?: ContractMethodType;
+  reGetCount?: number;
 }
 
 export interface ISendResult<T = any> {
