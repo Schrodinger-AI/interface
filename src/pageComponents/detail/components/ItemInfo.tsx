@@ -1,6 +1,5 @@
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { ISGRDetailRes } from '../types';
-import { useResponsive } from 'ahooks';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
 
@@ -11,30 +10,29 @@ export default function ItemInfo({
   detail: ISGRDetailRes;
   onAdoptNextGeneration: () => void;
 }) {
-  const responsive = useResponsive();
-
   const traits = () => {
     return (
       <div className="mb-[16px] flex flex-col lg:flex-row justify-between">
-        {detail.traits.map((item) =>
-          responsive.lg ? (
-            <div key={item.traitType} className="w-[198px] p-[24px] flex flex-col items-center bg-[#FAFAFA] rounded-lg	">
+        {detail.traits.map((item) => (
+          <>
+            <div
+              key={item.traitType}
+              className="w-[198px] p-[24px] hidden lg:flex flex-col items-center bg-[#FAFAFA] rounded-lg">
               <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
               <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
               <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
             </div>
-          ) : (
             <div
               key={item.traitType}
-              className="w-full px-[24px] pt-[16px] flex flex-col h-[90px] mt-[16px] bg-[#FAFAFA] rounded-lg	">
+              className="w-full px-[24px] pt-[16px] flex lg:hidden flex-col h-[90px] mt-[16px] bg-[#FAFAFA] rounded-lg	">
               <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
               <div className="flex flex-row w-full justify-between">
                 <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
                 <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
               </div>
             </div>
-          ),
-        )}
+          </>
+        ))}
       </div>
     );
   };
