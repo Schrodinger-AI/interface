@@ -20,21 +20,10 @@ export type TBalanceItem = {
 };
 
 export type TAdoptActionModalProps = {
-  title?: string;
   modalTitle?: string;
   info: IInfoCard;
-  buttonConfig?:
-    | {
-        btnText?: string;
-        onConfirm?: Function;
-      }[]
-    | false;
   onClose?: <T>(params?: T) => void;
   onConfirm?: (amount: string) => void;
-  content?: {
-    title?: string | ReactNode;
-    content?: string | string[] | ReactNode;
-  };
   balanceList?: TBalanceItem[];
   inputProps?: ISGRAmountInputProps;
   isReset?: boolean;
@@ -42,18 +31,7 @@ export type TAdoptActionModalProps = {
 
 function AdoptActionModal(params: TAdoptActionModalProps) {
   const modal = useModal();
-  const {
-    modalTitle,
-    title,
-    info,
-    buttonConfig,
-    onClose,
-    onConfirm: onConfirmProps,
-    content,
-    balanceList,
-    inputProps,
-    isReset = false,
-  } = params;
+  const { modalTitle, info, onClose, onConfirm: onConfirmProps, balanceList, inputProps, isReset = false } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
   const onCancel = () => {
