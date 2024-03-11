@@ -44,7 +44,7 @@ const useAdoptHandler = () => {
           decimals: parentItemInfo.decimals,
         });
         adoptActionModal.show({
-          modalTitle: 'Adopt Next Generation Item',
+          modalTitle: 'Adopt Next-Gen Cat',
           info: {
             logo: parentItemInfo.inscriptionImage,
             name: parentItemInfo.tokenName,

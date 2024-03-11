@@ -5,13 +5,11 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
     getSchrodingerList(input: $input) {
       totalCount
       data {
-        tick
         symbol
         tokenName
         inscriptionImage
         amount
         generation
-        blockTime
         decimals
       }
     }
@@ -21,13 +19,11 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
 export const GET_SCHRODINGER_DETAIL_QUERY = gql`
   query getSchrodingerDetail($input: GetSchrodingerDetailInput) {
     getSchrodingerDetail(input: $input) {
-      tick
       symbol
       tokenName
       inscriptionImage
       amount
       generation
-      blockTime
       decimals
       traits {
         traitType

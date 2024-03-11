@@ -9,17 +9,17 @@ export type TGetSchrodingerListParams = {
   input: {
     chainId: string;
     address?: string;
-    traits?: Array<{ traitType: string; value: string }>;
-    generations?: Array<number>;
+    tick?: string;
     skipCount?: number;
     maxResultCount?: number;
     keyword?: string;
-    tick?: string;
   };
 };
 export type TGetSchrodingerListResult = {
-  totalCount: number;
-  data: Array<TBaseSGRToken>;
+  getSchrodingerList: {
+    totalCount: number;
+    data: Array<TBaseSGRToken>;
+  };
 };
 export type TGetSchrodingerList = (
   client: TGraphQLClient,
@@ -33,8 +33,11 @@ export type TGetSchrodingerDetailParams = {
     symbol: string;
   };
 };
+export type TGetSchrodingerDetailResult = {
+  getSchrodingerDetail: TSGRToken;
+};
 
 export type TGetSchrodingerDetail = (
   client: TGraphQLClient,
   params: TGetSchrodingerDetailParams,
-) => TCommonGraphQLResult<TSGRToken>;
+) => TCommonGraphQLResult<TGetSchrodingerDetailResult>;

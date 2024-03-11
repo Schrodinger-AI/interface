@@ -3,10 +3,10 @@ import SkeletonImage from 'components/SkeletonImage';
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
-import { ICatItemModel } from 'api/type';
+import { TBaseSGRToken } from 'types/tokens';
 
-export default function ItemCard(props: { item: ICatItemModel; onPress: () => void }) {
-  const { image: imageUrl, inscriptionInfo = '', generation = '1', name, symbol, amount } = props.item || {};
+export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => void }) {
+  const { inscriptionImage, inscriptionInfo = '', generation = '1', tokenName, symbol, amount } = props.item || {};
   const transformedAmount = BigNumber(amount).toFormat(0);
   let containsInscriptionCode = false;
   try {
@@ -25,7 +25,7 @@ export default function ItemCard(props: { item: ICatItemModel; onPress: () => vo
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
-            img={imageUrl}
+            img={inscriptionImage}
             imageSizeType="contain"
             className="w-full h-auto aspect-square object-contain"
           />
@@ -39,7 +39,7 @@ export default function ItemCard(props: { item: ICatItemModel; onPress: () => vo
         </div>
 
         <div className="px-4 py-4 flex flex-col">
-          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{name}</div>
+          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{tokenName}</div>
           <div className="flex flex-row pt-1">
             <div className="text-sm leading-5">{symbol}</div>
             <div className="ml-1 text-sm leading-5">{`(GEN-${generation})`}</div>

@@ -149,7 +149,7 @@ export default function CountDownPage() {
   const onResetClick = useCallback(() => {
     resetHandler(
       {
-        symbol: 'symbol',
+        symbol: 'TESTGGRR-1',
         decimals: 8,
         inscriptionImage: '',
         tokenName: 'tokenName',
