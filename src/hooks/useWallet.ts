@@ -200,10 +200,10 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
 };
 
 export const useCheckLoginAndToken = () => {
-  const { loginState, login } = useWebLogin();
+  const { loginState, login, logout } = useWebLogin();
   const isLogin = loginState === WebLoginState.logined;
-  const { getToken } = useGetToken();
   const [hasToken, setHasToken] = useState<Boolean>(false);
+  const { getToken, checkTokenValid } = useGetToken(setHasToken);
 
   const checkLogin = async () => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
@@ -225,8 +225,15 @@ export const useCheckLoginAndToken = () => {
     }
   }, []);
 
+  const logoutAccount = useCallback(() => {
+    logout();
+    localStorage.removeItem(storages.accountInfo);
+  }, [logout]);
+
   return {
     isOK: isLogin && hasToken,
+    checkTokenValid,
+    logout: logoutAccount,
     checkLogin,
   };
 };

@@ -3,9 +3,11 @@ import StoreProvider from './store';
 import { AELFDProvider } from 'aelf-design';
 import WebLoginProvider from './webLoginProvider';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { store } from 'redux/store';
-import PageLoading from 'components/PageLoading';
+
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/lib/locale/en_US';
 
 import { checkDomain, fetchCmsConfigInfo } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
@@ -14,19 +16,23 @@ import NotFoundPage from 'components/notFound';
 import { AELFDProviderTheme } from './config';
 import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
+import { NotFoundType } from 'constants/index';
+import { usePathname } from 'next/navigation';
+import Loading from 'components/PageLoading/index';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [isCorrectUrl, setIsCorrectUrl] = useState(false);
+  const [isCorrectDomain, setIsCorrectDomain] = useState(false);
+  const pathname = usePathname();
 
   const checkHost = async () => {
     try {
       const res = await checkDomain();
       if (res && res === 'Success') {
-        setIsCorrectUrl(true);
+        setIsCorrectDomain(true);
         return true;
       } else {
-        setIsCorrectUrl(false);
+        setIsCorrectDomain(false);
         return false;
       }
     } catch (err) {
@@ -61,20 +67,29 @@ function Provider({ children }: { children: React.ReactNode }) {
   useEffectOnce(() => {
     BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
   });
+  const isCorrectPath = useMemo(() => {
+    return ['/', '/assets', '/points'].includes(pathname);
+  }, [pathname]);
+
+  const showPage = useMemo(() => {
+    return isCorrectDomain && isCorrectPath;
+  }, [isCorrectDomain, isCorrectPath]);
 
   return (
     <>
       <StoreProvider>
         <AELFDProvider theme={AELFDProviderTheme}>
-          {loading ? (
-            <PageLoading content="Enrollment in progress"></PageLoading>
-          ) : isCorrectUrl ? (
-            <WebLoginProvider>
-              <NiceModal.Provider>{children}</NiceModal.Provider>
-            </WebLoginProvider>
-          ) : (
-            <NotFoundPage />
-          )}
+          <ConfigProvider locale={enUS} autoInsertSpaceInButton={false}>
+            {loading ? (
+              <Loading content="Enrollment in progress"></Loading>
+            ) : showPage ? (
+              <WebLoginProvider>
+                <NiceModal.Provider>{children}</NiceModal.Provider>
+              </WebLoginProvider>
+            ) : (
+              <NotFoundPage type={isCorrectDomain ? NotFoundType.path : NotFoundType.domain} />
+            )}
+          </ConfigProvider>
         </AELFDProvider>
       </StoreProvider>
     </>
