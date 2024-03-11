@@ -4,11 +4,9 @@ import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useResponsive from 'hooks/useResponsive';
 
-export type TAIImage = ISchrodingerImages['images'][0];
-
-interface IAIImageSelectProps<T = any> {
-  list: T[];
-  onSelect: (item: T) => void;
+interface IAIImageSelectProps {
+  list: string[];
+  onSelect: (item: string) => void;
 }
 
 interface IAIImageProps {
@@ -44,11 +42,11 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
   );
 }
 
-export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps<TAIImage>) {
-  const [current, setCurrent] = useState<TAIImage>();
+export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps) {
+  const [current, setCurrent] = useState<string>();
 
   const onClick = useCallback(
-    (item: TAIImage) => {
+    (item: string) => {
       setCurrent(item);
       onSelect?.(item);
     },
@@ -64,7 +62,7 @@ export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps<TA
   return (
     <div className="flex gap-[16px] flex-wrap">
       {list.map((item, index) => (
-        <AIImage key={index} src={item.image} item={item} active={current?.image === item.image} onSelect={onClick} />
+        <AIImage key={index} src={item} item={item} active={current === item} onSelect={onClick} />
       ))}
     </div>
   );
