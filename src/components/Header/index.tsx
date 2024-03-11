@@ -1,7 +1,6 @@
 'use client';
 import { Button, Dropdown } from 'aelf-design';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
-import Image from 'next/image';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
 import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
 import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
@@ -291,12 +290,15 @@ export default function Header() {
   return (
     <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <Image
-          src={require('assets/img/logo.png').default}
-          alt="logo"
-          width={responsive.md ? 200 : 150}
-          height={responsive.md ? 32 : 24}
-        />
+        {
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={require('assets/img/logo.png').default.src}
+            alt="logo"
+            width={responsive.md ? 200 : 150}
+            height={responsive.md ? 32 : 24}
+          />
+        }
         {FunctionalArea(menuItems)}
       </div>
       <Modal
