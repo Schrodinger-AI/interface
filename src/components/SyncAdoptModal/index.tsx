@@ -1,24 +1,32 @@
 import { Modal } from 'aelf-design';
 import NoticeBar from 'components/NoticeBar';
-import Loading from 'components/Loading';
+import LoadingCircle from 'assets/img/icons/loadingCircle.png';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 
 function SyncAdoptModal() {
   const modal = useModal();
   return (
     <Modal
+      centered
       open={modal.visible}
       closable={false}
       maskClosable={true}
       afterClose={modal.remove}
-      title={<div className="pb-[8px] text-2xl font-semibold">Pending Adopt</div>}
+      title={<div className="pb-[16px] text-2xl font-semibold">Pending Adopt</div>}
       footer={null}>
-      <NoticeBar text="Please do not close this pop-up window." />
-      <div className="text-[14px] leading-[22px] text-center py-[20px]">Waiting for AI to generate images</div>
-      <div className="flex justify-center">
-        <Loading color="blue" />
+      <div className="flex flex-col gap-6">
+        <NoticeBar text="Please do not close this pop-up window." />
+        <div className="flex justify-center items-center gap-2">
+          <div className="text-base text-center text-neutralSecondary">Waiting for AI to generate images</div>
+          <img
+            className="mt-1 animate-spin"
+            src={require('assets/img/icons/loadingCircle.png').default.src}
+            width={16}
+            height={16}
+            alt="loading"
+          />
+        </div>
       </div>
-      <div className="text-center text-base font-semibold pt-8 pb-2">Generating images on the Chain...</div>
     </Modal>
   );
 }

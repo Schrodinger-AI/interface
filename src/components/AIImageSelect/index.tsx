@@ -8,7 +8,7 @@ import useResponsive from 'hooks/useResponsive';
 export type TAIImage = ISchrodingerImages['images'][0];
 
 interface IAIImageSelectProps<T = any> {
-  list: T[];
+  list?: T[];
   onSelect: (item: T) => void;
 }
 
@@ -79,14 +79,14 @@ export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps<TA
   );
 
   useEffect(() => {
-    if (list.length === 1) {
+    if (list?.length === 1) {
       onClick(list[0]);
     }
   }, [list, onClick]);
 
   return (
     <div className="flex gap-[16px] flex-wrap">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         <AIImage key={index} src={item.image} item={item} active={current?.image === item.image} onSelect={onClick} />
       ))}
     </div>

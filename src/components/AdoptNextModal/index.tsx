@@ -81,8 +81,8 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
         <Balance
           items={[
             {
-              amount: `${ELFBalance.amount} ELF`,
-              usd: `${ELFBalance.usd}`,
+              amount: `${ELFBalance?.amount ?? '--'} ELF`,
+              usd: `${ELFBalance?.usd ?? '--'}`,
             },
           ]}
         />
