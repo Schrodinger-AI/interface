@@ -100,7 +100,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const priceAmount = useMemo(() => {
     if (!tokenPrice) return '0';
-    return ZERO.plus(txFee).multipliedBy(tokenPrice).toFixed(2);
+    return ZERO.plus(txFee).multipliedBy(tokenPrice).toFixed(4);
   }, [tokenPrice, txFee]);
 
   const rateValue = useMemo(() => {
