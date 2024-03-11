@@ -1,5 +1,5 @@
 import { sleep } from '@portkey/utils';
-import { fetchSchrodingerImagesByAdoptId } from 'api/request';
+import { fetchSchrodingerImagesByAdoptId, fetchWaterImageRequest } from 'api/request';
 import { Adopt, confirmAdopt } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
@@ -71,12 +71,24 @@ export const adoptStep1Handler = async ({
   return adoptId;
 };
 
-export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<ISchrodingerImages> => {
+export const fetchWaterImages = async (params: IWaterImageRequest, count = 0): Promise<IWaterImage> => {
+  try {
+    const result = await fetchWaterImageRequest(params);
+    if (!result.signature) throw 'Get not get signature';
+    return result;
+  } catch (error) {
+    await sleep(500);
+    count++;
+    return await fetchWaterImages(params, count);
+  }
+};
+
+export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<IAdoptImageInfo> => {
   if (!count) await sleep(10000); // Waiting to generate ai picture
   count++;
   try {
     const result = await fetchSchrodingerImagesByAdoptId({ adoptId });
-    if (!result || !result.items?.length) throw 'Waiting';
+    if (!result || !result.adoptImageInfo?.images?.length) throw 'Waiting...';
     return result;
   } catch (error) {
     await sleep(3000);

@@ -25,6 +25,7 @@ export type InfoStateType = {
     tokenMainAddress: string;
     tokenSideAddress: string;
     openTimeStamp: string;
+    routerItems: string;
 
     graphqlSchrodinger: string;
     adoptRuleUrl?: string;

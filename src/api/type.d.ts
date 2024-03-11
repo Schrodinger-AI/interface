@@ -31,29 +31,22 @@ interface IBaseTrait {
   value: string;
 }
 
-interface ITraitImageInfo {
-  traits: IBaseTrait[];
-  name: string;
-  value: string;
-  image: string;
-  waterMarkImage: string;
-  secretImage: string;
-  secretWaterMarkImage: string;
+interface IAdoptImageInfo {
+  adoptImageInfo: {
+    generation: number;
+    attributes: (IBaseTrait & { percent: number })[];
+    images: string[];
+  };
 }
 
-interface ISchrodingerImages {
-  items: [
-    {
-      generation: number;
-      traits: [
-        IBaseTrait & {
-          percent: number;
-        },
-      ];
-    },
-  ];
-  images: ITraitImageInfo[];
-  extraData: any;
+interface IWaterImageRequest {
+  image: string;
+  adoptId: string;
+}
+
+interface IWaterImage {
+  image: string;
+  signature: string;
 }
 interface IGetPointsParams {
   domain: string;
@@ -71,4 +64,26 @@ interface IPointItem {
 
 interface IGetPointsData {
   pointDetails: Array<IPointItem>;
+}
+
+export interface ICompassProps {
+  title?: string;
+  schema?: string;
+  type?: 'out' | 'inner'; // default is inner
+  items?: Array<ICompassProps>;
+}
+
+export interface ICatItemModel {
+  name: string;
+  symbol: string;
+  image: string;
+  amount: string;
+  generation: number;
+  blockTime: number;
+  inscriptionInfo?: string; // if exists, it will be shown above the Image
+  traits: Array<{
+    traitType: string;
+    value: string;
+    percent: number;
+  }>;
 }

@@ -1,13 +1,14 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button } from 'aelf-design';
+import { Button, Tooltip } from 'aelf-design';
 import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';
 import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
+import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import AIImageSelect from 'components/AIImageSelect';
-import { PropsWithChildren, useCallback, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
@@ -17,24 +18,32 @@ interface IDescriptionItemProps extends PropsWithChildren {
 function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
   return (
     <div className="flex flex-col gap-[16px]">
-      <div className="text-lg font-medium">{title}</div>
+      <div className="flex items-center gap-2">
+        <div className="text-lg font-medium">{title}</div>
+        {tip && (
+          <Tooltip title={tip}>
+            <QuestionSVG />
+          </Tooltip>
+        )}
+      </div>
       {children}
     </div>
   );
 }
 
 interface IAdoptNextModal {
+  isAcross?: boolean;
   data: IAdoptNextData;
-  onConfirm: (item: ITraitImageInfo) => void;
+  onConfirm: (image: string) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
+function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
-  const [selectImage, setSelectImage] = useState<ITraitImageInfo>();
+  const [selectImage, setSelectImage] = useState<string>();
   const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
-  const onSelect = useCallback((item: ITraitImageInfo) => {
+  const onSelect = useCallback((item: string) => {
     setSelectImage(item);
   }, []);
 
@@ -44,9 +53,23 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
     modal.hide();
   }, [modal, onClose]);
 
+  const title = useMemo(() => {
+    return (
+      <div className="font-semibold">
+        <div className="text-neutralTitle">Successfully Adopted the Next Generation Item!</div>
+        {isAcross && (
+          <div className="mt-2 text-lg text-neutralSecondary font-medium">
+            Congratulations on the opportunity to adopt CATs{' '}
+            <span className="text-functionalWarning">ACROSS GENERATIONS!</span>
+          </div>
+        )}
+      </div>
+    );
+  }, [isAcross]);
+
   return (
     <CommonModal
-      title={'Successfully Adopted the Next Generation Item!'}
+      title={title}
       open={modal.visible}
       onCancel={onCancel}
       afterClose={modal.remove}
@@ -58,7 +81,9 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
       <div className="flex flex-col gap-[24px] lg:gap-[32px]">
         <NoticeBar text="Please do not close this pop-up window." />
         <SGRTokenInfo {...SGRToken} />
-        <DescriptionItem title="New Traits You Got">
+        <DescriptionItem
+          title="New Traits You Got"
+          tip="A new trait type is randomly generated with this evolution. Based on the trait type, specific traits will be generated powered by AI.">
           <TraitsList data={newTraits} showNew />
         </DescriptionItem>
         <DescriptionItem title="Please select the image you like to complete the whole process.">
@@ -71,8 +96,8 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
         <Balance
           items={[
             {
-              amount: `${ELFBalance.amount} ELF`,
-              usd: `${ELFBalance.usd}`,
+              amount: `${ELFBalance?.amount ?? '--'} ELF`,
+              usd: `${ELFBalance?.usd ?? '--'}`,
             },
           ]}
         />

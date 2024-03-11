@@ -16,7 +16,6 @@ import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
 import { useCallback, useMemo } from 'react';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import AdoptNextModal from 'components/AdoptNextModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 
 export default function CountDownPage() {
@@ -25,7 +24,6 @@ export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
-  const adoptNextModal = useModal(AdoptNextModal);
   const adoptActionModal = useModal(AdoptActionModal);
   const asynModal = useModal(SyncAdoptModal);
 
@@ -101,15 +99,6 @@ export default function CountDownPage() {
             promptModal.hide();
           },
         });
-      },
-    });
-  };
-
-  const adoptNext = async () => {
-    adoptNextModal.show({
-      data: {} as any,
-      onConfirm: (item) => {
-        console.log('adoptNext', item);
       },
     });
   };
@@ -225,13 +214,6 @@ export default function CountDownPage() {
                 className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
                 onClick={onShowModal}>
                 asyc modal
-              </Button>
-              <Button
-                type="primary"
-                size="ultra"
-                className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-                onClick={adoptNext}>
-                adopt next
               </Button>
               <Button
                 type="primary"

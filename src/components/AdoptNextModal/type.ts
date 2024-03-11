@@ -1,5 +1,4 @@
 import { ITrait } from 'types/tokens';
-import { TAIImage } from 'components/AIImageSelect';
 
 export interface IAdoptNextData {
   SGRToken: {
@@ -8,7 +7,7 @@ export interface IAdoptNextData {
     amount?: string;
   };
   newTraits: ITrait[];
-  images: TAIImage[];
+  images: string[];
   inheritedTraits: ITrait[];
   transaction: {
     txFee?: string;
@@ -19,65 +18,3 @@ export interface IAdoptNextData {
     usd?: string;
   };
 }
-
-const traits: ITrait[] = [
-  {
-    traitType: 'Eyes',
-    value: 'Blue Star',
-    percent: 5.22,
-  },
-  {
-    traitType: 'Eyes',
-    value: 'Blue Star',
-    percent: 5.22,
-  },
-  {
-    traitType: 'Eyes',
-    value: 'Blue Star',
-    percent: 5.22,
-  },
-  {
-    traitType: 'Eyes',
-    value: 'Blue Star',
-    percent: 5.22,
-  },
-];
-
-const imageList = [
-  {
-    traits: [],
-    name: '',
-    value: '',
-    image: require('assets/img/cat.png').default.src,
-    waterMarkImage: '',
-    secretImage: '',
-    secretWaterMarkImage: require('assets/img/cat.png').default.src,
-  },
-  {
-    traits: [],
-    name: '',
-    value: '',
-    image: require('assets/img/schrodinger.jpeg').default.src,
-    waterMarkImage: '',
-    secretImage: '',
-    secretWaterMarkImage: require('assets/img/cat.png').default.src,
-  },
-  {
-    traits: [],
-    name: '',
-    value: '',
-    image: require('assets/img/schrodinger.jpeg').default.src,
-    waterMarkImage: '',
-    secretImage: '',
-    secretWaterMarkImage: require('assets/img/cat.png').default.src,
-  },
-  {
-    traits: [],
-    name: '',
-    value: '',
-    image: require('assets/img/schrodinger.jpeg').default.src,
-    waterMarkImage: '',
-    secretImage: '',
-    secretWaterMarkImage: require('assets/img/cat.png').default.src,
-  },
-];
