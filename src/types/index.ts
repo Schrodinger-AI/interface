@@ -27,7 +27,12 @@ export enum ContractMethodType {
 
 export interface IContractError extends Error {
   code?: number;
-  error?: number;
+  error?:
+    | number
+    | string
+    | {
+        message?: string;
+      };
   errorMessage?: {
     message: string;
     name?: string;

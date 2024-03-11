@@ -1,5 +1,5 @@
 'use client';
-import { NetworkType } from '@portkey/provider-types';
+import { ChainId, NetworkType } from '@portkey/provider-types';
 import dynamic from 'next/dynamic';
 import { store } from 'redux/store';
 
@@ -32,7 +32,7 @@ const WebLoginProviderDynamic = dynamic(
         graphQLUrl: cmsInfo?.graphqlServerV2,
         connectUrl: connectUrlV2 || '',
         requestDefaults: {
-          timeout: cmsInfo?.networkType === 'TESTNET' ? 300000 : 80000,
+          timeout: cmsInfo?.networkTypeV2 === 'TESTNET' ? 300000 : 80000,
           baseURL: serverV2 || '',
         },
         serviceUrl: serverV2,
@@ -55,10 +55,8 @@ const WebLoginProviderDynamic = dynamic(
         },
       },
       defaultRpcUrl:
-        (cmsInfo?.[`rpcUrl${String(cmsInfo?.curChain).toUpperCase()}`] as unknown as string) ||
-        cmsInfo?.rpcUrlTDVW ||
-        '',
-      networkType: cmsInfo?.networkType || 'TESTNET',
+        (cmsInfo?.[`rpcUrl${String(cmsInfo.curChain).toUpperCase()}`] as string) || cmsInfo?.rpcUrlTDVW || '',
+      networkType: (cmsInfo?.networkType as 'TESTNET' | 'MAIN') || 'TESTNET',
     });
     return webLogin.WebLoginProvider;
   },
@@ -66,9 +64,9 @@ const WebLoginProviderDynamic = dynamic(
 );
 
 export default ({ children }: { children: React.ReactNode }) => {
-  const info = store.getState().info.cmsInfo;
+  const cmsInfo = store.getState().info.cmsInfo;
   return (
-    <PortkeyProviderDynamic networkType={info?.networkType} networkTypeV2={info?.networkTypeV2}>
+    <PortkeyProviderDynamic networkType={cmsInfo?.networkType} networkTypeV2={cmsInfo?.networkTypeV2}>
       <WebLoginProviderDynamic
         nightElf={{
           useMultiChain: true,
@@ -82,15 +80,14 @@ export default ({ children }: { children: React.ReactNode }) => {
             v2: true,
           },
         }}
-        extraWallets={['discover']}
+        extraWallets={['discover', 'elf']}
         discover={{
           autoRequestAccount: true,
           autoLogoutOnDisconnected: true,
           autoLogoutOnNetworkMismatch: true,
           autoLogoutOnAccountMismatch: true,
           autoLogoutOnChainMismatch: true,
-        }}
-      >
+        }}>
         {children}
       </WebLoginProviderDynamic>
     </PortkeyProviderDynamic>

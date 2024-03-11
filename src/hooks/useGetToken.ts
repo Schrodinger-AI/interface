@@ -14,7 +14,7 @@ export const useGetToken = () => {
   const { getSignatureAndPublicKey } = useDiscoverProvider();
 
   const { runAsync } = useRequest(fetchToken, {
-    retryCount: 3,
+    retryCount: 20,
     manual: true,
     onSuccess(res) {
       localStorage.setItem(
@@ -31,16 +31,14 @@ export const useGetToken = () => {
   const getToken = useCallback(async () => {
     if (loginState !== WebLoginState.logined) return;
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
-    if (
-      accountInfo?.token &&
-      Date.now() < accountInfo?.expirationTime &&
-      accountInfo.account === wallet.address
-    ) {
+    if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === wallet.address) {
       return;
     } else {
       localStorage.removeItem(storages.accountInfo);
     }
     const timestamp = Date.now();
+
+    console.log('wallet', wallet.address);
 
     const signInfo = AElf.utils.sha256(`${wallet.address}-${timestamp}`);
 
@@ -62,12 +60,15 @@ export const useGetToken = () => {
       const sign = await getSignature({
         appName: 'schrodinger',
         address: wallet.address,
-        signInfo,
+        signInfo:
+          walletType === WalletType.portkey ? Buffer.from(`${wallet.address}-${timestamp}`).toString('hex') : signInfo,
       });
       if (sign?.errorMessage) {
         message.error(sign.errorMessage);
         return;
       }
+      console.log('sign', sign, wallet);
+
       publicKey = wallet.publicKey || '';
       signature = sign.signature;
       if (walletType === WalletType.elf) {
