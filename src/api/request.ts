@@ -39,39 +39,29 @@ export const fetchInscriptionDetail = async (): Promise<any> => {
   };
 };
 
-export const fetchSchrodingerImagesByAdoptId = async ({
-  adoptId,
-}: {
-  adoptId: string;
-}): Promise<ISchrodingerImages> => {
-  // return request.get(`/api/app/schrodinger/images?adoptId=${adoptId}`);
-  console.log(adoptId, 'adoptId==');
+export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: string }): Promise<IAdoptImageInfo> => {
+  // return request.get(`/api/app/schrodinger/adopt/imageInfo?adoptId=${adoptId}`);
   return {
-    items: [
-      {
-        generation: 1,
-        traits: [
-          {
-            traitType: '',
-            value: '',
-            percent: 11.11,
-          },
-        ],
-      },
-    ],
-    images: [
-      {
-        name: '',
-        value: '',
+    adoptImageInfo: {
+      generation: 1,
+      attributes: [
+        {
+          traitType: '',
+          value: '',
+          percent: 11,
+        },
+      ],
+      images: ['', ''],
+    },
+  };
+};
 
-        traits: [{ traitType: '', value: '' }],
-        image: '',
-        waterMarkImage: '',
-        secretImage: '',
-        secretWaterMarkImage: '',
-      },
-    ],
-    extraData: {},
+export const fetchWaterImageRequest = async (data: IWaterImageRequest): Promise<IWaterImage> => {
+  // const params = qs.stringify(data);
+  // return request.get(`/api/app/schrodinger/adopt/waterMarkImageInfo?${params}`);
+  return {
+    image: '',
+    signature: '',
   };
 };
 

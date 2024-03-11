@@ -25,16 +25,16 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 
 interface IAdoptNextModal {
   data: IAdoptNextData;
-  onConfirm: (item: ITraitImageInfo) => void;
+  onConfirm: (image: string) => void;
   onClose?: () => void;
 }
 
 function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
-  const [selectImage, setSelectImage] = useState<ITraitImageInfo>();
+  const [selectImage, setSelectImage] = useState<string>();
   const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
-  const onSelect = useCallback((item: ITraitImageInfo) => {
+  const onSelect = useCallback((item: string) => {
     setSelectImage(item);
   }, []);
 
