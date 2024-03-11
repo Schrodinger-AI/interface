@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Button } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
@@ -6,9 +7,23 @@ import { useResponsive } from 'ahooks';
 import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import mockData from './mock.json';
+import { useParams } from 'next/navigation';
+import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
+import { useWalletService } from 'hooks/useWallet';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function DetailPage() {
   const responsive = useResponsive();
+  const { symbol } = useParams<{ symbol: string }>();
+  const getSchrodingerDetail = useGetSchrodingerDetail();
+  const { wallet } = useWalletService();
+  const cmsInfo = useCmsInfo();
+
+  useEffect(() => {
+    const data = getSchrodingerDetail({ input: { symbol, chainId: cmsInfo?.curChain || '', address: wallet.address } });
+    console.log('aaaa');
+    console.log('data', data);
+  }, [symbol, getSchrodingerDetail, wallet.address, cmsInfo?.curChain]);
 
   const onAdoptNextGeneration = () => {
     // todo
@@ -25,20 +40,24 @@ export default function DetailPage() {
   const adoptAndResetButton = () => {
     return (
       <div className="flex flex-row">
-        <Button
-          type="primary"
-          className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
-          size="medium"
-          onClick={onAdoptNextGeneration}>
-          Adopt Next Generation
-        </Button>
-        <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] mr-[12px]"
-          size="medium"
-          onClick={onReset}>
-          Reset
-        </Button>
+        {mockData.generation < 9 && (
+          <Button
+            type="primary"
+            className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
+            size="medium"
+            onClick={onAdoptNextGeneration}>
+            Adopt Next Generation
+          </Button>
+        )}
+        {mockData.generation > 0 && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] mr-[12px]"
+            size="medium"
+            onClick={onReset}>
+            Reset
+          </Button>
+        )}
       </div>
     );
   };
@@ -46,20 +65,24 @@ export default function DetailPage() {
   const adoptAndResetButtonSamll = () => {
     return (
       <div className="flex flex-row w-full justify-end mt-[40px] mb-[16px]">
-        <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] flex-1"
-          size="medium"
-          onClick={onAdoptNextGeneration}>
-          Adopt Next Generation
-        </Button>
-        <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] flex-1"
-          size="medium"
-          onClick={onReset}>
-          Reset
-        </Button>
+        {mockData.generation < 9 && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] flex-1"
+            size="medium"
+            onClick={onAdoptNextGeneration}>
+            Adopt Next Generation
+          </Button>
+        )}
+        {mockData.generation > 0 && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] ml-[12px] flex-1"
+            size="medium"
+            onClick={onReset}>
+            Reset
+          </Button>
+        )}
       </div>
     );
   };
@@ -71,7 +94,7 @@ export default function DetailPage() {
           <Breadcrumb
             items={[
               {
-                title: <a href="">Schrodinger</a>,
+                title: <a href="/">Schrodinger</a>,
               },
               {
                 title: <div>{mockData.symbol}</div>,
@@ -79,7 +102,7 @@ export default function DetailPage() {
             ]}
           />
           <div className="w-full h-[68px] mt-[40px] flex flex-row justify-between">
-            <DetailTitle />
+            <DetailTitle detail={mockData} />
             <div className="h-full flex flex-row items-end">
               {adoptAndResetButton()}
               <Button
@@ -92,8 +115,8 @@ export default function DetailPage() {
             </div>
           </div>
           <div className="w-full mt-[24px] flex flex-row justify-between">
-            <ItemImage />
-            <ItemInfo />
+            <ItemImage detail={mockData} />
+            <ItemInfo detail={mockData} onAdoptNextGeneration={onAdoptNextGeneration} />
           </div>
         </div>
       ) : (
@@ -103,8 +126,8 @@ export default function DetailPage() {
             <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
           </div>
           <div className="mt-[16px]" />
-          <DetailTitle />
-          <ItemImage />
+          <DetailTitle detail={mockData} />
+          <ItemImage detail={mockData} />
           <Button
             type="default"
             className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
@@ -112,7 +135,7 @@ export default function DetailPage() {
             onClick={onTrade}>
             Trade
           </Button>
-          <ItemInfo />
+          <ItemInfo detail={mockData} onAdoptNextGeneration={onAdoptNextGeneration} />
           {adoptAndResetButtonSamll()}
         </div>
       )}
