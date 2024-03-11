@@ -1,12 +1,11 @@
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import { useCallback } from 'react';
-import { adoptStep1Handler, adoptStep2Handler, fetchTraitsAndImages } from './AdoptStep';
+import { adoptStep1Handler, adoptStep2Handler, fetchTraitsAndImages, fetchWaterImages } from './AdoptStep';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
 import ResultModal, { Status } from 'components/ResultModal';
-import { sleep } from 'utils';
 import { singleMessage } from '@portkey/did-ui-react';
 import AdoptNextModal from 'components/AdoptNextModal';
 import { TSGRToken } from 'types/tokens';
@@ -158,7 +157,7 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmInput = useCallback(
-    async (infos: ISchrodingerImages, parentItemInfo: TSGRToken, account: string): Promise<ITraitImageInfo> => {
+    async (infos: IAdoptImageInfo, parentItemInfo: TSGRToken, account: string): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         const [symbolBalance, ELFBalance] = await getParentBalance({
           symbol: parentItemInfo.symbol,
@@ -173,8 +172,8 @@ const useAdoptHandler = () => {
               symbol: parentItemInfo.symbol,
               amount: symbolBalance,
             },
-            newTraits: infos?.items[0]?.traits ?? [],
-            images: infos.images,
+            newTraits: infos.adoptImageInfo.attributes,
+            images: infos.adoptImageInfo.images,
             inheritedTraits: parentItemInfo.traits,
             transaction: {
               txFee: ZERO.plus(commonTxFee).toFixed(),
@@ -201,11 +200,12 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmHandler = useCallback(
-    async (params: { adoptId: string; image: string; signature: string }) => {
+    async (params: { adoptId: string; image: string }) => {
       return new Promise(async (resolve, reject) => {
+        const imageSignature = await fetchWaterImages(params);
+        const confirmParams = { ...params, signature: imageSignature.signature };
         try {
-          await sleep(1000);
-          const result = await adoptStep2Handler(params);
+          const result = await adoptStep2Handler(confirmParams);
           adoptActionModal.hide();
           resolve(result);
         } catch (error) {
@@ -231,7 +231,7 @@ const useAdoptHandler = () => {
               isRetry: true,
               openLoading: true,
               onConfirm: async () => {
-                const result = await adoptStep2Handler(params);
+                const result = await adoptStep2Handler(confirmParams);
                 resolve(result);
               },
             },
@@ -249,7 +249,7 @@ const useAdoptHandler = () => {
       parentItemInfo,
       account,
     }: {
-      infos: ISchrodingerImages;
+      infos: IAdoptImageInfo;
       adoptId: string;
       parentItemInfo: TSGRToken;
       account: string;
@@ -257,8 +257,7 @@ const useAdoptHandler = () => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
       await adoptConfirmHandler({
         adoptId,
-        image: selectItem.image,
-        signature: selectItem.secretWaterMarkImage,
+        image: selectItem,
       });
     },
     [adoptConfirmHandler, adoptConfirmInput],
@@ -290,7 +289,7 @@ const useAdoptHandler = () => {
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
-        const infos = await fetchImages('adoptId');
+        const infos = await fetchImages(adoptId);
         await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
         await adoptConfirmSuccess();
       } catch (error) {
