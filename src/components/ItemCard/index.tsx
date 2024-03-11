@@ -2,27 +2,21 @@ import TextArea from 'antd/es/input/TextArea';
 import SkeletonImage from 'components/SkeletonImage';
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
-import { ReactComponent as TimesSignSvg } from 'assets/img/timesSign.svg';
-import { TBaseSGRToken } from 'types/tokens';
+import { ReactComponent as XIcon } from 'assets/img/x.svg';
+import { ICatItemModel } from 'api/type';
 
-export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => void }) {
-  const {
-    inscriptionImage: imageUrl,
-    inscriptionInfo = '',
-    generation = '1',
-    tokenName,
-    symbol,
-    amount,
-  } = props.item || {};
-  const transformedAmount = BigNumber(amount).toFormat();
-  const containsInscriptionCode = false;
-  // try {
-  //   JSON.parse(inscriptionInfo);
-  //   containsInscriptionCode = true;
-  // } catch (ignored) {}
+export default function ItemCard(props: { item: ICatItemModel; onPress: () => void }) {
+  const { image: imageUrl, inscriptionInfo = '', generation = '1', name, symbol, amount } = props.item || {};
+  const transformedAmount = BigNumber(amount).toFormat(0);
+  let containsInscriptionCode = false;
+  try {
+    JSON.parse(inscriptionInfo);
+    containsInscriptionCode = true;
+    // eslint-disable-next-line no-empty
+  } catch (ignored) {}
   return (
     <div
-      className="w-full overflow-hidden border-2 border-black rounded-md cursor-pointer"
+      className="w-full overflow-hidden border-2 border-black rounded-md"
       onClick={props.onPress}
       style={styles.border}>
       <div>
@@ -45,13 +39,13 @@ export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => vo
         </div>
 
         <div className="px-4 py-4 flex flex-col">
-          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{tokenName}</div>
+          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{name}</div>
           <div className="flex flex-row pt-1">
             <div className="text-sm leading-5">{symbol}</div>
             <div className="ml-1 text-sm leading-5">{`(GEN-${generation})`}</div>
           </div>
           <div className="flex flex-row items-center pt-1">
-            <TimesSignSvg />
+            <XIcon />
             <div className="ml-1 text-sm leading-5 text-gray-400">{transformedAmount}</div>
           </div>
         </div>

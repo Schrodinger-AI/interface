@@ -72,3 +72,25 @@ interface IPointItem {
 interface IGetPointsData {
   pointDetails: Array<IPointItem>;
 }
+
+export interface ICompassProps {
+  title?: string;
+  schema?: string;
+  type?: 'out' | 'inner'; // default is inner
+  items?: Array<ICompassProps>;
+}
+
+export interface ICatItemModel {
+  name: string;
+  symbol: string;
+  image: string;
+  amount: string;
+  generation: number;
+  blockTime: number;
+  inscriptionInfo?: string; // if exists, it will be shown above the Image
+  traits: Array<{
+    traitType: string;
+    value: string;
+    percent: number;
+  }>;
+}
