@@ -20,24 +20,18 @@ import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { sleep } from 'utils';
 import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
 
-const mockData: TBaseSGRToken[] = new Array(32)
-  .fill({
-    tokenName: 'tokenName',
-    symbol: `symbol_${new Date().getTime()}`,
-    inscriptionImage: '',
-    decimals: 8,
-    amount: '123456789',
-    generation: 2,
-    blockTime: 1,
-  })
-  .map((item, index) => {
-    return {
-      ...item,
-      symbol: item.symbol + index,
-    };
-  });
+const mockData: TBaseSGRToken[] = new Array(32).fill({
+  tokenName: 'tokenName',
+  symbol: 'symbol',
+  inscriptionImage: '',
+  decimals: 8,
+  amount: '123456789000000',
+  generation: 2,
+  blockTime: 1,
+});
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -94,9 +88,9 @@ export default function OwnedItems() {
         setMoreLoading(true);
       } else {
         isLoadMore.current = false;
-        // TODO: show loading
-        // showLoading();
+        showLoading();
       }
+      await sleep(2000);
       try {
         // TODO: fetch data from server
         // const res = await getSchrodingerList({
@@ -123,11 +117,11 @@ export default function OwnedItems() {
           setLoadingMore(false);
         }
       } finally {
-        // TODO: close loading
-        // closeLoading();
+        closeLoading();
         setMoreLoading(false);
       }
     },
+    // There cannot be dependencies showLoading and closeLoading
     [],
   );
 
