@@ -7,16 +7,18 @@ import { useResponsive } from 'ahooks';
 import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import mockData from './mock.json';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import { useEffectOnce } from 'react-use';
 import clsx from 'clsx';
 
-export default function DetailPage({ searchParams: { symbol } }: { searchParams: { symbol: string } }) {
+export default function DetailPage() {
   const responsive = useResponsive();
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
@@ -28,7 +30,7 @@ export default function DetailPage({ searchParams: { symbol } }: { searchParams:
   });
 
   useEffect(() => {
-    getSchrodingerDetail({ input: { symbol, chainId: cmsInfo?.curChain || '', address: wallet.address } })
+    getSchrodingerDetail({ input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address } })
       .then((data) => {
         console.log('aaaa');
         console.log('data : ' + JSON.stringify(data));

@@ -72,7 +72,8 @@ function Provider({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   const showPage = useMemo(() => {
-    return isCorrectDomain && isCorrectPath;
+    // return isCorrectDomain && isCorrectPath;
+    return true;
   }, [isCorrectDomain, isCorrectPath]);
 
   return (
