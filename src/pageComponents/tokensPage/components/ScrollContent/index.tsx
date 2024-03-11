@@ -7,6 +7,7 @@ import { TBaseSGRToken } from 'types/tokens';
 import { useRouter } from 'next/navigation';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
+import useLoading from 'hooks/useLoading';
 import { useDebounceFn } from 'ahooks';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import styles from './index.module.css';
@@ -28,7 +29,7 @@ interface IContentProps {
 
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
-  const { loading, hasMore, loadingMore, loadMore } = InfiniteScrollProps;
+  const { loading, loadMore } = InfiniteScrollProps;
   const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
@@ -36,6 +37,17 @@ function ScrollContent(props: IContentProps) {
   const { isLG } = useResponsive();
   const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
   const column = useColumns(props.collapsed);
+  const { showLoading, closeLoading } = useLoading();
+
+  useEffect(() => {
+    if (loading) {
+      showLoading();
+    } else {
+      closeLoading();
+    }
+    // There cannot be dependencies showLoading and closeLoading
+  }, [loading]);
+
   const handleScroll = useCallback(
     async (event: Event) => {
       const target = event.target as HTMLElement;
@@ -63,14 +75,14 @@ function ScrollContent(props: IContentProps) {
             </Flex>
           ),
         }}
-        renderItem={(item) => (
-          <List.Item key={item.symbol}>
+        renderItem={(item, index) => (
+          // TODO: Change the key to symbol
+          <List.Item key={`${item.symbol}_${new Date().getTime()}_${index}`}>
             <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
         {...ListProps}
       />
-      {loading && <div>Loading</div>}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+'use client';
 import { Modal } from 'antd';
 import styles from './style.module.css';
 import { useMount } from 'ahooks';
@@ -18,7 +19,7 @@ export default function PageLoading({ content }: ILoadingProps) {
   if (!isMount) return null;
 
   return (
-    <Modal className={`${styles.loading}`} open={true} footer={null} closable={false} closeIcon={null}>
+    <Modal className={styles.loading} open={true} footer={null} closable={false} closeIcon={null}>
       <section className="flex flex-col justify-center items-center">
         <Loading />
         <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">

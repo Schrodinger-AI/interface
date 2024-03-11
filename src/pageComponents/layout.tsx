@@ -15,6 +15,7 @@ import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
+import { usePathname } from 'next/navigation';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -42,6 +43,12 @@ const Layout = dynamic(async () => {
 
     useWalletInit();
     useBroadcastChannel();
+
+    const pathname = usePathname();
+
+    const isGrayBackground = useMemo(() => {
+      return pathname === '/';
+    }, [pathname]);
 
     useEffect(() => {
       const resize = () => {
@@ -81,13 +88,15 @@ const Layout = dynamic(async () => {
 
     return (
       <>
-        {/* TODO: background color */}
         <AntdLayout id={PAGE_CONTAINER_ID} className="h-full overflow-scroll">
           <Header />
-          <AntdLayout.Content className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full`}>
+          <AntdLayout.Content
+            className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
+              isGrayBackground ? 'bg-neutralHoverBg' : ''
+            }`}>
             {children}
           </AntdLayout.Content>
-          <Footer />
+          <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
         </AntdLayout>
       </>
     );

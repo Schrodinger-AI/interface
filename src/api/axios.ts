@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { message } from 'antd';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { storages } from 'storages';
 
 interface ResponseType<T> {
   code: string;
@@ -17,6 +18,11 @@ class Request {
 
     this.instance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
+        // add token
+        const token = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}').token;
+        if (token && !config.baseURL?.includes('cms')) {
+          config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+        }
         return config;
       },
       (error) => {
@@ -82,7 +88,11 @@ class Request {
             break;
         }
 
-        if (!error.response.config.baseURL?.includes('connect')) {
+        if (
+          !error.response.config.baseURL?.includes('connect') &&
+          !error.response.config.url?.includes('/token-price') &&
+          !error.response.config.url?.includes('/transaction-fee')
+        ) {
           message.error(errMessage);
         }
         return Promise.reject(errMessage);
