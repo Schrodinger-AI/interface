@@ -14,7 +14,6 @@ import AdoptActionModal from 'components/AdoptActionModal';
 import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { mockAdoptNextData } from 'components/AdoptNextModal/type';
 import AdoptNextModal from 'components/AdoptNextModal';
 
 export default function CountDownPage() {
@@ -103,7 +102,7 @@ export default function CountDownPage() {
 
   const adoptNext = async () => {
     adoptNextModal.show({
-      data: mockAdoptNextData,
+      data: {} as any,
       onConfirm: (item) => {
         console.log('adoptNext', item);
       },
@@ -207,7 +206,17 @@ export default function CountDownPage() {
               type="primary"
               size="ultra"
               className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-              onClick={adoptHandler}>
+              onClick={() => {
+                adoptHandler(
+                  {
+                    inscriptionImage: 'inscriptionImage',
+                    tokenName: 'SGR',
+                    symbol: 'SGR-1',
+                    generation: 10,
+                  } as any,
+                  wallet.address,
+                );
+              }}>
               adoptHandler
             </Button>
           </>

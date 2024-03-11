@@ -27,3 +27,8 @@ interface IResetSGRParams {
   amount: number;
   domain: string;
 }
+
+interface IGetBalanceParams {
+  symbol: string;
+  owner: string;
+}

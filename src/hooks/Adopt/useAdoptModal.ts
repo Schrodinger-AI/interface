@@ -8,80 +8,127 @@ import { getAdoptErrorMessage } from './getErrorMessage';
 import ResultModal, { Status } from 'components/ResultModal';
 import { sleep } from 'utils';
 import { singleMessage } from '@portkey/did-ui-react';
+import AdoptNextModal from 'components/AdoptNextModal';
+import { TSGRToken } from 'types/tokens';
+import { GetBalance } from 'contract/multiToken';
+import { AELF_TOKEN_INFO } from 'constants/assets';
+import { divDecimals } from 'utils/calculate';
+import { useGetTokenPrice, useTokenPrice, useTxFee } from 'hooks/useAssets';
+import SyncAdoptModal from 'components/SyncAdoptModal';
+import { ONE, ZERO } from 'constants/misc';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
 
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
+  const adoptNextModal = useModal(AdoptNextModal);
+  const asyncModal = useModal(SyncAdoptModal);
 
-  const adoptInput = useCallback((): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      adoptActionModal.show({
-        modalTitle: 'Adopt Next Generation Item',
-        info: {
-          name: 'name',
-          // logo: '',
-          subName: 'ssss',
-          // tag: 'GEN 1',
-        },
-        onClose: () => {
-          adoptActionModal.hide();
+  const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
+  const { txFee: commonTxFee } = useTxFee();
 
-          reject(AdoptActionErrorCode.cancel);
-        },
-        onConfirm: (amount: string) => {
-          adoptActionModal.hide();
-          resolve(amount as string);
-        },
-        inputProps: {
-          min: '0.00000001',
-          max: '1000',
-          decimals: 8,
-        },
-        balanceList: [
-          {
-            amount: '200 SGR-G',
-            suffix: 'sss',
-            usd: '222',
+  const getTokenPrice = useGetTokenPrice();
+
+  const getAllBalance = useCallback(async (tokens: { symbol: string; decimals: number }[], account: string) => {
+    const balances = await Promise.all(tokens.map((token) => GetBalance({ symbol: token.symbol, owner: account })));
+
+    return balances.map((item, index) => divDecimals(item?.balance ?? '0', tokens[index].decimals).toFixed());
+  }, []);
+
+  const getParentBalance = useCallback(
+    ({ symbol, decimals, account }: { symbol: string; decimals: number; account: string }) =>
+      getAllBalance([{ symbol, decimals }, AELF_TOKEN_INFO], account),
+    [getAllBalance],
+  );
+
+  const adoptInput = useCallback(
+    (parentItemInfo: TSGRToken, account: string, parentPrice?: string): Promise<string> => {
+      return new Promise(async (resolve, reject) => {
+        const [symbolBalance, ELFBalance] = await getParentBalance({
+          symbol: parentItemInfo.symbol,
+          account,
+          decimals: parentItemInfo.decimals,
+        });
+        adoptActionModal.show({
+          modalTitle: 'Adopt Next Generation Item',
+          info: {
+            logo: parentItemInfo.inscriptionImage,
+            name: parentItemInfo.tokenName,
+            tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
+            subName: parentItemInfo.symbol,
           },
-          {
-            amount: '200 SGR-G',
-            suffix: 'sss',
-            usd: '222',
+
+          inputProps: {
+            min: ONE.div(`1e${parentItemInfo.decimals}`).toFixed(),
+            max: symbolBalance,
+            decimals: parentItemInfo.decimals,
           },
-        ],
+          balanceList: [
+            {
+              amount: symbolBalance,
+              suffix: parentItemInfo.symbol,
+              usd: `${symbolBalance && parentPrice ? ZERO.plus(symbolBalance).times(parentPrice).toFixed(2) : '--'}`,
+            },
+            {
+              amount: ELFBalance,
+              suffix: AELF_TOKEN_INFO.symbol,
+              usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
+            },
+          ],
+          onClose: () => {
+            adoptActionModal.hide();
+
+            reject(AdoptActionErrorCode.cancel);
+          },
+          onConfirm: (amount: string) => {
+            adoptActionModal.hide();
+            resolve(amount as string);
+          },
+        });
       });
-    });
-  }, [adoptActionModal]);
+    },
+    [ELFPrice, adoptActionModal, getParentBalance],
+  );
 
   const approveAdopt = useCallback(
-    async ({ amount }: { amount: string }): Promise<string> =>
+    async ({
+      amount,
+      parentItemInfo,
+      account,
+    }: {
+      account: string;
+      amount: string;
+      parentItemInfo: TSGRToken;
+    }): Promise<string> =>
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
-            name: 'name',
-            subName: 'subName',
+            logo: parentItemInfo.inscriptionImage,
+            name: parentItemInfo.tokenName,
+            tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
+            subName: parentItemInfo.symbol,
           },
           title: 'Pending Approval',
           content: {
-            title: 'content title',
-            content: 'content content',
+            title: 'Go to your wallet',
+            content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
             try {
               const adoptId = await adoptStep1Handler({
                 params: {
-                  parent: '',
+                  parent: parentItemInfo.symbol,
                   amount,
-                  domain: '',
+                  domain: location.host,
                 },
-                address: '',
-                decimals: 8,
+                address: account,
+                decimals: parentItemInfo.decimals,
               });
               promptModal.hide();
               resolve(adoptId);
             } catch (error) {
+              console.log(error, 'error===');
               if (error === AdoptActionErrorCode.missingParams) {
                 reject(error);
                 return;
@@ -102,66 +149,55 @@ const useAdoptHandler = () => {
 
   const fetchImages = useCallback(
     async (adoptId: string) => {
-      promptModal.show({
-        info: {
-          name: 'name',
-          subName: 'subName',
-        },
-        title: 'getMessage',
-        content: {
-          title: 'content title',
-          content: 'content content',
-        },
-      });
+      asyncModal.show();
       const result = await fetchTraitsAndImages(adoptId);
-      promptModal.hide();
+      asyncModal.hide();
       return result;
     },
-    [promptModal],
+    [asyncModal],
   );
 
   const adoptConfirmInput = useCallback(
-    (infos: ISchrodingerImages, adoptId: string): Promise<any> => {
-      return new Promise((resolve, reject) => {
-        adoptActionModal.show({
-          modalTitle: 'Adopt Next Generation Item',
-          info: {
-            name: 'name',
-            // logo: '',
-            subName: 'ssss',
-            // tag: 'GEN 1',
+    async (infos: ISchrodingerImages, parentItemInfo: TSGRToken, account: string): Promise<ITraitImageInfo> => {
+      return new Promise(async (resolve, reject) => {
+        const [symbolBalance, ELFBalance] = await getParentBalance({
+          symbol: parentItemInfo.symbol,
+          account,
+          decimals: parentItemInfo.decimals,
+        });
+
+        adoptNextModal.show({
+          data: {
+            SGRToken: {
+              tokenName: parentItemInfo.tokenName,
+              symbol: parentItemInfo.symbol,
+              amount: symbolBalance,
+            },
+            newTraits: infos?.items[0]?.traits ?? [],
+            images: infos.images,
+            inheritedTraits: parentItemInfo.traits,
+            transaction: {
+              txFee: ZERO.plus(commonTxFee).toFixed(),
+              usd: `${commonTxFee && ELFPrice ? ZERO.plus(commonTxFee).times(ELFPrice).toFixed(2) : '--'}`,
+            },
+            ELFBalance: {
+              amount: ELFBalance,
+              usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
+            },
           },
+
           onClose: () => {
-            adoptActionModal.hide();
+            adoptNextModal.hide();
 
             reject(AdoptActionErrorCode.cancel);
           },
-          onConfirm: (imageInfo) => {
-            // adoptActionModal.hide();
-            // : { image: string; signature: string }
-            resolve({ image: 'string', signature: 'signature' });
+          onConfirm: (selectImage) => {
+            resolve(selectImage);
           },
-          inputProps: {
-            min: '0.00000001',
-            max: '1000',
-            decimals: 8,
-          },
-          balanceList: [
-            {
-              amount: '200 SGR-G',
-              suffix: 'sss',
-              usd: '222',
-            },
-            {
-              amount: '200 SGR-G',
-              suffix: 'sss',
-              usd: '222',
-            },
-          ],
         });
       });
     },
-    [adoptActionModal],
+    [ELFPrice, adoptNextModal, commonTxFee, getParentBalance],
   );
 
   const adoptConfirmHandler = useCallback(
@@ -176,6 +212,7 @@ const useAdoptHandler = () => {
           adoptActionModal.hide();
           const errorMessage = getAdoptErrorMessage(error, 'adopt confirm error');
           singleMessage.error(errorMessage);
+
           resultModal.show({
             modalTitle: 'You have failed minted!',
             info: {
@@ -206,12 +243,22 @@ const useAdoptHandler = () => {
   );
 
   const approveAdoptConfirm = useCallback(
-    async (infos: ISchrodingerImages, adoptId: string) => {
-      const { image, signature } = await adoptConfirmInput(infos, adoptId);
+    async ({
+      infos,
+      adoptId,
+      parentItemInfo,
+      account,
+    }: {
+      infos: ISchrodingerImages;
+      adoptId: string;
+      parentItemInfo: TSGRToken;
+      account: string;
+    }) => {
+      const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
       await adoptConfirmHandler({
         adoptId,
-        image,
-        signature,
+        image: selectItem.image,
+        signature: selectItem.secretWaterMarkImage,
       });
     },
     [adoptConfirmHandler, adoptConfirmInput],
@@ -237,21 +284,24 @@ const useAdoptHandler = () => {
     [resultModal],
   );
 
-  return useCallback(async () => {
-    try {
-      adoptConfirmHandler({} as any);
-      const amount = await adoptInput();
-      const adoptId = await approveAdopt({ amount });
-      const infos = await fetchImages(adoptId);
-      await approveAdoptConfirm(infos, adoptId);
-      await adoptConfirmSuccess();
-    } catch (error) {
-      console.log(error, 'error==');
-      if (error === AdoptActionErrorCode.cancel) return;
-      const errorMessage = getAdoptErrorMessage(error, 'adopt error');
-      singleMessage.error(errorMessage);
-    }
-  }, [adoptConfirmHandler, adoptConfirmSuccess, adoptInput, approveAdopt, approveAdoptConfirm, fetchImages]);
+  return useCallback(
+    async (parentItemInfo: TSGRToken, account: string) => {
+      try {
+        const parentPrice = await getTokenPrice(parentItemInfo.symbol);
+        const amount = await adoptInput(parentItemInfo, account, parentPrice);
+        const adoptId = await approveAdopt({ amount, account, parentItemInfo });
+        const infos = await fetchImages('adoptId');
+        await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
+        await adoptConfirmSuccess();
+      } catch (error) {
+        console.log(error, 'error==');
+        if (error === AdoptActionErrorCode.cancel) return;
+        const errorMessage = getAdoptErrorMessage(error, 'adopt error');
+        singleMessage.error(errorMessage);
+      }
+    },
+    [adoptConfirmSuccess, adoptInput, approveAdopt, approveAdoptConfirm, fetchImages, getTokenPrice],
+  );
 };
 
 export default useAdoptHandler;
