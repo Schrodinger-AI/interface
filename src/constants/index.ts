@@ -22,5 +22,3 @@ export const notFoundErrorTip = {
   [NotFoundType.domain]: 'The specified customised link does not exist.',
   [NotFoundType.path]: '',
 };
-
-export const ewellUrl = 'https://ewell.finance/';

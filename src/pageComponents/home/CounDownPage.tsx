@@ -12,11 +12,11 @@ import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
-import { ewellUrl } from 'constants/index';
 import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
+import { useResetHandler } from 'hooks/useResetHandler';
 
 export default function CountDownPage() {
   const isMobile = useMemo(() => !!isMobileDevices(), []);
@@ -145,6 +145,24 @@ export default function CountDownPage() {
     },
   ];
 
+  const resetHandler = useResetHandler();
+  const onResetClick = useCallback(() => {
+    resetHandler(
+      {
+        symbol: 'symbol',
+        decimals: 8,
+        inscriptionImage: '',
+        tokenName: 'tokenName',
+        generation: 3,
+        blockTime: 1,
+        traits: [],
+        amount: '100',
+        tick: '',
+      },
+      wallet.address,
+    );
+  }, [resetHandler, wallet.address]);
+
   return (
     <div className="relative">
       <section className="md:px-6 lg:px-0 pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
@@ -172,14 +190,6 @@ export default function CountDownPage() {
               <p>
                 In preparation for the inscription, you can acquire the token needed ,$SGR, on Launchpads on ethereum
                 and aelf soon.
-                {/* <span
-                  className="text-[#3888FF] cursor-pointer"
-                  onClick={() => {
-                    window.open(ewellUrl, '_blank');
-                  }}>
-                  ewell
-                </span>
-                . */}
               </p>
             </div>
           ) : (
@@ -204,6 +214,13 @@ export default function CountDownPage() {
                 className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
                 onClick={onShowModal}>
                 asyc modal
+              </Button>
+              <Button
+                type="primary"
+                size="ultra"
+                className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+                onClick={onResetClick}>
+                Reset
               </Button>
             </>
           )}
