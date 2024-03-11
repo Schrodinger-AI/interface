@@ -15,7 +15,7 @@ import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormat
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
 import { useMemo, useState } from 'react';
-import { WalletType } from 'aelf-web-login';
+import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { useRouter } from 'next/navigation';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
@@ -28,7 +28,14 @@ export default function Header() {
   const responsive = useResponsive();
   const router = useRouter();
 
+  const [logoutComplete, setLogoutComplete] = useState(true);
+
   const [menuModalVisible, setMenuModalVisible] = useState(false);
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    setLogoutComplete(true);
+    setMenuModalVisible(false);
+  });
 
   const CopyAddressItem = () => {
     return (
@@ -50,6 +57,7 @@ export default function Header() {
       <div
         className={styles.menuItem}
         onClick={() => {
+          setLogoutComplete(false);
           logout();
           setMenuModalVisible(false);
         }}>
@@ -72,7 +80,7 @@ export default function Header() {
           }
         }}>
         <PointsSVG />
-        <span>My Points</span>
+        <span>My Flux Points</span>
       </div>
     );
   };
@@ -86,7 +94,7 @@ export default function Header() {
           setMenuModalVisible(false);
         }}>
         <AssetSVG />
-        <span>My Asset</span>
+        <span>My Assets</span>
       </div>
     );
   };
@@ -150,6 +158,7 @@ export default function Header() {
             type="primary"
             size={responsive.md ? 'large' : 'small'}
             className="!rounded-lg md:!rounded-[12px]"
+            disabled={!logoutComplete}
             onClick={() => {
               store.dispatch(setLoginTrigger('login'));
               checkLogin();
