@@ -1,5 +1,5 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button } from 'aelf-design';
+import { Button, Tooltip } from 'aelf-design';
 import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';
@@ -7,6 +7,7 @@ import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import AIImageSelect, { TAIImage } from 'components/AIImageSelect';
+import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { PropsWithChildren, useCallback, useState } from 'react';
 import { IAdoptNextData } from './type';
 interface IDescriptionItemProps extends PropsWithChildren {
@@ -17,7 +18,14 @@ interface IDescriptionItemProps extends PropsWithChildren {
 function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
   return (
     <div className="flex flex-col gap-[16px]">
-      <div className="text-lg font-medium">{title}</div>
+      <div className="flex items-center gap-2">
+        <div className="text-lg font-medium">{title}</div>
+        {tip && (
+          <Tooltip title={tip}>
+            <QuestionSVG />
+          </Tooltip>
+        )}
+      </div>
       {children}
     </div>
   );
@@ -58,7 +66,9 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal<TAIImage>)
       <div className="flex flex-col gap-[24px] lg:gap-[32px]">
         <NoticeBar text="Please do not close this pop-up window." />
         <SGRTokenInfo {...SGRToken} />
-        <DescriptionItem title="New Traits You Got">
+        <DescriptionItem
+          title="New Traits You Got"
+          tip="A new trait type is randomly generated with this evolution. Based on the trait type, specific traits will be generated powered by AI.">
           <TraitsList data={newTraits} showNew />
         </DescriptionItem>
         <DescriptionItem title="Please select the image you like to complete the whole process.">
