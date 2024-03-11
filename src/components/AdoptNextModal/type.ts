@@ -1,5 +1,4 @@
 import { ITrait } from 'types/tokens';
-import { TAIImage } from 'components/AIImageSelect';
 
 export interface IAdoptNextData {
   SGRToken: {
@@ -8,7 +7,7 @@ export interface IAdoptNextData {
     amount?: string;
   };
   newTraits: ITrait[];
-  images: TAIImage[];
+  images: string[];
   inheritedTraits: ITrait[];
   transaction: {
     txFee?: string;

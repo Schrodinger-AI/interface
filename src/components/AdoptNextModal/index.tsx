@@ -34,16 +34,16 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 interface IAdoptNextModal {
   isAcross?: boolean;
   data: IAdoptNextData;
-  onConfirm: (item: ITraitImageInfo) => void;
+  onConfirm: (image: string) => void;
   onClose?: () => void;
 }
 
 function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
-  const [selectImage, setSelectImage] = useState<ITraitImageInfo>();
+  const [selectImage, setSelectImage] = useState<string>();
   const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
-  const onSelect = useCallback((item: ITraitImageInfo) => {
+  const onSelect = useCallback((item: string) => {
     setSelectImage(item);
   }, []);
 
@@ -65,7 +65,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
         )}
       </div>
     );
-  }, []);
+  }, [isAcross]);
 
   return (
     <CommonModal

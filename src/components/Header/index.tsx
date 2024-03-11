@@ -1,7 +1,6 @@
 'use client';
 import { Button, Dropdown } from 'aelf-design';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
-import Image from 'next/image';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
 import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
 import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
@@ -14,25 +13,67 @@ import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { WalletType } from 'aelf-web-login';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
-import { NavHostTag } from 'components/HostTag';
+import { useCmsInfo } from 'redux/hooks';
+import Link from 'next/link';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
+import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
+import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
+import { ICompassProps } from 'api/type';
 
 export default function Header() {
-  const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
-  const { wallet, isLogin, walletType } = useWalletService();
+  const { checkLogin } = useCheckLoginAndToken();
+  const { logout, wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
   const router = useRouter();
+  const pathname = usePathname();
+  const navigate = useRouter();
 
-  const [menuModalVisible, setMenuModalVisible] = useState(false);
+  const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
+  const { routerItems = '{}' } = useCmsInfo() || {};
+  const menuItems = useMemo(() => {
+    let lists: Array<ICompassProps> = [];
+    try {
+      const parsed = JSON.parse(routerItems) as ICompassProps;
+      lists = parsed.items || [];
+    } catch (e) {
+      console.error(e, 'parse routerItems failed');
+    }
+    return lists;
+  }, [routerItems]);
 
-  const CopyAddressItem = () => {
+  const onPressCompassItems = useCallback(
+    (event: any, to: string, isInner: boolean) => {
+      console.log(to, isInner, 'to, isInner ', isLogin, 'isLogin');
+      if (isInner) {
+        if (!isLogin) {
+          event.preventDefault();
+          store.dispatch(setLoginTrigger('login'));
+          checkLogin();
+        } else {
+          navigate.push(to);
+        }
+      } else {
+        // open new tab
+        event.preventDefault();
+        const newWindow = window.open(to, '_blank');
+        newWindow && (newWindow.opener = null);
+        if (newWindow && typeof newWindow.focus === 'function') {
+          newWindow.focus();
+        }
+      }
+    },
+    [checkLogin, isLogin, navigate],
+  );
+
+  const CopyAddressItem = useCallback(() => {
     return (
-      <div className={styles.menuItem}>
+      <div className="flex gap-[8px] items-center">
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -43,53 +84,49 @@ export default function Header() {
         />
       </div>
     );
-  };
+  }, [setCopied, wallet.address]);
 
-  const LogoutItem = () => {
+  const LogoutItem = useCallback(() => {
     return (
       <div
-        className={styles.menuItem}
+        className="flex gap-[8px] items-center"
         onClick={() => {
           logout();
-          setMenuModalVisible(false);
+          setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
         <ExitSVG />
         <span>Log out</span>
       </div>
     );
-  };
+  }, [logout]);
 
-  const PointsItem = () => {
+  const PointsItem = useCallback(() => {
     return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          if (checkTokenValid()) {
-            router.push('/points');
-            setMenuModalVisible(false);
-          } else {
-            checkLogin();
-          }
-        }}>
-        <PointsSVG />
-        <span>My Points</span>
-      </div>
-    );
-  };
-
-  const AssetItem = () => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          router.push('/assets');
-          setMenuModalVisible(false);
-        }}>
+      <div className="flex gap-[8px] items-center">
         <AssetSVG />
-        <span>My Asset</span>
+        <span
+          onClick={() => {
+            router.push('/points');
+          }}>
+          My Points
+        </span>
       </div>
     );
-  };
+  }, [router]);
+
+  const AssetItem = useCallback(() => {
+    return (
+      <div className="flex gap-[8px] items-center">
+        <PointsSVG />
+        <span
+          onClick={() => {
+            router.push('/assets');
+          }}>
+          My Asset
+        </span>
+      </div>
+    );
+  }, [router]);
 
   const items = useMemo(() => {
     const menuItems = [
@@ -105,10 +142,126 @@ export default function Header() {
       },
     ];
     if (walletType !== WalletType.portkey) {
-      return [menuItems[0], ...menuItems.slice(2)];
+      return menuItems.splice(1, 1);
     }
     return menuItems;
-  }, [walletType, wallet]);
+  }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
+
+  const firstClassCompassItems = useMemo(() => {
+    return menuItems.map((item) => {
+      return {
+        key: item.title,
+        label: (
+          <div
+            className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
+            onClick={(event) => {
+              item?.schema && onPressCompassItems(event, item?.schema, item.type !== 'out');
+            }}>
+            <div className="text-lg">{item.title}</div>
+            <ArrowIcon className="size-4" />
+          </div>
+        ),
+      };
+    });
+  }, [menuItems, onPressCompassItems]);
+
+  const CompassText = (props: { title?: string; schema?: string }) => {
+    const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
+    return (
+      <span
+        className={`!rounded-[12px] text-lg ${
+          isCurrent ? 'text-compassActive' : 'text-compassNormal'
+        } hover:text-compassActive cursor-pointer`}>
+        {props.title}
+      </span>
+    );
+  };
+
+  const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
+    const isInner = type !== 'out';
+    return (
+      <Link
+        href={!isLogin ? '' : to}
+        scroll={false}
+        onClick={(event) => {
+          onPressCompassItems(event, to, isInner);
+        }}
+        {...props}>
+        <CompassText title={title} schema={to} />
+      </Link>
+    );
+  };
+  const FunctionalArea = (itemList: Array<ICompassProps>) => {
+    const myComponent = !isLogin ? (
+      <Button
+        type="primary"
+        size={responsive.md ? 'large' : 'small'}
+        className="!rounded-lg md:!rounded-[12px]"
+        onClick={() => {
+          store.dispatch(setLoginTrigger('login'));
+          checkLogin();
+        }}>
+        Log in
+      </Button>
+    ) : (
+      <MyDropDown />
+    );
+    if (responsive.md) {
+      return (
+        <span className="space-x-16 flex flex-row items-center">
+          {itemList.map((item) => {
+            const { title, items = [], schema, type } = item;
+            if (items?.length > 0) {
+              return (
+                <Dropdown
+                  key={title}
+                  overlayClassName={styles.dropdown}
+                  placement="bottomCenter"
+                  menu={{
+                    items: items.map((sub) => {
+                      return {
+                        key: sub.title,
+                        type: 'group',
+                        label: (
+                          <CompassLink
+                            key={sub.title}
+                            to={sub.schema}
+                            type={sub.type}
+                            title={sub.title}
+                            className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]">
+                            <CompassText title={sub.title} schema={sub.schema} />
+                          </CompassLink>
+                        ),
+                      } as ItemType;
+                    }),
+                  }}>
+                  <CompassText title={title} schema={schema} />
+                </Dropdown>
+              );
+            } else {
+              return (
+                <CompassLink
+                  key={title}
+                  to={schema}
+                  type={type}
+                  title={title}
+                  className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
+                />
+              );
+            }
+          })}
+          <div>{myComponent}</div>
+        </span>
+      );
+    } else {
+      return (
+        <span className="space-x-4 flex flex-row items-center">
+          {myComponent}
+          <MenuIcon className="size-8" onClick={() => setMenuModalVisibleModel(ModalViewModel.MENU)} />
+        </span>
+      );
+    }
+  };
 
   const MyDropDown = () => {
     if (responsive.md) {
@@ -127,7 +280,7 @@ export default function Header() {
         className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
         size="small"
         onClick={() => {
-          setMenuModalVisible(true);
+          setMenuModalVisibleModel(ModalViewModel.MY);
         }}>
         <MenuMySVG className="mr-[8px]" />
         My
@@ -135,43 +288,31 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
-      <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
+    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
+      <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
+        {
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={require('assets/img/logo.png').default.src}
             alt="logo"
-            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px] m"
+            width={responsive.md ? 200 : 150}
+            height={responsive.md ? 32 : 24}
           />
-          <NavHostTag />
-        </div>
-        {!isLogin ? (
-          <Button
-            type="primary"
-            size={responsive.md ? 'large' : 'small'}
-            className="!rounded-lg md:!rounded-[12px]"
-            onClick={() => {
-              store.dispatch(setLoginTrigger('login'));
-              checkLogin();
-            }}>
-            Log in
-          </Button>
-        ) : (
-          <MyDropDown />
-        )}
+        }
+        {FunctionalArea(menuItems)}
       </div>
       <Modal
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG />}
-        title="My"
-        open={menuModalVisible}
+        title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
+        open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable
         destroyOnClose
         onCancel={() => {
-          setMenuModalVisible(false);
+          setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
-        {items.map((item, index) => {
+        {(menuModalVisibleModel === ModalViewModel.MY ? items : firstClassCompassItems).map((item, index) => {
           return (
             <div
               className="w-full h-[64px] flex items-center border-x-0 border-t-0 border-b-[1px] border-solid border-[#EDEDED] text-[16px] font-medium text-[#1A1A1A]"
@@ -183,4 +324,10 @@ export default function Header() {
       </Modal>
     </section>
   );
+}
+
+enum ModalViewModel {
+  NONE,
+  MY,
+  MENU,
 }
