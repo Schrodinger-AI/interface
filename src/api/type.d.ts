@@ -31,6 +31,16 @@ interface IBaseTrait {
   value: string;
 }
 
+interface ITraitImageInfo {
+  traits: IBaseTrait[];
+  name: string;
+  value: string;
+  image: string;
+  waterMarkImage: string;
+  secretImage: string;
+  secretWaterMarkImage: string;
+}
+
 interface ISchrodingerImages {
   items: [
     {
@@ -42,17 +52,7 @@ interface ISchrodingerImages {
       ];
     },
   ];
-  images: [
-    {
-      traits: IBaseTrait[];
-      name: string;
-      value: string;
-      image: string;
-      waterMarkImage: string;
-      secretImage: string;
-      secretWaterMarkImage: string;
-    },
-  ];
+  images: ITraitImageInfo[];
   extraData: any;
 }
 interface IGetPointsParams {

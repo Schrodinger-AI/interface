@@ -21,3 +21,14 @@ interface IConfirmAdoptParams {
   image: string;
   signature: string;
 }
+
+interface IResetSGRParams {
+  symbol: string;
+  amount: number;
+  domain: string;
+}
+
+interface IGetBalanceParams {
+  symbol: string;
+  owner: string;
+}

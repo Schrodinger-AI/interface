@@ -1,7 +1,7 @@
 interface IProps {
   // TODO: number precision
-  txFee?: number;
-  usd?: number;
+  txFee?: string;
+  usd?: string;
 }
 
 export default function TransactionFee({ txFee, usd }: IProps) {
