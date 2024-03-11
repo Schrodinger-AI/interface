@@ -23,22 +23,15 @@ import { addPrefixSuffix } from 'utils/addressFormatting';
 import { sleep } from 'utils';
 import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
 
-const mockData: TBaseSGRToken[] = new Array(32)
-  .fill({
-    tokenName: 'tokenName',
-    symbol: `symbol_${new Date().getTime()}`,
-    inscriptionImage: '',
-    decimals: 8,
-    amount: '123456789',
-    generation: 2,
-    blockTime: 1,
-  })
-  .map((item, index) => {
-    return {
-      ...item,
-      symbol: item.symbol + index,
-    };
-  });
+const mockData: TBaseSGRToken[] = new Array(32).fill({
+  tokenName: 'tokenName',
+  symbol: 'symbol',
+  inscriptionImage: '',
+  decimals: 8,
+  amount: '123456789000000',
+  generation: 2,
+  blockTime: 1,
+});
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();

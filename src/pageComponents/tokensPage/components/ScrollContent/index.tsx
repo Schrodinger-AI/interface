@@ -75,8 +75,9 @@ function ScrollContent(props: IContentProps) {
             </Flex>
           ),
         }}
-        renderItem={(item) => (
-          <List.Item key={item.symbol}>
+        renderItem={(item, index) => (
+          // TODO: Change the key to symbol
+          <List.Item key={`${item.symbol}_${new Date().getTime()}_${index}`}>
             <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
