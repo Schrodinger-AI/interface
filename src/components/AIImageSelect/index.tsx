@@ -6,7 +6,7 @@ import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import useResponsive from 'hooks/useResponsive';
 
 interface IAIImageSelectProps {
-  list: string[];
+  list?: string[];
   onSelect: (item: string) => void;
 }
 
@@ -84,7 +84,7 @@ export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps) {
 
   return (
     <div className="flex gap-[16px] flex-wrap">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         <AIImage key={index} src={item} item={item} active={current === item} onSelect={onClick} />
       ))}
     </div>
