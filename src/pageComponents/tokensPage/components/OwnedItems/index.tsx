@@ -19,7 +19,6 @@ import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { sleep } from 'utils';
 import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
 
@@ -51,7 +50,7 @@ export default function OwnedItems() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
-  const walletAddress = useMemo(() => addPrefixSuffix(wallet.address), [wallet.address]);
+  const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const siderWidth = useMemo(() => {
     if (is2XL) {
       return 440;
