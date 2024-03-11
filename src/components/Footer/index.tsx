@@ -1,8 +1,9 @@
+import clsx from 'clsx';
 import styles from './style.module.css';
-export default function Footer() {
+
+export default function Footer({ className }: { className?: string }) {
   return (
-    // TODO: background color
-    <section className="flex-shrink-0">
+    <section className={clsx('flex-shrink-0', className)}>
       <div className={`${styles.footer}`}>
         <span>Schrödinger@2024</span>
       </div>

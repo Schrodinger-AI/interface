@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FilterKeyEnum,
-  ICompProps,
-  IFilterSelect,
-  getDefaultFilter,
-  getComponentByType,
-  getFilter,
-  getFilterList,
-} from '../../type';
+import { FilterKeyEnum, ICompProps, getDefaultFilter, getComponentByType, getFilter, getFilterList } from '../../type';
 import clsx from 'clsx';
 import { Flex, Layout } from 'antd';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
@@ -19,7 +11,6 @@ import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { sleep } from 'utils';
 import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
 
@@ -43,7 +34,6 @@ export default function OwnedItems() {
   const curChain = cmsInfo?.curChain || '';
   const filterList = getFilterList(curChain);
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
-  const [filterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TBaseSGRToken[]>([]);
   const isLoadMore = useRef<boolean>(false);
@@ -51,7 +41,7 @@ export default function OwnedItems() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
-  const walletAddress = useMemo(() => addPrefixSuffix(wallet.address), [wallet.address]);
+  const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const siderWidth = useMemo(() => {
     if (is2XL) {
       return 440;
@@ -71,19 +61,22 @@ export default function OwnedItems() {
     };
   }, [defaultFilter, walletAddress]);
   const requestParams = useMemo(() => {
-    const filter = getFilter(filterSelect);
+    const filter = getFilter(defaultFilter);
     return {
       ...filter,
       address: walletAddress,
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
     };
-  }, [current, filterSelect, walletAddress]);
+  }, [current, defaultFilter, walletAddress]);
 
   const getSchrodingerList = useGetSchrodingerList();
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: TGetSchrodingerListParams['input']; loadMore?: boolean }) => {
+      if (!params.chainId || !params.address) {
+        return;
+      }
       if (loadMore) {
         setMoreLoading(true);
       } else {
@@ -133,7 +126,7 @@ export default function OwnedItems() {
 
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
-      const defaultValue = filterSelect[item.key]?.data;
+      const defaultValue = defaultFilter[item.key]?.data;
       const Comp: React.FC<ICompProps> = getComponentByType(item.type);
       return {
         key: item.key,
@@ -146,7 +139,7 @@ export default function OwnedItems() {
         ],
       };
     });
-  }, [filterList, filterSelect]);
+  }, [filterList, defaultFilter]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
