@@ -14,6 +14,10 @@
     "value": "Eye of fire",
     "percent": 2.34
   },{
+    "traitType": "Hair",
+    "value": "blue",
+    "percent": 8.4
+  },{
     "traitType": "Tie",
     "value": "Purple tie",
     "percent": 1.25

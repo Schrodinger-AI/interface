@@ -2,6 +2,7 @@ import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { ISGRDetailRes } from '../types';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
+import { ISGRDetailTrait } from '../types';
 
 export default function ItemInfo({
   detail,
@@ -11,9 +12,15 @@ export default function ItemInfo({
   onAdoptNextGeneration: () => void;
 }) {
   const traits = () => {
-    return (
+    const rowTraits = [];
+    const rowNum = 3;
+    for (let i = 0; i < detail.traits.length; i += rowNum) {
+      const chunk = detail.traits.slice(i, i + rowNum);
+      rowTraits.push(chunk);
+    }
+    const rowRrait = (traits: ISGRDetailTrait[]) => (
       <div className="mb-[16px] flex flex-col lg:flex-row justify-between">
-        {detail.traits.map((item) => (
+        {traits.map((item) => (
           <>
             <div
               key={item.traitType}
@@ -35,6 +42,7 @@ export default function ItemInfo({
         ))}
       </div>
     );
+    return <div className="w-full flex flex-col justify-center">{rowTraits.map((item) => rowRrait(item))}</div>;
   };
 
   const noTraits = () => {
