@@ -1,7 +1,7 @@
 import { TBaseTokenInfo } from 'types';
 
 export const DEFAULT_TX_FEE = {
-  common: 0.30635,
+  common: 0.0031,
 };
 
 export const PRICE_QUOTE_COIN = 'USD';
