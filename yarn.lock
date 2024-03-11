@@ -2440,11 +2440,6 @@
   resolved "https://registry.npmmirror.com/@portkey/types/-/types-2.0.5.tgz#c69348bf42b9b845e80000630c62c69b692a0582"
   integrity sha512-N86Mxt/zuZeyGFKkEBxYDtGgmW7wmrhFwkSoeUf+1sfuvgf/sVevuB/c19VvXTu69MwQoAwJ1wB/lfnfbkTV+A==
 
-"@portkey/utils@2.0.0-alpha.26":
-  version "2.0.0-alpha.26"
-  resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-2.0.0-alpha.26.tgz#843eb15b72b151eea0a95d6101a0b99c8212f9ff"
-  integrity sha512-wSkXbmpN26RieYAZiAlWgo8H92ahgXcW5BAkLbgghNRSFZc3yd/uU+DhH5l3hp3dv+XPJT3xhx1ULNumHtC2kw==
-
 "@portkey/utils@^2.0.3":
   version "2.0.3"
   resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-2.0.3.tgz#4dab37978928461dc448cc0f27deead22acea1de"
@@ -2454,6 +2449,11 @@
   version "2.0.5"
   resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-2.0.5.tgz#3ed6fbf69c301bda6299b4bebee555922336183b"
   integrity sha512-Q2VYr4vfs6Vu4Z/nrS3MxeoBsjIk3GRNaUJ6+9vevczRHpynvGDdNkVlOWiMdcZVyh4TEmB5+axpmUxv/Zolrg==
+
+"@portkey/utils@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-2.1.0.tgz#78df6b9a82084f325c087e0d8dc04ba0a898ec79"
+  integrity sha512-UL5uEQkJjA0fi5v5rxtRjvTPuXa0EgNza4tB6t6ALDUgv2fgEoeh0LNO4PHwnotyMLHIpU0K+W+iL/36KPtZEQ==
 
 "@portkey/validator@^2.0.5":
   version "2.0.5"
@@ -3400,10 +3400,10 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.3.0:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^2.0.0-beta.29:
-  version "2.0.0-beta.29"
-  resolved "https://registry.npmmirror.com/aelf-web-login/-/aelf-web-login-2.0.0-beta.29.tgz#43536b8ee49de20fafdfd7b0409e07dcc7d2c38b"
-  integrity sha512-jTb63Rcxi6h8Rpp+bEIcLrGU19N3mCO5Mtmzm/1azoIKTqsWu5BEUwCcoDZlG7V6tY+qir5OE5nraiG+ZHue5g==
+aelf-web-login@2.0.1-beta.2:
+  version "2.0.1-beta.2"
+  resolved "https://registry.yarnpkg.com/aelf-web-login/-/aelf-web-login-2.0.1-beta.2.tgz#c50641d0cd7d771823c5f461d345a132e80ca619"
+  integrity sha512-TI5Yxw7Q4cc3JFbKoxLrSiFtCZqPokM0dwoGfx3bgaM5QGwitLcah537DyAdugah5oVNobrkg1zvUbGJZBBHgw==
   dependencies:
     "@aelf-react/core" "^0.1.19"
     "@portkey/detect-provider" "2.0.0-alpha.5"
