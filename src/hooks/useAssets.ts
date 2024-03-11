@@ -85,7 +85,7 @@ export function useGetTokenPrice() {
   const tokenPriceMap = useTokenPriceMapStore();
 
   return useCallback(
-    (symbol = DEFAULT_TOKEN_SYMBOL) => {
+    async (symbol = DEFAULT_TOKEN_SYMBOL) => {
       const tokenPrice = tokenPriceMap?.[`${symbol}_${PRICE_QUOTE_COIN}`];
       if (tokenPrice) return tokenPrice;
       return refreshTokenPrice(symbol);
