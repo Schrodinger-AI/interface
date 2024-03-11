@@ -1,5 +1,6 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button, Tooltip } from 'aelf-design';
+import { Button } from 'aelf-design';
+import { Tooltip } from 'antd';
 import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';

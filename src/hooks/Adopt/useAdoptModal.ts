@@ -14,6 +14,7 @@ import { useGetTokenPrice, useTokenPrice, useTxFee } from 'hooks/useAssets';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { ONE, ZERO } from 'constants/misc';
 import { useGetAllBalance } from 'hooks/useGetAllBalance';
+import useLoading from 'hooks/useLoading';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -22,6 +23,7 @@ const useAdoptHandler = () => {
   const resultModal = useModal(ResultModal);
   const adoptNextModal = useModal(AdoptNextModal);
   const asyncModal = useModal(SyncAdoptModal);
+  const { showLoading, closeLoading } = useLoading();
 
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const { txFee: commonTxFee } = useTxFee();
@@ -113,7 +115,7 @@ const useAdoptHandler = () => {
                 params: {
                   parent: parentItemInfo.symbol,
                   amount,
-                  domain: location.host,
+                  domain: location.host, // 'schrodingerai.com',
                 },
                 address: account,
                 decimals: parentItemInfo.decimals,
@@ -185,6 +187,7 @@ const useAdoptHandler = () => {
             reject(AdoptActionErrorCode.cancel);
           },
           onConfirm: (selectImage) => {
+            adoptNextModal.hide();
             resolve(selectImage);
           },
         });
@@ -197,7 +200,11 @@ const useAdoptHandler = () => {
     async (params: { adoptId: string; image: string }) => {
       return new Promise(async (resolve, reject) => {
         const imageSignature = await fetchWaterImages(params);
-        const confirmParams = { ...params, signature: imageSignature.signature };
+        const signature = imageSignature.signature;
+        const image = imageSignature.image;
+        // const signature = params.image;
+        // const image = params.image;
+        const confirmParams = { adoptId: params.adoptId, image: image, signature };
         try {
           const result = await adoptStep2Handler(confirmParams);
           adoptActionModal.hide();
@@ -249,6 +256,7 @@ const useAdoptHandler = () => {
       account: string;
     }) => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
+      console.log(selectItem, 'selectItem=');
       await adoptConfirmHandler({
         adoptId,
         image: selectItem,
@@ -280,10 +288,14 @@ const useAdoptHandler = () => {
   return useCallback(
     async (parentItemInfo: TSGRToken, account: string) => {
       try {
+        showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
+        closeLoading();
+
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
+
         await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
         await adoptConfirmSuccess();
       } catch (error) {
@@ -293,7 +305,16 @@ const useAdoptHandler = () => {
         singleMessage.error(errorMessage);
       }
     },
-    [adoptConfirmSuccess, adoptInput, approveAdopt, approveAdoptConfirm, fetchImages, getTokenPrice],
+    [
+      adoptConfirmSuccess,
+      adoptInput,
+      approveAdopt,
+      approveAdoptConfirm,
+      closeLoading,
+      fetchImages,
+      getTokenPrice,
+      showLoading,
+    ],
   );
 };
 
