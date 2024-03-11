@@ -5,6 +5,7 @@ import { store } from 'redux/store';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { timesDecimals } from 'utils/calculate';
 import ProtoInstance from 'utils/initializeProto';
+import { AdoptActionErrorCode } from './adopt';
 
 export interface IAttribute {
   traitType: string;
@@ -39,37 +40,35 @@ export const adoptStep1Handler = async ({
     domain: string;
   };
 }) => {
-  try {
-    const amount = params.amount;
-    const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState().info.cmsInfo || {};
-    if (!contractAddress || !chainId) throw 'Missing contractAddress or chainId';
-    const check = await checkAllowanceAndApprove({
-      spender: contractAddress,
-      address,
-      chainId,
-      symbol: params.parent,
-      decimals,
-      amount,
-    });
+  const amount = params.amount;
+  const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState().info.cmsInfo || {};
+  if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
+  await sleep(1000);
+  const check = await checkAllowanceAndApprove({
+    spender: contractAddress,
+    address,
+    chainId,
+    symbol: params.parent,
+    decimals,
+    amount,
+  });
 
-    if (!check) throw 'Approve failed';
+  if (!check) throw AdoptActionErrorCode.approveFailed;
 
-    params.amount = timesDecimals(params.amount, decimals).toFixed(0);
+  params.amount = timesDecimals(params.amount, decimals).toFixed(0);
 
-    const result = await Adopt(params);
-    //   const result
-    const logs = await ProtoInstance.getLogEventResult<IAdopted>({
-      contractAddress,
-      logsName: 'Adopted',
-      TransactionResult: result.TransactionResult,
-    });
-    if (!logs) throw 'Can not get adopt result!';
-    const { adoptId } = logs;
-    return adoptId;
-  } catch (error) {
-    console.error(error);
-    throw 'Adopt error,  please Try again';
-  }
+  const result = await Adopt(params);
+
+  const TransactionResult = result.TransactionResult;
+
+  const logs = await ProtoInstance.getLogEventResult<IAdopted>({
+    contractAddress,
+    logsName: 'Adopted',
+    TransactionResult,
+  });
+  if (!logs) throw AdoptActionErrorCode.adoptFailed;
+  const { adoptId } = logs;
+  return adoptId;
 };
 
 export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<ISchrodingerImages> => {
@@ -80,12 +79,9 @@ export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<
     if (!result || !result.items?.length) throw 'Waiting';
     return result;
   } catch (error) {
-    await sleep(5000);
+    await sleep(3000);
     return fetchTraitsAndImages(adoptId, count);
   }
 };
 
-export const adoptStep2Handler = async (params: IConfirmAdoptParams) => {
-  const result = await confirmAdopt(params);
-  console.log(result, 'result===');
-};
+export const adoptStep2Handler = (params: IConfirmAdoptParams) => confirmAdopt(params);

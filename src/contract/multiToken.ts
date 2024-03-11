@@ -84,3 +84,13 @@ export const Approve = async (params: IApproveParams, options?: IContractOptions
     return Promise.reject(error);
   }
 };
+
+interface IBalanceResult {
+  symbol: string;
+  owner: string;
+  balance: string;
+}
+export const GetBalance = async (
+  params: IGetBalanceParams,
+  options: IContractOptions = { type: ContractMethodType.VIEW },
+): Promise<IBalanceResult> => (await multiTokenContractRequest('GetBalance', params, options)) as IBalanceResult;

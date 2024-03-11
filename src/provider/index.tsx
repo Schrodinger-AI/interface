@@ -19,6 +19,7 @@ import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
 import { usePathname } from 'next/navigation';
 import Loading from 'components/PageLoading/index';
+import { Updater } from 'components/Updater';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -85,7 +86,9 @@ function Provider({ children }: { children: React.ReactNode }) {
               <Loading content="Enrollment in progress"></Loading>
             ) : showPage ? (
               <WebLoginProvider>
-                <NiceModal.Provider>{children}</NiceModal.Provider>
+                <Updater>
+                  <NiceModal.Provider>{children}</NiceModal.Provider>
+                </Updater>
               </WebLoginProvider>
             ) : (
               <NotFoundPage type={isCorrectDomain ? NotFoundType.path : NotFoundType.domain} />
