@@ -34,7 +34,7 @@ export default function PointsPage() {
 
   return (
     <div className="w-full max-w-[1360px]">
-      <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Details of credits token earned for this domain</h1>
+      <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Activities and Flux Points Earned:</h1>
       {data?.pointDetails.length ? (
         <TokenEarnList dataSource={data?.pointDetails || []} />
       ) : (
