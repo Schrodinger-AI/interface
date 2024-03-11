@@ -10,12 +10,11 @@ import { sleep } from 'utils';
 import { singleMessage } from '@portkey/did-ui-react';
 import AdoptNextModal from 'components/AdoptNextModal';
 import { TSGRToken } from 'types/tokens';
-import { GetBalance } from 'contract/multiToken';
 import { AELF_TOKEN_INFO } from 'constants/assets';
-import { divDecimals } from 'utils/calculate';
 import { useGetTokenPrice, useTokenPrice, useTxFee } from 'hooks/useAssets';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { ONE, ZERO } from 'constants/misc';
+import { useGetAllBalance } from 'hooks/useGetAllBalance';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -29,12 +28,7 @@ const useAdoptHandler = () => {
   const { txFee: commonTxFee } = useTxFee();
 
   const getTokenPrice = useGetTokenPrice();
-
-  const getAllBalance = useCallback(async (tokens: { symbol: string; decimals: number }[], account: string) => {
-    const balances = await Promise.all(tokens.map((token) => GetBalance({ symbol: token.symbol, owner: account })));
-
-    return balances.map((item, index) => divDecimals(item?.balance ?? '0', tokens[index].decimals).toFixed());
-  }, []);
+  const getAllBalance = useGetAllBalance();
 
   const getParentBalance = useCallback(
     ({ symbol, decimals, account }: { symbol: string; decimals: number; account: string }) =>
