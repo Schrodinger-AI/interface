@@ -86,17 +86,19 @@ export default function OwnedItems() {
       await sleep(2000);
       try {
         // TODO: fetch data from server
-        // const res = await getSchrodingerList({
-        //   input: params,
-        // });
-        const res = {
-          data: {
-            totalCount: 100,
-            data: mockData,
-          },
-        };
-        setTotal(res.data.totalCount ?? 0);
-        const data = (res.data.data || []).map((item) => {
+        const {
+          data: { getSchrodingerList: res },
+        } = await getSchrodingerList({
+          input: params,
+        });
+        // const res = {
+        //   data: {
+        //     totalCount: 100,
+        //     data: mockData,
+        //   },
+        // };
+        setTotal(res.totalCount ?? 0);
+        const data = (res.data || []).map((item) => {
           return {
             ...item,
             amount: divDecimals(item.amount, item.decimals).toFixed(),
@@ -115,7 +117,7 @@ export default function OwnedItems() {
       }
     },
     // There cannot be dependencies showLoading and closeLoading
-    [],
+    [getSchrodingerList],
   );
 
   useEffect(() => {

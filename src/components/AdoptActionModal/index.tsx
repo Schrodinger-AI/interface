@@ -38,7 +38,6 @@ export type TAdoptActionModalProps = {
   balanceList?: TBalanceItem[];
   inputProps?: ISGRAmountInputProps;
   isReset?: boolean;
-  receiveTokenName: string;
 };
 
 function AdoptActionModal(params: TAdoptActionModalProps) {
@@ -104,9 +103,9 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [tokenPrice, txFee]);
 
   const rateValue = useMemo(() => {
-    if (isReset) return `1 ${info.name} Adopt 1 ${params.receiveTokenName}`;
-    return `1 ${info.name} Adopt 0.95 ${params.receiveTokenName}`;
-  }, [info.name, isReset, params.receiveTokenName]);
+    if (isReset) return `Reroll 1 ${info.name} receive 1 SGR-1`;
+    return `Consume 1 ${info.name} adopt 0.95 next-gen cat`;
+  }, [info.name, isReset]);
 
   const inputTitle = useMemo(() => {
     if (isReset) return 'Enter the item amount you want to Reset';
