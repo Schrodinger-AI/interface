@@ -108,19 +108,35 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [info.name, isReset]);
 
   const inputTitle = useMemo(() => {
-    if (isReset) return 'Enter the item amount you want to Reset';
-    return 'Enter the item amount you want to consume to adopt';
+    if (isReset) return 'Enter the amount of cats you want to reroll back to SGR-1.';
+    return 'Enter the amount of cats you want to consume to adopt next-gen cats';
   }, [isReset]);
 
   const inputDescription = useMemo(() => {
-    if (isReset) return 'You can only reset back to SGR';
-    return 'The more adopt amount you enter, the more images will be peeked.';
+    if (isReset)
+      return 'By rerolling, your cat will be reverted back to its original status (gen0) and you will receive SGR-1.';
+    return 'After adoption, cats with new random trait will be generated. You can preview the new cats and select from the two options the one you prefer.';
+  }, [isReset]);
+
+  const inputPlaceholder = useMemo(() => {
+    if (isReset) return 'Consume Amount';
+    return 'Consume Amount';
+  }, [isReset]);
+
+  const rateLabel = useMemo(() => {
+    if (isReset) return 'Rate';
+    return 'Adoption Fee Rate';
+  }, [isReset]);
+
+  const receiveLabel = useMemo(() => {
+    if (isReset) return 'Ets. Receive Token';
+    return 'Amount to Be Received';
   }, [isReset]);
 
   const confirmBtn = useMemo(
     () => (
       <Button className="md:w-[356px]" disabled={isInvalid} onClick={() => onConfirm && onConfirm()} type="primary">
-        {isReset ? 'Reset' : 'Adopt'}
+        {isReset ? 'Reroll' : 'Adopt'}
       </Button>
     ),
     [isInvalid, isReset, onConfirm],
@@ -138,7 +154,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         <div className="flex bg-brandBg py-[14px] px-[16px] rounded-md mb-[24px] md:mb-[32px]">
           <InfoSVG className="flex-shrink-0" />
           <span className="ml-[8px] text-neutralPrimary">
-            Adopt releases the next generation Item with more Tarits.{' '}
+            Adopt releases the next generation Item with more Traits.{' '}
             {adoptRuleUrl && (
               <a href={adoptRuleUrl} target="_blank" rel="noreferrer">
                 Adopt rules
@@ -155,15 +171,16 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         className="mt-[32px] mb-[32px]"
         onInvalidChange={setIsInvalid}
         onChange={setAmount}
+        placeholder={inputPlaceholder}
         {...inputProps}
       />
       <div className="flex justify-between mb-[16px]">
-        <span className="text-neutralSecondary">Ets. Receive Token</span>
+        <span className="text-neutralSecondary">{receiveLabel}</span>
         <span className="text-neutralTitle">{receiveToken}</span>
       </div>
       <div className="flex justify-between mb-[16px]">
         <span className="text-neutralSecondary flex items-center gap-[8px]">
-          Rate
+          {rateLabel}
           <Tooltip color="black" title={'rate'} overlayInnerStyle={{ color: 'white' }}>
             <QuestionSVG />
           </Tooltip>
@@ -172,7 +189,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       </div>
       {!isReset && (
         <div className="flex justify-between mb-[16px]">
-          <span className="text-neutralSecondary">Adopt Fee</span>
+          <span className="text-neutralSecondary">Adoption Fee to Be Charged</span>
           <span className="text-neutralTitle">{adoptFee}</span>
         </div>
       )}

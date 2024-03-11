@@ -27,7 +27,7 @@ export const useResetHandler = () => {
 
         resetModal.show({
           isReset: true,
-          modalTitle: 'Reroll',
+          modalTitle: 'Reroll Cat',
           info: {
             logo: parentItemInfo.inscriptionImage,
             name: parentItemInfo.tokenName,
