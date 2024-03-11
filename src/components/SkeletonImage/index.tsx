@@ -8,10 +8,12 @@ interface ISkeletonImage {
   tag?: string;
   className?: string;
   imageSizeType?: 'cover' | 'contain';
+  width?: number;
+  height?: number;
 }
 
 function SkeletonImage(props: ISkeletonImage) {
-  const { img, className, imageSizeType = 'cover', tag } = props;
+  const { img, className, imageSizeType = 'cover', tag, width = 108, height = 108 } = props;
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,8 +31,8 @@ function SkeletonImage(props: ISkeletonImage) {
       {img && (
         <div className="w-full h-full relative">
           <img
-            width={120}
-            height={120}
+            width={width}
+            height={height}
             src={img}
             alt="image"
             className={clsx('w-full h-full', imageType[imageSizeType])}

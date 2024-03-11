@@ -13,14 +13,15 @@ import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
-import AdoptedNextModal from 'components/AdoptedNextModal';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
+import { mockAdoptNextData } from 'components/AdoptNextModal/type';
+import AdoptNextModal from 'components/AdoptNextModal';
 
 export default function CountDownPage() {
   const { checkLogin, isOK } = useCheckLoginAndToken();
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
-  const adoptedNextModal = useModal(AdoptedNextModal);
+  const adoptNextModal = useModal(AdoptNextModal);
   const adoptActionModal = useModal(AdoptActionModal);
   const asynModal = useModal(SyncAdoptModal);
 
@@ -101,8 +102,11 @@ export default function CountDownPage() {
   };
 
   const adoptNext = async () => {
-    adoptedNextModal.show({
-      title: 'Successfully Adopted the Next Generation Item!',
+    adoptNextModal.show({
+      data: mockAdoptNextData,
+      onConfirm: (item) => {
+        console.log('adoptNext', item);
+      },
     });
   };
 

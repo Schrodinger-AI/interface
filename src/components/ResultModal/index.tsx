@@ -9,6 +9,7 @@ import { ReactComponent as FailedIcon } from 'assets/img/icons/failed.svg';
 import { ReactComponent as ExportOutlined } from 'assets/img/icons/exportOutlined.svg';
 import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
 import { message } from 'antd';
+import { singleMessage } from '@portkey/did-ui-react';
 
 export enum Status {
   ERROR = 'error',
@@ -71,7 +72,7 @@ function ResultModal({
         const _error = getAdoptErrorMessage(error);
         console.log(_error, 'error==');
 
-        message.error(_error);
+        singleMessage.error(_error);
         if (buttonInfo.isRetry) {
           setLoading(false);
           return;

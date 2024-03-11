@@ -5,9 +5,9 @@ import { adoptStep1Handler, adoptStep2Handler, fetchTraitsAndImages } from './Ad
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
-import { message } from 'antd';
 import ResultModal, { Status } from 'components/ResultModal';
 import { sleep } from 'utils';
+import { singleMessage } from '@portkey/did-ui-react';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -88,8 +88,7 @@ const useAdoptHandler = () => {
               }
               if (error === AdoptActionErrorCode.approveFailed) throw error;
               const errorMessage = getAdoptErrorMessage(error, 'adopt error');
-              message.error(errorMessage);
-
+              singleMessage.error(errorMessage);
               throw error;
             }
           },
@@ -167,9 +166,6 @@ const useAdoptHandler = () => {
 
   const adoptConfirmHandler = useCallback(
     async (params: { adoptId: string; image: string; signature: string }) => {
-      // if (resultModal.visible && resultModal.id = 'adopt-retry-modal') {
-
-      // }
       return new Promise(async (resolve, reject) => {
         try {
           await sleep(1000);
@@ -179,7 +175,7 @@ const useAdoptHandler = () => {
         } catch (error) {
           adoptActionModal.hide();
           const errorMessage = getAdoptErrorMessage(error, 'adopt confirm error');
-          message.error(errorMessage);
+          singleMessage.error(errorMessage);
           resultModal.show({
             modalTitle: 'You have failed minted!',
             info: {
@@ -189,7 +185,10 @@ const useAdoptHandler = () => {
             status: Status.ERROR,
             description:
               'Adopt can fail due to network issues, transaction fee increases, because someone else mint the inscription before you.',
-            onCancel: reject,
+            onCancel: () => {
+              reject(AdoptActionErrorCode.cancel);
+              resultModal.hide();
+            },
             buttonInfo: {
               btnText: 'Try Again',
               isRetry: true,
@@ -241,18 +240,18 @@ const useAdoptHandler = () => {
   return useCallback(async () => {
     try {
       adoptConfirmHandler({} as any);
-      // const amount = await adoptInput();
-      // const adoptId = await approveAdopt({ amount });
-      // const infos = await fetchImages(adoptId);
-      // await approveAdoptConfirm(infos, adoptId);
-      // await adoptConfirmSuccess();
+      const amount = await adoptInput();
+      const adoptId = await approveAdopt({ amount });
+      const infos = await fetchImages(adoptId);
+      await approveAdoptConfirm(infos, adoptId);
+      await adoptConfirmSuccess();
     } catch (error) {
       console.log(error, 'error==');
       if (error === AdoptActionErrorCode.cancel) return;
       const errorMessage = getAdoptErrorMessage(error, 'adopt error');
-      message.error(errorMessage);
+      singleMessage.error(errorMessage);
     }
-  }, [adoptConfirmSuccess, adoptInput, approveAdopt, approveAdoptConfirm, fetchImages]);
+  }, [adoptConfirmHandler, adoptConfirmSuccess, adoptInput, approveAdopt, approveAdoptConfirm, fetchImages]);
 };
 
 export default useAdoptHandler;

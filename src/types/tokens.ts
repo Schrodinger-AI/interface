@@ -1,6 +1,6 @@
 import { GenerateType } from './utils';
 
-interface ITrait {
+export interface ITrait {
   traitType: string;
   value: string;
   percent: number;
