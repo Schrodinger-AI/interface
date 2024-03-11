@@ -88,7 +88,11 @@ class Request {
             break;
         }
 
-        if (!error.response.config.baseURL?.includes('connect')) {
+        if (
+          !error.response.config.baseURL?.includes('connect') &&
+          !error.response.config.url?.includes('/token-price') &&
+          !error.response.config.url?.includes('/transaction-fee')
+        ) {
           message.error(errMessage);
         }
         return Promise.reject(errMessage);
