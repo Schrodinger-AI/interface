@@ -10,14 +10,14 @@ import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
-import { adoptStep1Handler } from 'utils/Adopt/AdoptStep';
-import AdoptNextModal from 'components/AdoptNextModal';
+import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
-import { mockAdoptNextData } from 'components/AdoptNextModal/type';
 import { ewellUrl } from 'constants/index';
 import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
 import { useMemo } from 'react';
+import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
+import AdoptNextModal from 'components/AdoptNextModal';
 
 export default function CountDownPage() {
   const isMobile = useMemo(() => !!isMobileDevices(), []);
@@ -28,6 +28,8 @@ export default function CountDownPage() {
   const adoptNextModal = useModal(AdoptNextModal);
   const adoptActionModal = useModal(AdoptActionModal);
   const asynModal = useModal(SyncAdoptModal);
+
+  const adoptHandler = useAdoptHandler();
 
   const { isLogin, wallet } = useWalletService();
 
@@ -105,7 +107,7 @@ export default function CountDownPage() {
 
   const adoptNext = async () => {
     adoptNextModal.show({
-      data: mockAdoptNextData,
+      data: {} as any,
       onConfirm: (item) => {
         console.log('adoptNext', item);
       },
