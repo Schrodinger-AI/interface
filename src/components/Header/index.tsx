@@ -9,7 +9,7 @@ import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
 import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
-import { MenuProps, message, Modal } from 'antd';
+import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
@@ -19,10 +19,11 @@ import { WalletType } from 'aelf-web-login';
 import { useRouter } from 'next/navigation';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
+import { NavHostTag } from 'components/HostTag';
 
 export default function Header() {
-  const { isOK, checkLogin } = useCheckLoginAndToken();
-  const { logout, wallet, isLogin, walletType } = useWalletService();
+  const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
+  const { wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function Header() {
 
   const CopyAddressItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div className={styles.menuItem}>
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -47,7 +48,7 @@ export default function Header() {
   const LogoutItem = () => {
     return (
       <div
-        className="flex gap-[8px] items-center"
+        className={styles.menuItem}
         onClick={() => {
           logout();
           setMenuModalVisible(false);
@@ -60,28 +61,32 @@ export default function Header() {
 
   const PointsItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <AssetSVG />
-        <span
-          onClick={() => {
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (checkTokenValid()) {
             router.push('/points');
-          }}>
-          My Points
-        </span>
+            setMenuModalVisible(false);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <PointsSVG />
+        <span>My Points</span>
       </div>
     );
   };
 
   const AssetItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <PointsSVG />
-        <span
-          onClick={() => {
-            router.push('/assets');
-          }}>
-          My Asset
-        </span>
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          router.push('/assets');
+          setMenuModalVisible(false);
+        }}>
+        <AssetSVG />
+        <span>My Asset</span>
       </div>
     );
   };
@@ -100,10 +105,10 @@ export default function Header() {
       },
     ];
     if (walletType !== WalletType.portkey) {
-      return menuItems.splice(1, 1);
+      return [menuItems[0], ...menuItems.slice(2)];
     }
     return menuItems;
-  }, [walletType]);
+  }, [walletType, wallet]);
 
   const MyDropDown = () => {
     if (responsive.md) {
@@ -130,14 +135,16 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky top-0 left-0 z-[5] flex-shrink-0">
+    <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <Image
-          src={require('assets/img/website-logo.svg').default}
-          alt="logo"
-          width={responsive.md ? 200 : 150}
-          height={responsive.md ? 32 : 24}
-        />
+        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
+          <img
+            src={require('assets/img/logo.png').default.src}
+            alt="logo"
+            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px] m"
+          />
+          <NavHostTag />
+        </div>
         {!isLogin ? (
           <Button
             type="primary"

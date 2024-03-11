@@ -16,7 +16,7 @@ interface IProps {
         onConfirm?: Function;
       }[]
     | false;
-  initialization?: <T, R>(params?: T) => Promise<void | R>;
+  initialization?: <T = any, R = void>(params?: T) => Promise<void | R>;
   onClose?: <T>(params?: T) => void;
   content?: {
     title?: string | ReactNode;

@@ -5,18 +5,18 @@ export interface IAdoptNextData {
   SGRToken: {
     tokenName?: string;
     symbol?: string;
-    amount?: number;
+    amount?: string;
   };
   newTraits: ITrait[];
   images: TAIImage[];
   inheritedTraits: ITrait[];
   transaction: {
-    txFee?: number;
-    usd?: number;
+    txFee?: string;
+    usd?: string;
   };
-  balance: {
-    amount?: number;
-    usd?: number;
+  ELFBalance: {
+    amount?: string;
+    usd?: string;
   };
 }
 
@@ -57,7 +57,7 @@ const imageList = [
     traits: [],
     name: '',
     value: '',
-    image: require('assets/img/schrodinger.png').default.src,
+    image: require('assets/img/schrodinger.jpeg').default.src,
     waterMarkImage: '',
     secretImage: '',
     secretWaterMarkImage: require('assets/img/cat.png').default.src,
@@ -66,7 +66,7 @@ const imageList = [
     traits: [],
     name: '',
     value: '',
-    image: require('assets/img/schrodinger.png').default.src,
+    image: require('assets/img/schrodinger.jpeg').default.src,
     waterMarkImage: '',
     secretImage: '',
     secretWaterMarkImage: require('assets/img/cat.png').default.src,
@@ -75,28 +75,9 @@ const imageList = [
     traits: [],
     name: '',
     value: '',
-    image: require('assets/img/schrodinger.png').default.src,
+    image: require('assets/img/schrodinger.jpeg').default.src,
     waterMarkImage: '',
     secretImage: '',
     secretWaterMarkImage: require('assets/img/cat.png').default.src,
   },
 ];
-
-export const mockAdoptNextData: IAdoptNextData = {
-  SGRToken: {
-    tokenName: 'SGR-2GEN1',
-    symbol: 'SGR-1',
-    amount: 10000,
-  },
-  newTraits: traits,
-  images: [imageList[0]],
-  inheritedTraits: traits,
-  transaction: {
-    txFee: 0.92,
-    usd: 0.45,
-  },
-  balance: {
-    amount: 10000,
-    usd: 9999,
-  },
-};

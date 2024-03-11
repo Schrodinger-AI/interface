@@ -74,3 +74,7 @@ export const fetchSchrodingerImagesByAdoptId = async ({
     extraData: {},
   };
 };
+
+export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsData> => {
+  return request.get('/app/my/points', { params });
+};

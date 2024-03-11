@@ -1,7 +1,7 @@
 export interface ISGRTokenInfoProps {
   tokenName?: string;
   symbol?: string;
-  amount?: number;
+  amount?: string;
 }
 
 export default function SGRTokenInfo({ tokenName, symbol, amount }: ISGRTokenInfoProps) {

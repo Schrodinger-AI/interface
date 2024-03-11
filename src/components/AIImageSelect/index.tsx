@@ -29,18 +29,16 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
       ? {
           visible: show,
           maskClassName: 'rounded-lg !opacity-0',
-          onVisibleChange: (visible) => setShow(visible),
+          onVisibleChange: () => setShow(false),
         }
       : {
           maskClassName: 'rounded-lg',
         };
   }, [isLG, show]);
 
-  const onClick = () => {
+  const onClick = useCallback(() => {
     onSelect(item);
-  };
-
-  const onMobilePreview = useCallback(() => setShow(true), []);
+  }, [item, onSelect]);
 
   return (
     <div className="relative bg-[#F5FEF7] w-[103px]] h-[103px] lg:w-[108px] lg:h-[108px] rounded-lg">
@@ -50,6 +48,7 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
         {active ? <RadioSelect /> : <Radio />}
       </div>
       <Image
+        id="ai-image"
         className="object-contain rounded-lg"
         src={src}
         width={imageSize}
@@ -60,7 +59,7 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
       {isLG && (
         <div
           className="absolute bottom-3 left-3 flex justify-center items-center rounded-md px-1 py-2 bg-fillMask1 w-[24px] h-[24px]"
-          onClick={onMobilePreview}>
+          onClick={() => setShow(true)}>
           <EyeSVG />
         </div>
       )}

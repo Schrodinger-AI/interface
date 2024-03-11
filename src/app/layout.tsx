@@ -1,4 +1,3 @@
-import Script from 'next/script';
 import Layout from 'pageComponents/layout';
 import 'styles/tailwindBase.css';
 
@@ -10,6 +9,7 @@ import 'styles/common.css';
 import 'styles/theme.css';
 
 import Provider from 'provider';
+import Head from 'next/head';
 
 export const metadata = {
   title: 'Schrödinger',
@@ -19,12 +19,12 @@ export const metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <head>
+      <Head>
         <meta
           name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
-      </head>
+      </Head>
       <body>
         <Provider>
           <Layout>{children}</Layout>

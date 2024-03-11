@@ -6,8 +6,8 @@ import TransactionFee from 'components/TransactionFee';
 import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
-import AIImageSelect, { TAIImage } from 'components/AIImageSelect';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+import AIImageSelect from 'components/AIImageSelect';
 import { PropsWithChildren, useCallback, useState } from 'react';
 import { IAdoptNextData } from './type';
 interface IDescriptionItemProps extends PropsWithChildren {
@@ -31,22 +31,22 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
   );
 }
 
-interface IAdoptNextModal<T> {
+interface IAdoptNextModal {
   data: IAdoptNextData;
-  onConfirm: (item?: T) => void;
+  onConfirm: (item: ITraitImageInfo) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal<TAIImage>) {
+function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
-  const [selectImage, setSelectImage] = useState<TAIImage>();
-  const { SGRToken, newTraits, images, inheritedTraits, transaction, balance } = data;
+  const [selectImage, setSelectImage] = useState<ITraitImageInfo>();
+  const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
-  const onSelect = useCallback((item: TAIImage) => {
+  const onSelect = useCallback((item: ITraitImageInfo) => {
     setSelectImage(item);
   }, []);
 
-  const onClick = useCallback(() => onConfirm(selectImage), [onConfirm, selectImage]);
+  const onClick = useCallback(() => selectImage && onConfirm(selectImage), [onConfirm, selectImage]);
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
     modal.hide();
@@ -81,8 +81,8 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal<TAIImage>)
         <Balance
           items={[
             {
-              amount: `${balance.amount} ELF`,
-              usd: `${balance.usd}`,
+              amount: `${ELFBalance.amount} ELF`,
+              usd: `${ELFBalance.usd}`,
             },
           ]}
         />
