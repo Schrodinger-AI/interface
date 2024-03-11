@@ -13,16 +13,16 @@ import { Flex, Layout } from 'antd';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
-import { ITokenListParams } from 'api/types';
-import { TSGRToken } from 'types/tokens';
+import { TBaseSGRToken } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
 
-const mockData: TSGRToken[] = new Array(32).fill({
+const mockData: TBaseSGRToken[] = new Array(32).fill({
   tokenName: 'tokenName',
   symbol: 'symbol',
   inscriptionImage: '',
@@ -44,7 +44,7 @@ export default function OwnedItems() {
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
-  const [dataSource, setDataSource] = useState<TSGRToken[]>([]);
+  const [dataSource, setDataSource] = useState<TBaseSGRToken[]>([]);
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -79,8 +79,10 @@ export default function OwnedItems() {
     };
   }, [current, filterSelect, walletAddress]);
 
+  const getSchrodingerList = useGetSchrodingerList();
+
   const fetchData = useCallback(
-    async ({ params, loadMore = false }: { params: ITokenListParams; loadMore?: boolean }) => {
+    async ({ params, loadMore = false }: { params: TGetSchrodingerListParams['input']; loadMore?: boolean }) => {
       if (loadMore) {
         setMoreLoading(true);
       } else {
@@ -90,13 +92,17 @@ export default function OwnedItems() {
       }
       try {
         // TODO: fetch data from server
-        // const res = await fetchCompositeNftInfos(params);
+        // const res = await getSchrodingerList({
+        //   input: params,
+        // });
         const res = {
-          total: 100,
-          data: mockData,
+          data: {
+            totalCount: 100,
+            data: mockData,
+          },
         };
-        setTotal(res.total);
-        const data = res.data.map((item) => {
+        setTotal(res.data.totalCount ?? 0);
+        const data = (res.data.data || []).map((item) => {
           return {
             ...item,
             amount: divDecimals(item.amount, item.decimals).toFixed(),
