@@ -26,6 +26,8 @@ export type InfoStateType = {
     tokenSideAddress: string;
     openTimeStamp: string;
 
+    graphqlSchrodinger: string;
+    adoptRuleUrl?: string;
     emptyChannelGroupDescription: string;
     emptyChannelGroupList: TEmptyChannelGroup[];
     [key: string]: any;

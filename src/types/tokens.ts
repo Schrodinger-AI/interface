@@ -1,15 +1,25 @@
+import { GenerateType } from './utils';
+
 export interface ITrait {
   traitType: string;
   value: string;
   percent: number;
 }
 
-export interface IToken {
-  name: string;
+export type TBaseSGRToken = {
+  tick: string;
   symbol: string;
-  image: string;
+  tokenName: string;
+  inscriptionImage: string;
   amount: string;
   generation: number;
   blockTime: number;
-  traits: ITrait[];
-}
+  decimals: number;
+  inscriptionInfo?: string;
+};
+
+export type TSGRToken = GenerateType<
+  TBaseSGRToken & {
+    traits: ITrait[];
+  }
+>;

@@ -1,22 +1,38 @@
 import { gql } from '@apollo/client';
 
 export const GET_SCHRODINGER_LIST_QUERY = gql`
-  query schrodingerList($input: GetSchrodingerList) {
-    schrodingers(input: $input) {
+  query getSchrodingerList($input: GetSchrodingerListInput) {
+    getSchrodingerList(input: $input) {
       totalCount
       data {
-        adoptId
-        name
+        tick
         symbol
-        image
+        tokenName
+        inscriptionImage
         amount
         generation
         blockTime
-        traits {
-          traitType
-          value
-          percent
-        }
+        decimals
+      }
+    }
+  }
+`;
+
+export const GET_SCHRODINGER_DETAIL_QUERY = gql`
+  query getSchrodingerDetail($input: GetSchrodingerDetailInput) {
+    getSchrodingerDetail(input: $input) {
+      tick
+      symbol
+      tokenName
+      inscriptionImage
+      amount
+      generation
+      blockTime
+      decimals
+      traits {
+        traitType
+        value
+        percent
       }
     }
   }

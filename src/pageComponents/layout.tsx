@@ -84,7 +84,7 @@ const Layout = dynamic(async () => {
         {/* TODO: background color */}
         <AntdLayout id={PAGE_CONTAINER_ID} className="h-full overflow-scroll">
           <Header />
-          <AntdLayout.Content className={`schrodinger-content flex-shrink-0 px-4 lg:px-10 w-full`}>
+          <AntdLayout.Content className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full`}>
             {children}
           </AntdLayout.Content>
           <Footer />
