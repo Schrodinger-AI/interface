@@ -3,9 +3,9 @@ import SkeletonImage from 'components/SkeletonImage';
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { ReactComponent as TimesSignSvg } from 'assets/img/timesSign.svg';
-import { TSGRToken } from 'types/tokens';
+import { TBaseSGRToken } from 'types/tokens';
 
-export default function ItemCard(props: { item: TSGRToken; onPress: () => void }) {
+export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => void }) {
   const {
     inscriptionImage: imageUrl,
     inscriptionInfo = '',

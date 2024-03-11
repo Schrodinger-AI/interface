@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
 import ItemCard from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
-import { TSGRToken } from 'types/tokens';
+import { TBaseSGRToken } from 'types/tokens';
 import { useRouter } from 'next/navigation';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
@@ -23,7 +23,7 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
-  ListProps: ListProps<TSGRToken>;
+  ListProps: ListProps<TBaseSGRToken>;
 }
 
 function ScrollContent(props: IContentProps) {
@@ -64,7 +64,7 @@ function ScrollContent(props: IContentProps) {
           ),
         }}
         renderItem={(item) => (
-          <List.Item>
+          <List.Item key={item.symbol}>
             <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
