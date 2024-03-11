@@ -8,7 +8,7 @@ import SGRTokenInfo from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import AIImageSelect from 'components/AIImageSelect';
-import { PropsWithChildren, useCallback, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
@@ -32,12 +32,13 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 }
 
 interface IAdoptNextModal {
+  isAcross?: boolean;
   data: IAdoptNextData;
   onConfirm: (item: ITraitImageInfo) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
+function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
   const [selectImage, setSelectImage] = useState<ITraitImageInfo>();
   const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
@@ -52,9 +53,23 @@ function AdoptNextModal({ data, onConfirm, onClose }: IAdoptNextModal) {
     modal.hide();
   }, [modal, onClose]);
 
+  const title = useMemo(() => {
+    return (
+      <div className="font-semibold">
+        <div className="text-neutralTitle">Successfully Adopted the Next Generation Item!</div>
+        {isAcross && (
+          <div className="mt-2 text-lg text-neutralSecondary font-medium">
+            Congratulations on the opportunity to adopt CATs{' '}
+            <span className="text-functionalWarning">ACROSS GENERATIONS!</span>
+          </div>
+        )}
+      </div>
+    );
+  }, []);
+
   return (
     <CommonModal
-      title={'Successfully Adopted the Next Generation Item!'}
+      title={title}
       open={modal.visible}
       onCancel={onCancel}
       afterClose={modal.remove}
