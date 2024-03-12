@@ -170,8 +170,8 @@ export default function Header() {
     return (
       <span
         className={`!rounded-[12px] text-lg ${
-          isCurrent ? 'text-brandDefault' : 'text-neutralPrimary'
-        } hover:text-brandHover cursor-pointer`}>
+          isCurrent ? 'text-compassActive' : 'text-compassNormal'
+        } hover:text-compassActive cursor-pointer font-medium	`}>
         {props.title}
       </span>
     );
