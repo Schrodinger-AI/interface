@@ -15,9 +15,15 @@ import SyncAdoptModal from 'components/SyncAdoptModal';
 import { ONE, ZERO } from 'constants/misc';
 import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import useLoading from 'hooks/useLoading';
+import { adopt1Message, promptContentTitle } from 'constants/promptMessage';
+import { WalletType, useWebLogin } from 'aelf-web-login';
+import { getExploreLink } from 'utils';
+import { ISendResult } from 'types';
+import { useCmsInfo } from 'redux/hooks';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
+  const { walletType } = useWebLogin();
 
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
@@ -27,6 +33,8 @@ const useAdoptHandler = () => {
 
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const { txFee: commonTxFee } = useTxFee();
+
+  const cmsInfo = useCmsInfo();
 
   const getTokenPrice = useGetTokenPrice();
   const getAllBalance = useGetAllBalance();
@@ -104,10 +112,11 @@ const useAdoptHandler = () => {
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
           },
-          title: 'Pending Approval',
+          title: adopt1Message.prompt.title,
           content: {
-            title: 'Go to your wallet',
-            content: "You'll be asked to approve this offer from your wallet",
+            title: promptContentTitle,
+            content:
+              walletType === WalletType.portkey ? [adopt1Message.prompt.portkey] : [adopt1Message.prompt.default],
           },
           initialization: async () => {
             try {
@@ -139,7 +148,7 @@ const useAdoptHandler = () => {
           },
         });
       }),
-    [promptModal],
+    [promptModal, walletType],
   );
 
   const fetchImages = useCallback(
@@ -197,7 +206,7 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmHandler = useCallback(
-    async (params: { adoptId: string; image: string }) => {
+    async (params: { adoptId: string; image: string }): Promise<{ txResult: ISendResult; image: string }> => {
       return new Promise(async (resolve, reject) => {
         const imageSignature = await fetchWaterImages(params);
         const signature = imageSignature.signature;
@@ -208,7 +217,7 @@ const useAdoptHandler = () => {
         try {
           const result = await adoptStep2Handler(confirmParams);
           adoptActionModal.hide();
-          resolve(result);
+          resolve({ txResult: result, image });
         } catch (error) {
           adoptActionModal.hide();
           const errorMessage = getAdoptErrorMessage(error, 'adopt confirm error');
@@ -257,7 +266,7 @@ const useAdoptHandler = () => {
     }) => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
       console.log(selectItem, 'selectItem=');
-      await adoptConfirmHandler({
+      return await adoptConfirmHandler({
         adoptId,
         image: selectItem,
       });
@@ -266,23 +275,24 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmSuccess = useCallback(
-    async () =>
+    async ({ transactionId, image, name }: { transactionId: string; image: string; name: string }) =>
       new Promise((resolve) => {
+        const explorerUrl = getExploreLink(transactionId, 'transaction', cmsInfo?.curChain);
         resultModal.show({
-          modalTitle: 'You have failed create tier 2 operational domain',
+          modalTitle: 'Cat Successfully Adopted!',
           info: {
-            name: 'name',
+            name: name,
+            logo: image,
           },
           status: Status.SUCCESS,
-          description:
-            'If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it',
+          description: `You have successfully minted the inscription ${name}`,
           link: {
-            href: 'llll',
+            href: explorerUrl,
           },
           onCancel: resolve,
         });
       }),
-    [resultModal],
+    [cmsInfo, resultModal],
   );
 
   return useCallback(
@@ -296,8 +306,8 @@ const useAdoptHandler = () => {
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
 
-        await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
-        await adoptConfirmSuccess();
+        const { txResult, image } = await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
+        await adoptConfirmSuccess({ transactionId: txResult.TransactionId, image, name: parentItemInfo.tokenName });
       } catch (error) {
         console.log(error, 'error==');
         if (error === AdoptActionErrorCode.cancel) return;
