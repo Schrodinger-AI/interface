@@ -70,7 +70,7 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
   };
 
   const footer = () => {
-    if (!showRetryBtn) return null;
+    if (!showRetryBtn || loading) return null;
     if (typeof buttonConfig === 'boolean' && !buttonConfig) {
       return null;
     } else {

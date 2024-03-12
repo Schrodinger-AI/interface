@@ -7,7 +7,7 @@ import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
-import { useWalletService } from 'hooks/useWallet';
+import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import { useEffectOnce } from 'react-use';
 import clsx from 'clsx';
@@ -15,6 +15,7 @@ import { TSGRToken } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
+import { useTimeoutFn } from 'react-use';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -24,18 +25,14 @@ export default function DetailPage() {
   const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
+  const { isOK } = useCheckLoginAndToken();
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
 
-  useEffectOnce(() => {
-    // if (!isLogin) {
-    //   route.push('/');
-    // }
-  });
-
   const getDetail = useCallback(async () => {
+    if (!wallet.address) return;
     showLoading();
     const result = await getSchrodingerDetail({
       input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
@@ -113,18 +110,15 @@ export default function DetailPage() {
             Reroll
           </Button>
         )}
-        {/* {mockData.generation == 0 && (
-          <Button
-            type="default"
-            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] ml-[12px] h-[48px] w-[103px]"
-            size="medium"
-            onClick={onTrade}>
-            Trade
-          </Button>
-        )} */}
       </div>
     );
   };
+
+  useTimeoutFn(() => {
+    if (!isOK) {
+      route.push('/');
+    }
+  }, 3000);
 
   return (
     <section className="mt-[24px] lg:mt-[48px] flex flex-col items-center w-full">
