@@ -23,7 +23,11 @@ export default function TokensHome() {
         className="gap-[32px] lg:gap-[48px] lg:w-[910px] mx-auto lg:pt-[208px]">
         <div className="flex flex-col align-center justify-center lg:gap-[24px] gap-[16px]">
           <div className="text-center text-[48px] lg:text-[80px] font-bold">Schrödinger</div>
-          <div className="text-base lg:text-2xl text-center">Log in to view your assets or mint inscriptions.</div>
+          <div className="text-base lg:text-2xl text-center">
+            {`An AI-powered ACS-404 inscription allowing you to adopt cats and enjoy the fun of dynamic gameplay and
+            unpredictable transformation. Evolving your cats to higher levels equips them with more randomly
+            AI-generated traits. More traits, more rare, it's gacha-style fun!`}
+          </div>
         </div>
         <Flex vertical align="center" gap={16}>
           <Button
@@ -36,7 +40,7 @@ export default function TokensHome() {
             Connect Wallet
           </Button>
           <div className="max-w-[188px] lg:max-w-[334px] text-sm leading-[22px] text-[#919191] text-center">
-            Wallet not connected yet. Link the wallet, view assets, and mint inscription.
+            Log in to view your cats, or adopt new cats.
           </div>
         </Flex>
       </Flex>

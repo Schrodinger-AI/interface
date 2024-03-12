@@ -1,6 +1,5 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button } from 'aelf-design';
-import { Tooltip } from 'antd';
+import { Button, Tooltip } from 'aelf-design';
 import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';
@@ -13,7 +12,7 @@ import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
-  tip?: string;
+  tip?: string | React.ReactNode;
 }
 
 function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
@@ -48,7 +47,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     setSelectImage(index);
   }, []);
 
-  const onClick = useCallback(() => onConfirm?.(images[selectImage]), [onConfirm, selectImage]);
+  const onClick = useCallback(() => onConfirm?.(images[selectImage]), [images, onConfirm, selectImage]);
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
     modal.hide();
@@ -57,7 +56,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   const title = useMemo(() => {
     return (
       <div className="font-semibold">
-        <div className="text-neutralTitle">Successfully Adopted the Next Generation Item!</div>
+        <div className="text-neutralTitle">Adopt Next-Gen Cat</div>
         {isAcross && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations on the opportunity to adopt CATs{' '}
@@ -80,17 +79,26 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
         </Button>
       }>
       <div className="flex flex-col gap-[24px] lg:gap-[32px]">
-        <NoticeBar text="Please do not close this pop-up window." />
+        <NoticeBar text="! Please don't close this window until you complete the adoption." />
         <SGRTokenInfo {...SGRToken} />
         <DescriptionItem
-          title="New Traits You Got"
-          tip="A new trait type is randomly generated with this evolution. Based on the trait type, specific traits will be generated powered by AI.">
+          title="Newly Generated Trait"
+          tip={
+            <>
+              <div>During adoption, AI will randomly give your cat a new trait.</div>
+              <br />
+              <div>
+                {`If your cat acquires two traits simultaneously, congratulations! You've experienced a rare cross-level
+                adoption, giving your cat multiple traits at once.`}
+              </div>
+            </>
+          }>
           <TraitsList data={newTraits} showNew />
         </DescriptionItem>
-        <DescriptionItem title="Please select the image you like to complete the whole process.">
+        <DescriptionItem title="Select the Cat You Prefer">
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
-        <DescriptionItem title="Inherited Traits">
+        <DescriptionItem title="Traits">
           <TraitsList data={inheritedTraits} />
         </DescriptionItem>
         <TransactionFee {...transaction} />
