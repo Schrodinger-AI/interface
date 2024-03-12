@@ -10,6 +10,7 @@ import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
+import AdopNextModal from 'components/AdoptNextModal';
 import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { HomeHostTag } from 'components/HostTag';
@@ -25,7 +26,7 @@ export default function CountDownPage() {
   const promptModal = useModal(PromptModal);
   const resultModal = useModal(ResultModal);
   const adoptActionModal = useModal(AdoptActionModal);
-  const asynModal = useModal(SyncAdoptModal);
+  const adoptNextModal = useModal(AdopNextModal);
 
   const adoptHandler = useAdoptHandler();
 
@@ -104,7 +105,22 @@ export default function CountDownPage() {
   };
 
   const onShowModal = async () => {
-    asynModal.show();
+    adoptNextModal.show({
+      data: {
+        SGRToken: {},
+        newTraits: [],
+        images: [
+          require('assets/img/icons/defaultCat.png').default.src,
+          'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        ],
+        inheritedTraits: [],
+        transaction: {},
+        ELFBalance: {},
+      },
+      onConfirm: (src) => {
+        console.log('onConfirm-src', src);
+      },
+    });
   };
 
   const socialMediaList: SocialMediaItem[] = [
@@ -213,7 +229,7 @@ export default function CountDownPage() {
                 size="ultra"
                 className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
                 onClick={onShowModal}>
-                asyc modal
+                adopt next
               </Button>
               <Button
                 type="primary"

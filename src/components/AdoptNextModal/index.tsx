@@ -35,20 +35,20 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 interface IAdoptNextModal {
   isAcross?: boolean;
   data: IAdoptNextData;
-  onConfirm: (image: string) => void;
+  onConfirm?: (image: string) => void;
   onClose?: () => void;
 }
 
 function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
-  const [selectImage, setSelectImage] = useState<string>();
+  const [selectImage, setSelectImage] = useState<number>(-1);
   const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
-  const onSelect = useCallback((item: string) => {
-    setSelectImage(item);
+  const onSelect = useCallback((index: number) => {
+    setSelectImage(index);
   }, []);
 
-  const onClick = useCallback(() => selectImage && onConfirm(selectImage), [onConfirm, selectImage]);
+  const onClick = useCallback(() => onConfirm?.(images[selectImage]), [onConfirm, selectImage]);
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
     modal.hide();
@@ -75,7 +75,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
       onCancel={onCancel}
       afterClose={modal.remove}
       footer={
-        <Button className="w-[356px]" disabled={!selectImage} onClick={onClick} type="primary">
+        <Button className="w-[356px]" disabled={selectImage < 0} onClick={onClick} type="primary">
           Confirm
         </Button>
       }>

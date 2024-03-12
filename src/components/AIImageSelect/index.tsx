@@ -4,20 +4,14 @@ import { ReactComponent as EyeSVG } from 'assets/img/icons/eye.svg';
 import { ReactComponent as RadioSelect } from 'assets/img/icons/radio-select.svg';
 import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import useResponsive from 'hooks/useResponsive';
-
-interface IAIImageSelectProps {
-  list?: string[];
-  onSelect: (item: string) => void;
-}
-
 interface IAIImageProps {
   src: string;
   active: boolean;
-  onSelect: (item: any) => void;
-  item?: any;
+  index: number;
+  onSelect: (index: number) => void;
 }
 
-function AIImage({ src, active, item, onSelect }: IAIImageProps) {
+function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const { isLG } = useResponsive();
   const [show, setShow] = useState(false);
 
@@ -35,8 +29,8 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
   }, [isLG, show]);
 
   const onClick = useCallback(() => {
-    onSelect(item);
-  }, [item, onSelect]);
+    onSelect(index);
+  }, [index, onSelect]);
 
   return (
     <div className="relative bg-[#F5FEF7] w-[103px]] h-[103px] lg:w-[108px] lg:h-[108px] rounded-lg">
@@ -65,27 +59,32 @@ function AIImage({ src, active, item, onSelect }: IAIImageProps) {
   );
 }
 
+interface IAIImageSelectProps {
+  list?: string[];
+  onSelect: (index: number) => void;
+}
+
 export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps) {
-  const [current, setCurrent] = useState<string>();
+  const [current, setCurrent] = useState<number>(-1);
 
   const onClick = useCallback(
-    (item: string) => {
-      setCurrent(item);
-      onSelect?.(item);
+    (index: number) => {
+      setCurrent(index);
+      onSelect?.(index);
     },
     [onSelect],
   );
 
   useEffect(() => {
     if (list?.length === 1) {
-      onClick(list[0]);
+      onClick(0);
     }
   }, [list, onClick]);
 
   return (
     <div className="flex gap-[16px] flex-wrap">
-      {list?.map((item, index) => (
-        <AIImage key={index} src={item} item={item} active={current === item} onSelect={onClick} />
+      {list?.map((src, index) => (
+        <AIImage key={index} src={src} index={index} active={current === index} onSelect={onClick} />
       ))}
     </div>
   );
