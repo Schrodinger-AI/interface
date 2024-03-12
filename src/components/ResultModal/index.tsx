@@ -113,7 +113,7 @@ function ResultModal({
 
         {link && (
           <div className="flex items-center mt-[16px]">
-            <span className="text-brandDefault text-base mr-[8px]">{link.text || 'View on AELF Explorer'}</span>
+            <span className="text-brandDefault text-base mr-[8px]">{link.text || 'View on aelf Explorer'}</span>
             <span>
               <ExportOutlined width={20} height={20} />
             </span>
