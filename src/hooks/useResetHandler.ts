@@ -12,6 +12,10 @@ import ResultModal, { Status } from 'components/ResultModal';
 import { resetSGRMessage } from 'constants/promptMessage';
 import { useRouter } from 'next/navigation';
 import PromptModal from 'components/PromptModal';
+import { checkAllowanceAndApprove } from 'utils/aelfUtils';
+import { useCmsInfo } from 'redux/hooks';
+import { AdoptActionErrorCode } from './Adopt/adopt';
+import { useWalletService } from './useWallet';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -22,6 +26,8 @@ export const useResetHandler = () => {
   const getTokenPrice = useGetTokenPrice();
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
+  const cmsInfo = useCmsInfo();
+  const { wallet } = useWalletService();
 
   const approveReset = useCallback(
     async (parentItemInfo: TSGRToken, amount: string): Promise<void> =>
@@ -40,6 +46,19 @@ export const useResetHandler = () => {
           },
           initialization: async () => {
             try {
+              const { schrodingerSideAddress: contractAddress, curChain: chainId } = cmsInfo || {};
+              if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
+
+              const check = await checkAllowanceAndApprove({
+                spender: contractAddress,
+                address: wallet.address,
+                chainId,
+                symbol: parentItemInfo.symbol,
+                decimals: parentItemInfo.decimals,
+                amount,
+              });
+
+              if (!check) throw AdoptActionErrorCode.approveFailed;
               await resetSGR({
                 symbol: parentItemInfo.symbol,
                 amount: Number(amount),

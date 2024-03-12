@@ -1,3 +1,6 @@
+import { EXPLORE_URL } from 'constants/url';
+import { SupportedELFChainId } from 'types';
+
 export const sleep = (time: number) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -49,3 +52,27 @@ export const POTENTIAL_NUMBER = /^(0|[1-9]\d*)(\.\d*)?$/;
 export const isPotentialNumber = (str: string) => {
   return POTENTIAL_NUMBER.test(str);
 };
+
+export function getExploreLink(
+  data: string,
+  type: 'transaction' | 'token' | 'address' | 'block',
+  chainName?: Chain,
+): string {
+  const target = (chainName && (chainName.toUpperCase() as 'AELF' | 'TDVV' | 'TDVW')) || SupportedELFChainId.MAIN_NET;
+  const prefix = EXPLORE_URL[target];
+  switch (type) {
+    case 'transaction': {
+      return `${prefix}tx/${data}`;
+    }
+    case 'token': {
+      return `${prefix}token/${data}`;
+    }
+    case 'block': {
+      return `${prefix}block/${data}`;
+    }
+    case 'address':
+    default: {
+      return `${prefix}address/${data}`;
+    }
+  }
+}
