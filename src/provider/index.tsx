@@ -5,7 +5,7 @@ import { AELFDProvider } from 'aelf-design';
 import enUS from 'antd/lib/locale/en_US';
 import WebLoginProvider from './webLoginProvider';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { store } from 'redux/store';
 import Loading from 'components/Loading';
 import { setEthData } from 'redux/reducer/data';
@@ -22,7 +22,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   const [isCorrectDomain, setIsCorrectDomain] = useState(false);
   const pathname = usePathname();
 
-  const checkHost = async () => {
+  const checkHost = useCallback(async () => {
     try {
       const res = await checkDomain();
       if (res && res === 'Success') {
@@ -36,9 +36,9 @@ function Provider({ children }: { children: React.ReactNode }) {
       console.error('checkHost err', err);
       return false;
     }
-  };
+  }, []);
 
-  const fetchGlobalConfig = async () => {
+  const fetchGlobalConfig = useCallback(async () => {
     try {
       const res = await fetchCmsConfigInfo();
       store.dispatch(setCmsInfo(res));
@@ -46,23 +46,32 @@ function Provider({ children }: { children: React.ReactNode }) {
       console.error('fetchGlobalConfig err', err);
     }
     setLoading(false);
-  };
+  }, []);
 
-  const initPageData = async () => {
+  const isNoNeedLoadingPage = useMemo(() => {
+    return ['/privacy-policy'].includes(pathname);
+  }, [pathname]);
+
+  const initPageData = useCallback(async () => {
+    if (isNoNeedLoadingPage) {
+      setIsCorrectDomain(true);
+      setLoading(false);
+      return;
+    }
     const hostCorrect = await checkHost();
     if (hostCorrect) {
       await fetchGlobalConfig();
     } else {
       setLoading(false);
     }
-  };
+  }, [isNoNeedLoadingPage]);
 
   useEffect(() => {
     initPageData();
   }, []);
 
   const isCorrectPath = useMemo(() => {
-    return ['/', '/assets', '/points'].includes(pathname);
+    return ['/', '/assets', '/points', '/privacy-policy'].includes(pathname);
   }, [pathname]);
 
   const showPage = useMemo(() => {

@@ -14,6 +14,7 @@ import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import { usePathname } from 'next/navigation';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -25,6 +26,8 @@ const Layout = dynamic(async () => {
     const { cmsInfo } = useGetStoreInfo();
 
     const webLoginContext = useWebLogin();
+
+    const pathname = usePathname();
 
     const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
       chainId: SupportedELFChainId.MAIN_NET,
@@ -78,10 +81,14 @@ const Layout = dynamic(async () => {
       ]);
     }, [webLoginContext.loginState]);
 
+    const isHiddenHeader = useMemo(() => {
+      return ['/privacy-policy'].includes(pathname);
+    }, [pathname]);
+
     return (
       <>
         <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
-          <Header />
+          {!isHiddenHeader && <Header />}
           <AntdLayout.Content
             className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
             {children}
