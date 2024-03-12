@@ -98,3 +98,11 @@ export function formatNumber(
   }
   return BigNumber.isBigNumber(number) ? number.toNumber() : number;
 }
+
+export function formatImageSrc(url: string) {
+  if (!url) return '';
+  const reg = /^https?:/;
+  const base64Prefix = 'data:image/png;base64,';
+  if (reg.test(url) || url.startsWith('data:image')) return url;
+  return base64Prefix + url;
+}

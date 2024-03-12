@@ -107,7 +107,7 @@ export default function CountDownPage() {
       data: {
         SGRToken: {},
         newTraits: [],
-        images: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png', 'src-error'],
+        images: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
         inheritedTraits: [],
         transaction: {},
         ELFBalance: {},

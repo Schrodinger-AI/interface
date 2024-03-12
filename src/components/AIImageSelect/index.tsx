@@ -6,6 +6,7 @@ import { ReactComponent as RadioSelect } from 'assets/img/icons/radio-select.svg
 import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import DefaultCatImg from 'assets/img/icons/defaultCat.png';
 import useResponsive from 'hooks/useResponsive';
+import { formatImageSrc } from 'utils/format';
 import clsx from 'clsx';
 interface IAIImageProps {
   src: string;
@@ -18,8 +19,9 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const { isLG } = useResponsive();
   const [show, setShow] = useState(false);
   const [error, setError] = useState(false);
-  const [random, setRandom] = useState<number>();
+  const [random, setRandom] = useState<number>(0);
 
+  const imageSrc = useMemo(() => formatImageSrc(src), [src]);
   const imageSize = useMemo(() => (isLG ? 103 : 108), [isLG]);
   const preview = useMemo<ImageProps['preview']>(() => {
     return isLG
@@ -59,7 +61,8 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
       <Image
         id="ai-image"
         className="object-contain rounded-lg"
-        src={`${src}?${random}`}
+        // src={`${src}?${random}`}
+        src={imageSrc}
         width={imageSize}
         height={imageSize}
         alt="AI-image"
