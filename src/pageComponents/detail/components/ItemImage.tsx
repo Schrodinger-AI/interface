@@ -1,7 +1,7 @@
-import { ISGRDetailRes } from '../types';
+import { TSGRToken } from 'types/tokens';
 import SkeletonImage from 'components/SkeletonImage';
 
-export default function ItemImage({ detail }: { detail: ISGRDetailRes }) {
+export default function ItemImage({ detail }: { detail: TSGRToken }) {
   return (
     <div className="relative aspect-square w-full lg:max-w-[660px] lg:min-w-[452] flex items-center justify-center mt-[16px] lg:mt-[0px] rounded-2xl	border-solid border border-[#E1E1E1] bg-[#F5FEF7CC]">
       <SkeletonImage img={require('assets/img/logo.png').default.src} width={187} height={314} />

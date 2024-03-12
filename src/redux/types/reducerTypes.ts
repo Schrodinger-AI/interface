@@ -30,7 +30,7 @@ export type InfoStateType = {
     graphqlSchrodinger: string;
     adoptRuleUrl?: string;
     emptyChannelGroupDescription: string;
-    emptyChannelGroupList: TEmptyChannelGroup[];
+    emptyChannelGroupList: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];

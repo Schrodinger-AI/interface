@@ -4,6 +4,7 @@ import { ReactComponent as ArchiveSVG } from 'assets/img/archive.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useMemo } from 'react';
 import { ReactComponent as ArrowSVG } from 'assets/img/icons/arrow.svg';
+import { TEmptyChannelGroup } from 'types/misc';
 
 export interface IEmptyListProps {
   isChannelShow?: boolean;
@@ -14,7 +15,7 @@ export const EmptyList = ({ isChannelShow = false, className }: IEmptyListProps)
   const cmsInfo = useCmsInfo();
 
   const emptyChannelGroupList = useMemo(() => {
-    return cmsInfo?.emptyChannelGroupList || [];
+    return JSON.parse(cmsInfo?.emptyChannelGroupList || '{}') as TEmptyChannelGroup[];
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const emptyChannelGroupDescription = useMemo(() => {
