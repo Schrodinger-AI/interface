@@ -1,13 +1,13 @@
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
-import { ISGRDetailRes } from '../types';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
+import { TSGRToken } from 'types/tokens';
 
 export default function ItemInfo({
   detail,
   onAdoptNextGeneration,
 }: {
-  detail: ISGRDetailRes;
+  detail: TSGRToken;
   onAdoptNextGeneration: () => void;
 }) {
   const traits = () => {
@@ -59,7 +59,7 @@ export default function ItemInfo({
     <div className="flex flex-col w-full lg:w-[660px] mt-[16px] lg:mt-[0px]">
       <div className="w-full h-[72px] rounded-2xl border-solid border border-[#E1E1E1] flex flex-row justify-between items-center px-[24px]">
         <div className="text-[#1A1A1A] font-medium	text-lg">Item Generation</div>
-        <div className="text-[#919191] font-medium	text-lg">{detail.generationDesc}</div>
+        <div className="text-[#919191] font-medium	text-lg">{detail.generation}</div>
       </div>
       <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] flex flex-col px-[16px] mt-[16px]">
         <div className="ml-[8px] w-full h-[72px] flex flex-row justify-between items-center">

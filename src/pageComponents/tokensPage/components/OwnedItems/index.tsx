@@ -83,20 +83,12 @@ export default function OwnedItems() {
         isLoadMore.current = false;
         showLoading();
       }
-      await sleep(2000);
       try {
-        // TODO: fetch data from server
         const {
           data: { getSchrodingerList: res },
         } = await getSchrodingerList({
           input: params,
         });
-        // const res = {
-        //   data: {
-        //     totalCount: 100,
-        //     data: mockData,
-        //   },
-        // };
         setTotal(res.totalCount ?? 0);
         const data = (res.data || []).map((item) => {
           return {
