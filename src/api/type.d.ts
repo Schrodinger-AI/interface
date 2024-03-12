@@ -25,3 +25,21 @@ interface IUsersAddressRes {
   twitter: string;
   instagram: string;
 }
+
+interface IGetPointsParams {
+  domain: string;
+  address: string;
+}
+
+interface IPointItem {
+  action: string;
+  displayName: string;
+  symbol: string;
+  amount: number;
+  rate: number;
+  updateTime: number;
+}
+
+interface IGetPointsData {
+  pointDetails: Array<IPointItem>;
+}

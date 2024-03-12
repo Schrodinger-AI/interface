@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react';
 import { useRequest } from 'ahooks';
 import { GetJoinRecord, Join } from 'contract/schrodinger';
 import { message } from 'antd';
-import { addPrefixSuffix, getOmittedStr } from 'utils';
+import { addPrefixSuffix } from 'utils/addressFormatting';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export default function useCheckJoinStatus() {

@@ -1,5 +1,5 @@
 import { getRpcUrls } from 'constants/url';
-import { sleep } from './common';
+import { sleep } from 'utils';
 import AElf from 'aelf-sdk';
 
 const httpProviders: any = {};

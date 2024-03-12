@@ -13,9 +13,9 @@
 }
 
 .homeHostTag {
-  position: relative;
+  position: absolute;
   padding: 6px 16px;
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-size: 16px;
   font-weight: 500;
@@ -24,8 +24,8 @@
   border: 1px solid #7936e5;
   background: #7936e5;
   cursor: pointer;
-  top: -136px;
-  left: 128px;
+  top: -19px;
+  left: calc(50% + 68px);
 }
 
 @media screen and (max-width: 767px) {
@@ -34,23 +34,22 @@
     font-size: 12px;
     margin-left: -22px;
     font-style: normal;
-    line-height: 20px; /* 166.667% */
+    line-height: 20px;
   }
 
- .homeHostTag {
+  .homeHostTag {
     text-align: start;
-    padding: 2px 8px ;
+    padding: 2px 8px;
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
     max-width: 159px;
-    top: -90px;
-    left: 88px;
+    top: -12px;
+    left: calc(50% + 24px);
     max-height: 24px;
- } 
+  }
 }
-
 
 .modalBtn {
   margin-top: 24px;

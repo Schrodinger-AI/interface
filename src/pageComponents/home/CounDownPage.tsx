@@ -67,11 +67,10 @@ export default function CountDownPage() {
 
   return (
     <div className="relative">
-      {/* <HomeHostTag /> */}
-      <section className="pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full">
-        <div className="relative">
+      <section className="pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
+        <div className="relative flex w-full justify-center">
           <img
-            src={require('assets/img/schrodinger.png').default.src}
+            src={require('assets/img/schrodinger.jpeg').default.src}
             alt="Schrödinger"
             className="rounded-lg md:rounded-xl w-[80px] h-[80px] md:w-[120px] md:h-[120px]"
           />
@@ -91,15 +90,16 @@ export default function CountDownPage() {
                 {`Congratulations! You're successfully enrolled. Stay tuned for more details on how to own your cat.. meow..`}
               </p>
               <p>
-                In preparation for the inscription, you can now acquire the token needed, $SGR, on the IDO launchpad{' '}
-                <span
+                In preparation for the inscription, you can acquire the token needed ,$SGR, on Launchpads on ethereum
+                and aelf soon.
+                {/* <span
                   className="text-[#3888FF] cursor-pointer"
                   onClick={() => {
                     window.open(ewellUrl, '_blank');
                   }}>
                   ewell
                 </span>
-                .
+                . */}
               </p>
             </div>
           ) : (

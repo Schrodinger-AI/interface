@@ -12,7 +12,10 @@ export function dotString(str: string, maxLength = 16) {
 }
 
 export function getSecondHostName() {
-  return window && window.location.hostname.split('.')[0];
+  const mainDomain = 'schrodingernft.ai';
+  const hostname = window?.location.hostname || '';
+  if (!hostname || hostname === mainDomain) return '';
+  return hostname.split('.')[0];
 }
 
 export function forbidScale() {

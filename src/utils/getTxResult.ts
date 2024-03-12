@@ -1,5 +1,5 @@
 import AElf from 'aelf-sdk';
-import { sleep } from './common';
+import { sleep } from 'utils';
 
 export interface ITxResultProps {
   TransactionId: string;

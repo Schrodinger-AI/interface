@@ -7,29 +7,41 @@ import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
 import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
-import { MenuProps, message, Modal } from 'antd';
+import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
+import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
+import { message, Modal } from 'antd';
 import styles from './style.module.css';
-import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils';
+import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
+import { useRouter } from 'next/navigation';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { NavHostTag } from 'components/HostTag';
 import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 export default function Header() {
-  const { isOK, checkLogin } = useCheckLoginAndToken();
-  const { logout, wallet, isLogin } = useWalletService();
+  const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
+  const { wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
   const { topSafeHeight } = useSafeAreaHeight();
+  const router = useRouter();
+
+  const [logoutComplete, setLogoutComplete] = useState(true);
 
   const [menuModalVisible, setMenuModalVisible] = useState(false);
 
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    setLogoutComplete(true);
+    setMenuModalVisible(false);
+  });
+
   const CopyAddressItem = () => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div className={styles.menuItem}>
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -45,8 +57,9 @@ export default function Header() {
   const LogoutItem = () => {
     return (
       <div
-        className="flex gap-[8px] items-center"
+        className={styles.menuItem}
         onClick={() => {
+          setLogoutComplete(false);
           logout();
           setMenuModalVisible(false);
         }}>
@@ -56,16 +69,56 @@ export default function Header() {
     );
   };
 
-  const items = [
-    {
-      key: 'address',
-      label: <CopyAddressItem />,
-    },
-    {
-      key: 'logout',
-      label: <LogoutItem />,
-    },
-  ];
+  const PointsItem = () => {
+    return (
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (checkTokenValid()) {
+            router.push('/points');
+            setMenuModalVisible(false);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <PointsSVG />
+        <span>My Flux Points</span>
+      </div>
+    );
+  };
+
+  const AssetItem = () => {
+    return (
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          router.push('/assets');
+          setMenuModalVisible(false);
+        }}>
+        <AssetSVG />
+        <span>My Assets</span>
+      </div>
+    );
+  };
+
+  const items = useMemo(() => {
+    const menuItems = [
+      {
+        key: 'address',
+        label: <CopyAddressItem />,
+      },
+      { key: 'asset', label: <AssetItem /> },
+      { key: 'points', label: <PointsItem /> },
+      {
+        key: 'logout',
+        label: <LogoutItem />,
+      },
+    ];
+    if (walletType !== WalletType.portkey) {
+      return [menuItems[0], ...menuItems.slice(2)];
+    }
+    return menuItems;
+  }, [walletType, wallet]);
 
   const MyDropDown = () => {
     if (responsive.md) {
@@ -92,9 +145,9 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0" style={{ paddingTop: topSafeHeight }}>
+    <section className="bg-white sticky z-[999] top-0 left-0 z-5 flex-shrink-0" style={{ paddingTop: topSafeHeight }}>
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex justify-start items-center">
+        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
           <img
             src={require('assets/img/logo.png').default.src}
             alt="logo"
@@ -107,6 +160,7 @@ export default function Header() {
             type="primary"
             size={responsive.md ? 'large' : 'small'}
             className="!rounded-lg md:!rounded-[12px]"
+            disabled={!logoutComplete}
             onClick={() => {
               store.dispatch(setLoginTrigger('login'));
               checkLogin();
