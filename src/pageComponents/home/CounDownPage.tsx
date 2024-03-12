@@ -12,7 +12,6 @@ import ResultModal, { Status } from 'components/ResultModal';
 import AdoptActionModal from 'components/AdoptActionModal';
 import AdopNextModal from 'components/AdoptNextModal';
 import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
-import SyncAdoptModal from 'components/SyncAdoptModal';
 import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
 import { useCallback, useMemo } from 'react';
@@ -109,10 +108,7 @@ export default function CountDownPage() {
       data: {
         SGRToken: {},
         newTraits: [],
-        images: [
-          require('assets/img/icons/defaultCat.png').default.src,
-          'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        ],
+        images: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png', 'src-error'],
         inheritedTraits: [],
         transaction: {},
         ELFBalance: {},
