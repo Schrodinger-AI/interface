@@ -1,7 +1,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
-const needLoginPaths = ['/create-ft', '/profile'];
+const needLoginPaths = ['/detail'];
 const useBackToHomeByRoute = () => {
   const pathname = usePathname();
   const router = useRouter();

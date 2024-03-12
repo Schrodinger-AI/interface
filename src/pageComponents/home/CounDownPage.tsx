@@ -16,7 +16,6 @@ import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
 import { useCallback, useMemo } from 'react';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { useResetHandler } from 'hooks/useResetHandler';
 
 export default function CountDownPage() {
   const isMobile = useMemo(() => !!isMobileDevices(), []);
@@ -145,24 +144,6 @@ export default function CountDownPage() {
     },
   ];
 
-  const resetHandler = useResetHandler();
-  const onResetClick = useCallback(() => {
-    resetHandler(
-      {
-        symbol: 'TESTGGRR-1',
-        decimals: 8,
-        inscriptionImage: '',
-        tokenName: 'tokenName',
-        generation: 3,
-        blockTime: 1,
-        traits: [],
-        amount: '100',
-        tick: '',
-      },
-      wallet.address,
-    );
-  }, [resetHandler, wallet.address]);
-
   return (
     <div className="relative">
       <section className="md:px-6 lg:px-0 pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
@@ -214,13 +195,6 @@ export default function CountDownPage() {
                 className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
                 onClick={onShowModal}>
                 asyc modal
-              </Button>
-              <Button
-                type="primary"
-                size="ultra"
-                className="w-full mt-4 mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-                onClick={onResetClick}>
-                Reset
               </Button>
             </>
           )}

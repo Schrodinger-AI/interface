@@ -66,7 +66,7 @@ export const useWalletInit = () => {
         setLocalWalletInfo(cloneDeep(walletInfo));
       }
     },
-    [getAccountInAELF, getToken, walletType, wallet, setLocalWalletInfo],
+    [backToHomeByRoute, wallet, walletType, getToken, setLocalWalletInfo],
   );
 
   useLoginState(callBack);

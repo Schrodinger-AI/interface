@@ -6,15 +6,98 @@ import { TSGRToken } from 'types/tokens';
 import { useGetTokenPrice, useTokenPrice } from './useAssets';
 import { AELF_TOKEN_INFO } from 'constants/assets';
 import { ZERO } from 'constants/misc';
+import useLoading from './useLoading';
+import { resetSGR } from 'contract/schrodinger';
+import ResultModal, { Status } from 'components/ResultModal';
+import { resetSGRMessage } from 'constants/promptMessage';
+import { useRouter } from 'next/navigation';
+import PromptModal from 'components/PromptModal';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
+  const resultModal = useModal(ResultModal);
+  const promptModal = useModal(PromptModal);
   const getAllBalance = useGetAllBalance();
   const { tokenPrice: elfTokenPrice } = useTokenPrice();
   const getTokenPrice = useGetTokenPrice();
+  const { showLoading, closeLoading } = useLoading();
+  const router = useRouter();
+
+  const approveReset = useCallback(
+    async (parentItemInfo: TSGRToken, amount: string): Promise<void> =>
+      new Promise(() => {
+        promptModal.show({
+          info: {
+            logo: parentItemInfo.inscriptionImage,
+            name: parentItemInfo.tokenName,
+            tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
+            subName: parentItemInfo.symbol,
+          },
+          title: 'Pending Approval',
+          content: {
+            title: 'Go to your wallet',
+            content: "You'll be asked to approve this offer from your wallet",
+          },
+          initialization: async () => {
+            try {
+              await resetSGR({
+                symbol: parentItemInfo.symbol,
+                amount: Number(amount),
+                // domain: location.host, // 'schrodingerai.com',
+                // TODO
+                domain: 'schrodingerai.com',
+              });
+              promptModal.hide();
+              return Promise.resolve();
+            } catch (error) {
+              return Promise.reject(error);
+            }
+          },
+          onClose: () => {
+            promptModal.hide();
+          },
+        });
+      }),
+    [promptModal],
+  );
+
+  const showResultModal = useCallback(
+    (status: Status, parentItemInfo: TSGRToken, amount: string) => {
+      resultModal.show({
+        modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
+        info: {
+          name: parentItemInfo.tokenName,
+          logo: parentItemInfo.inscriptionImage,
+          subName: parentItemInfo.symbol,
+          tag: `GEN ${parentItemInfo.generation}`,
+        },
+        id: 'sgr-reset-modal',
+        status: status,
+        description: status === Status.ERROR ? resetSGRMessage.error.description : resetSGRMessage.success.description,
+        onCancel: () => {
+          resultModal.hide();
+        },
+        buttonInfo: {
+          btnText: status === Status.ERROR ? resetSGRMessage.error.button : resetSGRMessage.success.button,
+          isRetry: true,
+          openLoading: true,
+          onConfirm: async () => {
+            resultModal.hide();
+            if (status === Status.ERROR) {
+              approveReset(parentItemInfo, amount);
+            } else {
+              router.push('/');
+            }
+          },
+        },
+      });
+    },
+    [approveReset, resultModal, router],
+  );
 
   return useCallback(
     async (parentItemInfo: TSGRToken, account: string) => {
+      showLoading();
       let parentPrice: string | undefined = undefined;
       try {
         parentPrice = await getTokenPrice(parentItemInfo.symbol);
@@ -24,7 +107,7 @@ export const useResetHandler = () => {
 
       try {
         const [symbolBalance, elfBalance] = await getAllBalance([parentItemInfo, AELF_TOKEN_INFO], account);
-
+        closeLoading();
         resetModal.show({
           isReset: true,
           modalTitle: 'Reroll Cat',
@@ -50,14 +133,33 @@ export const useResetHandler = () => {
               usd: `${elfBalance && elfTokenPrice ? ZERO.plus(elfBalance).times(elfTokenPrice).toFixed(2) : '--'}`,
             },
           ],
-          onConfirm: (amount: string) => {
+          onConfirm: async (amount: string) => {
             console.log('amount', amount);
+            resetModal.hide();
+            try {
+              await approveReset(parentItemInfo, amount);
+              promptModal.hide();
+              showResultModal(Status.SUCCESS, parentItemInfo, amount);
+            } catch (error) {
+              promptModal.hide();
+              showResultModal(Status.ERROR, parentItemInfo, amount);
+            }
           },
         });
       } catch (error) {
-        //
+        closeLoading();
       }
     },
-    [elfTokenPrice, getAllBalance, getTokenPrice, resetModal],
+    [
+      approveReset,
+      closeLoading,
+      elfTokenPrice,
+      getAllBalance,
+      getTokenPrice,
+      promptModal,
+      resetModal,
+      showLoading,
+      showResultModal,
+    ],
   );
 };
