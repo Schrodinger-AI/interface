@@ -49,15 +49,16 @@ export default function ItemInfo({
     return (
       <div className="w-full flex flex-col justify-center items-center">
         <div className="text-[#919191] font-medium	text-lg text-center mt-[10px]">
-          wops ! Your cat has no traits! <br />
-          Adopt your next genration CAT now!
+          Seems like this is a gen0 kitten with no traits. <br />
+          Take this kitten to the next level by adopting a next-gen cat, <br />
+          generating brand new and unpredictable traits.
         </div>
         <Button
           type="primary"
           className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] mt-[24px] mb-[56px] w-[239px]"
           size="medium"
           onClick={onAdoptNextGeneration}>
-          Adopt Next Generation
+          Adopt Next-Gen Cat
         </Button>
       </div>
     );

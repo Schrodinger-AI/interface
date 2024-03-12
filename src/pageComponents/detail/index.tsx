@@ -65,7 +65,7 @@ export default function DetailPage() {
             className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px]"
             size="medium"
             onClick={onAdoptNextGeneration}>
-            Adopt Next Generation
+            Adopt Next-Gen Cat
           </Button>
         )}
         {mockData.generation > 0 && (
@@ -74,7 +74,7 @@ export default function DetailPage() {
             className="!rounded-lg !border-[#3888FF] !text-[#3888FF] mr-[12px]"
             size="medium"
             onClick={onReset}>
-            Reset
+            Reroll
           </Button>
         )}
       </div>
@@ -90,7 +90,7 @@ export default function DetailPage() {
             className="!rounded-lg !border-[#3888FF]  bg-[#3888FF] !text-[#FFFFFF] flex-1"
             size="medium"
             onClick={onAdoptNextGeneration}>
-            Adopt Next Generation
+            Adopt Next-Gen Cat
           </Button>
         )}
         {mockData.generation > 0 && (
@@ -99,7 +99,16 @@ export default function DetailPage() {
             className="!rounded-lg !border-[#3888FF] !text-[#3888FF] ml-[12px] flex-1"
             size="medium"
             onClick={onReset}>
-            Reset
+            Reroll
+          </Button>
+        )}
+        {mockData.generation == 0 && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] ml-[12px] h-[48px] w-[103px]"
+            size="medium"
+            onClick={onTrade}>
+            Trade
           </Button>
         )}
       </div>
@@ -147,13 +156,15 @@ export default function DetailPage() {
         <div className="mt-[16px]" />
         <DetailTitle detail={mockData} />
         <ItemImage detail={mockData} />
-        <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
-          size="medium"
-          onClick={onTrade}>
-          Trade
-        </Button>
+        {mockData.generation > 0 && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
+            size="medium"
+            onClick={onTrade}>
+            Trade
+          </Button>
+        )}
         <ItemInfo detail={mockData} onAdoptNextGeneration={onAdoptNextGeneration} />
         {adoptAndResetButtonSamll()}
       </div>
