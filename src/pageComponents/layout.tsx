@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, Suspense, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Layout as AntdLayout } from 'antd';
 import Header from 'components/Header';
 import dynamic from 'next/dynamic';
@@ -9,11 +9,10 @@ import { setIsMobile } from 'redux/reducer/info';
 import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
-import NotFoundPage from 'components/notFound/index';
-import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import SafeArea from 'components/SafeArea';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -79,7 +78,7 @@ const Layout = dynamic(async () => {
     }, [webLoginContext.loginState]);
 
     return (
-      <>
+      <SafeArea>
         <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
           <Header />
           <AntdLayout.Content
@@ -88,7 +87,7 @@ const Layout = dynamic(async () => {
           </AntdLayout.Content>
           <Footer />
         </AntdLayout>
-      </>
+      </SafeArea>
     );
   };
 });
