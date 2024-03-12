@@ -77,6 +77,7 @@ export const fetchWaterImages = async (params: IWaterImageRequest, count = 0): P
     if (!result.signature) throw 'Get not get signature';
     return result;
   } catch (error) {
+    if (count > 10) throw error;
     await sleep(500);
     count++;
     return await fetchWaterImages(params, count);

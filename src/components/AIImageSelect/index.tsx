@@ -1,12 +1,12 @@
 import { Image, ImageProps } from 'antd';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReactComponent as EyeSVG } from 'assets/img/icons/eye.svg';
 import { ReactComponent as RadioSelect } from 'assets/img/icons/radio-select.svg';
 import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import useResponsive from 'hooks/useResponsive';
 
 interface IAIImageSelectProps {
-  list: string[];
+  list?: string[];
   onSelect: (item: string) => void;
 }
 
@@ -77,14 +77,14 @@ export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps) {
   );
 
   useEffect(() => {
-    if (list.length === 1) {
+    if (list?.length === 1) {
       onClick(list[0]);
     }
   }, [list, onClick]);
 
   return (
     <div className="flex gap-[16px] flex-wrap">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         <AIImage key={index} src={item} item={item} active={current === item} onSelect={onClick} />
       ))}
     </div>

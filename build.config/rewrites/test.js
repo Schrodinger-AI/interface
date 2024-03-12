@@ -1,6 +1,11 @@
 module.exports = [
   { source: '/api/:path*', destination: 'https://schrodingerai.com/api/:path*' },
   { source: '/cms/:path*', destination: 'https://test.eforest.finance/cms/:path*' },
+  {
+    source: '/schrodingerGQL/:path*',
+    destination:
+      'https://test-indexer.schrodingerai.com/SchrodingerIndexer_DApp/SchrodingerIndexerPluginSchema/graphql/:path*',
+  },
   { source: '/connect/:path*', destination: 'https://schrodingerai.com/connect/:path*' },
   {
     source: '/AElfIndexer_DApp/PortKeyIndexerCASchema/:path*',

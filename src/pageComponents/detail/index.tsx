@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Button } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
@@ -27,16 +27,26 @@ export default function DetailPage() {
     // }
   });
 
+  const getDetail = useCallback(async () => {
+    const result = await getSchrodingerDetail({
+      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
+    });
+    console.log('result', result);
+    const schrodingerDetail = result.data.getSchrodingerDetail;
+    console.log('schrodingerDetail', schrodingerDetail);
+  }, [cmsInfo?.curChain, getSchrodingerDetail, symbol, wallet.address]);
+
   useEffect(() => {
-    getSchrodingerDetail({ input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address } })
-      .then((data) => {
-        console.log('aaaa');
-        console.log('data : ' + JSON.stringify(data));
-      })
-      .catch((err) => {
-        console.log('err : ' + JSON.stringify(err));
-      });
-  }, [symbol, getSchrodingerDetail, wallet.address, cmsInfo?.curChain]);
+    // getSchrodingerDetail({ input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address } })
+    //   .then((data) => {
+    //     console.log('aaaa');
+    //     console.log('data : ' + JSON.stringify(data));
+    //   })
+    //   .catch((err) => {
+    //     console.log('err : ' + JSON.stringify(err));
+    //   });
+    getDetail();
+  }, [getDetail]);
 
   const onAdoptNextGeneration = () => {
     // todo
