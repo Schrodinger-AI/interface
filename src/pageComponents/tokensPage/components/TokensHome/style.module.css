@@ -5,7 +5,7 @@
 }
 
 .bgCenterMobile {
-  @apply fixed top-[-40px] z-10;
+  @apply fixed top-[-40px];
   /* stylelint-disable-next-line declaration-empty-line-before */
   left: calc((100vw - 660px) / 2);
 }

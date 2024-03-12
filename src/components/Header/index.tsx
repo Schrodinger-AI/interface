@@ -288,7 +288,7 @@ export default function Header() {
     );
   };
   return (
-    <section className="bg-white sticky top-0 left-0 z-5 flex-shrink-0">
+    <section className="bg-white sticky top-0 left-0 z-10 flex-shrink-0">
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         {
           // eslint-disable-next-line @next/next/no-img-element
