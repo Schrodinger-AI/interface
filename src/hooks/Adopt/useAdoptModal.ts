@@ -48,11 +48,21 @@ const useAdoptHandler = () => {
   const adoptInput = useCallback(
     (parentItemInfo: TSGRToken, account: string, parentPrice?: string): Promise<string> => {
       return new Promise(async (resolve, reject) => {
-        const [symbolBalance, ELFBalance] = await getParentBalance({
-          symbol: parentItemInfo.symbol,
-          account,
-          decimals: parentItemInfo.decimals,
-        });
+        showLoading();
+        let symbolBalance;
+        let ELFBalance;
+        try {
+          const [symbolB, ELFB] = await getParentBalance({
+            symbol: parentItemInfo.symbol,
+            account,
+            decimals: parentItemInfo.decimals,
+          });
+          symbolBalance = symbolB;
+          ELFBalance = ELFB;
+        } finally {
+          closeLoading();
+        }
+
         adoptActionModal.show({
           modalTitle: 'Adopt Next-Gen Cat',
           info: {
@@ -91,7 +101,7 @@ const useAdoptHandler = () => {
         });
       });
     },
-    [ELFPrice, adoptActionModal, getParentBalance],
+    [ELFPrice, adoptActionModal, closeLoading, getParentBalance, showLoading],
   );
 
   const approveAdopt = useCallback(
@@ -124,7 +134,7 @@ const useAdoptHandler = () => {
                 params: {
                   parent: parentItemInfo.symbol,
                   amount,
-                  domain: location.host, // 'schrodingerai.com',
+                  domain: location.host,
                 },
                 address: account,
                 decimals: parentItemInfo.decimals,
@@ -196,7 +206,6 @@ const useAdoptHandler = () => {
             reject(AdoptActionErrorCode.cancel);
           },
           onConfirm: (selectImage) => {
-            adoptNextModal.hide();
             resolve(selectImage);
           },
         });
@@ -205,21 +214,23 @@ const useAdoptHandler = () => {
     [ELFPrice, adoptNextModal, commonTxFee, getParentBalance],
   );
 
-  const adoptConfirmHandler = useCallback(
-    async (params: { adoptId: string; image: string }): Promise<{ txResult: ISendResult; image: string }> => {
-      return new Promise(async (resolve, reject) => {
-        const imageSignature = await fetchWaterImages(params);
-        const signature = imageSignature.signature;
-        const image = imageSignature.image;
-        // const signature = params.image;
-        // const image = params.image;
-        const confirmParams = { adoptId: params.adoptId, image: image, signature };
+  const retryAdoptConfirm = useCallback(
+    async (confirmParams: {
+      adoptId: string;
+      image: string;
+      signature: string;
+    }): Promise<{ txResult: ISendResult; image: string }> =>
+      new Promise(async (resolve, reject) => {
         try {
           const result = await adoptStep2Handler(confirmParams);
-          adoptActionModal.hide();
-          resolve({ txResult: result, image });
+          resolve({ txResult: result, image: confirmParams.image });
+          promptModal.hide();
         } catch (error) {
-          adoptActionModal.hide();
+          promptModal.hide();
+
+          console.log(error, 'error===');
+          if (error === AdoptActionErrorCode.missingParams) throw error;
+
           const errorMessage = getAdoptErrorMessage(error, 'adopt confirm error');
           singleMessage.error(errorMessage);
 
@@ -242,14 +253,68 @@ const useAdoptHandler = () => {
               openLoading: true,
               onConfirm: async () => {
                 const result = await adoptStep2Handler(confirmParams);
-                resolve(result);
+                resolve({ txResult: result, image: confirmParams.image });
+
+                resultModal.hide();
               },
             },
           });
         }
+      }),
+    [promptModal, resultModal],
+  );
+
+  const adoptConfirmHandler = useCallback(
+    async (params: {
+      adoptId: string;
+      image: string;
+      parentItemInfo: TSGRToken;
+    }): Promise<{
+      txResult: ISendResult;
+      image: string;
+    }> => {
+      return new Promise(async (resolve, reject) => {
+        const parentItemInfo = params.parentItemInfo;
+        showLoading();
+        const imageSignature = await fetchWaterImages(params);
+        adoptNextModal.hide();
+        closeLoading();
+        if (imageSignature?.error) {
+          reject(imageSignature?.error);
+          return;
+        }
+        const signature = imageSignature.signature;
+        const image = imageSignature.image;
+
+        const confirmParams = {
+          adoptId: params.adoptId,
+          image: image,
+          signature: Buffer.from(signature, 'hex').toString('base64'),
+        };
+
+        promptModal.show({
+          info: {
+            logo: parentItemInfo.inscriptionImage,
+            name: parentItemInfo.tokenName,
+            tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
+            subName: parentItemInfo.symbol,
+          },
+          title: 'Pending Approval',
+          content: {
+            title: 'Go to your wallet',
+            content: "You'll be asked to approve this offer from your wallet",
+          },
+          initialization: async () => {
+            const result = await retryAdoptConfirm(confirmParams);
+            resolve(result);
+          },
+          onClose: () => {
+            promptModal.hide();
+          },
+        });
       });
     },
-    [adoptActionModal, resultModal],
+    [adoptNextModal, closeLoading, promptModal, retryAdoptConfirm, showLoading],
   );
 
   const approveAdoptConfirm = useCallback(
@@ -265,10 +330,12 @@ const useAdoptHandler = () => {
       account: string;
     }) => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
-      console.log(selectItem, 'selectItem=');
+
+      // console.log(selectItem, 'selectItem=');
       return await adoptConfirmHandler({
         adoptId,
         image: selectItem,
+        parentItemInfo,
       });
     },
     [adoptConfirmHandler, adoptConfirmInput],
@@ -289,7 +356,10 @@ const useAdoptHandler = () => {
           link: {
             href: explorerUrl,
           },
-          onCancel: resolve,
+          onCancel: () => {
+            resolve(true);
+            resultModal.hide();
+          },
         });
       }),
     [cmsInfo, resultModal],
