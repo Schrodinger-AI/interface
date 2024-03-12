@@ -46,7 +46,8 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
       footer={null}
       onCancel={modal.hide}
       closable={false}
-      closeIcon={null}>
+      closeIcon={null}
+      centered>
       <section className="flex flex-col justify-center items-center">
         <Animation />
         <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">
