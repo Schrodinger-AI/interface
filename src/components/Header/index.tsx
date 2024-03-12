@@ -167,6 +167,7 @@ export default function Header() {
 
   const CompassText = (props: { title?: string; schema?: string }) => {
     const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
+    console.log('is Current ', isCurrent, props.title, props.schema, pathname);
     return (
       <span
         className={`!rounded-[12px] text-lg ${
