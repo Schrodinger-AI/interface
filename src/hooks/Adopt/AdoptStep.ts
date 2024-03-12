@@ -71,13 +71,16 @@ export const adoptStep1Handler = async ({
   return adoptId;
 };
 
-export const fetchWaterImages = async (params: IWaterImageRequest, count = 0): Promise<IWaterImage> => {
+export const fetchWaterImages = async (
+  params: IWaterImageRequest,
+  count = 0,
+): Promise<IWaterImage & { error?: any }> => {
   try {
     const result = await fetchWaterImageRequest(params);
     if (!result.signature) throw 'Get not get signature';
     return result;
   } catch (error) {
-    if (count > 10) throw error;
+    if (count > 10) return { error, image: '', signature: '' };
     await sleep(500);
     count++;
     return await fetchWaterImages(params, count);
