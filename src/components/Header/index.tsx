@@ -167,11 +167,12 @@ export default function Header() {
 
   const CompassText = (props: { title?: string; schema?: string }) => {
     const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
+    console.log('is Current ', isCurrent, props.title, props.schema, pathname);
     return (
       <span
         className={`!rounded-[12px] text-lg ${
           isCurrent ? 'text-compassActive' : 'text-compassNormal'
-        } hover:text-compassActive cursor-pointer`}>
+        } hover:text-compassActive cursor-pointer font-medium	`}>
         {props.title}
       </span>
     );
@@ -228,7 +229,7 @@ export default function Header() {
                             to={sub.schema}
                             type={sub.type}
                             title={sub.title}
-                            className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]">
+                            className="text-neutralPrimary rounded-[12px] hover:text-brandHover">
                             <CompassText title={sub.title} schema={sub.schema} />
                           </CompassLink>
                         ),
@@ -245,7 +246,7 @@ export default function Header() {
                   to={schema}
                   type={type}
                   title={title}
-                  className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]"
+                  className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
                 />
               );
             }
@@ -267,7 +268,7 @@ export default function Header() {
     if (responsive.md) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button type="default" className="!rounded-[12px] !border-[#3888FF] !text-[#3888FF]" size="large">
+          <Button type="default" className="!rounded-[12px] text-brandDefault border-brandDefault" size="large">
             <MenuMySVG className="mr-[8px]" />
             My
           </Button>
@@ -277,7 +278,7 @@ export default function Header() {
     return (
       <Button
         type="default"
-        className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+        className="!rounded-lg !border-brandDefault !text-brandDefault"
         size="small"
         onClick={() => {
           setMenuModalVisibleModel(ModalViewModel.MY);

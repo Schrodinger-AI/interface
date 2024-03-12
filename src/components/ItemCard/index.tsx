@@ -15,10 +15,7 @@ export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => vo
     // eslint-disable-next-line no-empty
   } catch (ignored) {}
   return (
-    <div
-      className="w-full overflow-hidden border-2 border-black rounded-md"
-      onClick={props.onPress}
-      style={styles.border}>
+    <div className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md" onClick={props.onPress}>
       <div>
         <div className="relative">
           <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
@@ -39,10 +36,13 @@ export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => vo
         </div>
 
         <div className="px-4 py-4 flex flex-col">
-          <div className="text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">{tokenName}</div>
-          <div className="flex flex-row pt-1">
-            <div className="text-sm leading-5">{symbol}</div>
-            <div className="ml-1 text-sm leading-5">{`(GEN-${generation})`}</div>
+          <div className="flex  flex-col text-lg leading-6 font-medium max-w-xs overflow-hidden whitespace-nowrap">
+            <span className="text-xs leading-[18px] text-neutralDisable font-medium">name</span>
+            <span className="text-sm text-neutralPrimary font-medium">{tokenName}</span>
+          </div>
+          <div className="flex flex-col pt-1">
+            <span className="text-xs leading-[18px] text-neutralDisable font-medium">symbol</span>
+            <span className="text-sm text-neutralPrimary font-medium">{symbol}</span>
           </div>
           <div className="flex flex-row items-center pt-1">
             <XIcon />
@@ -53,16 +53,6 @@ export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => vo
     </div>
   );
 }
-
-const styles = {
-  border: {
-    overflow: 'hidden',
-    borderWidth: '1px',
-    borderColor: '#e1e1e1',
-    borderStyle: 'solid',
-    borderRadius: '8px',
-  },
-};
 
 export function CodeBlock({
   value,
@@ -85,10 +75,8 @@ export function CodeBlock({
     <TextArea
       rows={rows}
       value={jsonFormatted}
-      className={`tx-block-code-like-content ${className}`}
+      className={`tx-block-code-like-content h-[200px] resize-none ${className}`}
       readOnly
-      // eslint-disable-next-line no-inline-styles/no-inline-styles
-      style={{ height: 200, resize: 'none' }}
       {...params}
     />
   );
