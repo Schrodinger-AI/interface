@@ -142,7 +142,7 @@ export default function Header() {
       },
     ];
     if (walletType !== WalletType.portkey) {
-      return menuItems.splice(1, 1);
+      menuItems.splice(1, 1);
     }
     return menuItems;
   }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
