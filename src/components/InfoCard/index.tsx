@@ -26,10 +26,10 @@ function InfoCard(params: IInfoCard) {
             )}
           />
         ) : null}
-        <div className="flex flex-col">
-          {subName && <span className="text-base text-neutralSecondary font-semibold">{subName}</span>}
-          <span className="text-xl text-neutralPrimary font-semibold">{name}</span>
-        </div>
+      </div>
+      <div className={`flex flex-col ${layout === 'vertical' ? 'mt-[16px]' : 'ml-[16px]'}`}>
+        {subName && <span className="text-base text-neutralSecondary font-semibold">{subName}</span>}
+        <span className="text-xl text-neutralPrimary font-semibold mt-[4px]">{name}</span>
       </div>
     </div>
   );
