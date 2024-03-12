@@ -37,14 +37,6 @@ export default function DetailPage() {
   }, [cmsInfo?.curChain, getSchrodingerDetail, symbol, wallet.address]);
 
   useEffect(() => {
-    // getSchrodingerDetail({ input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address } })
-    //   .then((data) => {
-    //     console.log('aaaa');
-    //     console.log('data : ' + JSON.stringify(data));
-    //   })
-    //   .catch((err) => {
-    //     console.log('err : ' + JSON.stringify(err));
-    //   });
     getDetail();
   }, [getDetail]);
 
@@ -142,6 +134,7 @@ export default function DetailPage() {
         </div>
         <div className="w-full mt-[24px] flex flex-row justify-between">
           <ItemImage detail={mockData} />
+          <div className="w-[40px]" />
           <ItemInfo detail={mockData} onAdoptNextGeneration={onAdoptNextGeneration} />
         </div>
       </div>

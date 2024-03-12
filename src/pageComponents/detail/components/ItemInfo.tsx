@@ -64,7 +64,7 @@ export default function ItemInfo({
   };
 
   return (
-    <div className="flex flex-col w-full lg:w-[660px] mt-[16px] lg:mt-[0px]">
+    <div className="flex flex-col w-full lg:max-w-[660px] lg:min-w-[452px] mt-[16px] lg:mt-[0px]">
       <div className="w-full h-[72px] rounded-2xl border-solid border border-[#E1E1E1] flex flex-row justify-between items-center px-[24px]">
         <div className="text-[#1A1A1A] font-medium	text-lg">Item Generation</div>
         <div className="text-[#919191] font-medium	text-lg">{detail.generationDesc}</div>
