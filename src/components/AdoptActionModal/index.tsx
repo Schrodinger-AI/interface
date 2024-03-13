@@ -7,7 +7,7 @@ import SGRAmountInput, { ISGRAmountInputInterface, ISGRAmountInputProps } from '
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { useCmsInfo } from 'redux/hooks';
