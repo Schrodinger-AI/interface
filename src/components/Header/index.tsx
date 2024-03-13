@@ -117,7 +117,7 @@ export default function Header() {
         <span>My Points</span>
       </div>
     );
-  }, [router]);
+  }, [checkLogin, checkTokenValid, router]);
 
   const AssetItem = useCallback(() => {
     return (
