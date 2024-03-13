@@ -68,6 +68,8 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     );
   }, [isAcross]);
 
+  const allTraitsList = useMemo(() => [...inheritedTraits, ...newTraits], [inheritedTraits, newTraits]);
+
   return (
     <CommonModal
       title={title}
@@ -100,7 +102,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
         <DescriptionItem title="Traits">
-          <TraitsList data={inheritedTraits} />
+          <TraitsList data={allTraitsList} />
         </DescriptionItem>
         <TransactionFee {...transaction} />
         <Balance

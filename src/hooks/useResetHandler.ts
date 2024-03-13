@@ -7,7 +7,7 @@ import { useGetTokenPrice, useTokenPrice } from './useAssets';
 import { AELF_TOKEN_INFO } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import useLoading from './useLoading';
-import { resetSGR } from 'contract/schrodinger';
+import { rerollSGR } from 'contract/schrodinger';
 import ResultModal, { Status } from 'components/ResultModal';
 import { resetSGRMessage } from 'constants/promptMessage';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,7 @@ import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { useCmsInfo } from 'redux/hooks';
 import { AdoptActionErrorCode } from './Adopt/adopt';
 import { useWalletService } from './useWallet';
+import { getDomain } from 'utils';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -59,13 +60,14 @@ export const useResetHandler = () => {
               });
 
               if (!check) throw AdoptActionErrorCode.approveFailed;
-              await resetSGR({
+              const domain = getDomain();
+
+              await rerollSGR({
                 symbol: parentItemInfo.symbol,
                 amount: Number(amount),
-                // domain: location.host, // 'schrodingerai.com',
-                // TODO
-                domain: 'schrodingerai.com',
+                domain,
               });
+
               promptModal.hide();
               return Promise.resolve();
             } catch (error) {
@@ -77,7 +79,7 @@ export const useResetHandler = () => {
           },
         });
       }),
-    [promptModal],
+    [cmsInfo, promptModal, wallet.address],
   );
 
   const showResultModal = useCallback(

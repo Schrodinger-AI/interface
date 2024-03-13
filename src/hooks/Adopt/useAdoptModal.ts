@@ -17,7 +17,7 @@ import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import useLoading from 'hooks/useLoading';
 import { adopt1Message, promptContentTitle } from 'constants/promptMessage';
 import { WalletType, useWebLogin } from 'aelf-web-login';
-import { getExploreLink } from 'utils';
+import { getDomain, getExploreLink } from 'utils';
 import { ISendResult } from 'types';
 import { useCmsInfo } from 'redux/hooks';
 
@@ -130,11 +130,13 @@ const useAdoptHandler = () => {
           },
           initialization: async () => {
             try {
+              const domain = getDomain();
+
               const adoptId = await adoptStep1Handler({
                 params: {
                   parent: parentItemInfo.symbol,
                   amount,
-                  domain: location.host,
+                  domain,
                 },
                 address: account,
                 decimals: parentItemInfo.decimals,
@@ -371,11 +373,9 @@ const useAdoptHandler = () => {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         closeLoading();
-
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
-
         const { txResult, image } = await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
         await adoptConfirmSuccess({ transactionId: txResult.TransactionId, image, name: parentItemInfo.tokenName });
       } catch (error) {

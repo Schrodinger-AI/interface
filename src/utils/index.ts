@@ -76,3 +76,5 @@ export function getExploreLink(
     }
   }
 }
+
+export const getDomain = () => (!location.port ? location.host : 'schrodingernft.ai');
