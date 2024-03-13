@@ -305,7 +305,7 @@ export default function Header() {
       <Modal
         className={styles.menuModal}
         footer={null}
-        closeIcon={<CloseSVG />}
+        closeIcon={<CloseSVG className="size-4" />}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable

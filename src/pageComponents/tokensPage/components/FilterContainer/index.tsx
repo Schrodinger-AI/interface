@@ -31,7 +31,7 @@ const CollapseForPhone = ({ showDropMenu, items, onCloseHandler, titleTxt = 'Fil
       title={
         <div className="flex items-center justify-between">
           <span className="text-xl font-semibold text-neutralTitle">{titleTxt}</span>
-          <CloseSVG onClick={onCloseHandler} />
+          <CloseSVG className="size-4" onClick={onCloseHandler} />
         </div>
       }
       closeIcon={null}
