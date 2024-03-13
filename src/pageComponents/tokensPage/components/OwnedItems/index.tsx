@@ -163,7 +163,7 @@ export default function OwnedItems() {
         className="pb-2 mb-5 border-0 border-b border-solid border-neutralDivider text-neutralTitle"
         gap={8}
         align="center">
-        <span className="text-2xl font-semibold">Owned Items</span>
+        <span className="text-2xl font-semibold">Amount Owned</span>
         <span className="text-base font-semibold">({total})</span>
       </Flex>
       <Layout>

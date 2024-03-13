@@ -23,14 +23,7 @@ function Description() {
       direction="end"
       expandText={<EllipsisController />}
       collapseText={<EllipsisController isCollapseController />}
-      content="Shows the project information… Wrapped Punks are ERC721 Tokens, each one backed 1:1 byan original Cryptopunk
-  by Larvalabs. Buy an original Cryptopunk at https://larvalabs.com/cryptopuinks
-  https://larvalabs.com/cryptopuinks https://larvalabs.com/cryptopuinksWrapped Punks are ERC721 Tokens, each one
-  backed 1:1 byan original Cryptopunk by Larvalabs. Buy an original Cryptopunk at https://larvalabs.com/cryptopuinks
-  https://larvalabs.com/cryptopuinks https://larvalabs.com/cryptopuinksWrapped Punks are ERC721 Tokens, each one
-  backed 1:1 byan original Cryptopunk by Larvalabs. Buy an original Cryptopunk at https://larvalabs.com/cryptopuinks
-  https://larvalabs.com/cryptopuinks https://larvalabs.com/cryptopuinksWrapped Punks are ERC721 Tokens, each one
-  backed 1:1 byan original Cryptopunk by Larvalabs."
+      content="An AI-powered ACS-404 inscription allowing you to adopt cats and enjoy the fun of dynamic gameplay and unpredictable transformation. Evolving your cats to higher levels equips them with more randomly AI-generated traits. More traits, more rare, it's gacha-style fun!"
     />
   );
 }
