@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { NavHostTag } from 'components/HostTag';
+import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 export default function Header() {
   const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
@@ -31,6 +32,8 @@ export default function Header() {
   const [logoutComplete, setLogoutComplete] = useState(true);
 
   const [menuModalVisible, setMenuModalVisible] = useState(false);
+
+  const { topSafeHeight } = useSafeAreaHeight();
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     setLogoutComplete(true);
@@ -170,9 +173,11 @@ export default function Header() {
         )}
       </div>
       <Modal
+        mask={false}
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG />}
+        style={{ paddingTop: Number(topSafeHeight) }}
         title="My"
         open={menuModalVisible}
         closable
