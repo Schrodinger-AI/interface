@@ -23,9 +23,10 @@ import Link from 'next/link';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
+import { NavHostTag } from 'components/HostTag';
 
 export default function Header() {
-  const { checkLogin } = useCheckLoginAndToken();
+  const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const responsive = useResponsive();
@@ -73,7 +74,7 @@ export default function Header() {
 
   const CopyAddressItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div className={styles.menuItem}>
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -89,7 +90,7 @@ export default function Header() {
   const LogoutItem = useCallback(() => {
     return (
       <div
-        className="flex gap-[8px] items-center"
+        className={styles.menuItem}
         onClick={() => {
           logout();
           setMenuModalVisibleModel(ModalViewModel.NONE);
@@ -102,28 +103,32 @@ export default function Header() {
 
   const PointsItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <AssetSVG />
-        <span
-          onClick={() => {
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (checkTokenValid()) {
             router.push('/points');
-          }}>
-          My Points
-        </span>
+            setMenuModalVisibleModel(ModalViewModel.NONE);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <PointsSVG />
+        <span>My Points</span>
       </div>
     );
   }, [router]);
 
   const AssetItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <PointsSVG />
-        <span
-          onClick={() => {
-            router.push('/assets');
-          }}>
-          My Asset
-        </span>
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          router.push('/assets');
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+        }}>
+        <AssetSVG />
+        <span>My Asset</span>
       </div>
     );
   }, [router]);
@@ -291,15 +296,14 @@ export default function Header() {
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        {
-          // eslint-disable-next-line @next/next/no-img-element
+        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
           <img
             src={require('assets/img/logo.png').default.src}
             alt="logo"
-            width={responsive.md ? 200 : 150}
-            height={responsive.md ? 32 : 24}
+            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px] m"
           />
-        }
+          <NavHostTag />
+        </div>
         {FunctionalArea(menuItems)}
       </div>
       <Modal

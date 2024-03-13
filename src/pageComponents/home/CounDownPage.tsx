@@ -6,29 +6,12 @@ import useCheckJoinStatus from './hooks/useCheckJoinStatus';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
-import { useModal } from '@ebay/nice-modal-react';
-import PromptModal from 'components/PromptModal';
-import ResultModal, { Status } from 'components/ResultModal';
-import AdoptActionModal from 'components/AdoptActionModal';
-import AdopNextModal from 'components/AdoptNextModal';
-import { adoptStep1Handler } from 'hooks/Adopt/AdoptStep';
 import { HomeHostTag } from 'components/HostTag';
-import { isMobileDevices } from 'utils/isMobile';
-import { useCallback, useMemo } from 'react';
-import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 
 export default function CountDownPage() {
-  const isMobile = useMemo(() => !!isMobileDevices(), []);
+  const { checkLogin } = useCheckLoginAndToken();
 
-  const { checkLogin, isOK } = useCheckLoginAndToken();
-  const promptModal = useModal(PromptModal);
-  const resultModal = useModal(ResultModal);
-  const adoptActionModal = useModal(AdoptActionModal);
-  const adoptNextModal = useModal(AdopNextModal);
-
-  const adoptHandler = useAdoptHandler();
-
-  const { isLogin, wallet } = useWalletService();
+  const { isLogin } = useWalletService();
 
   const { cmsInfo } = useGetStoreInfo();
 
@@ -41,81 +24,6 @@ export default function CountDownPage() {
     } else {
       checkLogin();
     }
-  };
-
-  const modal = async () => {
-    // console.log('=====adopt');
-    // resultModal.show({
-    //   modalTitle: 'You have failed create tier 2 operational domain',
-    //   info: {
-    //     name: 'name',
-    //   },
-    //   status: Status.ERROR,
-    //   description:
-    //     'If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it.If you find an element of your interface requires instructions, then you need to redesign it',
-    //   link: {
-    //     href: 'llll',
-    //   },
-    // });
-    adoptActionModal.show({
-      modalTitle: 'Adopt',
-      info: {
-        name: 'name',
-        // logo: '',
-        subName: 'ssss',
-        // tag: 'GEN 1',
-      },
-      onConfirm: () => {
-        adoptActionModal.hide();
-        promptModal.show({
-          info: {
-            name: 'name',
-            subName: 'subName',
-          },
-          title: 'message title',
-          content: {
-            title: 'content title',
-            content: 'content content',
-          },
-          initialization: async () => {
-            try {
-              await adoptStep1Handler({
-                params: {
-                  parent: '',
-                  amount: '10',
-                  domain: '',
-                },
-                address: '',
-                decimals: 8,
-              });
-              promptModal.hide();
-              // show step2 modal
-            } catch (error) {
-              return Promise.reject(error);
-            }
-          },
-          onClose: () => {
-            promptModal.hide();
-          },
-        });
-      },
-    });
-  };
-
-  const onShowModal = async () => {
-    adoptNextModal.show({
-      data: {
-        SGRToken: {},
-        newTraits: [],
-        images: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-        inheritedTraits: [],
-        transaction: {},
-        ELFBalance: {},
-      },
-      onConfirm: (src) => {
-        console.log('onConfirm-src', src);
-      },
-    });
   };
 
   const socialMediaList: SocialMediaItem[] = [
@@ -158,7 +66,7 @@ export default function CountDownPage() {
 
   return (
     <div className="relative">
-      <section className="md:px-6 lg:px-0 pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
+      <section className="pt-[56px] md:pt-[80px] pb-[64px] flex flex-col items-center w-full z-10">
         <div className="relative flex w-full justify-center">
           <img
             src={require('assets/img/schrodinger.jpeg').default.src}
@@ -186,15 +94,13 @@ export default function CountDownPage() {
               </p>
             </div>
           ) : (
-            <>
-              <Button
-                type="primary"
-                size="ultra"
-                className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
-                onClick={handleJoinUs}>
-                Enrol
-              </Button>
-            </>
+            <Button
+              type="primary"
+              size="ultra"
+              className="w-full mx-auto max-w-[356px] md:!w-[356px]  !rounded-xl"
+              onClick={handleJoinUs}>
+              Enrol
+            </Button>
           )}
         </section>
         {socialMediaList?.length && (
