@@ -24,7 +24,7 @@ interface IConfirmAdoptParams {
 
 interface IRerollSGRParams {
   symbol: string;
-  amount: number;
+  amount: string;
   domain: string;
 }
 

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { ZERO } from 'constants/misc';
 
 export function formatTime({
   minDigits = 2,
@@ -99,10 +100,16 @@ export function formatNumber(
   return BigNumber.isBigNumber(number) ? number.toNumber() : number;
 }
 
+const reg = /^https?:/;
+const base64Prefix = 'data:image/png;base64,';
 export function formatImageSrc(url: string) {
   if (!url) return '';
-  const reg = /^https?:/;
-  const base64Prefix = 'data:image/png;base64,';
   if (reg.test(url) || url.startsWith('data:image')) return url;
   return base64Prefix + url;
+}
+
+export function formatPercent(percent: string | number, decimals = 2) {
+  let p = ZERO.plus(percent);
+  if (p.isNaN()) p = ZERO;
+  return p.toFixed(decimals);
 }

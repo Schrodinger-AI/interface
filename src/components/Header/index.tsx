@@ -59,7 +59,7 @@ export default function Header() {
           router.push(to);
         }
       } else {
-        // open new tab
+        // TODO open new tab
         event.preventDefault();
         const newWindow = window.open(to, '_blank');
         newWindow && (newWindow.opener = null);
