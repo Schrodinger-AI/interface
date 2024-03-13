@@ -56,7 +56,7 @@ export default function ItemInfo({
         <Button
           type="primary"
           className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] mt-[24px] mb-[56px] w-[239px]"
-          size="medium"
+          size="large"
           onClick={onAdoptNextGeneration}>
           Adopt Next-Gen Cat
         </Button>
