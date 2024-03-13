@@ -1,4 +1,4 @@
-import { getSchrodingerDetail, getSchrodingerList } from '../request';
+import { getSchrodingerDetail, getSchrodingerList, getSubTraits, getTraits } from '../request';
 import { getGraphQLClient } from '../client';
 import { useCallback } from 'react';
 import { TGraphQLParamsType } from '../types';
@@ -6,7 +6,6 @@ import { useCmsInfo } from 'redux/hooks';
 
 export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
-
   return getGraphQLClient(cmsInfo?.graphqlSchrodinger || '');
 };
 
@@ -24,4 +23,14 @@ export const useGetSchrodingerDetail = () => {
     (params: TGraphQLParamsType<typeof getSchrodingerDetail>) => getSchrodingerDetail(client, params),
     [client],
   );
+};
+
+export const useGetTraits = () => {
+  const client = useGraphQLClient();
+  return useCallback((params: TGraphQLParamsType<typeof getTraits>) => getTraits(client, params), [client]);
+};
+
+export const useGetSubTraits = () => {
+  const client = useGraphQLClient();
+  return useCallback((params: TGraphQLParamsType<typeof getSubTraits>) => getSubTraits(client, params), [client]);
 };
