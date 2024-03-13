@@ -39,7 +39,9 @@ export default function MyAsset() {
           //   faucetContractAddress: configInfo?.faucetContractAddress,
           // }}
           backIcon={<LeftOutlined rev={undefined} />}
-          onOverviewBack={() => router.back()}
+          onOverviewBack={() => {
+            router.push('/');
+          }}
           onLifeCycleChange={(lifeCycle: any) => {
             console.log(lifeCycle, 'onLifeCycleChange');
           }}
