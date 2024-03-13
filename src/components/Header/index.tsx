@@ -12,7 +12,6 @@ import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
-import { useResponsive } from 'ahooks';
 import { useCallback, useMemo, useState } from 'react';
 import { WalletType } from 'aelf-web-login';
 import { usePathname, useRouter } from 'next/navigation';
@@ -24,12 +23,13 @@ import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
+import useResponsive from 'hooks/useResponsive';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
-  const responsive = useResponsive();
+  const { isLG } = useResponsive();
   const router = useRouter();
   const pathname = usePathname();
   const navigate = useRouter();
@@ -201,7 +201,7 @@ export default function Header() {
     const myComponent = !isLogin ? (
       <Button
         type="primary"
-        size={responsive.md ? 'large' : 'small'}
+        size={!isLG ? 'large' : 'small'}
         className="!rounded-lg md:!rounded-[12px]"
         onClick={() => {
           store.dispatch(setLoginTrigger('login'));
@@ -212,7 +212,7 @@ export default function Header() {
     ) : (
       <MyDropDown />
     );
-    if (responsive.md) {
+    if (!isLG) {
       return (
         <span className="space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
@@ -270,7 +270,7 @@ export default function Header() {
   };
 
   const MyDropDown = () => {
-    if (responsive.md) {
+    if (!isLG) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
           <Button type="default" className="!rounded-[12px] text-brandDefault border-brandDefault" size="large">
