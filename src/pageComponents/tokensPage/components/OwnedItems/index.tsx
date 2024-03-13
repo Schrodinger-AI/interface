@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  FilterKeyEnum,
   ICompProps,
   getDefaultFilter,
   getComponentByType,
@@ -9,6 +8,7 @@ import {
   IFilterSelect,
   ItemsSelectSourceType,
   getTagList,
+  DEFAULT_FILTER_OPEN_KEYS,
 } from '../../type';
 import clsx from 'clsx';
 import { Flex, Layout } from 'antd';
@@ -151,7 +151,7 @@ export default function OwnedItems() {
 
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
-      const defaultValue = defaultFilter[item.key]?.data;
+      const defaultValue = filterSelect[item.key]?.data;
       const Comp: React.FC<ICompProps> = getComponentByType(item.type);
       return {
         key: item.key,
@@ -159,12 +159,12 @@ export default function OwnedItems() {
         children: [
           {
             key: item.key + '-1',
-            label: <Comp dataSource={item} defaultValue={defaultValue} />,
+            label: <Comp dataSource={item} defaultValue={defaultValue} onChange={filterChange} />,
           },
         ],
       };
     });
-  }, [filterList, defaultFilter]);
+  }, [filterList, filterSelect, filterChange]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
@@ -235,7 +235,7 @@ export default function OwnedItems() {
         {isLG ? (
           <CollapseForPhone
             items={collapseItems}
-            defaultOpenKeys={Object.values(FilterKeyEnum)}
+            defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS}
             showDropMenu={collapsed}
             onCloseHandler={() => {
               setCollapsed(false);
@@ -247,7 +247,7 @@ export default function OwnedItems() {
             className={clsx('!bg-[var(--bg-page)] m-0 mt-5', collapsed && '!mr-5')}
             width={collapsed ? siderWidth : 0}
             trigger={null}>
-            {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={Object.values(FilterKeyEnum)} />}
+            {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
           </Layout.Sider>
         )}
         <Layout className="!bg-[var(--bg-page)] relative">

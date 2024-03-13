@@ -37,7 +37,7 @@ function FilterTags({
           const result = {
             [tag.type]: {
               ...filter,
-              data: data.filter((item) => item.label !== tag.label),
+              data: data.filter((item) => item.value !== tag.value),
             },
           };
           onchange && onchange(result);
@@ -56,9 +56,9 @@ function FilterTags({
   return tagList.length ? (
     <div className={clsx(styles['filter-tags'])}>
       <div className={styles['filter-tags-container']}>
-        {tagList.map((tag) => {
+        {tagList.map((tag, index) => {
           return (
-            <div key={tag.label} className={styles['tag-item']}>
+            <div key={`${tag.label}_${index}`} className={styles['tag-item']}>
               {tag.type === 'search' ? (
                 <div>
                   <Ellipsis

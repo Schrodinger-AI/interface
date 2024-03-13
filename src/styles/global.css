@@ -48,3 +48,7 @@ code {
 .portkey-ui-wrapper {
   @apply h-full;
 }
+
+.aelfd-checkbox-wrapper > .aelfd-checkbox + span {
+  @apply block flex-1;
+}
