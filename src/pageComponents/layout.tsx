@@ -84,16 +84,24 @@ const Layout = dynamic(async () => {
       return ['/privacy-policy'].includes(pathname);
     }, [pathname]);
 
+    const isHiddenLayout = useMemo(() => {
+      return ['/assets'].includes(pathname);
+    }, [pathname]);
+
     return (
       <SafeArea>
-        <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
-          {!isHiddenHeader && <Header />}
-          <AntdLayout.Content
-            className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
-            {children}
-          </AntdLayout.Content>
-          <Footer />
-        </AntdLayout>
+        {!isHiddenLayout ? (
+          <AntdLayout className="bg-[#FAFAFA] h-full overflow-scroll">
+            {!isHiddenHeader && <Header />}
+            <AntdLayout.Content
+              className={`schrodinger-content flex-shrink-0 flex justify-center bg-[#FAFAFA] max-w-[1440px] px-[16px] md:px-[40px] mx-auto w-full`}>
+              {children}
+            </AntdLayout.Content>
+            <Footer />
+          </AntdLayout>
+        ) : (
+          <>{children}</>
+        )}
       </SafeArea>
     );
   };
