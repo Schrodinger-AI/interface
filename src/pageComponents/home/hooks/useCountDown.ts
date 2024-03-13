@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import BigNumber from 'bignumber.js';
 const MILLISECOND_CONVERT_SECOND = 1000;
 const SECOND_CONVERT_HOUR = 60 * 60;
 
@@ -7,11 +8,16 @@ export default function useCountdown(targetTime: string) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [days, setDays] = useState(0);
+  const [end, setEnd] = useState(false);
 
   const interval = useRef<number | null>(null);
 
   useEffect(() => {
     interval.current = window.setInterval(() => {
+      const now = new Date().getTime();
+      if (!BigNumber(targetTime).gt(now)) {
+        setEnd(true);
+      }
       const { hours, minutes, seconds, days } = getCountDown(targetTime || 0);
       setHours(hours);
       setMinutes(minutes);
@@ -27,6 +33,7 @@ export default function useCountdown(targetTime: string) {
     hours,
     minutes,
     seconds,
+    end,
   };
 }
 
