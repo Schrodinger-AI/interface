@@ -22,7 +22,7 @@ interface IConfirmAdoptParams {
   signature: string;
 }
 
-interface IResetSGRParams {
+interface IRerollSGRParams {
   symbol: string;
   amount: number;
   domain: string;
