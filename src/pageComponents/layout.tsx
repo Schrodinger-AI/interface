@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Layout as AntdLayout } from 'antd';
 import Header from 'components/Header';
 import dynamic from 'next/dynamic';

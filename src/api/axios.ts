@@ -11,7 +11,7 @@ interface ResponseType<T> {
 
 class Request {
   instance: AxiosInstance;
-  baseConfig: AxiosRequestConfig = { baseURL: '/api', timeout: 60000 };
+  baseConfig: AxiosRequestConfig = { baseURL: 'https://schrodingernft.ai/api', timeout: 60000 };
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(Object.assign({}, this.baseConfig, config));
