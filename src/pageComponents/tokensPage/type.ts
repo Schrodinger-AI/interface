@@ -76,3 +76,35 @@ export const getFilter = (filterSelect: IFilterSelect) => {
     chainId: filterSelect.Chain.data[0].value as ChainId,
   };
 };
+
+export type TagItemType = {
+  label: string;
+  type: string;
+  value?: string | number;
+  disabled?: boolean;
+};
+
+export const getTagList = (filterSelect: IFilterSelect, search: string) => {
+  const result: TagItemType[] = [];
+  for (const [key, value] of Object.entries(filterSelect)) {
+    const { data, type } = value;
+    if (type === FilterType.Checkbox) {
+      data.forEach((element: SourceItemType) => {
+        if (!element.disabled) {
+          result.push({
+            type: key,
+            ...element,
+          });
+        }
+      });
+    }
+  }
+  if (search) {
+    result.push({
+      type: 'search',
+      label: search,
+    });
+  }
+
+  return result;
+};
