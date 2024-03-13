@@ -8,12 +8,8 @@ import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { ewellUrl } from 'constants/index';
 import { HomeHostTag } from 'components/HostTag';
-import { isMobileDevices } from 'utils/isMobile';
-import { useMemo } from 'react';
 
 export default function CountDownPage() {
-  const isMobile = useMemo(() => !!isMobileDevices(), []);
-
   const { checkLogin, isOK } = useCheckLoginAndToken();
 
   const { isLogin, wallet } = useWalletService();

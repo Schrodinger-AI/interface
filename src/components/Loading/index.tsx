@@ -31,7 +31,7 @@ export default function Loading({ content }: ILoadingProps) {
   if (!isMount) return null;
 
   return (
-    <Modal className={`${styles.loading}`} open={true} footer={null} closable={false} closeIcon={null}>
+    <Modal className={`${styles.loading}`} open={true} footer={null} closable={false} closeIcon={null} centered>
       <section className="flex flex-col justify-center items-center">
         <Animation />
         <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">

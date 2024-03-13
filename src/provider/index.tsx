@@ -16,6 +16,7 @@ import { setCmsInfo } from 'redux/reducer/info';
 import { usePathname } from 'next/navigation';
 import NotFoundPage from 'components/notFound';
 import { NotFoundType } from 'constants/index';
+import { forbidScale } from 'utils/common';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -68,7 +69,8 @@ function Provider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     initPageData();
-  }, []);
+    forbidScale();
+  }, [initPageData]);
 
   const isCorrectPath = useMemo(() => {
     return ['/', '/assets', '/points', '/privacy-policy'].includes(pathname);

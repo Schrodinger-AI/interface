@@ -32,7 +32,7 @@
     "@types/lodash-es": "^4.17.9",
     "aelf-design": "^0.1.73-alpha.0",
     "aelf-sdk": "^3.2.40",
-    "aelf-web-login": "^2.0.1-beta.1",
+    "aelf-web-login": "2.0.1-beta.2",
     "ahooks": "^3.7.10",
     "antd": "^5.x",
     "antd-style": "^3.6.1",

@@ -1,6 +1,7 @@
 .loading {
-  @apply !fixed !top-1/2 !left-1/2 !-translate-x-1/2 !transform !-translate-y-1/2 !m-0;
-  :global{
+  @apply !m-0;
+
+  :global {
     .aelfd-modal-content {
       @apply !w-[240px] !h-[106px] mx-auto !p-[16px];
     }
@@ -8,7 +9,7 @@
 }
 
 .loadingWithClose {
-  :global{
+  :global {
     .aelfd-modal-content {
       @apply !w-[295px];
     }
