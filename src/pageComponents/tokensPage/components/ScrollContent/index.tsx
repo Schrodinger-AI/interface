@@ -71,7 +71,7 @@ function ScrollContent(props: IContentProps) {
         locale={{
           emptyText: (
             <Flex justify="center" align="center">
-              <EmptyList isChannelShow />
+              <EmptyList isChannelShow defaultDescription="No inscriptions found" />
             </Flex>
           ),
         }}
