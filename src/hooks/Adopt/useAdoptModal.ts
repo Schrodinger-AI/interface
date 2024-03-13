@@ -20,6 +20,7 @@ import { WalletType, useWebLogin } from 'aelf-web-login';
 import { getExploreLink } from 'utils';
 import { ISendResult } from 'types';
 import { useCmsInfo } from 'redux/hooks';
+import { useRouter } from 'next/navigation';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -30,7 +31,7 @@ const useAdoptHandler = () => {
   const adoptNextModal = useModal(AdoptNextModal);
   const asyncModal = useModal(SyncAdoptModal);
   const { showLoading, closeLoading } = useLoading();
-
+  const router = useRouter();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const { txFee: commonTxFee } = useTxFee();
 
@@ -215,11 +216,14 @@ const useAdoptHandler = () => {
   );
 
   const retryAdoptConfirm = useCallback(
-    async (confirmParams: {
-      adoptId: string;
-      image: string;
-      signature: string;
-    }): Promise<{ txResult: ISendResult; image: string }> =>
+    async (
+      confirmParams: {
+        adoptId: string;
+        image: string;
+        signature: string;
+      },
+      parentItemInfo: TSGRToken,
+    ): Promise<{ txResult: ISendResult; image: string }> =>
       new Promise(async (resolve, reject) => {
         try {
           const result = await adoptStep2Handler(confirmParams);
@@ -237,7 +241,8 @@ const useAdoptHandler = () => {
           resultModal.show({
             modalTitle: 'You have failed minted!',
             info: {
-              name: 'SGR',
+              name: parentItemInfo.tokenName,
+              logo: confirmParams.image,
             },
             id: 'adopt-retry-modal',
             status: Status.ERROR,
@@ -305,7 +310,7 @@ const useAdoptHandler = () => {
             content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams);
+            const result = await retryAdoptConfirm(confirmParams, parentItemInfo);
             resolve(result);
           },
           onClose: () => {
@@ -342,9 +347,20 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmSuccess = useCallback(
-    async ({ transactionId, image, name }: { transactionId: string; image: string; name: string }) =>
+    async ({
+      transactionId,
+      image,
+      name,
+      symbol,
+    }: {
+      transactionId: string;
+      image: string;
+      name: string;
+      symbol: string;
+    }) =>
       new Promise((resolve) => {
         const explorerUrl = getExploreLink(transactionId, 'transaction', cmsInfo?.curChain);
+        console.log('=====getExploreLink', explorerUrl, transactionId, cmsInfo?.curChain, image);
         resultModal.show({
           modalTitle: 'Cat Successfully Adopted!',
           info: {
@@ -355,6 +371,13 @@ const useAdoptHandler = () => {
           description: `You have successfully minted the inscription ${name}`,
           link: {
             href: explorerUrl,
+          },
+          buttonInfo: {
+            btnText: 'View Inscription',
+            onConfirm: () => {
+              resultModal.hide();
+              router.replace(`/detail?symbol=${symbol}`);
+            },
           },
           onCancel: () => {
             resolve(true);
@@ -377,7 +400,12 @@ const useAdoptHandler = () => {
         const infos = await fetchImages(adoptId);
 
         const { txResult, image } = await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
-        await adoptConfirmSuccess({ transactionId: txResult.TransactionId, image, name: parentItemInfo.tokenName });
+        await adoptConfirmSuccess({
+          transactionId: txResult.TransactionId,
+          image,
+          name: parentItemInfo.tokenName,
+          symbol: parentItemInfo.symbol,
+        });
       } catch (error) {
         console.log(error, 'error==');
         if (error === AdoptActionErrorCode.cancel) return;

@@ -23,7 +23,6 @@ import Link from 'next/link';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
-import { ICompassProps } from 'api/type';
 
 export default function Header() {
   const { checkLogin } = useCheckLoginAndToken();
@@ -56,6 +55,7 @@ export default function Header() {
           store.dispatch(setLoginTrigger('login'));
           checkLogin();
         } else {
+          setMenuModalVisibleModel(ModalViewModel.NONE);
           navigate.push(to);
         }
       } else {

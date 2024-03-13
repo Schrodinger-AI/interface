@@ -8,8 +8,8 @@ import { ReactComponent as SuccessIcon } from 'assets/img/icons/success.svg';
 import { ReactComponent as FailedIcon } from 'assets/img/icons/failed.svg';
 import { ReactComponent as ExportOutlined } from 'assets/img/icons/exportOutlined.svg';
 import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
-import { message } from 'antd';
 import { singleMessage } from '@portkey/did-ui-react';
+import { isMobile } from 'react-device-detect';
 
 export enum Status {
   ERROR = 'error',
@@ -95,6 +95,8 @@ function ResultModal({
     }[status];
   }, [status]);
 
+  const aProps = useMemo(() => (isMobile ? {} : { target: '_blank', rel: 'noreferrer' }), []);
+
   const modalFooter = useMemo(() => {
     return (
       <div className="flex flex-col justify-center items-center">
@@ -113,10 +115,12 @@ function ResultModal({
 
         {link && (
           <div className="flex items-center mt-[16px]">
-            <span className="text-brandDefault text-base mr-[8px]">{link.text || 'View on aelf Explorer'}</span>
-            <span>
-              <ExportOutlined width={20} height={20} />
-            </span>
+            <a href={link.href} {...aProps} className="flex items-center">
+              <span className="text-brandDefault text-base mr-[8px]">{link.text || 'View on aelf Explorer'}</span>
+              <span>
+                <ExportOutlined width={20} height={20} />
+              </span>
+            </a>
           </div>
         )}
       </div>
