@@ -3,7 +3,7 @@ import StoreProvider from './store';
 import { AELFDProvider } from 'aelf-design';
 import WebLoginProvider from './webLoginProvider';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { store } from 'redux/store';
 
 import { ConfigProvider } from 'antd';
@@ -17,13 +17,14 @@ import { AELFDProviderTheme } from './config';
 import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
-import { usePathname } from 'next/navigation';
 import Loading from 'components/PageLoading/index';
 import { Updater } from 'components/Updater';
+import { usePathname, useRouter } from 'next/navigation';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isCorrectDomain, setIsCorrectDomain] = useState(false);
+  const router = useRouter();
   const pathname = usePathname();
 
   const checkHost = async () => {
@@ -42,10 +43,28 @@ function Provider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const isCorrectPath = useMemo(() => {
+    return ['/', '/assets', '/points'].includes(pathname);
+  }, [pathname]);
+
+  const redirect = useCallback(
+    (openTimeStamp: string) => {
+      if (!isCorrectPath) {
+        const currentTime = new Date().getTime();
+        if (BigNumber(openTimeStamp || 0).gt(currentTime)) {
+          router.replace('/coundown');
+        } else {
+          router.replace('/tokens');
+        }
+      }
+    },
+    [isCorrectPath, router],
+  );
   const fetchGlobalConfig = async () => {
     try {
       const res = await fetchCmsConfigInfo();
       store.dispatch(setCmsInfo(res));
+      redirect(res.openTimeStamp);
     } catch (err) {
       console.error('fetchGlobalConfig err', err);
     }
@@ -68,14 +87,6 @@ function Provider({ children }: { children: React.ReactNode }) {
   useEffectOnce(() => {
     BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
   });
-  const isCorrectPath = useMemo(() => {
-    return ['/', '/assets', '/points'].includes(pathname);
-  }, [pathname]);
-
-  const showPage = useMemo(() => {
-    // return isCorrectDomain && isCorrectPath;
-    return true;
-  }, [isCorrectDomain, isCorrectPath]);
 
   return (
     <>
@@ -84,7 +95,7 @@ function Provider({ children }: { children: React.ReactNode }) {
           <ConfigProvider locale={enUS} autoInsertSpaceInButton={false}>
             {loading ? (
               <Loading content="Enrollment in progress"></Loading>
-            ) : showPage ? (
+            ) : isCorrectDomain ? (
               <WebLoginProvider>
                 <Updater>
                   <NiceModal.Provider>{children}</NiceModal.Provider>
