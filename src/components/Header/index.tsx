@@ -12,7 +12,7 @@ import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { WalletType } from 'aelf-web-login';
 import { usePathname, useRouter } from 'next/navigation';
 import { store } from 'redux/store';
@@ -32,7 +32,6 @@ export default function Header() {
   const { isLG } = useResponsive();
   const router = useRouter();
   const pathname = usePathname();
-  const navigate = useRouter();
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
@@ -57,7 +56,7 @@ export default function Header() {
           checkLogin();
         } else {
           setMenuModalVisibleModel(ModalViewModel.NONE);
-          navigate.push(to);
+          router.push(to);
         }
       } else {
         // open new tab
@@ -69,7 +68,7 @@ export default function Header() {
         }
       }
     },
-    [checkLogin, isLogin, navigate],
+    [checkLogin, isLogin, router],
   );
 
   const CopyAddressItem = useCallback(() => {
@@ -185,7 +184,11 @@ export default function Header() {
 
   const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
     const isInner = type !== 'out';
-    return (
+    const renderCom = <CompassText title={title} schema={to} />;
+
+    return isInner ? (
+      <span onClick={(event) => onPressCompassItems(event, to, isInner)}>{renderCom}</span>
+    ) : (
       <Link
         href={!isLogin ? '' : to}
         scroll={false}
@@ -193,7 +196,7 @@ export default function Header() {
           onPressCompassItems(event, to, isInner);
         }}
         {...props}>
-        <CompassText title={title} schema={to} />
+        {renderCom}
       </Link>
     );
   };
