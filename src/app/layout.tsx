@@ -27,12 +27,22 @@ export const viewport = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      {/* <head>
-        <meta
+      <head>
+        {/* <meta
           name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-        />
-      </head> */}
+        /> */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-KSBVVVXGYS" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-KSBVVVXGYS');
+        `}
+        </Script>
+      </head>
       <body>
         <Provider>
           <Layout>{children}</Layout>
