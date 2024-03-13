@@ -267,7 +267,11 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmHandler = useCallback(
-    async (params: {
+    async ({
+      adoptId,
+      image: originImage,
+      parentItemInfo,
+    }: {
       adoptId: string;
       image: string;
       parentItemInfo: TSGRToken;
@@ -276,9 +280,11 @@ const useAdoptHandler = () => {
       image: string;
     }> => {
       return new Promise(async (resolve, reject) => {
-        const parentItemInfo = params.parentItemInfo;
         showLoading();
-        const imageSignature = await fetchWaterImages(params);
+        const imageSignature = await fetchWaterImages({
+          adoptId,
+          image: originImage,
+        });
         adoptNextModal.hide();
         closeLoading();
         if (imageSignature?.error) {
@@ -289,7 +295,7 @@ const useAdoptHandler = () => {
         const image = imageSignature.image;
 
         const confirmParams = {
-          adoptId: params.adoptId,
+          adoptId,
           image: image,
           signature: Buffer.from(signature, 'hex').toString('base64'),
         };
