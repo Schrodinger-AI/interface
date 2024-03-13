@@ -126,7 +126,11 @@ export default function DetailPage() {
         <Breadcrumb
           items={[
             {
-              title: <a href="/">Schrodinger</a>,
+              title: (
+                <span className=" cursor-pointer" onClick={() => route.push('/')}>
+                  Schrodinger
+                </span>
+              ),
             },
             {
               title: <div>{schrodingerDetail?.symbol}</div>,
