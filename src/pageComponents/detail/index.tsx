@@ -62,7 +62,7 @@ export default function DetailPage() {
   };
 
   const showAdopt = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
-  const showReset = useMemo(() => true, [schrodingerDetail?.generation]);
+  const showReset = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
 
   const adoptAndResetButton = () => {
     return (
