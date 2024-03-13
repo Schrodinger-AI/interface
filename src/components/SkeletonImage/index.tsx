@@ -26,12 +26,11 @@ function SkeletonImage(props: ISkeletonImage) {
   const imageUrl = useMemo(() => {
     if (typeof img === 'string') {
       const pattern = /^(http|https):\/\/|\/_next/;
-      const patternBase = /^(data):\/\//;
 
       if (pattern.test(img)) {
         return img;
       }
-      if (patternBase.test(img)) {
+      if (img.startsWith('data:image')) {
         return img;
       } else {
         return `data:${img}`;

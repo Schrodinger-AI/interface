@@ -24,17 +24,17 @@ const explorerUrls = {
   [ENVIRONMENT.TEST]: {
     AELF: 'https://explorer-test.aelf.io/',
     TDVV: 'https://explorer-test-side02.aelf.io/',
-    TDVW: 'https://explorer-test-side02.aelf.io/',
+    TDVW: 'https://explorer-test-side02.aelf.io/tx',
   },
   [ENVIRONMENT.DEVELOPMENT]: {
     AELF: 'https://explorer.aelf.io/',
     TDVV: 'https://tdvv-explorer.aelf.io/',
-    TDVW: 'https://tdvv-explorer.aelf.io/',
+    TDVW: 'https://explorer-test-side02.aelf.io/tx',
   },
   [ENVIRONMENT.PRODUCTION]: {
     AELF: 'https://explorer.aelf.io/',
     TDVV: 'https://tdvv-explorer.aelf.io/',
-    TDVW: 'https://tdvv-explorer.aelf.io/',
+    TDVW: 'https://explorer-test-side02.aelf.io/tx',
   },
 };
 

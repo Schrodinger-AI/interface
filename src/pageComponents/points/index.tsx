@@ -33,13 +33,15 @@ export default function PointsPage() {
   }, [isLogin, router]);
 
   return (
-    <div className="w-full max-w-[1360px]">
-      <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Details of credits token earned for this domain</h1>
-      {data?.pointDetails.length ? (
-        <TokenEarnList dataSource={data?.pointDetails || []} />
-      ) : (
-        <p className="pt-[24px] pb-[8px] text-[#919191] text-lg text-center">No flux points yet.</p>
-      )}
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[1360px]">
+        <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Details of credits token earned for this domain</h1>
+        {data?.pointDetails.length ? (
+          <TokenEarnList dataSource={data?.pointDetails || []} />
+        ) : (
+          <p className="pt-[24px] pb-[8px] text-[#919191] text-lg text-center">No flux points yet.</p>
+        )}
+      </div>
     </div>
   );
 }
