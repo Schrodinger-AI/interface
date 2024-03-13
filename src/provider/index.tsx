@@ -52,9 +52,11 @@ function Provider({ children }: { children: React.ReactNode }) {
       if (!isCorrectPath) {
         const currentTime = new Date().getTime();
         if (BigNumber(openTimeStamp || 0).gt(currentTime)) {
-          router.replace('/coundown');
+          // TODO
+          // router.replace('/coundown');
         } else {
-          router.replace('/tokens');
+          // TODO
+          // router.replace('/tokens');
         }
       }
     },
