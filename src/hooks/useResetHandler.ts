@@ -17,6 +17,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { AdoptActionErrorCode } from './Adopt/adopt';
 import { useWalletService } from './useWallet';
 import { getDomain } from 'utils';
+import { timesDecimals } from 'utils/calculate';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -32,7 +33,7 @@ export const useResetHandler = () => {
 
   const approveReset = useCallback(
     async (parentItemInfo: TSGRToken, amount: string): Promise<void> =>
-      new Promise(() => {
+      new Promise((resolve, reject) => {
         promptModal.show({
           info: {
             logo: parentItemInfo.inscriptionImage,
@@ -64,14 +65,13 @@ export const useResetHandler = () => {
 
               await rerollSGR({
                 symbol: parentItemInfo.symbol,
-                amount: Number(amount),
+                amount: timesDecimals(amount, parentItemInfo.decimals).toFixed(0),
                 domain,
               });
-
               promptModal.hide();
-              return Promise.resolve();
+              resolve();
             } catch (error) {
-              return Promise.reject(error);
+              reject(error);
             }
           },
           onClose: () => {

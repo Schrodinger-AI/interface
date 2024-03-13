@@ -4,6 +4,7 @@ import NewIcon from 'components/NewIcon';
 import { ITrait } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
+import { formatPercent } from 'utils/format';
 
 interface ITraitItem {
   item: ITrait;
@@ -26,7 +27,7 @@ function TraitsItem({ item, showNew, isLG }: ITraitItem) {
       )}>
       <div>{traitType}</div>
       <div className="text-sm text-[#1A1A1A]">{value}</div>
-      <div>{percent}%</div>
+      <div>{formatPercent(percent)}%</div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>
   );

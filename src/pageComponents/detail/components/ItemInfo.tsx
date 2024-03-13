@@ -3,6 +3,7 @@ import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { ISGRDetailTrait } from '../types';
 import { TSGRToken } from 'types/tokens';
+import { formatPercent } from 'utils/format';
 
 export default function ItemInfo({
   detail,
@@ -27,7 +28,7 @@ export default function ItemInfo({
               className="w-[198px] p-[24px] hidden lg:flex flex-col items-center bg-[#FAFAFA] rounded-lg">
               <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
               <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
-              <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
+              <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
             </div>
             <div
               key={item.traitType}
@@ -35,7 +36,7 @@ export default function ItemInfo({
               <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
               <div className="flex flex-row w-full justify-between">
                 <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
-                <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
+                <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
               </div>
             </div>
           </>
