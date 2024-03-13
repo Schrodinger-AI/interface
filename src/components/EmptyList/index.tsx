@@ -8,10 +8,11 @@ import { TEmptyChannelGroup } from 'types/misc';
 
 export interface IEmptyListProps {
   isChannelShow?: boolean;
+  defaultDescription?: string;
   className?: string;
 }
 
-export const EmptyList = ({ isChannelShow = false, className }: IEmptyListProps) => {
+export const EmptyList = ({ isChannelShow = false, defaultDescription = '', className }: IEmptyListProps) => {
   const cmsInfo = useCmsInfo();
 
   const emptyChannelGroupList = useMemo(() => {
@@ -19,8 +20,8 @@ export const EmptyList = ({ isChannelShow = false, className }: IEmptyListProps)
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const emptyChannelGroupDescription = useMemo(() => {
-    return cmsInfo?.emptyChannelGroupDescription || '';
-  }, [cmsInfo?.emptyChannelGroupDescription]);
+    return cmsInfo?.emptyChannelGroupDescription || defaultDescription;
+  }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription]);
 
   const onChannelClick = useCallback((url: string) => {
     if (!url) return;
