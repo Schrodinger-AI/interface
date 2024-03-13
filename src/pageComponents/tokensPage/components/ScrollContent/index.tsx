@@ -45,7 +45,7 @@ function ScrollContent(props: IContentProps) {
     } else {
       closeLoading();
     }
-    // There cannot be dependencies showLoading and closeLoading
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   const handleScroll = useCallback(

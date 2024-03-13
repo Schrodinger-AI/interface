@@ -1,19 +1,32 @@
 import TextArea from 'antd/es/input/TextArea';
 import SkeletonImage from 'components/SkeletonImage';
-import React from 'react';
-import { BigNumber } from 'bignumber.js';
+import React, { useMemo } from 'react';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TBaseSGRToken } from 'types/tokens';
+import { formatTokenPrice } from 'utils/format';
 
 export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => void }) {
-  const { inscriptionImage, inscriptionInfo = '', generation = '1', tokenName, symbol, amount } = props.item || {};
-  const transformedAmount = BigNumber(amount).toFormat(0);
-  let containsInscriptionCode = false;
-  try {
-    JSON.parse(inscriptionInfo);
-    containsInscriptionCode = true;
-    // eslint-disable-next-line no-empty
-  } catch (ignored) {}
+  const {
+    inscriptionImage,
+    inscriptionInfo = '',
+    generation = '1',
+    tokenName,
+    symbol,
+    amount,
+    decimals,
+  } = props.item || {};
+  const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
+
+  const containsInscriptionCode = useMemo(() => {
+    let _containsInscriptionCode = false;
+    try {
+      JSON.parse(inscriptionInfo);
+      _containsInscriptionCode = true;
+      // eslint-disable-next-line no-empty
+    } catch (ignored) {}
+    return _containsInscriptionCode;
+  }, [inscriptionInfo]);
+
   return (
     <div className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md" onClick={props.onPress}>
       <div>
