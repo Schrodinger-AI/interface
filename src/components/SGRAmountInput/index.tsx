@@ -13,6 +13,8 @@ export interface ISGRAmountInputProps {
   onInvalidChange?: (isInvalid: boolean) => void;
   onChange?: (value: string) => void;
   placeholder?: string;
+  status?: '' | 'warning' | 'error' | undefined;
+  errorMessage?: string;
 }
 
 export interface ISGRAmountInputInterface {
@@ -31,6 +33,8 @@ export const SGRAmountInput = forwardRef(
       onInvalidChange,
       onChange: onChangeProps,
       placeholder,
+      status = '',
+      errorMessage = '',
     }: ISGRAmountInputProps,
     ref,
   ) => {
@@ -52,7 +56,7 @@ export const SGRAmountInput = forwardRef(
       }
 
       if (valueNumber.lte(min)) return;
-      if (max && valueNumber.gt(max)) return;
+      // if (max && valueNumber.gt(max)) return;
       setAmount(value);
     };
 
@@ -67,7 +71,8 @@ export const SGRAmountInput = forwardRef(
         return;
       }
       const valueNumber = ZERO.plus(amount);
-      if (valueNumber.lte(min) || (max && valueNumber.gt(max))) {
+      // if (valueNumber.lte(min) || (max && valueNumber.gt(max))) {
+      if (valueNumber.lte(min)) {
         onInvalidChange(true);
         return;
       }
@@ -103,8 +108,10 @@ export const SGRAmountInput = forwardRef(
           value={amount}
           onChange={onChange}
           suffix={suffix}
+          status={status}
           placeholder={placeholder || 'Enter amount'}
         />
+        {errorMessage && <span className="mt-[4px] text-sm text-functionalError">{errorMessage}</span>}
       </div>
     );
   },

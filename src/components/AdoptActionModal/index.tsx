@@ -7,11 +7,12 @@ import SGRAmountInput, { ISGRAmountInputInterface, ISGRAmountInputProps } from '
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { Tooltip } from 'antd';
+import BigNumber from 'bignumber.js';
 
 export type TBalanceItem = {
   amount: string;
@@ -46,6 +47,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const { tokenPrice } = useTokenPrice();
   const cmsInfo = useCmsInfo();
   const adoptRuleUrl = useMemo(() => cmsInfo?.adoptRuleUrl, [cmsInfo]);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   const [isInvalid, setIsInvalid] = useState(true);
   const isInvalidRef = useRef(isInvalid);
@@ -55,8 +57,14 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     const sgrAmountInput = sgrAmountInputRef.current;
     if (!sgrAmountInput) return;
     const amount = sgrAmountInput.getAmount();
+
+    if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
+      setErrorMessage('Insufficient cat to consume. ');
+      return;
+    }
+
     onConfirmProps && onConfirmProps(amount);
-  }, [onConfirmProps]);
+  }, [inputProps?.max, onConfirmProps]);
 
   const [amount, setAmount] = useState<string>('');
   const receiveToken = useMemo(() => {
@@ -120,6 +128,10 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     [isInvalid, isReset, onConfirm],
   );
 
+  useEffect(() => {
+    setErrorMessage('');
+  }, [amount]);
+
   return (
     <CommonModal
       title={modalTitle}
@@ -149,6 +161,8 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         className="mt-[32px] mb-[32px]"
         onInvalidChange={setIsInvalid}
         onChange={setAmount}
+        status={errorMessage ? 'error' : ''}
+        errorMessage={errorMessage}
         placeholder={inputPlaceholder}
         {...inputProps}
       />
