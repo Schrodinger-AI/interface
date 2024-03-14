@@ -16,7 +16,11 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
   const cmsInfo = useCmsInfo();
 
   const emptyChannelGroupList = useMemo(() => {
-    return JSON.parse(cmsInfo?.emptyChannelGroupList || '[]') as TEmptyChannelGroup[];
+    try {
+      return JSON.parse(cmsInfo?.emptyChannelGroupList || '[]') as TEmptyChannelGroup[];
+    } catch (error) {
+      return [];
+    }
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const emptyChannelGroupDescription = useMemo(() => {
