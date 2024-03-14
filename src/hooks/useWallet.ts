@@ -25,7 +25,7 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
-import { setItemsFromLocal } from 'redux/reducer/info';
+import { setHasToken, setItemsFromLocal } from 'redux/reducer/info';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export const useWalletInit = () => {
@@ -87,6 +87,7 @@ export const useWalletInit = () => {
       }),
     );
     dispatch(setItemsFromLocal([]));
+    dispatch(setHasToken(false));
   });
   useWebLoginEvent(WebLoginEvents.USER_CANCEL, () => {
     console.log('user cancel');
@@ -202,14 +203,14 @@ export const useWalletSyncCompleted = (contractChainId = 'AELF') => {
 export const useCheckLoginAndToken = () => {
   const { loginState, login, logout } = useWebLogin();
   const isLogin = loginState === WebLoginState.logined;
-  const [hasToken, setHasToken] = useState<Boolean>(false);
-  const { getToken, checkTokenValid } = useGetToken(setHasToken);
+  const { getToken, checkTokenValid } = useGetToken();
+  const { hasToken } = useGetStoreInfo();
 
   const checkLogin = async () => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isLogin) {
       if (accountInfo.token) {
-        setHasToken(true);
+        store.dispatch(setHasToken(true));
         return;
       }
       getToken();
@@ -220,7 +221,7 @@ export const useCheckLoginAndToken = () => {
   useEffect(() => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (accountInfo.token) {
-      setHasToken(true);
+      store.dispatch(setHasToken(true));
       return;
     }
   }, []);
@@ -231,7 +232,7 @@ export const useCheckLoginAndToken = () => {
   }, [logout]);
 
   return {
-    isOK: isLogin && hasToken,
+    isOK: isLogin && !!hasToken,
     checkTokenValid,
     logout: logoutAccount,
     checkLogin,

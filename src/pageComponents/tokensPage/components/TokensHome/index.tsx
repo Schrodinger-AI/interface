@@ -7,6 +7,7 @@ import { setLoginTrigger } from 'redux/reducer/info';
 import styles from './style.module.css';
 import { Button } from 'aelf-design';
 import { ENVIRONMENT } from 'constants/url';
+import Image from 'next/image';
 
 export default function TokensHome() {
   const { checkLogin } = useCheckLoginAndToken();
@@ -16,7 +17,13 @@ export default function TokensHome() {
 
   return (
     <div className="pt-[24px]">
-      <div className="lg:fixed lg:top-[200px] lg:left-[36px]">{isLG ? <LeftMobile /> : <LeftSVG />}</div>
+      <div className="lg:fixed lg:top-[200px] lg:left-[36px]">
+        {isLG ? (
+          <Image src={require('assets/img/home/Left.svg').default} width={118} height={128} alt={'logo'} />
+        ) : (
+          <LeftSVG />
+        )}
+      </div>
       <div className={isLG ? styles.bgCenterMobile : styles.bgCenter}>
         {isLG ? <BGCMobile className="w-[660px] h-[480px]" /> : <BGCSVG />}
       </div>
