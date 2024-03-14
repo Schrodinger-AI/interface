@@ -33,7 +33,7 @@ function SkeletonImage(props: ISkeletonImage) {
       if (img.startsWith('data:image')) {
         return img;
       } else {
-        return `data:${img}`;
+        return `data:image/png;base64,${img}`;
       }
     } else {
       return img;

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { Button } from 'aelf-design';
 import { Tooltip } from 'antd';
@@ -73,6 +74,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   return (
     <CommonModal
       title={title}
+      closable={false}
       open={modal.visible}
       onCancel={onCancel}
       afterClose={modal.remove}
@@ -99,6 +101,10 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
           <TraitsList data={newTraits} showNew />
         </DescriptionItem>
         <DescriptionItem title="Select the Cat You Prefer">
+          <span className="text-functionalWarning text-base">
+            Please note: Once you confirm, the adoption will be completed, and you won't be able to change the cat
+            anymore.
+          </span>
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
         <DescriptionItem title="Traits">
