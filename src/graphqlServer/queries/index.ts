@@ -11,6 +11,9 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
         amount
         generation
         decimals
+        inscriptionDeploy
+        adopter
+        adoptTime
       }
     }
   }

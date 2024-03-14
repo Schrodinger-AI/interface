@@ -19,6 +19,12 @@ export type TBaseSGRToken = {
   address?: string; // temp key
 };
 
+export type TSGRItem = TBaseSGRToken & {
+  inscriptionDeploy: string;
+  adopter: string;
+  adoptTime: number;
+};
+
 export type TSGRToken = GenerateType<
   TBaseSGRToken & {
     traits: ITrait[];
