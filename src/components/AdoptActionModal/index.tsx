@@ -7,12 +7,13 @@ import SGRAmountInput, { ISGRAmountInputInterface, ISGRAmountInputProps } from '
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
+import AdoptRulesModal from 'components/AdoptRulesModal';
 
 export type TBalanceItem = {
   amount: string;
@@ -32,21 +33,21 @@ export type TAdoptActionModalProps = {
 
 function AdoptActionModal(params: TAdoptActionModalProps) {
   const modal = useModal();
+  const adoptRulesModal = useModal(AdoptRulesModal);
   const { modalTitle, info, onClose, onConfirm: onConfirmProps, balanceList, inputProps, isReset = false } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     if (onClose) {
       onClose();
       return;
     }
     modal.hide();
-  };
+  }, [modal, onClose]);
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
   const cmsInfo = useCmsInfo();
-  const adoptRuleUrl = useMemo(() => cmsInfo?.adoptRuleUrl, [cmsInfo]);
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const [isInvalid, setIsInvalid] = useState(true);
@@ -132,6 +133,10 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     setErrorMessage('');
   }, [amount]);
 
+  const onAdoptRulesClick = useCallback(() => {
+    adoptRulesModal.show();
+  }, [adoptRulesModal]);
+
   return (
     <CommonModal
       title={modalTitle}
@@ -144,12 +149,11 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         <div className="flex bg-brandBg py-[14px] px-[16px] rounded-md mb-[24px] md:mb-[32px]">
           <InfoSVG className="flex-shrink-0" />
           <span className="ml-[8px] text-neutralPrimary">
-            Adopt releases the next generation Item with more Traits.{' '}
-            {adoptRuleUrl && (
-              <a href={adoptRuleUrl} target="_blank" rel="noreferrer">
-                Adopt rules
-              </a>
-            )}
+            Learn more about the{' '}
+            <span className="text-brandDefault cursor-pointer" onClick={onAdoptRulesClick}>
+              adoption rules
+            </span>
+            .
           </span>
         </div>
       )}
