@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { TGraphQLClient } from './common';
-import { TBaseSGRToken, TSGRToken } from 'types/tokens';
+import { TSGRItem, TSGRToken } from 'types/tokens';
 import { TBaseFilterTrait, TFilterGeneration, TFilterTrait } from 'types/trait';
 export * from './common';
 
@@ -11,6 +11,11 @@ export type TGetSchrodingerListParams = {
     chainId: string;
     address?: string;
     tick?: string;
+    traits?: Array<{
+      traitType: string;
+      value: string;
+    }>;
+    generations?: number[];
     skipCount?: number;
     maxResultCount?: number;
     keyword?: string;
@@ -19,7 +24,7 @@ export type TGetSchrodingerListParams = {
 export type TGetSchrodingerListResult = {
   getSchrodingerList: {
     totalCount: number;
-    data: Array<TBaseSGRToken>;
+    data: Array<TSGRItem>;
   };
 };
 export type TGetSchrodingerList = (

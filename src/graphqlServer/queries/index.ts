@@ -11,6 +11,9 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
         amount
         generation
         decimals
+        inscriptionDeploy
+        adopter
+        adoptTime
       }
     }
   }
@@ -42,8 +45,8 @@ export const GET_TRAITS_QUERY = gql`
         amount
       }
       generationFilter {
-        key
-        value
+        generationName
+        generationAmount
       }
     }
   }
