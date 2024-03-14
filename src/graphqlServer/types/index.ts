@@ -1,6 +1,7 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { TGraphQLClient } from './common';
 import { TBaseSGRToken, TSGRToken } from 'types/tokens';
+import { TBaseFilterTrait, TFilterGeneration, TFilterTrait } from 'types/trait';
 export * from './common';
 
 export type TCommonGraphQLResult<T> = Promise<ApolloQueryResult<T>>;
@@ -41,3 +42,34 @@ export type TGetSchrodingerDetail = (
   client: TGraphQLClient,
   params: TGetSchrodingerDetailParams,
 ) => TCommonGraphQLResult<TGetSchrodingerDetailResult>;
+
+export type TGetTraitsParams = {
+  input: {
+    chainId: String;
+    address: String;
+  };
+};
+export type TGetTraitsResult = {
+  getTraits: {
+    traitsFilter: TBaseFilterTrait[];
+    generationFilter: TFilterGeneration[];
+  };
+};
+export type TGetTraits = (client: TGraphQLClient, params: TGetTraitsParams) => TCommonGraphQLResult<TGetTraitsResult>;
+
+type TGetSubTraitsParams = {
+  input: {
+    chainId: string;
+    address: string;
+    traitType: string;
+  };
+};
+type TGetSubTraitsResult = {
+  getTraits: {
+    traitsFilter: TFilterTrait[];
+  };
+};
+export type TGetSubTraits = (
+  client: TGraphQLClient,
+  params: TGetSubTraitsParams,
+) => TCommonGraphQLResult<TGetSubTraitsResult>;

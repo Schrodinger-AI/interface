@@ -3,6 +3,10 @@
   @apply !border-none h-fit overflow-y-auto overflow-x-hidden;
 }
 
+.items-side-menu :global(.aelfd-menu-submenu:not(:last-child)) {
+  @apply border-0 border-b border-neutralDivider border-solid;
+}
+
 .items-side-menu :global(.aelfd-menu-submenu-title .aelfd-menu-title-content),
 .items-side-menu :global(.aelfd-menu-submenu-selected),
 .items-side-menu :global(.aelfd-menu-submenu-active) {
@@ -14,7 +18,7 @@
 }
 
 .items-side-menu :global(.aelfd-menu) :global(.aelfd-menu-item) {
-  @apply w-full h-11 !p-0 !m-0 text-sm bg-neutralWhiteBg hover:!bg-neutralHoverBg active:!bg-neutralHoverBg;
+  @apply w-full h-auto !p-0 !m-0 text-sm bg-neutralWhiteBg hover:!bg-neutralWhiteBg active:!bg-neutralWhiteBg rounded-none cursor-default;
 }
 
 .items-side-menu :global(.aelfd-menu-submenu) :global(.aelfd-menu-submenu-title) {

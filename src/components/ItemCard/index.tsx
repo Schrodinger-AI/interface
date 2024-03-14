@@ -38,7 +38,7 @@ export default function ItemCard(props: IItemCard) {
     <div className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md" onClick={onPress}>
       <div>
         <div className="relative">
-          <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
+          <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm">
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
