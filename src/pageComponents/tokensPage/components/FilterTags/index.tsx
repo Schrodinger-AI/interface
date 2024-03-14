@@ -1,12 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import {
-  FilterKeyEnum,
-  FilterType,
-  ItemsSelectSourceType,
-  SourceItemType,
-  IFilterSelect,
-  TagItemType,
-} from '../../type';
+import { FilterType, ItemsSelectSourceType, IFilterSelect, TagItemType, SEARCH_TAG_ITEM_TYPE } from '../../type';
 import styles from './style.module.css';
 import { ReactComponent as CloseIcon } from 'assets/img/close.svg';
 import { Ellipsis } from 'antd-mobile';
@@ -28,16 +21,33 @@ function FilterTags({
 }) {
   const closeChange = useCallback(
     (tag: TagItemType) => {
-      if (tag.type === 'search') {
+      if (tag.type === SEARCH_TAG_ITEM_TYPE) {
         clearSearchChange && clearSearchChange();
       } else {
-        const filter = filterSelect[tag.type as FilterKeyEnum];
+        const filter = filterSelect[tag.type];
         if (filter.type === FilterType.Checkbox) {
-          const data = filter.data as SourceItemType[];
+          const data = filter.data;
           const result = {
             [tag.type]: {
               ...filter,
               data: data.filter((item) => item.value !== tag.value),
+            },
+          };
+          onchange && onchange(result);
+        } else if (filter.type === FilterType.MenuCheckbox) {
+          const data = filter.data;
+          const result = {
+            [tag.type]: {
+              ...filter,
+              data: data.map((item) => {
+                if (item.value === tag.parentValue) {
+                  return {
+                    ...item,
+                    values: item.values?.filter((subItem) => subItem.value !== tag.subValue),
+                  };
+                }
+                return item;
+              }),
             },
           };
           onchange && onchange(result);
@@ -59,7 +69,7 @@ function FilterTags({
         {tagList.map((tag, index) => {
           return (
             <div key={`${tag.label}_${index}`} className={styles['tag-item']}>
-              {tag.type === 'search' ? (
+              {tag.type === SEARCH_TAG_ITEM_TYPE ? (
                 <div>
                   <Ellipsis
                     className={clsx(styles['tag-label'], 'break-words')}

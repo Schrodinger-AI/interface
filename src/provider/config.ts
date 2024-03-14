@@ -9,6 +9,8 @@ export const AELFDProviderTheme: ThemeConfig = {
   components: {
     Input: {
       borderRadius: 12,
+      borderRadiusSM: 12,
+      paddingInlineSM: 11,
     },
     Table: {
       headerColor: 'var(--neutral-secondary)',

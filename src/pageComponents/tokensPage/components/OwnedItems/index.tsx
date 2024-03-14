@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ICompProps,
   getDefaultFilter,
   getComponentByType,
   getFilter,
@@ -9,12 +8,17 @@ import {
   ItemsSelectSourceType,
   getTagList,
   DEFAULT_FILTER_OPEN_KEYS,
+  FilterType,
+  MenuCheckboxItemDataType,
+  FilterKeyEnum,
+  CheckboxItemType,
 } from '../../type';
 import clsx from 'clsx';
-import { Flex, Layout } from 'antd';
+import { Flex, Layout, MenuProps } from 'antd';
 import CommonSearch from 'components/CommonSearch';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
+import FilterMenuEmpty from '../FilterMenuEmpty';
 import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
 import { TBaseSGRToken } from 'types/tokens';
@@ -25,7 +29,8 @@ import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { sleep } from 'utils';
-import { TGetSchrodingerListParams, useGetSchrodingerList } from 'graphqlServer';
+import { TGetSchrodingerListParams, useGetSchrodingerList, useGetTraits } from 'graphqlServer';
+import { ZERO } from 'constants/misc';
 
 const mockData: TBaseSGRToken[] = new Array(32).fill({
   tokenName: 'tokenName',
@@ -41,14 +46,16 @@ export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL } = useResponsive();
+  const isMobile = useMemo(() => isLG, [isLG]);
   const [collapsed, setCollapsed] = useState(!isLG);
   const [total, setTotal] = useState(0);
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const filterList = getFilterList(curChain);
+  const [filterList, setFilterList] = useState(getFilterList(curChain));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
+  const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TBaseSGRToken[]>([]);
   const isLoadMore = useRef<boolean>(false);
@@ -139,32 +146,124 @@ export default function OwnedItems() {
     });
   }, [fetchData, defaultRequestParams]);
 
-  const filterChange = useCallback(
-    (val: ItemsSelectSourceType) => {
-      setFilterSelect({ ...filterSelect, ...val });
-      const filter = getFilter({ ...filterSelect, ...val });
+  const getTraits = useGetTraits();
+
+  const getFilterListData = useCallback(async () => {
+    try {
+      const {
+        data: {
+          getTraits: { traitsFilter, generationFilter },
+        },
+      } = await getTraits({
+        input: {
+          chainId: curChain,
+          address: walletAddress,
+        },
+      });
+      const traitsList =
+        traitsFilter?.map((item) => ({
+          label: item.traitType,
+          value: item.traitType,
+          count: ZERO.plus(item.amount).toFormat(),
+        })) || [];
+      const generationList =
+        generationFilter?.map((item) => ({
+          label: String(item.generationName),
+          value: item.generationName,
+          count: ZERO.plus(item.generationAmount).toFormat(),
+        })) || [];
+      setFilterList((preFilterList) => {
+        const newFilterList = preFilterList.map((item) => {
+          if (item.key === FilterKeyEnum.Traits) {
+            return { ...item, data: traitsList };
+          } else if (item.key === FilterKeyEnum.Generation) {
+            return { ...item, data: generationList } as CheckboxItemType;
+          }
+          return item;
+        });
+        return newFilterList;
+      });
+    } catch (error) {
+      console.log('getTraitList error', error);
+    }
+  }, [curChain, getTraits, walletAddress]);
+
+  useEffect(() => {
+    getFilterListData();
+  }, [getFilterListData]);
+
+  const applyFilter = useCallback(
+    (newFilterSelect: IFilterSelect = tempFilterSelect) => {
+      setFilterSelect(newFilterSelect);
+      const filter = getFilter(newFilterSelect);
       SetCurrent(1);
       fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
     },
-    [filterSelect, fetchData, requestParams],
+    [tempFilterSelect, fetchData, requestParams],
+  );
+
+  const filterChange = useCallback(
+    (val: ItemsSelectSourceType) => {
+      const newFilterSelect = { ...filterSelect, ...val };
+      setTempFilterSelect(newFilterSelect);
+      if (!isMobile || !collapsed) {
+        applyFilter(newFilterSelect);
+      }
+    },
+    [filterSelect, isMobile, collapsed, applyFilter],
   );
 
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
-      const defaultValue = filterSelect[item.key]?.data;
-      const Comp: React.FC<ICompProps> = getComponentByType(item.type);
+      const value = tempFilterSelect[item.key]?.data;
+      let children: Required<MenuProps>['items'] = [];
+      if (item.type === FilterType.Checkbox) {
+        const Comp = getComponentByType(item.type);
+        children = [
+          {
+            key: item.key,
+            label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
+          },
+        ];
+      } else if (item.type === FilterType.MenuCheckbox) {
+        const Comp = getComponentByType(item.type);
+        if (item.data.length === 0) {
+          children = [
+            {
+              key: item.key,
+              label: <FilterMenuEmpty />,
+            },
+          ];
+        } else {
+          children = item.data.map((subItem) => {
+            return {
+              key: subItem.value,
+              label: <Comp label={subItem.label} count={subItem.count} />,
+              children: [
+                {
+                  key: subItem.value,
+                  label: (
+                    <Comp.child
+                      itemKey={item.key}
+                      parentLabel={subItem.label}
+                      parentValue={subItem.value}
+                      value={value as MenuCheckboxItemDataType[]}
+                      onChange={filterChange}
+                    />
+                  ),
+                },
+              ],
+            };
+          });
+        }
+      }
       return {
         key: item.key,
         label: item.title,
-        children: [
-          {
-            key: item.key + '-1',
-            label: <Comp dataSource={item} defaultValue={defaultValue} onChange={filterChange} />,
-          },
-        ],
+        children,
       };
     });
-  }, [filterList, filterSelect, filterChange]);
+  }, [filterList, tempFilterSelect, filterChange]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
@@ -180,14 +279,25 @@ export default function OwnedItems() {
     },
   );
 
-  const clearAll = useCallback(() => {
+  const handleBaseClearAll = useCallback(() => {
     SetCurrent(1);
+    setFilterSelect(defaultFilter);
+    setTempFilterSelect(defaultFilter);
+  }, [defaultFilter]);
+
+  const handleFilterClearAll = useCallback(() => {
+    handleBaseClearAll();
+    const filter = getFilter(defaultFilter);
+    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+    setCollapsed(false);
+  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+
+  const handleTagsClearAll = useCallback(() => {
     setSearchParam('');
-    setFilterSelect({ ...defaultFilter });
-    const filter = getFilter({ ...defaultFilter });
+    handleBaseClearAll();
+    const filter = getFilter(defaultFilter);
     fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
-    if (isLG) setCollapsed(false);
-  }, [setFilterSelect, isLG, requestParams, defaultFilter, fetchData]);
+  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -232,12 +342,18 @@ export default function OwnedItems() {
         <span className="text-base font-semibold">({total})</span>
       </Flex>
       <Layout>
-        {isLG ? (
+        {isMobile ? (
           <CollapseForPhone
             items={collapseItems}
             defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS}
             showDropMenu={collapsed}
             onCloseHandler={() => {
+              setCollapsed(false);
+              setTempFilterSelect(filterSelect);
+            }}
+            handleClearAll={handleFilterClearAll}
+            handleApply={() => {
+              applyFilter();
               setCollapsed(false);
             }}
           />
@@ -270,7 +386,7 @@ export default function OwnedItems() {
             <FilterTags
               tagList={tagList}
               filterSelect={filterSelect}
-              clearAll={clearAll}
+              clearAll={handleTagsClearAll}
               onchange={filterChange}
               clearSearchChange={clearSearchChange}
             />

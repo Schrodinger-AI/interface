@@ -13,7 +13,7 @@ export type TGetSchrodingerListParams = {
     tick?: string;
     traits?: Array<{
       traitType: string;
-      value: string;
+      values: string[];
     }>;
     generations?: number[];
     skipCount?: number;

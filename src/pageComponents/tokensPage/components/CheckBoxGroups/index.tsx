@@ -2,7 +2,7 @@ import { Checkbox, Col, Flex, Row } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxItemType, FilterType, ItemsSelectSourceType, SourceItemType } from '../../type';
 import { memo, useCallback, useMemo } from 'react';
-import { ReactComponent as ArchiveSVG } from 'assets/img/archive.svg';
+import FilterMenuEmpty from '../FilterMenuEmpty';
 import styles from './style.module.css';
 
 export interface CheckboxChoiceProps {
@@ -51,11 +51,7 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
       <Row>{checkboxItem}</Row>
     </Checkbox.Group>
   ) : (
-    <Flex className="py-12 pl-4 pr-5" vertical gap={16} align="center">
-      <ArchiveSVG className="size-14" />
-      {/* TODO: adjust the text */}
-      <span className="text-base text-neutralPrimary font-medium">No data</span>
-    </Flex>
+    <FilterMenuEmpty />
   );
 }
 
