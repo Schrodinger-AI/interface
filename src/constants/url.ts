@@ -12,7 +12,7 @@ export const getRpcUrls = () => {
   };
 };
 
-enum ENVIRONMENT {
+export enum ENVIRONMENT {
   TEST = 'test',
   DEVELOPMENT = 'development',
   PRODUCTION = 'production',

@@ -24,6 +24,7 @@ import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
+import { ENVIRONMENT } from 'constants/url';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -296,14 +297,34 @@ export default function Header() {
       </Button>
     );
   };
+
+  const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
+      {env === ENVIRONMENT.TEST && (
+        <p className=" w-full bg-brandBg p-[16px] lg:p-[20px] text-sm text-brandDefault font-medium text-center">
+          Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
+          caution, as user data may be subject to deletion.
+        </p>
+      )}
+
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
+          {/* <div className="flex relative">
+            <img
+              src={require('assets/img/logo.png').default.src}
+              alt="logo"
+              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+            />
+            <span className="absolute flex items-center justify-center font-medium right-0 leading-[12px] lg:leading-[16px] text-[8px] lg:text-[10px] top-0 bg-neutralPrimary text-white px-[2px] lg:px-[4px] h-[12px] lg:h-[16px] rounded-[4px] rounded-bl-none">
+              TEST
+            </span>
+          </div> */}
           <img
             src={require('assets/img/logo.png').default.src}
             alt="logo"
-            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px] m"
+            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
           />
           <NavHostTag />
         </div>

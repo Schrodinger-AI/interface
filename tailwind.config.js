@@ -8,6 +8,7 @@ module.exports = {
         brandHover: 'var(--brand-hover)',
         brandPressed: 'var(--brand-pressed)',
         brandDisable: 'var(--brand-disable)',
+        brandEnable: 'var(--brand-enable)',
         brandBg: 'var(--brand-bg)',
         neutralTitle: 'var(--neutral-title)',
         neutralPrimary: 'var(--neutral-primary)',
@@ -43,6 +44,9 @@ module.exports = {
         '4xl': ['32px', '40px'],
         '5xl': ['40px', '48px'],
         '6xl': ['48px', '56px'],
+      },
+      boxShadow: {
+        selectShadow: '0px 0px 8px 0px var(--fill-mask-4)',
       },
       keyframes: {
         loading: {

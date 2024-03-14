@@ -3,11 +3,13 @@ import { Button } from 'aelf-design';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReactComponent as EyeSVG } from 'assets/img/icons/eye.svg';
 import { ReactComponent as RadioSelect } from 'assets/img/icons/radio-select.svg';
-import { ReactComponent as Radio } from 'assets/img/icons/radio.svg';
 import DefaultCatImg from 'assets/img/icons/defaultCat.png';
 import useResponsive from 'hooks/useResponsive';
 import { formatImageSrc } from 'utils/format';
 import clsx from 'clsx';
+
+import styles from './style.module.css';
+
 interface IAIImageProps {
   src: string;
   active: boolean;
@@ -22,7 +24,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const [random, setRandom] = useState<number>(0);
 
   const imageSrc = useMemo(() => formatImageSrc(src), [src]);
-  const imageSize = useMemo(() => (isLG ? 103 : 108), [isLG]);
+  const imageSize = useMemo(() => (isLG ? 103 : 120), [isLG]);
   const preview = useMemo<ImageProps['preview']>(() => {
     return isLG
       ? {
@@ -51,16 +53,37 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
     setRandom(Date.now());
   }, []);
 
-  return (
-    <div className="relative bg-[#F5FEF7] w-[103px]] h-[103px] lg:w-[108px] lg:h-[108px] rounded-lg">
+  const Radio = useMemo(() => {
+    return (
       <div
-        className="flex justify-center items-center absolute w-[32px] h-[32px] right-0 cursor-pointer z-10"
+        className={clsx(
+          'bg-[var(--fill-mask-3)] shadow-selectShadow w-[28px] h-[28px] rounded-[28px] border-[2.5px] border-solid border-neutralWhiteBg hover:border-brandDefault',
+          active && '!border-brandDefault',
+        )}>
+        {active ? <RadioSelect /> : null}
+      </div>
+    );
+  }, [active]);
+
+  return (
+    <div
+      className={clsx(
+        styles.radio,
+        'relative border-solid bg-[#F5FEF7] w-[103px] h-[103px] lg:flex-none lg:w-[120px] lg:h-[120px] rounded-lg overflow-hidden',
+        active ? 'border-[2px] border-brandDefault' : 'border border-neutralBorder',
+      )}>
+      <div
+        className="flex justify-center items-center absolute w-[32px] h-[32px] right-[8px] top-[8px] cursor-pointer z-10"
         onClick={onClick}>
-        {active ? <RadioSelect /> : <Radio />}
+        {Radio}
       </div>
       <Image
         id="ai-image"
-        className="object-contain rounded-lg"
+        className={clsx(
+          active
+            ? '!w-[103px] !h-[103px] lg:!w-[116px] lg:!h-[116px]'
+            : '!w-[103px] !h-[103px] lg:!w-[118px] lg:!h-[118px]',
+        )}
         // src={`${src}?${random}`}
         src={imageSrc}
         width={imageSize}
@@ -111,7 +134,7 @@ export default function AIImageSelect({ list, onSelect }: IAIImageSelectProps) {
   }, [list, onClick]);
 
   return (
-    <div className="flex gap-[16px] flex-wrap">
+    <div className="flex gap-[16px] flex-wrap bg-brandBg border border-solid border-brandEnable rounded-lg p-[16px]">
       {list?.map((src, index) => (
         <AIImage key={index} src={src} index={index} active={current === index} onSelect={onClick} />
       ))}

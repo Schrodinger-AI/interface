@@ -3,6 +3,7 @@
   --brand-hover: #5a9cff;
   --brand-pressed: #267af8;
   --brand-disable: #adceff;
+  --brand-enable: #8CBAFF;
   --brand-bg: #ebf3ff;
   --neutral-title: #1a1a1a;
   --neutral-primary: #434343;
@@ -26,6 +27,8 @@
   --compass-active: #3888ff;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
+  --fill-mask-3: rgb(67 67 67 / 30%);
+  --fill-mask-4: rgb(0 0 0 / 50%);
 }
 
 .dark-theme {
