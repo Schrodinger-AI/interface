@@ -48,9 +48,16 @@ export default function Header() {
   }, [routerItems]);
 
   const onPressCompassItems = useCallback(
-    (event: any, to: string, isInner: boolean) => {
-      console.log(to, isInner, 'to, isInner ', isLogin, 'isLogin');
-      if (isInner) {
+    (event: any, to: string, type: ICompassType = 'inner') => {
+      if (type === 'externalLink') {
+        event.preventDefault();
+        const newWindow = window.open(to, '_blank');
+        newWindow && (newWindow.opener = null);
+        if (newWindow && typeof newWindow.focus === 'function') {
+          newWindow.focus();
+        }
+      } else {
+        // type === 'inner';
         if (!isLogin) {
           event.preventDefault();
           store.dispatch(setLoginTrigger('login'));
@@ -58,14 +65,6 @@ export default function Header() {
         } else {
           setMenuModalVisibleModel(ModalViewModel.NONE);
           router.push(to);
-        }
-      } else {
-        // TODO open new tab
-        event.preventDefault();
-        const newWindow = window.open(to, '_blank');
-        newWindow && (newWindow.opener = null);
-        if (newWindow && typeof newWindow.focus === 'function') {
-          newWindow.focus();
         }
       }
     },
@@ -160,7 +159,7 @@ export default function Header() {
           <div
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
-              item?.schema && onPressCompassItems(event, item?.schema, item.type !== 'out');
+              item?.schema && onPressCompassItems(event, item?.schema, item.type);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -188,13 +187,13 @@ export default function Header() {
     const renderCom = <CompassText title={title} schema={to} />;
 
     return isInner ? (
-      <span onClick={(event) => onPressCompassItems(event, to, isInner)}>{renderCom}</span>
+      <span onClick={(event) => onPressCompassItems(event, to, type)}>{renderCom}</span>
     ) : (
       <Link
         href={!isLogin ? '' : to}
         scroll={false}
         onClick={(event) => {
-          onPressCompassItems(event, to, isInner);
+          onPressCompassItems(event, to, type);
         }}
         {...props}>
         {renderCom}
