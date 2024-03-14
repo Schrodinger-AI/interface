@@ -11,6 +11,7 @@ import {
   FilterType,
   MenuCheckboxItemDataType,
   FilterKeyEnum,
+  CheckboxItemType,
 } from '../../type';
 import clsx from 'clsx';
 import { Flex, Layout, MenuProps } from 'antd';
@@ -167,7 +168,7 @@ export default function OwnedItems() {
         })) || [];
       const generationList =
         generationFilter?.map((item) => ({
-          label: item.generationName,
+          label: String(item.generationName),
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
@@ -176,7 +177,7 @@ export default function OwnedItems() {
           if (item.key === FilterKeyEnum.Traits) {
             return { ...item, data: traitsList };
           } else if (item.key === FilterKeyEnum.Generation) {
-            return { ...item, data: generationList };
+            return { ...item, data: generationList } as CheckboxItemType;
           }
           return item;
         });

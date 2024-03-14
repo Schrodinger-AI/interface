@@ -1,3 +1,5 @@
+import { GenerationEnum } from 'constants/trait';
+
 export type TBaseFilterTrait = {
   traitType: string;
   amount: number;
@@ -13,6 +15,6 @@ export type TFilterSubTrait = {
 };
 
 export type TFilterGeneration = {
-  generationName: string;
+  generationName: GenerationEnum;
   generationAmount: number;
 };

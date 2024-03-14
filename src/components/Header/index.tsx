@@ -13,7 +13,7 @@ import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import { useResponsive } from 'ahooks';
-import { useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { WalletType } from 'aelf-web-login';
 import { usePathname, useRouter } from 'next/navigation';
 import { store } from 'redux/store';
@@ -23,7 +23,19 @@ import Link from 'next/link';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
-import { ICompassProps } from 'api/type';
+import { ICompassProps, RouterItemType } from './type';
+import { useModal } from '@ebay/nice-modal-react';
+import MarketModal from 'components/MarketModal';
+
+const mockRouterItems = JSON.stringify({
+  items: [
+    {
+      title: 'Marketplace',
+      schema: '',
+      type: 'modal',
+    },
+  ],
+});
 
 export default function Header() {
   const { checkLogin } = useCheckLoginAndToken();
@@ -33,6 +45,7 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const navigate = useRouter();
+  const marketModal = useModal(MarketModal);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
@@ -41,6 +54,7 @@ export default function Header() {
     try {
       const parsed = JSON.parse(routerItems) as ICompassProps;
       lists = parsed.items || [];
+      console.log('menuItems', lists);
     } catch (e) {
       console.error(e, 'parse routerItems failed');
     }
@@ -147,6 +161,25 @@ export default function Header() {
     return menuItems;
   }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
 
+  const handleNavClick = useCallback(
+    (event: any, itemData: ICompassProps) => {
+      const { schema = '', type, title = '' } = itemData;
+
+      if (type === RouterItemType.MODAL) {
+        switch (title.toLocaleLowerCase()) {
+          case 'marketplace':
+            marketModal.show({ title });
+            return;
+          default:
+            return;
+        }
+      }
+
+      onPressCompassItems(event, schema, type !== RouterItemType.OUT);
+    },
+    [marketModal, onPressCompassItems],
+  );
+
   const firstClassCompassItems = useMemo(() => {
     return menuItems.map((item) => {
       return {
@@ -155,7 +188,8 @@ export default function Header() {
           <div
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
-              item?.schema && onPressCompassItems(event, item?.schema, item.type !== 'out');
+              handleNavClick(event, item);
+              // item?.schema && onPressCompassItems(event, item?.schema, item.type !== RouterItemType.OUT);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -163,7 +197,7 @@ export default function Header() {
         ),
       };
     });
-  }, [menuItems, onPressCompassItems]);
+  }, [handleNavClick, menuItems]);
 
   const CompassText = (props: { title?: string; schema?: string }) => {
     const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
@@ -178,14 +212,14 @@ export default function Header() {
     );
   };
 
-  const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
-    const isInner = type !== 'out';
+  const CompassLink = ({ itemData, ...props }: { itemData: ICompassProps; className: string } & PropsWithChildren) => {
+    const { title, schema: to = '' } = itemData;
     return (
       <Link
         href={!isLogin ? '' : to}
         scroll={false}
         onClick={(event) => {
-          onPressCompassItems(event, to, isInner);
+          handleNavClick(event, itemData);
         }}
         {...props}>
         <CompassText title={title} schema={to} />
@@ -226,9 +260,7 @@ export default function Header() {
                         label: (
                           <CompassLink
                             key={sub.title}
-                            to={sub.schema}
-                            type={sub.type}
-                            title={sub.title}
+                            itemData={item}
                             className="text-neutralPrimary rounded-[12px] hover:text-brandHover">
                             <CompassText title={sub.title} schema={sub.schema} />
                           </CompassLink>
@@ -243,9 +275,7 @@ export default function Header() {
               return (
                 <CompassLink
                   key={title}
-                  to={schema}
-                  type={type}
-                  title={title}
+                  itemData={item}
                   className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
                 />
               );

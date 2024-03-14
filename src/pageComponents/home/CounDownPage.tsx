@@ -16,6 +16,7 @@ import { HomeHostTag } from 'components/HostTag';
 import { isMobileDevices } from 'utils/isMobile';
 import { useCallback, useMemo } from 'react';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
+import MarketModal from 'components/MarketModal';
 
 export default function CountDownPage() {
   const isMobile = useMemo(() => !!isMobileDevices(), []);
@@ -25,6 +26,7 @@ export default function CountDownPage() {
   const resultModal = useModal(ResultModal);
   const adoptActionModal = useModal(AdoptActionModal);
   const adoptNextModal = useModal(AdopNextModal);
+  const marketModal = useModal(MarketModal);
 
   const adoptHandler = useAdoptHandler();
 

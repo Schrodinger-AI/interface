@@ -130,7 +130,7 @@ export const getFilter = (filterSelect: IFilterSelect) => {
       traitType: item.value,
       values: item.values?.map((subItem) => subItem.value) || [],
     })),
-    generations: filterSelect.Generation.data.map((item) => item.value),
+    generations: filterSelect.Generation.data.map((item) => item.value) as number[],
   };
 };
 
