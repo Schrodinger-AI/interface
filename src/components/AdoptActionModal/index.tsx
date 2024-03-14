@@ -166,29 +166,29 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         placeholder={inputPlaceholder}
         {...inputProps}
       />
-      <div className="flex justify-between mb-[16px]">
+      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
         <span className="text-neutralSecondary">{receiveLabel}</span>
-        <span className="text-neutralTitle">{receiveToken}</span>
+        <span className="text-neutralTitle mt-[4px] lg:mt-0">{receiveToken}</span>
       </div>
-      <div className="flex justify-between mb-[16px]">
+      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
         <span className="text-neutralSecondary flex items-center gap-[8px]">
           {rateLabel}
           <Tooltip color="black" title={'rate'} overlayInnerStyle={{ color: 'white' }}>
             <QuestionSVG />
           </Tooltip>
         </span>
-        <span className="text-neutralTitle">{rateValue}</span>
+        <span className="text-neutralTitle mt-[4px] lg:mt-0">{rateValue}</span>
       </div>
       {!isReset && (
-        <div className="flex justify-between mb-[16px]">
+        <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
           <span className="text-neutralSecondary">Adoption Fee to Be Charged</span>
-          <span className="text-neutralTitle">{adoptFee}</span>
+          <span className="text-neutralTitle mt-[4px] lg:mt-0">{adoptFee}</span>
         </div>
       )}
 
-      <div className="flex justify-between mb-[16px]">
+      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
         <span className="text-neutralSecondary">Transaction Fee</span>
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-start lg:items-end  mt-[4px] lg:mt-0">
           <span className="text-neutralTitle">
             {txFee} {DEFAULT_TOKEN_SYMBOL}
           </span>

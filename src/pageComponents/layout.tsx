@@ -47,7 +47,7 @@ const Layout = dynamic(async () => {
     const pathname = usePathname();
 
     const isGrayBackground = useMemo(() => {
-      return pathname === '/';
+      return pathname === '/coundown';
     }, [pathname]);
 
     useEffect(() => {
