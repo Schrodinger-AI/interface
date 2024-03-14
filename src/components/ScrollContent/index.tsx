@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
-import ItemCard, { CardType } from 'components/ItemCard';
+import ItemCard from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
 import { TBaseSGRToken } from 'types/tokens';
-import { useRouter } from 'next/navigation';
-import useColumns from 'hooks/useColumns';
-import useResponsive from 'hooks/useResponsive';
 import useLoading from 'hooks/useLoading';
 import { useDebounceFn } from 'ahooks';
 import { PAGE_CONTAINER_ID } from 'constants/index';
-import styles from './index.module.css';
+import { CardType } from 'components/ItemCard';
+import styles from './style.module.css';
+import { ListGridType } from 'antd/es/list';
 
 interface IContentProps {
-  collapsed: boolean;
+  // collapsed?: boolean;
+  type: CardType;
   className?: string;
+  grid: ListGridType;
+  emptyText?: ReactNode;
   InfiniteScrollProps: {
     hasMore: boolean;
     total: number;
@@ -24,19 +26,19 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
+  onPress: () => void;
   ListProps: ListProps<TBaseSGRToken>;
 }
 
 function ScrollContent(props: IContentProps) {
-  const { ListProps, InfiniteScrollProps } = props;
+  const { ListProps, InfiniteScrollProps, type, grid, emptyText, onPress } = props;
   const { loading, loadMore } = InfiniteScrollProps;
-  const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
-  const { isLG } = useResponsive();
-  const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
-  const column = useColumns(props.collapsed);
+  // const { isLG } = useResponsive();
+  // const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
+  // const column = useColumns(props.collapsed);
   const { showLoading, closeLoading } = useLoading();
 
   useEffect(() => {
@@ -67,17 +69,13 @@ function ScrollContent(props: IContentProps) {
   return (
     <div className={clsx(styles.cardListWrapper, props.className)}>
       <List
-        grid={{ gutter, column }}
+        grid={grid}
         locale={{
-          emptyText: (
-            <Flex justify="center" align="center">
-              <EmptyList isChannelShow defaultDescription="No inscriptions found" />
-            </Flex>
-          ),
+          emptyText,
         }}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
-            <ItemCard type={CardType.MY} item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
+            <ItemCard type={type} item={item} onPress={onPress} />
           </List.Item>
         )}
         {...ListProps}

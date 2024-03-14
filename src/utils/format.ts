@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import dayjs, { Dayjs } from 'dayjs';
 
 export function formatTime({
   minDigits = 2,
@@ -105,4 +106,9 @@ export function formatImageSrc(url: string) {
   const base64Prefix = 'data:image/png;base64,';
   if (reg.test(url) || url.startsWith('data:image')) return url;
   return base64Prefix + url;
+}
+
+export function formatTimeByDayjs(date: dayjs.ConfigType, format?: string) {
+  const utcFormat = 'DD-MM-YYYY HH:mm [UTC] Z';
+  return dayjs(date).format(format ?? utcFormat);
 }
