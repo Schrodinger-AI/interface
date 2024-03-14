@@ -1,7 +1,13 @@
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import { useCallback } from 'react';
-import { adoptStep1Handler, adoptStep2Handler, fetchTraitsAndImages, fetchWaterImages } from './AdoptStep';
+import {
+  adoptStep1Handler,
+  adoptStep2Handler,
+  fetchTraitsAndImages,
+  fetchWaterImages,
+  getAdoptConfirmEventLogs,
+} from './AdoptStep';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
@@ -21,6 +27,7 @@ import { getDomain, getExploreLink } from 'utils';
 import { ISendResult } from 'types';
 import { useCmsInfo } from 'redux/hooks';
 import { useRouter } from 'next/navigation';
+import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -34,6 +41,8 @@ const useAdoptHandler = () => {
   const router = useRouter();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const { txFee: commonTxFee } = useTxFee();
+
+  const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const cmsInfo = useCmsInfo();
 
@@ -345,11 +354,22 @@ const useAdoptHandler = () => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
 
       // console.log(selectItem, 'selectItem=');
-      return await adoptConfirmHandler({
+      const { image, txResult } = await adoptConfirmHandler({
         adoptId,
         image: selectItem,
         parentItemInfo,
       });
+      let nextTokenName = '';
+      let nextSymbol = '';
+      try {
+        const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
+        nextTokenName = tokenName;
+        nextSymbol = symbol;
+      } catch (error) {
+        //
+      }
+      // Get next gen symbol
+      return { image, txResult, nextTokenName, nextSymbol };
     },
     [adoptConfirmHandler, adoptConfirmInput],
   );
@@ -381,19 +401,23 @@ const useAdoptHandler = () => {
             href: explorerUrl,
           },
           buttonInfo: {
-            btnText: 'View Inscription',
-            onConfirm: () => {
+            btnText: `View Inscription`,
+            openLoading: true,
+            onConfirm: async () => {
+              await intervalFetch.start(symbol);
+              intervalFetch.remove();
               resultModal.hide();
               router.replace(`/detail?symbol=${symbol}`);
             },
           },
           onCancel: () => {
             resolve(true);
+            intervalFetch.remove();
             resultModal.hide();
           },
         });
       }),
-    [cmsInfo, resultModal],
+    [cmsInfo?.curChain, intervalFetch, resultModal, router],
   );
 
   return useCallback(
@@ -405,12 +429,18 @@ const useAdoptHandler = () => {
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
-        const { txResult, image } = await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
+        const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
+          infos,
+          adoptId,
+          parentItemInfo,
+          account,
+        });
+
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,
           image,
-          name: parentItemInfo.tokenName,
-          symbol: parentItemInfo.symbol,
+          name: nextTokenName,
+          symbol: nextSymbol,
         });
       } catch (error) {
         console.log(error, 'error==');

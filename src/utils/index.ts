@@ -78,3 +78,5 @@ export function getExploreLink(
 }
 
 export const getDomain = () => (!location.port ? location.host : 'schrodingernft.ai');
+
+export const getOriginSymbol = (symbol: string) => (symbol ? `${symbol.split('-')[0]}-1` : '');

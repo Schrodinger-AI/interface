@@ -10,6 +10,8 @@ import { ReactComponent as ExportOutlined } from 'assets/img/icons/exportOutline
 import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import { isMobile } from 'react-device-detect';
+import styles from './index.module.css';
+import clsx from 'clsx';
 
 export enum Status {
   ERROR = 'error',
@@ -101,7 +103,7 @@ function ResultModal({
     return (
       <div className="flex flex-col justify-center items-center">
         {!hideButton ? (
-          <div className="w-full flex flex-col items-center">
+          <div className={clsx('w-full flex flex-col items-center', styles['button-wrapper'])}>
             <Button
               type="primary"
               size="ultra"
@@ -125,7 +127,7 @@ function ResultModal({
         )}
       </div>
     );
-  }, [buttonInfo?.btnText, hideButton, isLG, link, loading, onClick]);
+  }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick]);
 
   const getDescriptionCom = (description: string | ReactNode | string[]) => {
     if (typeof description === 'string') {
