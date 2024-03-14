@@ -5,7 +5,7 @@ import CommonModal from 'components/CommonModal';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
 import SGRAmountInput, { ISGRAmountInputInterface, ISGRAmountInputProps } from 'components/SGRAmountInput';
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
-import { ZERO } from 'constants/misc';
+import { ONE, ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
@@ -13,6 +13,7 @@ import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
+import { ADOPT_NEXT_RATE } from 'constants/index';
 
 export type TBalanceItem = {
   amount: string;
@@ -63,8 +64,13 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       return;
     }
 
+    if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
+      setErrorMessage('Please enter at least 1.0527 to ensure you can receive at least 1 next-gen cat.');
+      return;
+    }
+
     onConfirmProps && onConfirmProps(amount);
-  }, [inputProps?.max, onConfirmProps]);
+  }, [inputProps?.max, isReset, onConfirmProps]);
 
   const [amount, setAmount] = useState<string>('');
   const receiveToken = useMemo(() => {
@@ -90,7 +96,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const rateValue = useMemo(() => {
     if (isReset) return `Reroll 1 ${info.name} receive 1 SGR-1`;
-    return `Consume 1 ${info.name} adopt 0.95 next-gen cat`;
+    return `Consume 1.0527 ${info.name} to adopt 1 next-gen cat `;
   }, [info.name, isReset]);
 
   const inputTitle = useMemo(() => {
@@ -101,7 +107,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const inputDescription = useMemo(() => {
     if (isReset)
       return 'By rerolling, your cat will be reverted back to its original status (gen0) and you will receive SGR-1.';
-    return 'After adoption, cats with new random trait will be generated. You can preview the new cats and select from the two options the one you prefer.';
+    return 'A 5% adoption fee will be charged for each adoption. Please ensure you enter an adequate amount if you want to eventually have at least 1 Gen9 cat.';
   }, [isReset]);
 
   const inputPlaceholder = useMemo(() => {
