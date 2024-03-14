@@ -68,11 +68,7 @@ export default function DetailPage() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
-          <Button
-            type="primary"
-            className="!rounded-lg bg-brandDefault !text-[#FFFFFF] mr-[12px]"
-            size="large"
-            onClick={onAdoptNextGeneration}>
+          <Button type="primary" className="!rounded-lg mr-[12px]" size="large" onClick={onAdoptNextGeneration}>
             Adopt Next-Gen Cat
           </Button>
         )}
@@ -93,11 +89,7 @@ export default function DetailPage() {
     return (
       <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
         {showAdopt && (
-          <Button
-            type="default"
-            className="!rounded-lg !border-brandDefault  bg-brandDefault !text-[#FFFFFF] flex-1"
-            size="large"
-            onClick={onAdoptNextGeneration}>
+          <Button type="primary" className="!rounded-lg flex-1" size="large" onClick={onAdoptNextGeneration}>
             Adopt Next-Gen Cat
           </Button>
         )}

@@ -26,7 +26,7 @@ function TraitsItem({ item, showNew, isLG }: ITraitItem) {
         !showNew && !isLG && 'px-[8px]',
       )}>
       <div>{traitType}</div>
-      <div className="text-sm text-[#1A1A1A]">{value}</div>
+      <div className="text-sm text-[#1A1A1A] w-full overflow-hidden whitespace-nowrap text-ellipsis">{value}</div>
       <div>{formatPercent(percent)}%</div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>
