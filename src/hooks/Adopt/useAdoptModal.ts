@@ -199,7 +199,7 @@ const useAdoptHandler = () => {
               symbol: parentItemInfo.symbol,
               amount: symbolBalance,
             },
-            newTraits: infos.adoptImageInfo.attributes,
+            allTraits: infos.adoptImageInfo.attributes,
             images: infos.adoptImageInfo.images,
             inheritedTraits: parentItemInfo.traits,
             transaction: {

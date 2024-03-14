@@ -6,7 +6,7 @@ export interface IAdoptNextData {
     symbol?: string;
     amount?: string;
   };
-  newTraits: ITrait[];
+  allTraits: ITrait[];
   images: string[];
   inheritedTraits: ITrait[];
   transaction: {
