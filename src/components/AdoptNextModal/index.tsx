@@ -43,7 +43,7 @@ interface IAdoptNextModal {
 function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
   const [selectImage, setSelectImage] = useState<number>(-1);
-  const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
+  const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
   const onSelect = useCallback((index: number) => {
     setSelectImage(index);
@@ -69,7 +69,13 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     );
   }, [isAcross]);
 
-  const allTraitsList = useMemo(() => [...inheritedTraits, ...newTraits], [inheritedTraits, newTraits]);
+  const newTraitsList = useMemo(() => {
+    const inheritedMap: Record<string, string> = {};
+    inheritedTraits.forEach((trait) => {
+      inheritedMap[trait.traitType] = trait.value;
+    });
+    return allTraits.filter((item) => !inheritedMap[item.traitType]);
+  }, [allTraits, inheritedTraits]);
 
   return (
     <CommonModal
@@ -98,7 +104,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
               </div>
             </>
           }>
-          <TraitsList data={newTraits} showNew />
+          <TraitsList data={newTraitsList} showNew />
         </DescriptionItem>
         <DescriptionItem title="Select the Cat You Prefer">
           <span className="text-functionalWarning text-base">
@@ -108,7 +114,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
         <DescriptionItem title="Traits">
-          <TraitsList data={allTraitsList} />
+          <TraitsList data={allTraits} />
         </DescriptionItem>
         <TransactionFee {...transaction} />
         <Balance
