@@ -8,6 +8,7 @@ import { TFilterSubTrait } from 'types/trait';
 import Loading from 'components/Loading';
 import { ZERO } from 'constants/misc';
 import CommonSearch from 'components/CommonSearch';
+import styles from './style.module.css';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -16,10 +17,11 @@ type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
 export interface ISubTraitFilterProps {
   traitType: string;
   selectValues?: string[];
+  defaultValue?: string[];
   onChange?: (checkedValue: string[]) => void;
 }
 
-export const SubTraitFilter = ({ traitType, selectValues = [], onChange }: ISubTraitFilterProps) => {
+export const SubTraitFilter = ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps) => {
   const cmsInfo = useCmsInfo();
   const [isLoading, setIsLoading] = useState(false);
   const getSubTraits = useGetSubTraits();
@@ -86,14 +88,16 @@ export const SubTraitFilter = ({ traitType, selectValues = [], onChange }: ISubT
   }, [list, searchValue]);
 
   return (
-    <div>
-      <CommonSearch className="mb-[4px ]" value={searchValue} placeholder="Search" onChange={onSearchChange} />
+    <div className={styles.subTraitFilter}>
+      <div className={styles.searchWrapper}>
+        <CommonSearch size="small" value={searchValue} placeholder="Search" onChange={onSearchChange} />
+      </div>
 
       <Checkbox.Group
         value={selectValues}
         className="w-full flex-col"
         onChange={onChange}
-        defaultValue={['A']}
+        defaultValue={defaultValue}
         options={options}>
         {isLoading ? (
           <div className="h-[184px] flex items-center justify-center w-full">
@@ -101,11 +105,7 @@ export const SubTraitFilter = ({ traitType, selectValues = [], onChange }: ISubT
           </div>
         ) : (
           !options.length && (
-            <div
-              className="leading-[44px] 
-        text-neutralPrimary">
-              No corresponding results found
-            </div>
+            <div className="pl-4 pr-5 leading-[44px] text-neutralPrimary">No corresponding results found</div>
           )
         )}
       </Checkbox.Group>

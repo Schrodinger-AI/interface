@@ -42,8 +42,8 @@ export const GET_TRAITS_QUERY = gql`
         amount
       }
       generationFilter {
-        key
-        value
+        generationName
+        generationAmount
       }
     }
   }

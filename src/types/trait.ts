@@ -13,6 +13,6 @@ export type TFilterSubTrait = {
 };
 
 export type TFilterGeneration = {
-  key: string;
-  value: number;
+  generationName: string;
+  generationAmount: number;
 };
