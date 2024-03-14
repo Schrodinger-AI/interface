@@ -34,6 +34,7 @@ export type InfoStateType = {
     [key: string]: any;
   };
   itemsFromLocal?: string[];
+  hasToken?: boolean;
 };
 
 export type TAssetsStateType = {

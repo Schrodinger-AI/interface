@@ -31,6 +31,9 @@ export const infoSlice = createSlice({
     setLoginTrigger(state, action) {
       state.loginTrigger = action.payload;
     },
+    setHasToken(state, action) {
+      state.hasToken = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -44,7 +47,7 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setCmsInfo, setLoginTrigger } = infoSlice.actions;
+export const { setIsMobile, setItemsFromLocal, setCmsInfo, setLoginTrigger, setHasToken } = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 
 export default infoSlice.reducer;
