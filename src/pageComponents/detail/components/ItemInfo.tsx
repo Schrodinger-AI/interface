@@ -30,15 +30,6 @@ export default function ItemInfo({
               <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
               <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
             </div>
-            <div
-              key={item.traitType}
-              className="w-full px-[24px] pt-[16px] flex lg:hidden flex-col h-[90px] mt-[16px] bg-[#FAFAFA] rounded-lg	">
-              <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
-              <div className="flex flex-row w-full justify-between">
-                <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
-                <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
-              </div>
-            </div>
           </>
         ))}
       </div>
