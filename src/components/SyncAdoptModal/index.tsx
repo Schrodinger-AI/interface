@@ -1,6 +1,5 @@
 import { Modal } from 'aelf-design';
 import NoticeBar from 'components/NoticeBar';
-import LoadingCircle from 'assets/img/icons/loadingCircle.png';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 
 function SyncAdoptModal() {

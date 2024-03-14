@@ -41,6 +41,13 @@ export type InfoStateType = {
   itemsFromLocal?: string[];
 };
 
+export type TTradeItem = {
+  title: string;
+  description: string;
+  imgUrl: string;
+  link: string;
+};
+
 export type TAssetsStateType = {
   txFee?: {
     common: number;

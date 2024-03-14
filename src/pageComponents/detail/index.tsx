@@ -16,6 +16,8 @@ import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
 import { useTimeoutFn } from 'react-use';
+import MarketModal from 'components/MarketModal';
+import { useModal } from '@ebay/nice-modal-react';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -26,6 +28,7 @@ export default function DetailPage() {
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const { isOK } = useCheckLoginAndToken();
+  const marketModal = useModal(MarketModal);
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
   const adoptHandler = useAdoptHandler();
@@ -41,6 +44,7 @@ export default function DetailPage() {
     setSchrodingerDetail(result.data.getSchrodingerDetail);
     console.log('schrodingerDetail', result.data.getSchrodingerDetail);
     closeLoading();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cmsInfo?.curChain, getSchrodingerDetail, symbol, wallet.address]);
 
   useEffect(() => {
@@ -114,6 +118,8 @@ export default function DetailPage() {
     );
   };
 
+  const onTrade = useCallback(() => marketModal.show({ title: 'Trade' }), [marketModal]);
+
   useTimeoutFn(() => {
     if (!isOK) {
       route.push('/');
@@ -137,13 +143,15 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex flex-row items-end">
             {adoptAndResetButton()}
-            {/* <Button
-              type="default"
-              className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px]"
-              size="medium"
-              onClick={onTrade}>
-              Trade
-            </Button> */}
+            {cmsInfo?.isTradeShow && (
+              <Button
+                type="default"
+                className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px]"
+                size="medium"
+                onClick={onTrade}>
+                Trade
+              </Button>
+            )}
           </div>
         </div>
         <div className="w-full mt-[24px] flex flex-row justify-between">
@@ -160,13 +168,15 @@ export default function DetailPage() {
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
         {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
-        {/* <Button
-          type="default"
-          className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
-          size="medium"
-          onClick={onTrade}>
-          Trade
-        </Button> */}
+        {cmsInfo?.isTradeShow && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
+            size="medium"
+            onClick={onTrade}>
+            Trade
+          </Button>
+        )}
         {schrodingerDetail && <ItemInfo detail={schrodingerDetail} onAdoptNextGeneration={onAdoptNextGeneration} />}
 
         {adoptAndResetButtonSamll()}

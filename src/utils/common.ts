@@ -17,3 +17,16 @@ export function getSecondHostName() {
   if (!hostname || hostname === mainDomain) return '';
   return hostname.split('.')[0];
 }
+
+export function windowOpen(url: string, target?: string) {
+  window?.open(url, target || '_blank');
+}
+
+export function jsonParse(data: string) {
+  try {
+    return JSON.parse(data || '');
+  } catch (error) {
+    console.log('jsonParse error: ', error);
+    return undefined;
+  }
+}
