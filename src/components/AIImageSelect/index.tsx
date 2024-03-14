@@ -24,7 +24,6 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const [random, setRandom] = useState<number>(0);
 
   const imageSrc = useMemo(() => formatImageSrc(src), [src]);
-  const imageSize = useMemo(() => (isLG ? 103 : 120), [isLG]);
   const preview = useMemo<ImageProps['preview']>(() => {
     return isLG
       ? {
@@ -57,8 +56,9 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
     return (
       <div
         className={clsx(
+          styles.radio,
           'bg-[var(--fill-mask-3)] shadow-selectShadow w-[28px] h-[28px] rounded-[28px] border-[2.5px] border-solid border-neutralWhiteBg hover:border-brandDefault',
-          active && '!border-brandDefault',
+          active && '!border-brandDefault !bg-brandDefault',
         )}>
         {active ? <RadioSelect /> : null}
       </div>
@@ -69,7 +69,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
     <div
       className={clsx(
         styles.radio,
-        'relative border-solid bg-[#F5FEF7] w-[103px] h-[103px] lg:flex-none lg:w-[120px] lg:h-[120px] rounded-lg overflow-hidden',
+        'relative border-solid bg-[#F5FEF7] flex-1 aspect-square lg:flex-none lg:w-[120px] lg:h-[120px] rounded-lg overflow-hidden',
         active ? 'border-[2px] border-brandDefault' : 'border border-neutralBorder',
       )}>
       <div
@@ -79,15 +79,9 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
       </div>
       <Image
         id="ai-image"
-        className={clsx(
-          active
-            ? '!w-[103px] !h-[103px] lg:!w-[116px] lg:!h-[116px]'
-            : '!w-[103px] !h-[103px] lg:!w-[118px] lg:!h-[118px]',
-        )}
+        className={clsx('w-full h-full')}
         // src={`${src}?${random}`}
         src={imageSrc}
-        width={imageSize}
-        height={imageSize}
         alt="AI-image"
         preview={preview}
         onError={onError}
