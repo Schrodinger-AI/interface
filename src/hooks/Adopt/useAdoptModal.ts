@@ -192,7 +192,10 @@ const useAdoptHandler = () => {
           decimals: parentItemInfo.decimals,
         });
 
+        const isAcross = ZERO.plus(parentItemInfo.generation).plus(1).lt(infos.adoptImageInfo.generation);
+
         adoptNextModal.show({
+          isAcross,
           data: {
             SGRToken: {
               tokenName: parentItemInfo.tokenName,
