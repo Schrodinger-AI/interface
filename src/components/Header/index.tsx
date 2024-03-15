@@ -74,13 +74,11 @@ export default function Header() {
 
   const [logoutComplete, setLogoutComplete] = useState(true);
 
-  const [menuModalVisible, setMenuModalVisible] = useState(false);
-
   const { topSafeHeight } = useSafeAreaHeight();
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     setLogoutComplete(true);
-    setMenuModalVisible(false);
+    setMenuModalVisibleModel(ModalViewModel.NONE);
   });
 
   const CopyAddressItem = useCallback(() => {
@@ -184,7 +182,6 @@ export default function Header() {
 
   const CompassText = (props: { title?: string; schema?: string }) => {
     const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
-    console.log('is Current ', isCurrent, props.title, props.schema, pathname);
     return (
       <span
         className={`!rounded-[12px] text-lg ${
@@ -334,11 +331,15 @@ export default function Header() {
               TEST
             </span>
           </div> */}
-          <img
-            src={require('assets/img/logo.png').default.src}
-            alt="logo"
-            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
-          />
+
+          {
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={require('assets/img/logo.png').default.src}
+              alt="logo"
+              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+            />
+          }
           <NavHostTag />
         </div>
         {FunctionalArea(menuItems)}

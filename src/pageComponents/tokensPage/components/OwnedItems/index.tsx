@@ -92,12 +92,16 @@ export default function OwnedItems() {
           setDataSource(data);
           setLoadingMore(false);
         }
+      } catch {
+        if (!dataSource) {
+          setDataSource([]);
+        }
       } finally {
         closeLoading();
         setMoreLoading(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // There cannot be dependencies showLoading and closeLoading
     [getSchrodingerList],
   );
 
