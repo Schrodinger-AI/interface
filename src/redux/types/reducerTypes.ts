@@ -36,6 +36,8 @@ export type InfoStateType = {
     isMarketShow: boolean;
     tradeDescription: string;
     tradeList: string;
+
+    forestUrl: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];

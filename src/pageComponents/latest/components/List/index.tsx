@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { TBaseSGRToken } from 'types/tokens';
+import { TSGRItem } from 'types/tokens';
 import ScrollContent from 'components/ScrollContent';
 import useLoading from 'hooks/useLoading';
 import { divDecimals, getPageNumber } from 'utils/calculate';
@@ -8,12 +8,14 @@ import { useCmsInfo } from 'redux/hooks';
 import { CardType } from 'components/ItemCard';
 import { useLatestColumns, useLatestGutter } from './hooks/useLayout';
 import Header from '../Header';
-import { gerMockData } from '../../type';
+import LearnMoreModal from 'components/LearnMoreModal';
+import { useModal } from '@ebay/nice-modal-react';
 
+const pageSize = 32;
 export default function List() {
   const [total, setTotal] = useState(0);
   const [current, SetCurrent] = useState(1);
-  const [dataSource, setDataSource] = useState<TBaseSGRToken[]>([]);
+  const [dataSource, setDataSource] = useState<TSGRItem[]>([]);
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -21,7 +23,7 @@ export default function List() {
   const cmsInfo = useCmsInfo();
   const gutter = useLatestGutter();
   const column = useLatestColumns();
-  const pageSize = 32;
+  const learnMoreModal = useModal(LearnMoreModal);
 
   const hasMore = useMemo(() => {
     return total > dataSource.length;
@@ -106,9 +108,14 @@ export default function List() {
     });
   }, [defaultRequestParams, fetchData]);
 
-  const goForest = useCallback(() => {
-    window.open('');
-  }, []);
+  const goForest = useCallback(
+    (item: TSGRItem) => {
+      learnMoreModal.show({
+        item,
+      });
+    },
+    [learnMoreModal],
+  );
 
   useEffect(() => initData(), [fetchData, defaultRequestParams, initData]);
 

@@ -3,6 +3,12 @@ import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { TSGRToken } from 'types/tokens';
 import { formatPercent } from 'utils/format';
+import { ReactComponent as RightArrowSVG } from 'assets/img/right_arrow.svg';
+import { useModal } from '@ebay/nice-modal-react';
+import LearnMoreModal from 'components/LearnMoreModal';
+import { useCallback, useMemo } from 'react';
+import { divDecimals } from 'utils/calculate';
+import { ONE } from 'constants/misc';
 
 export default function ItemInfo({
   detail,
@@ -11,6 +17,18 @@ export default function ItemInfo({
   detail: TSGRToken;
   onAdoptNextGeneration: () => void;
 }) {
+  const learnMoreModal = useModal(LearnMoreModal);
+  const onLearnMoreClick = useCallback(() => {
+    learnMoreModal.show({
+      item: detail,
+    });
+  }, [detail, learnMoreModal]);
+
+  const isLearnMoreShow = useMemo(
+    () => divDecimals(detail.amount, detail.decimals).gte(ONE),
+    [detail.amount, detail.decimals],
+  );
+
   const traits = () => {
     return (
       <div className="w-full flex flex-wrap gap-[16px]">
@@ -65,6 +83,14 @@ export default function ItemInfo({
         </div>
         {detail.generation == 0 ? noTraits() : traits()}
       </div>
+      {!isLearnMoreShow && (
+        <div className="flex justify-end mt-[16px]">
+          <div className="cursor-pointer flex items-center" onClick={onLearnMoreClick}>
+            <span className="text-[#1A1A1A] text-base">Learn More</span>
+            <RightArrowSVG className="ml-[8px]" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

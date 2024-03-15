@@ -1,7 +1,7 @@
 import { HashAddress } from 'aelf-design';
 import TextArea from 'antd/es/input/TextArea';
 import SkeletonImage from 'components/SkeletonImage';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
@@ -16,7 +16,7 @@ export enum CardType {
 }
 interface IItemCard {
   item: TSGRItem;
-  onPress: () => void;
+  onPress: (item: TSGRItem) => void;
   type: CardType;
 }
 
@@ -26,13 +26,13 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     inscriptionImageUri,
     generation = '1',
     tokenName,
-    symbol,
     amount,
     decimals,
     adoptTime,
     adopter,
     inscriptionDeploy,
   } = item || {};
+
   const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
 
   const cmsInfo = useCmsInfo();
@@ -47,10 +47,14 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     return false;
   }, [inscriptionDeploy]);
 
+  const onCardClick = useCallback(() => {
+    onPress && onPress(item);
+  }, [item, onPress]);
+
   return (
     <div
       className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md cursor-pointer"
-      onClick={onPress}>
+      onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
           <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">

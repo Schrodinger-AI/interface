@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
 import ItemCard from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
-import { TBaseSGRToken } from 'types/tokens';
+import { TSGRItem } from 'types/tokens';
 import useLoading from 'hooks/useLoading';
 import { useDebounceFn } from 'ahooks';
 import { PAGE_CONTAINER_ID } from 'constants/index';
@@ -26,8 +26,8 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
-  onPress: () => void;
-  ListProps: ListProps<TBaseSGRToken>;
+  onPress: (item: TSGRItem) => void;
+  ListProps: ListProps<TSGRItem>;
 }
 
 function ScrollContent(props: IContentProps) {
