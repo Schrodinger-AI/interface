@@ -1,7 +1,8 @@
 export enum RouterItemType {
-  OUT = 'out',
-  INNER = 'inner',
-  MODAL = 'modal',
+  Out = 'out',
+  Inner = 'inner',
+  MarketModal = 'marketModal',
+  ExternalLink = 'externalLink',
 }
 
 export interface ICompassProps {

@@ -7,6 +7,8 @@ import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
 import { formatTimeByDayjs, formatTokenPrice } from 'utils/format';
 import { useCmsInfo } from 'redux/hooks';
+import { divDecimals } from 'utils/calculate';
+import styles from './style.module.css';
 
 export enum CardType {
   MY = 'my',
@@ -35,20 +37,22 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   const cmsInfo = useCmsInfo();
 
   const containsInscriptionCode = useMemo(() => {
-    let _containsInscriptionCode = false;
+    if (inscriptionDeploy === '{}') return false;
     try {
       JSON.parse(inscriptionDeploy);
-      _containsInscriptionCode = true;
+      return true;
       // eslint-disable-next-line no-empty
     } catch (ignored) {}
-    return _containsInscriptionCode;
+    return false;
   }, [inscriptionDeploy]);
 
   return (
-    <div className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md" onClick={onPress}>
+    <div
+      className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md cursor-pointer"
+      onClick={onPress}>
       <div>
-        <div className="relative">
-          <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm">
+        <div className={styles['item-card-img-wrap']}>
+          <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
@@ -57,10 +61,9 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
             className="w-full h-auto aspect-square object-contain"
           />
           {containsInscriptionCode && (
-            <div className="bg-black bg-opacity-75 absolute top-0 bottom-0 left-0 right-0 rounded-xl flex justify-center">
-              <div className="flex w-full justify-center items-center text-white text-base font-medium break-all pl-20 pcMin:pl-0">
-                <CodeBlock className="!bg-transparent cursor-pointer w-full" value={inscriptionDeploy} />
-              </div>
+            <div
+              className={`bg-black bg-opacity-60 absolute top-0 bottom-0 left-0 right-0 flex items-center z-20 invisible ${styles['inscription-info-wrap']}`}>
+              <CodeBlock value={inscriptionDeploy} decimals={decimals} />
             </div>
           )}
         </div>
@@ -95,31 +98,34 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   );
 }
 
-export function CodeBlock({
-  value,
-  className,
-  rows = 8,
-  ...params
-}: {
-  value: string;
-  className?: string;
-  rows?: number;
-}) {
-  const jsonFormatted = useMemo(() => {
+export function CodeBlock({ value, decimals = 8 }: { value: string; decimals?: number }) {
+  const list: string[] = useMemo(() => {
     try {
-      return JSON.stringify(JSON.parse(value), null, 4);
-    } catch (e) {
-      return '';
+      const parsed = JSON.parse(value);
+      const _list: string[] = [];
+      Object.keys(parsed).map((item) => {
+        let value = parsed[item];
+        if (item === 'lim' || item === 'max') {
+          value = divDecimals(value, decimals);
+        }
+        _list.push(`    "${item}": "${value}"`);
+      });
+      return _list;
+    } catch (error) {
+      console.log('error', error);
     }
-  }, [value]);
+    return [];
+  }, [decimals, value]);
 
   return (
-    <TextArea
-      rows={rows}
-      value={jsonFormatted}
-      className={`tx-block-code-like-content h-[200px] resize-none ${className}`}
-      readOnly
-      {...params}
-    />
+    <div className="flex w-full flex-col ml-[8px]">
+      <span className="text-white text-xs lg:text-sm">{`{`}</span>
+      {list.map((item, index) => (
+        <span className="text-white text-xs lg:text-sm whitespace-pre" key={index}>
+          {item}
+        </span>
+      ))}
+      <span className="text-white text-xs lg:text-sm">{`}`}</span>
+    </div>
   );
 }
