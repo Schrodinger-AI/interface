@@ -15,6 +15,7 @@ import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import SafeArea from 'components/SafeArea';
 import { usePathname } from 'next/navigation';
+import styles from './style.module.css';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -96,15 +97,17 @@ const Layout = dynamic(async () => {
     return (
       <SafeArea>
         {!isHiddenLayout ? (
-          <AntdLayout id={PAGE_CONTAINER_ID} className="h-full overflow-scroll min-w-[360px]">
+          <AntdLayout className="h-full overflow-scroll min-w-[360px]">
             {!isHiddenHeader && <Header />}
-            <AntdLayout.Content
-              className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
-                isGrayBackground ? 'bg-neutralHoverBg' : ''
-              }`}>
-              {children}
-            </AntdLayout.Content>
-            <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
+            <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
+              <AntdLayout.Content
+                className={`${styles['schrodinger-content']} flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
+                  isGrayBackground ? 'bg-neutralHoverBg' : ''
+                }`}>
+                {children}
+              </AntdLayout.Content>
+              <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
+            </div>
           </AntdLayout>
         ) : (
           <>{children}</>
