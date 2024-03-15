@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import dayjs, { Dayjs } from 'dayjs';
+import { ZERO } from 'constants/misc';
 
 export function formatTime({
   minDigits = 2,
@@ -100,10 +101,10 @@ export function formatNumber(
   return BigNumber.isBigNumber(number) ? number.toNumber() : number;
 }
 
+const reg = /^https?:/;
+const base64Prefix = 'data:image/png;base64,';
 export function formatImageSrc(url: string) {
   if (!url) return '';
-  const reg = /^https?:/;
-  const base64Prefix = 'data:image/png;base64,';
   if (reg.test(url) || url.startsWith('data:image')) return url;
   return base64Prefix + url;
 }
@@ -111,4 +112,10 @@ export function formatImageSrc(url: string) {
 export function formatTimeByDayjs(date: dayjs.ConfigType, format?: string) {
   const utcFormat = 'DD-MM-YYYY HH:mm [UTC] Z';
   return dayjs(date).format(format ?? utcFormat);
+}
+
+export function formatPercent(percent: string | number, decimals = 2) {
+  let p = ZERO.plus(percent);
+  if (p.isNaN()) p = ZERO;
+  return p.toFixed(decimals);
 }

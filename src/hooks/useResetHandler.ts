@@ -7,15 +7,18 @@ import { useGetTokenPrice, useTokenPrice } from './useAssets';
 import { AELF_TOKEN_INFO } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import useLoading from './useLoading';
-import { resetSGR } from 'contract/schrodinger';
+import { rerollSGR } from 'contract/schrodinger';
 import ResultModal, { Status } from 'components/ResultModal';
 import { resetSGRMessage } from 'constants/promptMessage';
 import { useRouter } from 'next/navigation';
 import PromptModal from 'components/PromptModal';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
-import { useCmsInfo } from 'redux/hooks';
 import { AdoptActionErrorCode } from './Adopt/adopt';
 import { useWalletService } from './useWallet';
+import { getDomain, getOriginSymbol } from 'utils';
+import { timesDecimals } from 'utils/calculate';
+import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDetail';
+import { store } from 'redux/store';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -26,12 +29,13 @@ export const useResetHandler = () => {
   const getTokenPrice = useGetTokenPrice();
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
-  const cmsInfo = useCmsInfo();
   const { wallet } = useWalletService();
+
+  const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const approveReset = useCallback(
     async (parentItemInfo: TSGRToken, amount: string): Promise<void> =>
-      new Promise(() => {
+      new Promise((resolve, reject) => {
         promptModal.show({
           info: {
             logo: parentItemInfo.inscriptionImage,
@@ -46,7 +50,8 @@ export const useResetHandler = () => {
           },
           initialization: async () => {
             try {
-              const { schrodingerSideAddress: contractAddress, curChain: chainId } = cmsInfo || {};
+              const { schrodingerSideAddress: contractAddress, curChain: chainId } =
+                store.getState().info.cmsInfo || {};
               if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
 
               const check = await checkAllowanceAndApprove({
@@ -59,17 +64,17 @@ export const useResetHandler = () => {
               });
 
               if (!check) throw AdoptActionErrorCode.approveFailed;
-              await resetSGR({
+              const domain = getDomain();
+
+              await rerollSGR({
                 symbol: parentItemInfo.symbol,
-                amount: Number(amount),
-                // domain: location.host, // 'schrodingerai.com',
-                // TODO
-                domain: 'schrodingerai.com',
+                amount: timesDecimals(amount, parentItemInfo.decimals).toFixed(0),
+                domain,
               });
               promptModal.hide();
-              return Promise.resolve();
+              resolve();
             } catch (error) {
-              return Promise.reject(error);
+              reject(error);
             }
           },
           onClose: () => {
@@ -77,11 +82,14 @@ export const useResetHandler = () => {
           },
         });
       }),
-    [promptModal],
+    [promptModal, wallet.address],
   );
 
   const showResultModal = useCallback(
     (status: Status, parentItemInfo: TSGRToken, amount: string) => {
+      const originSymbol = getOriginSymbol(parentItemInfo.symbol);
+      const successBtnText = originSymbol ? `View ${originSymbol.split('-')[0]}(${originSymbol})` : 'View';
+
       resultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
         info: {
@@ -97,21 +105,28 @@ export const useResetHandler = () => {
           resultModal.hide();
         },
         buttonInfo: {
-          btnText: status === Status.ERROR ? resetSGRMessage.error.button : resetSGRMessage.success.button,
+          btnText: status === Status.ERROR ? resetSGRMessage.error.button : successBtnText,
           isRetry: true,
           openLoading: true,
           onConfirm: async () => {
-            resultModal.hide();
             if (status === Status.ERROR) {
+              resultModal.hide();
               approveReset(parentItemInfo, amount);
             } else {
-              router.push('/');
+              if (originSymbol) {
+                await intervalFetch.start(originSymbol);
+                intervalFetch.remove();
+                resultModal.hide();
+                router.replace(`/detail?symbol=${originSymbol}`);
+              } else {
+                router.replace('/');
+              }
             }
           },
         },
       });
     },
-    [approveReset, resultModal, router],
+    [approveReset, intervalFetch, resultModal, router],
   );
 
   return useCallback(

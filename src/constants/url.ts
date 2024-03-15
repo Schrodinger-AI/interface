@@ -12,7 +12,7 @@ export const getRpcUrls = () => {
   };
 };
 
-enum ENVIRONMENT {
+export enum ENVIRONMENT {
   TEST = 'test',
   DEVELOPMENT = 'development',
   PRODUCTION = 'production',
@@ -28,8 +28,8 @@ const explorerUrls = {
   },
   [ENVIRONMENT.DEVELOPMENT]: {
     AELF: 'https://explorer.aelf.io/',
-    TDVV: 'https://tdvv-explorer.aelf.io/',
-    TDVW: 'https://tdvv-explorer.aelf.io/',
+    TDVV: 'https://explorer-test-side02.aelf.io/',
+    TDVW: 'https://explorer-test-side02.aelf.io/',
   },
   [ENVIRONMENT.PRODUCTION]: {
     AELF: 'https://explorer.aelf.io/',

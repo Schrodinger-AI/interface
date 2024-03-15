@@ -12,10 +12,10 @@ import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
-import { useResponsive } from 'ahooks';
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { WalletType } from 'aelf-web-login';
+
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { useCmsInfo } from 'redux/hooks';
@@ -26,6 +26,10 @@ import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { ICompassProps, RouterItemType } from './type';
 import { useModal } from '@ebay/nice-modal-react';
 import MarketModal from 'components/MarketModal';
+import { NavHostTag } from 'components/HostTag';
+import useResponsive from 'hooks/useResponsive';
+import { ENVIRONMENT } from 'constants/url';
+import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 const mockRouterItems = JSON.stringify({
   items: [
@@ -38,10 +42,10 @@ const mockRouterItems = JSON.stringify({
 });
 
 export default function Header() {
-  const { checkLogin } = useCheckLoginAndToken();
+  const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, isLogin, walletType } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
-  const responsive = useResponsive();
+  const { isLG } = useResponsive();
   const router = useRouter();
   const pathname = usePathname();
   const navigate = useRouter();
@@ -62,32 +66,43 @@ export default function Header() {
   }, [routerItems]);
 
   const onPressCompassItems = useCallback(
-    (event: any, to: string, isInner: boolean) => {
-      console.log(to, isInner, 'to, isInner ', isLogin, 'isLogin');
-      if (isInner) {
-        if (!isLogin) {
-          event.preventDefault();
-          store.dispatch(setLoginTrigger('login'));
-          checkLogin();
-        } else {
-          navigate.push(to);
-        }
-      } else {
-        // open new tab
+    (event: any, to: string, type: ICompassType = 'inner') => {
+      if (type === 'externalLink') {
         event.preventDefault();
         const newWindow = window.open(to, '_blank');
         newWindow && (newWindow.opener = null);
         if (newWindow && typeof newWindow.focus === 'function') {
           newWindow.focus();
         }
+      } else {
+        // type === 'inner';
+        if (!isLogin) {
+          event.preventDefault();
+          store.dispatch(setLoginTrigger('login'));
+          checkLogin();
+        } else {
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+          router.push(to);
+        }
       }
     },
-    [checkLogin, isLogin, navigate],
+    [checkLogin, isLogin, router],
   );
+
+  const [logoutComplete, setLogoutComplete] = useState(true);
+
+  const [menuModalVisible, setMenuModalVisible] = useState(false);
+
+  const { topSafeHeight } = useSafeAreaHeight();
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    setLogoutComplete(true);
+    setMenuModalVisible(false);
+  });
 
   const CopyAddressItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
+      <div className={styles.menuItem}>
         <WalletSVG />
         <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
         <CopySVG
@@ -103,8 +118,9 @@ export default function Header() {
   const LogoutItem = useCallback(() => {
     return (
       <div
-        className="flex gap-[8px] items-center"
+        className={styles.menuItem}
         onClick={() => {
+          setLogoutComplete(false);
           logout();
           setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
@@ -116,28 +132,32 @@ export default function Header() {
 
   const PointsItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <AssetSVG />
-        <span
-          onClick={() => {
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (checkTokenValid()) {
             router.push('/points');
-          }}>
-          My Points
-        </span>
+            setMenuModalVisibleModel(ModalViewModel.NONE);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <PointsSVG />
+        <span>My Flux Points</span>
       </div>
     );
-  }, [router]);
+  }, [checkLogin, checkTokenValid, router]);
 
   const AssetItem = useCallback(() => {
     return (
-      <div className="flex gap-[8px] items-center">
-        <PointsSVG />
-        <span
-          onClick={() => {
-            router.push('/assets');
-          }}>
-          My Asset
-        </span>
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          router.push('/assets');
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+        }}>
+        <AssetSVG />
+        <span>My Assets</span>
       </div>
     );
   }, [router]);
@@ -175,7 +195,7 @@ export default function Header() {
         }
       }
 
-      onPressCompassItems(event, schema, type !== RouterItemType.OUT);
+      onPressCompassItems(event, schema, type);
     },
     [marketModal, onPressCompassItems],
   );
@@ -188,8 +208,7 @@ export default function Header() {
           <div
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
-              handleNavClick(event, item);
-              // item?.schema && onPressCompassItems(event, item?.schema, item.type !== RouterItemType.OUT);
+              item?.schema && onPressCompassItems(event, item?.schema, item.type);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -212,17 +231,21 @@ export default function Header() {
     );
   };
 
-  const CompassLink = ({ itemData, ...props }: { itemData: ICompassProps; className: string } & PropsWithChildren) => {
-    const { title, schema: to = '' } = itemData;
-    return (
+  const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
+    const isInner = type !== 'out';
+    const renderCom = <CompassText title={title} schema={to} />;
+
+    return isInner ? (
+      <span onClick={(event) => onPressCompassItems(event, to, type)}>{renderCom}</span>
+    ) : (
       <Link
         href={!isLogin ? '' : to}
         scroll={false}
         onClick={(event) => {
-          handleNavClick(event, itemData);
+          onPressCompassItems(event, to, type);
         }}
         {...props}>
-        <CompassText title={title} schema={to} />
+        {renderCom}
       </Link>
     );
   };
@@ -230,8 +253,9 @@ export default function Header() {
     const myComponent = !isLogin ? (
       <Button
         type="primary"
-        size={responsive.md ? 'large' : 'small'}
+        size={!isLG ? 'large' : 'small'}
         className="!rounded-lg md:!rounded-[12px]"
+        disabled={!logoutComplete}
         onClick={() => {
           store.dispatch(setLoginTrigger('login'));
           checkLogin();
@@ -241,7 +265,7 @@ export default function Header() {
     ) : (
       <MyDropDown />
     );
-    if (responsive.md) {
+    if (!isLG) {
       return (
         <span className="space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
@@ -295,7 +319,7 @@ export default function Header() {
   };
 
   const MyDropDown = () => {
-    if (responsive.md) {
+    if (!isLG) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
           <Button type="default" className="!rounded-[12px] text-brandDefault border-brandDefault" size="large">
@@ -318,24 +342,45 @@ export default function Header() {
       </Button>
     );
   };
+
+  const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
+      {env === ENVIRONMENT.TEST && (
+        <p className=" w-full bg-brandBg p-[16px] lg:p-[20px] text-sm text-brandDefault font-medium text-center">
+          Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
+          caution, as user data may be subject to deletion.
+        </p>
+      )}
+
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        {
-          // eslint-disable-next-line @next/next/no-img-element
+        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
+          {/* <div className="flex relative">
+            <img
+              src={require('assets/img/logo.png').default.src}
+              alt="logo"
+              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+            />
+            <span className="absolute flex items-center justify-center font-medium right-0 leading-[12px] lg:leading-[16px] text-[8px] lg:text-[10px] top-0 bg-neutralPrimary text-white px-[2px] lg:px-[4px] h-[12px] lg:h-[16px] rounded-[4px] rounded-bl-none">
+              TEST
+            </span>
+          </div> */}
           <img
             src={require('assets/img/logo.png').default.src}
             alt="logo"
-            width={responsive.md ? 200 : 150}
-            height={responsive.md ? 32 : 24}
+            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
           />
-        }
+          <NavHostTag />
+        </div>
         {FunctionalArea(menuItems)}
       </div>
       <Modal
+        mask={false}
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG className="size-4" />}
+        style={{ paddingTop: Number(topSafeHeight) }}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable

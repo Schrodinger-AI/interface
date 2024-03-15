@@ -115,5 +115,5 @@ export const Adopt = async (
 export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>
   await schrodingerContractRequest('Confirm', params, options);
 
-export const resetSGR = async (params: IResetSGRParams, options?: IContractOptions): Promise<ISendResult> =>
-  await schrodingerContractRequest('Reset', params, options);
+export const rerollSGR = async (params: IRerollSGRParams, options?: IContractOptions): Promise<ISendResult> =>
+  await schrodingerContractRequest('Reroll', params, options);

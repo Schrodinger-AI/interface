@@ -1,7 +1,13 @@
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import { useCallback } from 'react';
-import { adoptStep1Handler, adoptStep2Handler, fetchTraitsAndImages, fetchWaterImages } from './AdoptStep';
+import {
+  adoptStep1Handler,
+  adoptStep2Handler,
+  fetchTraitsAndImages,
+  fetchWaterImages,
+  getAdoptConfirmEventLogs,
+} from './AdoptStep';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
@@ -17,9 +23,11 @@ import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import useLoading from 'hooks/useLoading';
 import { adopt1Message, promptContentTitle } from 'constants/promptMessage';
 import { WalletType, useWebLogin } from 'aelf-web-login';
-import { getExploreLink } from 'utils';
+import { getDomain, getExploreLink } from 'utils';
 import { ISendResult } from 'types';
 import { useCmsInfo } from 'redux/hooks';
+import { useRouter } from 'next/navigation';
+import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -30,9 +38,11 @@ const useAdoptHandler = () => {
   const adoptNextModal = useModal(AdoptNextModal);
   const asyncModal = useModal(SyncAdoptModal);
   const { showLoading, closeLoading } = useLoading();
-
+  const router = useRouter();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const { txFee: commonTxFee } = useTxFee();
+
+  const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const cmsInfo = useCmsInfo();
 
@@ -130,11 +140,13 @@ const useAdoptHandler = () => {
           },
           initialization: async () => {
             try {
+              const domain = getDomain();
+
               const adoptId = await adoptStep1Handler({
                 params: {
                   parent: parentItemInfo.symbol,
                   amount,
-                  domain: location.host,
+                  domain,
                 },
                 address: account,
                 decimals: parentItemInfo.decimals,
@@ -180,14 +192,17 @@ const useAdoptHandler = () => {
           decimals: parentItemInfo.decimals,
         });
 
+        const isAcross = ZERO.plus(parentItemInfo.generation).plus(1).lt(infos.adoptImageInfo.generation);
+
         adoptNextModal.show({
+          isAcross,
           data: {
             SGRToken: {
               tokenName: parentItemInfo.tokenName,
               symbol: parentItemInfo.symbol,
               amount: symbolBalance,
             },
-            newTraits: infos.adoptImageInfo.attributes,
+            allTraits: infos.adoptImageInfo.attributes,
             images: infos.adoptImageInfo.images,
             inheritedTraits: parentItemInfo.traits,
             transaction: {
@@ -215,11 +230,14 @@ const useAdoptHandler = () => {
   );
 
   const retryAdoptConfirm = useCallback(
-    async (confirmParams: {
-      adoptId: string;
-      image: string;
-      signature: string;
-    }): Promise<{ txResult: ISendResult; image: string }> =>
+    async (
+      confirmParams: {
+        adoptId: string;
+        image: string;
+        signature: string;
+      },
+      parentItemInfo: TSGRToken,
+    ): Promise<{ txResult: ISendResult; image: string }> =>
       new Promise(async (resolve, reject) => {
         try {
           const result = await adoptStep2Handler(confirmParams);
@@ -237,7 +255,8 @@ const useAdoptHandler = () => {
           resultModal.show({
             modalTitle: 'You have failed minted!',
             info: {
-              name: 'SGR',
+              name: parentItemInfo.tokenName,
+              logo: confirmParams.image,
             },
             id: 'adopt-retry-modal',
             status: Status.ERROR,
@@ -265,7 +284,11 @@ const useAdoptHandler = () => {
   );
 
   const adoptConfirmHandler = useCallback(
-    async (params: {
+    async ({
+      adoptId,
+      image: originImage,
+      parentItemInfo,
+    }: {
       adoptId: string;
       image: string;
       parentItemInfo: TSGRToken;
@@ -274,9 +297,11 @@ const useAdoptHandler = () => {
       image: string;
     }> => {
       return new Promise(async (resolve, reject) => {
-        const parentItemInfo = params.parentItemInfo;
         showLoading();
-        const imageSignature = await fetchWaterImages(params);
+        const imageSignature = await fetchWaterImages({
+          adoptId,
+          image: originImage,
+        });
         adoptNextModal.hide();
         closeLoading();
         if (imageSignature?.error) {
@@ -287,7 +312,7 @@ const useAdoptHandler = () => {
         const image = imageSignature.image;
 
         const confirmParams = {
-          adoptId: params.adoptId,
+          adoptId,
           image: image,
           signature: Buffer.from(signature, 'hex').toString('base64'),
         };
@@ -305,7 +330,7 @@ const useAdoptHandler = () => {
             content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams);
+            const result = await retryAdoptConfirm(confirmParams, parentItemInfo);
             resolve(result);
           },
           onClose: () => {
@@ -332,19 +357,41 @@ const useAdoptHandler = () => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
 
       // console.log(selectItem, 'selectItem=');
-      return await adoptConfirmHandler({
+      const { image, txResult } = await adoptConfirmHandler({
         adoptId,
         image: selectItem,
         parentItemInfo,
       });
+      let nextTokenName = '';
+      let nextSymbol = '';
+      try {
+        const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
+        nextTokenName = tokenName;
+        nextSymbol = symbol;
+      } catch (error) {
+        //
+      }
+      // Get next gen symbol
+      return { image, txResult, nextTokenName, nextSymbol };
     },
     [adoptConfirmHandler, adoptConfirmInput],
   );
 
   const adoptConfirmSuccess = useCallback(
-    async ({ transactionId, image, name }: { transactionId: string; image: string; name: string }) =>
+    async ({
+      transactionId,
+      image,
+      name,
+      symbol,
+    }: {
+      transactionId: string;
+      image: string;
+      name: string;
+      symbol: string;
+    }) =>
       new Promise((resolve) => {
         const explorerUrl = getExploreLink(transactionId, 'transaction', cmsInfo?.curChain);
+        console.log('=====getExploreLink', explorerUrl, transactionId, cmsInfo?.curChain, image);
         resultModal.show({
           modalTitle: 'Cat Successfully Adopted!',
           info: {
@@ -356,13 +403,24 @@ const useAdoptHandler = () => {
           link: {
             href: explorerUrl,
           },
+          buttonInfo: {
+            btnText: `View Inscription`,
+            openLoading: true,
+            onConfirm: async () => {
+              await intervalFetch.start(symbol);
+              intervalFetch.remove();
+              resultModal.hide();
+              router.replace(`/detail?symbol=${symbol}`);
+            },
+          },
           onCancel: () => {
             resolve(true);
+            intervalFetch.remove();
             resultModal.hide();
           },
         });
       }),
-    [cmsInfo, resultModal],
+    [cmsInfo?.curChain, intervalFetch, resultModal, router],
   );
 
   return useCallback(
@@ -371,13 +429,22 @@ const useAdoptHandler = () => {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         closeLoading();
-
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
+        const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
+          infos,
+          adoptId,
+          parentItemInfo,
+          account,
+        });
 
-        const { txResult, image } = await approveAdoptConfirm({ infos, adoptId, parentItemInfo, account });
-        await adoptConfirmSuccess({ transactionId: txResult.TransactionId, image, name: parentItemInfo.tokenName });
+        await adoptConfirmSuccess({
+          transactionId: txResult.TransactionId,
+          image,
+          name: nextTokenName,
+          symbol: nextSymbol,
+        });
       } catch (error) {
         console.log(error, 'error==');
         if (error === AdoptActionErrorCode.cancel) return;

@@ -5,10 +5,12 @@ import { fetchToken } from 'api/request';
 import { message } from 'antd';
 import { useRequest } from 'ahooks';
 import useDiscoverProvider from './useDiscoverProvider';
+import { store } from 'redux/store';
+import { setHasToken } from 'redux/reducer/info';
 
 const AElf = require('aelf-sdk');
 
-export const useGetToken = (callBack?: (flag: boolean) => void) => {
+export const useGetToken = () => {
   const { loginState, wallet, getSignature, walletType, version } = useWebLogin();
 
   const { getSignatureAndPublicKey } = useDiscoverProvider();
@@ -17,7 +19,7 @@ export const useGetToken = (callBack?: (flag: boolean) => void) => {
     retryCount: 20,
     manual: true,
     onSuccess(res) {
-      callBack?.(true);
+      store.dispatch(setHasToken(true));
       localStorage.setItem(
         storages.accountInfo,
         JSON.stringify({

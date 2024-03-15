@@ -6,6 +6,7 @@ const useGetStoreInfo = () => {
   return {
     cmsInfo: info.cmsInfo,
     loginTrigger: info.loginTrigger,
+    hasToken: info.hasToken,
   };
 };
 
