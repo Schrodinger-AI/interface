@@ -3391,9 +3391,9 @@ aelf-sdk@^3.2.40, aelf-sdk@^3.3.0:
     scryptsy "^2.1.0"
     xmlhttprequest "^1.8.0"
 
-aelf-web-login@^2.0.1-beta.1:
+aelf-web-login@2.0.1-beta.2:
   version "2.0.1-beta.2"
-  resolved "https://registry.npmjs.org/aelf-web-login/-/aelf-web-login-2.0.1-beta.2.tgz#c50641d0cd7d771823c5f461d345a132e80ca619"
+  resolved "https://registry.npmmirror.com/aelf-web-login/-/aelf-web-login-2.0.1-beta.2.tgz#c50641d0cd7d771823c5f461d345a132e80ca619"
   integrity sha512-TI5Yxw7Q4cc3JFbKoxLrSiFtCZqPokM0dwoGfx3bgaM5QGwitLcah537DyAdugah5oVNobrkg1zvUbGJZBBHgw==
   dependencies:
     "@aelf-react/core" "^0.1.19"

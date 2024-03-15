@@ -1,3 +1,5 @@
+import Script from 'next/script';
+import type { Metadata } from 'next';
 import Layout from 'pageComponents/layout';
 import 'styles/tailwindBase.css';
 
@@ -11,20 +13,38 @@ import 'styles/theme.css';
 import Provider from 'provider';
 import Head from 'next/head';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Schrödinger',
   description: 'Schrödinger',
+};
+
+export const viewport = {
+  viewportFit: 'cover',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: 'no',
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <Head>
-        <meta
+      <head>
+        {/* <meta
           name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-        />
-      </Head>
+        /> */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-KSBVVVXGYS" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-KSBVVVXGYS');
+        `}
+        </Script>
+      </head>
       <body>
         <Provider>
           <Layout>{children}</Layout>

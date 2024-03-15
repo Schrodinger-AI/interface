@@ -20,6 +20,7 @@ import { NotFoundType } from 'constants/index';
 import Loading from 'components/PageLoading/index';
 import { Updater } from 'components/Updater';
 import { usePathname, useRouter } from 'next/navigation';
+import { forbidScale } from 'utils/common';
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -27,7 +28,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const checkHost = async () => {
+  const checkHost = useCallback(async () => {
     try {
       const res = await checkDomain();
       if (res && res === 'Success') {
@@ -41,10 +42,10 @@ function Provider({ children }: { children: React.ReactNode }) {
       console.error('checkHost err', err);
       return false;
     }
-  };
+  }, []);
 
   const isCorrectPath = useMemo(() => {
-    return ['/', '/assets', '/points'].includes(pathname);
+    return ['/', '/assets', '/points', '/privacy-policy'].includes(pathname);
   }, [pathname]);
 
   const redirect = useCallback(
@@ -62,7 +63,8 @@ function Provider({ children }: { children: React.ReactNode }) {
     },
     [isCorrectPath, router],
   );
-  const fetchGlobalConfig = async () => {
+
+  const fetchGlobalConfig = useCallback(async () => {
     try {
       const res = await fetchCmsConfigInfo();
       store.dispatch(setCmsInfo(res));
@@ -71,20 +73,30 @@ function Provider({ children }: { children: React.ReactNode }) {
       console.error('fetchGlobalConfig err', err);
     }
     setLoading(false);
-  };
+  }, [redirect]);
 
-  const initPageData = async () => {
+  const isNoNeedLoadingPage = useMemo(() => {
+    return ['/privacy-policy'].includes(pathname);
+  }, [pathname]);
+
+  const initPageData = useCallback(async () => {
+    if (isNoNeedLoadingPage) {
+      setIsCorrectDomain(true);
+      setLoading(false);
+      return;
+    }
     const hostCorrect = await checkHost();
     if (hostCorrect) {
       await fetchGlobalConfig();
     } else {
       setLoading(false);
     }
-  };
+  }, [checkHost, fetchGlobalConfig, isNoNeedLoadingPage]);
 
   useEffect(() => {
     initPageData();
-  }, []);
+    forbidScale();
+  }, [initPageData]);
 
   useEffectOnce(() => {
     BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
