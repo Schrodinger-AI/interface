@@ -89,14 +89,14 @@ export const useAdoptConfirm = () => {
       confirmParams: {
         adoptId: string;
         image: string;
-        // imageUri: string;
+        imageUri: string;
         signature: string;
       },
       parentItemInfo: TSGRToken,
     ): Promise<{
       txResult: ISendResult;
       image: string;
-      //  imageUri: string
+      imageUri: string;
     }> =>
       new Promise(async (resolve, reject) => {
         try {
@@ -104,7 +104,7 @@ export const useAdoptConfirm = () => {
           resolve({
             txResult: result,
             image: confirmParams.image,
-            // imageUri: confirmParams.imageUri
+            imageUri: confirmParams.imageUri,
           });
           promptModal.hide();
         } catch (error) {
@@ -139,7 +139,7 @@ export const useAdoptConfirm = () => {
                 resolve({
                   txResult: result,
                   image: confirmParams.image,
-                  //  imageUri: confirmParams.imageUri
+                  imageUri: confirmParams.imageUri,
                 });
 
                 resultModal.hide();
@@ -163,7 +163,7 @@ export const useAdoptConfirm = () => {
     }): Promise<{
       txResult: ISendResult;
       image: string;
-      // imageUri: string;
+      imageUri: string;
     }> => {
       return new Promise(async (resolve, reject) => {
         // showLoading();
@@ -179,12 +179,12 @@ export const useAdoptConfirm = () => {
         }
         const signature = imageSignature.signature;
         const image = imageSignature.image;
-        // const imageUri = imageSignature.imageUri;
+        const imageUri = imageSignature.imageUri;
 
         const confirmParams = {
           adoptId,
           image: image,
-          // imageUri: imageUri,
+          imageUri: imageUri,
           signature: Buffer.from(signature, 'hex').toString('base64'),
         };
 
@@ -237,17 +237,14 @@ export const useAdoptConfirm = () => {
     }) => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
 
-      const {
-        image,
-        txResult,
-        //  imageUri
-      } = await adoptConfirmHandler({
+      const { image, txResult, imageUri } = await adoptConfirmHandler({
         adoptId,
         image: selectItem,
         parentItemInfo,
       });
       let nextTokenName = '';
       let nextSymbol = '';
+      console.log(imageUri, 'imageUri==');
       try {
         const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
         nextTokenName = tokenName;
@@ -257,7 +254,7 @@ export const useAdoptConfirm = () => {
       }
       // Get next gen symbol
       return {
-        image: image, //  imageUri ,
+        image: imageUri,
         txResult,
         nextTokenName,
         nextSymbol,

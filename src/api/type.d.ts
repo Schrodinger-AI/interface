@@ -47,7 +47,7 @@ interface IWaterImageRequest {
 interface IWaterImage {
   image: string;
   signature: string;
-  // imageUri: string;
+  imageUri: string;
 }
 interface IGetPointsParams {
   domain: string;

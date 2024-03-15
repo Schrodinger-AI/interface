@@ -122,13 +122,15 @@ export default function uriToHttp(uri: string): string {
       return uri;
     case 'ipfs':
       const hash = uri.match(/^ipfs:(\/\/)?(.*)$/i)?.[2];
-      return `https://ipfs.io/ipfs/${hash}/`;
+      return `https://ipfs.io/ipfs/${hash}`;
     case 'ipns':
       const name = uri.match(/^ipns:(\/\/)?(.*)$/i)?.[2];
-      return `https://ipfs.io/ipns/${name}/`;
+      return `https://ipfs.io/ipns/${name}`;
     default:
+      if (uri.includes('_next')) return uri;
+
       const isBase64 = uri.startsWith('data:image');
-      if (!isBase64) uri = base64Prefix + uri;
+      if (!isBase64) return base64Prefix + uri;
       return uri;
   }
 }

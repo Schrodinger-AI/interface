@@ -85,7 +85,7 @@ export const fetchWaterImages = async (
         error,
         image: '',
         signature: '',
-        // imageUri: ''
+        imageUri: '',
       };
     await sleep(500);
     count++;

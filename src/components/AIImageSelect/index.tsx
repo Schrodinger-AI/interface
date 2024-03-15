@@ -1,14 +1,13 @@
 import { Image, ImageProps } from 'antd';
-import { Button } from 'aelf-design';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReactComponent as EyeSVG } from 'assets/img/icons/eye.svg';
 import { ReactComponent as RadioSelect } from 'assets/img/icons/radio-select.svg';
 import DefaultCatImg from 'assets/img/icons/defaultCat.png';
 import useResponsive from 'hooks/useResponsive';
-import { formatImageSrc } from 'utils/format';
 import clsx from 'clsx';
 
 import styles from './style.module.css';
+import uriToHttp from 'utils/format';
 
 interface IAIImageProps {
   src: string;
@@ -23,7 +22,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const [error, setError] = useState(false);
   const [random, setRandom] = useState<number>(0);
 
-  const imageSrc = useMemo(() => formatImageSrc(src), [src]);
+  const imageSrc = useMemo(() => uriToHttp(src), [src]);
   const preview = useMemo<ImageProps['preview']>(() => {
     return isLG
       ? {
