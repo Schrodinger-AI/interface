@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { TGraphQLClient } from './common';
-import { TBaseSGRToken, TSGRToken } from 'types/tokens';
+import { ITrait, TBaseSGRToken, TSGRToken } from 'types/tokens';
 export * from './common';
 
 export type TCommonGraphQLResult<T> = Promise<ApolloQueryResult<T>>;
@@ -45,6 +45,7 @@ export type TGetSchrodingerDetail = (
 export type TGetStrayCatsParams = {
   input: {
     adopter: string;
+    chainId: string;
     skipCount?: number;
     maxResultCount?: number;
   };
@@ -58,6 +59,8 @@ export type TStrayCats = {
   consumeAmount: number;
   receivedAmount: number;
   decimals: number;
+  adoptId: string;
+  parentTraits: Omit<ITrait, 'percent'>[];
 };
 
 export type TGetStrayCatsResult = {

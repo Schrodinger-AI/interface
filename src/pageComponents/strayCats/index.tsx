@@ -1,14 +1,16 @@
-import { getPoints } from 'api/request';
 import { useWalletService } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { sleep } from '@portkey/utils';
 import { Button, Pagination, Table } from 'aelf-design';
 import { TableColumnsType } from 'antd';
 import TableEmpty from 'components/TableEmpty';
 import { TStrayCats, useGetStrayCats } from 'graphqlServer';
 import SkeletonImage from 'components/SkeletonImage';
 import { divDecimals } from 'utils/calculate';
+import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
+import { useCmsInfo } from 'redux/hooks';
+
+const textStyle = 'text-sm text-neutralTitle font-medium';
 
 export default function StrayCatsPage() {
   const { isLogin } = useWalletService();
@@ -18,14 +20,20 @@ export default function StrayCatsPage() {
   const [dataSource, setDataSource] = useState<TStrayCats[]>();
   const [totalCount, setTotalCount] = useState<number>(30);
   const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(1);
+  const cmsInfo = useCmsInfo();
+
+  const adoptConfirm = useAdoptConfirm();
 
   const getStrayCats = useGetStrayCats();
 
   const handleTableChange = ({ pageSize, page }: { page: number; pageSize?: number }) => {
-    console.log('=====handleTableChange', pageSize, page);
-    pageSize && setPageSize(pageSize);
-    page && setPageNum(page);
+    if (pageSize) {
+      setPageSize(pageSize);
+      setPageNum(1);
+    } else {
+      page && setPageNum(page);
+    }
   };
 
   const getStrayCatsData = useCallback(async () => {
@@ -36,24 +44,43 @@ export default function StrayCatsPage() {
         data: { getStrayCats: res },
       } = await getStrayCats({
         input: {
+          chainId: cmsInfo?.curChain || '',
           adopter: wallet.address,
           skipCount: (pageNum - 1) * pageSize,
           maxResultCount: pageSize,
         },
       });
-      console.log('=====data', res);
       setDataSource(res.data || []);
       setTotalCount(res.totalCount ?? 0);
     } finally {
       setLoading(false);
     }
-  }, [getStrayCats, pageNum, pageSize, wallet.address]);
+  }, [cmsInfo?.curChain, getStrayCats, pageNum, pageSize, wallet.address]);
 
   useEffect(() => {
     getStrayCatsData();
   }, [getStrayCatsData, pageSize, pageNum]);
 
-  const textStyle = 'text-sm text-neutralTitle font-medium';
+  const formatAdoptConfirmParams = useCallback((record: TStrayCats) => {
+    return {
+      tick: '',
+      symbol: record.symbol,
+      tokenName: record.tokenName,
+      inscriptionImage: '',
+      amount: '',
+      generation: record.gen,
+      blockTime: 0,
+      decimals: record.decimals,
+      inscriptionImageUri: record.inscriptionImageUri,
+      traits: record.parentTraits.map((item) => {
+        return {
+          traitType: item.traitType,
+          value: item.value,
+          percent: 0,
+        };
+      }),
+    };
+  }, []);
 
   const columns: TableColumnsType<TStrayCats> = useMemo(
     () => [
@@ -87,7 +114,7 @@ export default function StrayCatsPage() {
         dataIndex: 'consumeAmount',
         key: 'consumeAmount',
         render: (consumeAmount, record) => {
-          return <span className={textStyle}>{divDecimals(consumeAmount, record.decimals).toFormat()}</span>;
+          return <span className={textStyle}>{divDecimals(consumeAmount, record.decimals).toFixed()}</span>;
         },
       },
       {
@@ -95,7 +122,7 @@ export default function StrayCatsPage() {
         dataIndex: 'receivedAmount',
         key: 'receivedAmount',
         render: (receivedAmount, record) => {
-          return <span className={textStyle}>{divDecimals(receivedAmount, record.decimals).toFormat()}</span>;
+          return <span className={textStyle}>{divDecimals(receivedAmount, record.decimals).toFixed()}</span>;
         },
       },
       {
@@ -109,7 +136,7 @@ export default function StrayCatsPage() {
               type="primary"
               size="small"
               onClick={() => {
-                console.log('=====Adopt record', record);
+                adoptConfirm(formatAdoptConfirmParams(record), record.adoptId, wallet.address);
               }}>
               Adopt
             </Button>
@@ -117,7 +144,7 @@ export default function StrayCatsPage() {
         },
       },
     ],
-    [],
+    [adoptConfirm, formatAdoptConfirmParams, wallet.address],
   );
 
   useEffect(() => {
@@ -145,17 +172,13 @@ export default function StrayCatsPage() {
             locale={{
               emptyText: <TableEmpty description="Phew! There aren't any stray cats in your account." />,
             }}
-            onChange={(_a, _b) => {
-              console.log('=====onchange', _a, _b);
-            }}
             scroll={{
               x: 'max-content',
             }}
           />
-          {!dataSource?.length || totalCount <= 10 ? null : (
+          {!dataSource?.length || totalCount <= pageSize ? null : (
             <div className="py-[22px]">
               <Pagination
-                hideOnSinglePage
                 pageSize={pageSize}
                 current={pageNum}
                 showSizeChanger
