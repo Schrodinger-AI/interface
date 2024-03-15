@@ -29,19 +29,8 @@ import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { sleep } from 'utils';
 import { TGetSchrodingerListParams, useGetSchrodingerList, useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
-
-const mockData: TBaseSGRToken[] = new Array(32).fill({
-  tokenName: 'tokenName',
-  symbol: 'symbol',
-  inscriptionImage: '',
-  decimals: 8,
-  amount: '123456789000000',
-  generation: 2,
-  blockTime: 1,
-});
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -58,7 +47,7 @@ export default function OwnedItems() {
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
-  const [dataSource, setDataSource] = useState<TBaseSGRToken[]>([]);
+  const [dataSource, setDataSource] = useState<TBaseSGRToken[]>();
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -126,11 +115,15 @@ export default function OwnedItems() {
           };
         });
         if (isLoadMore.current) {
-          setDataSource((preData) => [...preData, ...data]);
+          setDataSource((preData) => [...(preData || []), ...data]);
           setLoadingMore(true);
         } else {
           setDataSource(data);
           setLoadingMore(false);
+        }
+      } catch {
+        if (!dataSource) {
+          setDataSource([]);
         }
       } finally {
         closeLoading();
@@ -337,7 +330,7 @@ export default function OwnedItems() {
   };
 
   const hasMore = useMemo(() => {
-    return total > dataSource.length;
+    return !!(dataSource && total > dataSource.length);
   }, [total, dataSource]);
 
   const tagList = useMemo(() => {

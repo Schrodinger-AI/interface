@@ -15,8 +15,7 @@ export type TBaseSGRToken = {
   generation: number;
   blockTime: number;
   decimals: number;
-  inscriptionInfo?: string;
-  address?: string; // temp key
+  inscriptionImageUri: string;
 };
 
 export type TSGRItem = TBaseSGRToken & {

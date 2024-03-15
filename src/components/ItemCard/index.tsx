@@ -23,6 +23,7 @@ interface IItemCard {
 export default function ItemCard({ item, onPress, type }: IItemCard) {
   const {
     inscriptionImage,
+    inscriptionImageUri,
     generation = '1',
     tokenName,
     symbol,
@@ -56,7 +57,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
-            img={inscriptionImage}
+            img={inscriptionImageUri || inscriptionImage}
             imageSizeType="contain"
             className="w-full h-auto aspect-square object-contain"
           />

@@ -17,12 +17,16 @@ export default function ItemInfo({
         {detail.traits.map((item) => (
           <div
             key={item.traitType}
-            className="w-[198px] p-[24px] hidden lg:flex flex-col items-center bg-[#FAFAFA] rounded-lg">
-            <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
-            <div className="w-full text-center mt-[8px] text-[#1A1A1A] font-medium text-xl overflow-hidden whitespace-nowrap text-ellipsis">
-              {item.value}
+            className="lg:w-[198px] w-full px-[24px] py-[16px] lg:py-[24px] flex overflow-hidden flex-row lg:flex-col items-end justify-between lg:items-center bg-[#FAFAFA] rounded-lg">
+            <div className="flex-1 lg:flex-none lg:w-full overflow-hidden mr-[16px] lg:mr-0">
+              <div className="text-[#919191] text-left lg:text-center font-medium text-sm">{item.traitType}</div>
+              <div className="w-full text-left lg:text-center mt-[8px] text-[#1A1A1A] font-medium text-xl overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.value}
+              </div>
             </div>
-            <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
+            <div className="mt-[8px] w-[60px] text-[#919191] flex justify-end lg:justify-center font-medium text-base">
+              {formatPercent(item.percent)}%
+            </div>
           </div>
         ))}
       </div>

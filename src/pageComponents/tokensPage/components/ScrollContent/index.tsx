@@ -69,10 +69,12 @@ function ScrollContent(props: IContentProps) {
       <List
         grid={{ gutter, column }}
         locale={{
-          emptyText: (
+          emptyText: ListProps.dataSource ? (
             <Flex className="pt-0 lg:pt-6" justify="center" align="center">
               <EmptyList isChannelShow={!hasSearch} defaultDescription="No inscriptions found" />
             </Flex>
+          ) : (
+            <></>
           ),
         }}
         renderItem={(item) => (

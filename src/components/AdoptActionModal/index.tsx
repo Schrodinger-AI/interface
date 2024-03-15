@@ -15,6 +15,7 @@ import { Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
 import { ADOPT_NEXT_RATE } from 'constants/index';
+import { getOriginSymbol } from 'utils';
 
 export type TBalanceItem = {
   amount: string;
@@ -96,20 +97,22 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [tokenPrice, txFee]);
 
   const rateValue = useMemo(() => {
-    if (isReset) return `Reroll 1 ${info.name} receive 1 SGR-1`;
+    if (isReset) return `Reroll 1 ${info.name} receive 1 ${getOriginSymbol(info.name)}`;
     return `Consume 1.0527 ${info.name} to adopt 1 next-gen cat `;
   }, [info.name, isReset]);
 
   const inputTitle = useMemo(() => {
-    if (isReset) return 'Enter the amount of cats you want to reroll back to SGR-1.';
+    if (isReset) return `Enter the amount of cats you want to reroll back to ${getOriginSymbol(info.name)}.`;
     return 'Enter the amount of cats you want to consume to adopt next-gen cats';
-  }, [isReset]);
+  }, [info.name, isReset]);
 
   const inputDescription = useMemo(() => {
     if (isReset)
-      return 'By rerolling, your cat will be reverted back to its original status (gen0) and you will receive SGR-1.';
+      return `By rerolling, your cat will be reverted back to its original status (gen0) and you will receive ${getOriginSymbol(
+        info.name,
+      )}.`;
     return 'A 5% adoption fee will be charged for each adoption. Please ensure you enter an adequate amount if you want to eventually have at least 1 Gen9 cat.';
-  }, [isReset]);
+  }, [info.name, isReset]);
 
   const inputPlaceholder = useMemo(() => {
     if (isReset) return 'Consume Amount';

@@ -1,6 +1,6 @@
 export enum RouterItemType {
   Out = 'out',
-  Inner = 'inner',
+  Inner = 'link',
   MarketModal = 'marketModal',
   ExternalLink = 'externalLink',
 }

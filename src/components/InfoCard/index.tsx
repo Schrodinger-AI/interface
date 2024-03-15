@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import SkeletonImage from 'components/SkeletonImage';
 import React from 'react';
+import uriToHttp from 'utils/format';
 
 export interface IInfoCard {
   logo?: string;
@@ -18,7 +19,7 @@ function InfoCard(params: IInfoCard) {
       <div className="flex items-center">
         {logo ? (
           <SkeletonImage
-            img={logo}
+            img={uriToHttp(logo)}
             tag={tag}
             className={clsx(
               'w-[72px] md:w-[84px] h-[72px] md:h-[84px]',

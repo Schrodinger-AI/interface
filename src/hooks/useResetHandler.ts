@@ -38,7 +38,7 @@ export const useResetHandler = () => {
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
-            logo: parentItemInfo.inscriptionImage,
+            logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
@@ -94,7 +94,7 @@ export const useResetHandler = () => {
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
         info: {
           name: parentItemInfo.tokenName,
-          logo: parentItemInfo.inscriptionImage,
+          logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
           subName: parentItemInfo.symbol,
           tag: `GEN ${parentItemInfo.generation}`,
         },
@@ -146,7 +146,7 @@ export const useResetHandler = () => {
           isReset: true,
           modalTitle: 'Reroll Cat',
           info: {
-            logo: parentItemInfo.inscriptionImage,
+            logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,

@@ -8,6 +8,7 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
         symbol
         tokenName
         inscriptionImage
+        inscriptionImageUri
         amount
         generation
         decimals
@@ -25,6 +26,7 @@ export const GET_SCHRODINGER_DETAIL_QUERY = gql`
       symbol
       tokenName
       inscriptionImage
+      inscriptionImageUri
       amount
       generation
       decimals
