@@ -18,7 +18,7 @@ export default function useColumns(collapsed: boolean) {
     } else if (is3XL) {
       result = 7;
     } else {
-      result = 8;
+      result = 9;
     }
     if (!isLG && collapsed) {
       result -= 2;
