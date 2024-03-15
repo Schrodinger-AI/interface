@@ -20,6 +20,7 @@ interface IConfirmAdoptParams {
   adoptId: string;
   image: string;
   signature: string;
+  // imageUri: string;
 }
 
 interface IRerollSGRParams {

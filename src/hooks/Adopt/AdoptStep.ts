@@ -80,7 +80,13 @@ export const fetchWaterImages = async (
     if (!result.signature) throw 'Get not get signature';
     return result;
   } catch (error) {
-    if (count > 10) return { error, image: '', signature: '' };
+    if (count > 10)
+      return {
+        error,
+        image: '',
+        signature: '',
+        // imageUri: ''
+      };
     await sleep(500);
     count++;
     return await fetchWaterImages(params, count);
@@ -88,14 +94,14 @@ export const fetchWaterImages = async (
 };
 
 export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<IAdoptImageInfo> => {
-  if (!count) await sleep(10000); // Waiting to generate ai picture
   count++;
   try {
     const result = await fetchSchrodingerImagesByAdoptId({ adoptId });
     if (!result || !result.adoptImageInfo?.images?.length) throw 'Waiting...';
     return result;
   } catch (error) {
-    await sleep(3000);
+    // Waiting to generate ai picture
+    await sleep(6000);
     return fetchTraitsAndImages(adoptId, count);
   }
 };
