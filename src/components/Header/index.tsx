@@ -9,6 +9,7 @@ import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
 import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
+import { ReactComponent as InviteSVG } from 'assets/img/invite.svg';
 import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
@@ -21,6 +22,8 @@ import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { NavHostTag } from 'components/HostTag';
 import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
+import { isPortkeyApp } from 'utils';
+import { scheme } from '@portkey/utils';
 
 export default function Header() {
   const { checkLogin, checkTokenValid, logout } = useCheckLoginAndToken();
@@ -145,6 +148,44 @@ export default function Header() {
       </Button>
     );
   };
+
+  const jumpToInvite = () => {
+    const pointsUrl = 'https://www.pixiepoints.io/';
+    if (isPortkeyApp()) {
+      window.location.href = scheme.formatScheme({
+        action: 'linkDapp',
+        domain: window.location.host,
+        custom: {
+          url: pointsUrl,
+        },
+      });
+    } else {
+      window.open(pointsUrl);
+    }
+  };
+
+  const invite = useMemo(() => {
+    if (responsive.md) {
+      return (
+        <div className="mr-[64px]">
+          <span
+            className="text-[18px] leading-[26px] font-medium text-[#1A1A1A] hover:text-[#3888FF]"
+            onClick={jumpToInvite}>
+            Invite Friends
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className="w-[32px] h-[32px] ml-[8px] border border-solid border-[#3888FF] rounded-[8px] flex items-center justify-center"
+          onClick={jumpToInvite}>
+          <InviteSVG />
+        </div>
+      );
+    }
+  }, [responsive.md]);
+
   return (
     <section className="bg-white sticky z-[999] top-0 left-0 z-5 flex-shrink-0">
       <div className="max-w-[1440px] px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
@@ -156,21 +197,25 @@ export default function Header() {
           />
           <NavHostTag />
         </div>
-        {!isLogin ? (
-          <Button
-            type="primary"
-            size={responsive.md ? 'large' : 'small'}
-            className="!rounded-lg md:!rounded-[12px]"
-            disabled={!logoutComplete}
-            onClick={() => {
-              store.dispatch(setLoginTrigger('login'));
-              checkLogin();
-            }}>
-            Log in
-          </Button>
-        ) : (
-          <MyDropDown />
-        )}
+        <div className="flex items-center">
+          {responsive.md ? invite : null}
+          {!isLogin ? (
+            <Button
+              type="primary"
+              size={responsive.md ? 'large' : 'small'}
+              className="!rounded-lg md:!rounded-[12px]"
+              disabled={!logoutComplete}
+              onClick={() => {
+                store.dispatch(setLoginTrigger('login'));
+                checkLogin();
+              }}>
+              Log in
+            </Button>
+          ) : (
+            <MyDropDown />
+          )}
+          {responsive.md ? null : invite}
+        </div>
       </div>
       <Modal
         mask={false}
