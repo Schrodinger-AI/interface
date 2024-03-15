@@ -1,7 +1,7 @@
 import { Checkbox } from 'antd';
 import { useGetSubTraits } from 'graphqlServer';
 import { useWalletService } from 'hooks/useWallet';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState, forwardRef, useImperativeHandle } from 'react';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
 import { useCmsInfo } from 'redux/hooks';
 import { TFilterSubTrait } from 'types/trait';
@@ -21,94 +21,108 @@ export interface ISubTraitFilterProps {
   onChange?: (checkedValue: string[]) => void;
 }
 
-export const SubTraitFilter = ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps) => {
-  const cmsInfo = useCmsInfo();
-  const [isLoading, setIsLoading] = useState(false);
-  const getSubTraits = useGetSubTraits();
-  const { wallet } = useWalletService();
-  const [list, setList] = useState<TSubTraitItem[]>([]);
+export interface ISubTraitFilterInstance {
+  clearSearch: () => void;
+}
 
-  const getSubTraitList = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const {
-        data: {
-          getTraits: { traitsFilter: traitsList },
-        },
-      } = await getSubTraits({
-        input: {
-          chainId: cmsInfo?.curChain || '',
-          address: wallet.address || '',
-          traitType,
-        },
-      });
+export const SubTraitFilter = forwardRef(
+  ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps, ref) => {
+    const cmsInfo = useCmsInfo();
+    const [isLoading, setIsLoading] = useState(false);
+    const getSubTraits = useGetSubTraits();
+    const { wallet } = useWalletService();
+    const [list, setList] = useState<TSubTraitItem[]>([]);
 
-      const trait = traitsList[0];
-      const list: TSubTraitItem[] = trait.values.map((item) => ({
-        ...item,
-        amount: ZERO.plus(item.amount).toFormat(),
-      }));
+    const getSubTraitList = useCallback(async () => {
+      setIsLoading(true);
+      try {
+        const {
+          data: {
+            getTraits: { traitsFilter: traitsList },
+          },
+        } = await getSubTraits({
+          input: {
+            chainId: cmsInfo?.curChain || '',
+            address: wallet.address || '',
+            traitType,
+          },
+        });
 
-      setList(list);
-    } catch (error) {
-      console.log('getSubTraitList error', error);
-    }
+        const trait = traitsList[0];
+        const list: TSubTraitItem[] = trait.values.map((item) => ({
+          ...item,
+          amount: ZERO.plus(item.amount).toFormat(),
+        }));
 
-    setIsLoading(false);
-  }, [cmsInfo?.curChain, getSubTraits, traitType, wallet.address]);
+        setList(list);
+      } catch (error) {
+        console.log('getSubTraitList error', error);
+      }
 
-  useEffectOnce(() => {
-    console.log('traitType', traitType, selectValues);
-    getSubTraitList();
-  });
+      setIsLoading(false);
+    }, [cmsInfo?.curChain, getSubTraits, traitType, wallet.address]);
 
-  const [searchValue, setSearchValue] = useState('');
-  const onSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  }, []);
-
-  const options = useMemo(() => {
-    let _list = list;
-    const _searchValue = searchValue.toLocaleUpperCase();
-    if (searchValue) {
-      _list = list.filter((item) => item.value.toLocaleUpperCase().includes(_searchValue));
-    }
-
-    return _list.map((item) => {
-      return {
-        label: (
-          <div className="flex justify-between h-[44px] items-center">
-            <span className="text-neutralPrimary">{item.value}</span>
-            <span className="text-neutralPrimary">{item.amount}</span>
-          </div>
-        ),
-        value: item.value,
-      };
+    useEffectOnce(() => {
+      console.log('traitType', traitType, selectValues);
+      getSubTraitList();
     });
-  }, [list, searchValue]);
 
-  return (
-    <div className={styles.subTraitFilter}>
-      <div className={styles.searchWrapper}>
-        <CommonSearch size="small" value={searchValue} placeholder="Search" onChange={onSearchChange} />
+    const [searchValue, setSearchValue] = useState('');
+    const onSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+    }, []);
+
+    const clearSearch = useCallback(() => {
+      setSearchValue('');
+    }, []);
+
+    useImperativeHandle(ref, () => ({
+      clearSearch,
+    }));
+
+    const options = useMemo(() => {
+      let _list = list;
+      const _searchValue = searchValue.toLocaleUpperCase();
+      if (searchValue) {
+        _list = list.filter((item) => item.value.toLocaleUpperCase().includes(_searchValue));
+      }
+
+      return _list.map((item) => {
+        return {
+          label: (
+            <div className="flex justify-between h-[44px] items-center">
+              <span className="text-neutralPrimary">{item.value}</span>
+              <span className="text-neutralPrimary">{item.amount}</span>
+            </div>
+          ),
+          value: item.value,
+        };
+      });
+    }, [list, searchValue]);
+
+    return (
+      <div className={styles.subTraitFilter}>
+        <div className={styles.searchWrapper}>
+          <CommonSearch size="small" value={searchValue} placeholder="Search" onChange={onSearchChange} />
+        </div>
+
+        <Checkbox.Group
+          value={selectValues}
+          className="w-full flex-col"
+          onChange={onChange}
+          defaultValue={defaultValue}
+          options={options}>
+          {isLoading ? (
+            <div className="h-[184px] flex items-center justify-center w-full">
+              <Loading />
+            </div>
+          ) : (
+            !options.length && (
+              <div className="pl-4 pr-5 leading-[44px] text-neutralPrimary">No corresponding results found</div>
+            )
+          )}
+        </Checkbox.Group>
       </div>
-
-      <Checkbox.Group
-        value={selectValues}
-        className="w-full flex-col"
-        onChange={onChange}
-        defaultValue={defaultValue}
-        options={options}>
-        {isLoading ? (
-          <div className="h-[184px] flex items-center justify-center w-full">
-            <Loading />
-          </div>
-        ) : (
-          !options.length && (
-            <div className="pl-4 pr-5 leading-[44px] text-neutralPrimary">No corresponding results found</div>
-          )
-        )}
-      </Checkbox.Group>
-    </div>
-  );
-};
+    );
+  },
+);

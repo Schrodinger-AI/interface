@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getDefaultFilter,
   getComponentByType,
@@ -16,6 +16,7 @@ import {
 import clsx from 'clsx';
 import { Flex, Layout, MenuProps } from 'antd';
 import CommonSearch from 'components/CommonSearch';
+import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import FilterMenuEmpty from '../FilterMenuEmpty';
@@ -213,6 +214,30 @@ export default function OwnedItems() {
     [filterSelect, isMobile, collapsed, applyFilter],
   );
 
+  const compChildRefs = useMemo(() => {
+    const refs: { [key: string]: React.RefObject<ISubTraitFilterInstance> } = {};
+    filterList?.forEach((item) => {
+      if (item.type === FilterType.MenuCheckbox && item.data.length > 0) {
+        item.data.forEach((subItem) => {
+          refs[subItem.value] = React.createRef();
+        });
+      }
+    });
+    return refs;
+  }, [filterList]);
+
+  const clearAllCompChildSearches = useCallback(() => {
+    Object.values(compChildRefs).forEach((ref) => {
+      ref.current?.clearSearch?.();
+    });
+  }, [compChildRefs]);
+
+  useEffect(() => {
+    if (isMobile && !collapsed) {
+      clearAllCompChildSearches();
+    }
+  }, [isMobile, collapsed, clearAllCompChildSearches]);
+
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
       const value = tempFilterSelect[item.key]?.data;
@@ -244,6 +269,7 @@ export default function OwnedItems() {
                   key: subItem.value,
                   label: (
                     <Comp.child
+                      ref={compChildRefs[subItem.value]}
                       itemKey={item.key}
                       parentLabel={subItem.label}
                       parentValue={subItem.value}
@@ -263,7 +289,7 @@ export default function OwnedItems() {
         children,
       };
     });
-  }, [filterList, tempFilterSelect, filterChange]);
+  }, [filterList, tempFilterSelect, filterChange, compChildRefs]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
@@ -367,7 +393,7 @@ export default function OwnedItems() {
           </Layout.Sider>
         )}
         <Layout className="!bg-[var(--bg-page)] relative">
-          <Flex className="sticky top-[60px] lg:top-[80px] bg-neutralWhiteBg z-[5] pb-5 pt-6 lg:pt-5" vertical gap={12}>
+          <Flex className="sticky top-0 bg-neutralWhiteBg z-[5] pb-5 pt-6 lg:pt-5" vertical gap={12}>
             <Flex gap={16}>
               <Flex
                 className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
