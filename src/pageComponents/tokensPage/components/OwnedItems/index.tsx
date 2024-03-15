@@ -393,7 +393,7 @@ export default function OwnedItems() {
           </Layout.Sider>
         )}
         <Layout className="!bg-[var(--bg-page)] relative">
-          <Flex className="sticky top-0 bg-neutralWhiteBg z-[5] pb-5 pt-6 lg:pt-5" vertical gap={12}>
+          <Flex className="sticky top-0 bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5" vertical gap={12}>
             <Flex gap={16}>
               <Flex
                 className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
