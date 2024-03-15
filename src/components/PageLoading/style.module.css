@@ -1,9 +1,5 @@
 .loading {
-  @apply !fixed !m-0 !w-fit;
-
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  @apply !m-0;
 
   :global {
     .aelfd-modal-content {

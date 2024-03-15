@@ -26,7 +26,10 @@
 }
 
 .menuModal {
-  @apply h-screen top-0 !m-0 !p-0 !w-screen !max-w-[100vw];
+  @apply h-screen top-0 !m-0 !w-screen !max-w-[100vw] pb-0;
+  * {
+    @apply !shadow-none;
+  }
   :global {
     .aelfd-modal-content {
       @apply w-full  h-full rounded-none !px-[16px] !py-[20px];

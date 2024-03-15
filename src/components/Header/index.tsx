@@ -13,8 +13,8 @@ import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import React, { useCallback, useMemo, useState } from 'react';
-import { WalletType } from 'aelf-web-login';
 import { usePathname, useRouter } from 'next/navigation';
+import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { useCmsInfo } from 'redux/hooks';
@@ -25,6 +25,7 @@ import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
 import { ENVIRONMENT } from 'constants/url';
+import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -71,6 +72,17 @@ export default function Header() {
     [checkLogin, isLogin, router],
   );
 
+  const [logoutComplete, setLogoutComplete] = useState(true);
+
+  const [menuModalVisible, setMenuModalVisible] = useState(false);
+
+  const { topSafeHeight } = useSafeAreaHeight();
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    setLogoutComplete(true);
+    setMenuModalVisible(false);
+  });
+
   const CopyAddressItem = useCallback(() => {
     return (
       <div className={styles.menuItem}>
@@ -91,6 +103,7 @@ export default function Header() {
       <div
         className={styles.menuItem}
         onClick={() => {
+          setLogoutComplete(false);
           logout();
           setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
@@ -113,7 +126,7 @@ export default function Header() {
           }
         }}>
         <PointsSVG />
-        <span>My Points</span>
+        <span>My Flux Points</span>
       </div>
     );
   }, [checkLogin, checkTokenValid, router]);
@@ -127,7 +140,7 @@ export default function Header() {
           setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
         <AssetSVG />
-        <span>My Asset</span>
+        <span>My Assets</span>
       </div>
     );
   }, [router]);
@@ -206,6 +219,7 @@ export default function Header() {
         type="primary"
         size={!isLG ? 'large' : 'small'}
         className="!rounded-lg md:!rounded-[12px]"
+        disabled={!logoutComplete}
         onClick={() => {
           store.dispatch(setLoginTrigger('login'));
           checkLogin();
@@ -330,9 +344,11 @@ export default function Header() {
         {FunctionalArea(menuItems)}
       </div>
       <Modal
+        mask={false}
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG />}
+        style={{ paddingTop: Number(topSafeHeight) }}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable

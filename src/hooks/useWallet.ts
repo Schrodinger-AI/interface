@@ -37,6 +37,8 @@ export const useWalletInit = () => {
 
   const backToHomeByRoute = useBackToHomeByRoute();
 
+  const { logout } = useWalletService();
+
   const callBack = useCallback(
     (state: WebLoginState) => {
       if (state === WebLoginState.lock) {
@@ -71,12 +73,7 @@ export const useWalletInit = () => {
 
   useLoginState(callBack);
 
-  useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, (error) => {
-    message.error(`${error.message || 'LOGIN_ERROR'}`);
-  });
-
-  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
-    // message.info('log out');
+  const resetAccount = useCallback(() => {
     backToHomeByRoute();
     localStorage.removeItem(storages.accountInfo);
     localStorage.removeItem(storages.walletInfo);
@@ -88,10 +85,22 @@ export const useWalletInit = () => {
     );
     dispatch(setItemsFromLocal([]));
     dispatch(setHasToken(false));
+  }, [backToHomeByRoute]);
+
+  useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, (error) => {
+    message.error(`${error.message || 'LOGIN_ERROR'}`);
+  });
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    // message.info('log out');
+    resetAccount();
   });
   useWebLoginEvent(WebLoginEvents.USER_CANCEL, () => {
     console.log('user cancel');
     // message.error('user cancel');
+  });
+  useWebLoginEvent(WebLoginEvents.DISCOVER_DISCONNECTED, () => {
+    logout();
   });
 };
 
