@@ -97,7 +97,7 @@ export default function OwnedItems() {
         setMoreLoading(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // There cannot be dependencies showLoading and closeLoading
     [getSchrodingerList],
   );
 

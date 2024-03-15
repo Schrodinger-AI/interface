@@ -57,7 +57,7 @@ function Provider({ children }: { children: React.ReactNode }) {
           // router.replace('/coundown');
         } else {
           // TODO
-          // router.replace('/tokens');
+          // router.replace('/');
         }
       }
     },

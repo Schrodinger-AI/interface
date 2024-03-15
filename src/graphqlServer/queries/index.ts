@@ -33,3 +33,19 @@ export const GET_SCHRODINGER_DETAIL_QUERY = gql`
     }
   }
 `;
+
+export const GET_STRAY_CATS_QUERY = gql`
+  query getStrayCats($input: StrayCatInput) {
+    getStrayCats(input: $input) {
+      totalCount
+      data {
+        inscriptionImageUri
+        tokenName
+        gen
+        symbol
+        consumeAmount
+        receivedAmount
+      }
+    }
+  }
+`;

@@ -41,3 +41,33 @@ export type TGetSchrodingerDetail = (
   client: TGraphQLClient,
   params: TGetSchrodingerDetailParams,
 ) => TCommonGraphQLResult<TGetSchrodingerDetailResult>;
+
+export type TGetStrayCatsParams = {
+  input: {
+    adopter: string;
+    skipCount?: number;
+    maxResultCount?: number;
+  };
+};
+
+export type TStrayCats = {
+  inscriptionImageUri: string;
+  tokenName: string;
+  gen: number;
+  symbol: string;
+  consumeAmount: number;
+  receivedAmount: number;
+  decimals: number;
+};
+
+export type TGetStrayCatsResult = {
+  getStrayCats: {
+    totalCount: number;
+    data: Array<TStrayCats>;
+  };
+};
+
+export type TGetStrayCats = (
+  client: TGraphQLClient,
+  params: TGetStrayCatsParams,
+) => TCommonGraphQLResult<TGetStrayCatsResult>;
