@@ -141,8 +141,8 @@ export default function DetailPage() {
             {cmsInfo?.isTradeShow && (
               <Button
                 type="default"
-                className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px]"
-                size="medium"
+                className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+                size="large"
                 onClick={onTrade}>
                 Trade
               </Button>
