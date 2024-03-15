@@ -8,6 +8,7 @@ import { formatTokenPrice } from 'utils/format';
 export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => void }) {
   const {
     inscriptionImage,
+    inscriptionImageUri,
     inscriptionInfo = '',
     generation = '1',
     tokenName,
@@ -35,7 +36,7 @@ export default function ItemCard(props: { item: TBaseSGRToken; onPress: () => vo
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
-            img={inscriptionImage}
+            img={inscriptionImageUri || inscriptionImage}
             imageSizeType="contain"
             className="w-full h-auto aspect-square object-contain"
           />
