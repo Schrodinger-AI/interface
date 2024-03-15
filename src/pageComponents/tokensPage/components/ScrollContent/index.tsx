@@ -70,7 +70,7 @@ function ScrollContent(props: IContentProps) {
         grid={{ gutter, column }}
         locale={{
           emptyText: (
-            <Flex justify="center" align="center">
+            <Flex className="pt-0 lg:pt-6" justify="center" align="center">
               <EmptyList isChannelShow={!hasSearch} defaultDescription="No inscriptions found" />
             </Flex>
           ),
