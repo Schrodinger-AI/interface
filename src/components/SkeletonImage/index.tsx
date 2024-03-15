@@ -1,6 +1,6 @@
 import { Skeleton } from 'antd';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useState } from 'react';
 
 interface ISkeletonImage {
@@ -23,17 +23,34 @@ function SkeletonImage(props: ISkeletonImage) {
     contain: 'object-contain',
   };
 
+  const imageUrl = useMemo(() => {
+    if (typeof img === 'string') {
+      const pattern = /^(http|https):\/\/|\/_next/;
+
+      if (pattern.test(img)) {
+        return img;
+      }
+      if (img.startsWith('data:image')) {
+        return img;
+      } else {
+        return `data:image/png;base64,${img}`;
+      }
+    } else {
+      return img;
+    }
+  }, [img]);
+
   return (
     <div className={clsx('relative rounded-lg overflow-hidden', className)}>
-      {(loading || !img) && (
-        <Skeleton.Image className="absolute top-0 left-0 !w-full !h-full" active={img ? skeletonActive : false} />
+      {(loading || !imageUrl) && (
+        <Skeleton.Image className="absolute top-0 left-0 !w-full !h-full" active={imageUrl ? skeletonActive : false} />
       )}
-      {img && (
+      {imageUrl && (
         <div className="w-full h-full relative">
           <img
             width={width}
             height={height}
-            src={img}
+            src={imageUrl}
             alt="image"
             className={clsx('w-full h-full', imageType[imageSizeType])}
             onLoad={() => {

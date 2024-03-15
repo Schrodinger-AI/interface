@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { Button } from 'aelf-design';
 import { Tooltip } from 'antd';
@@ -42,7 +43,7 @@ interface IAdoptNextModal {
 function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
   const [selectImage, setSelectImage] = useState<number>(-1);
-  const { SGRToken, newTraits, images, inheritedTraits, transaction, ELFBalance } = data;
+  const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
   const onSelect = useCallback((index: number) => {
     setSelectImage(index);
@@ -68,9 +69,18 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     );
   }, [isAcross]);
 
+  const newTraitsList = useMemo(() => {
+    const inheritedMap: Record<string, string> = {};
+    inheritedTraits.forEach((trait) => {
+      inheritedMap[trait.traitType] = trait.value;
+    });
+    return allTraits.filter((item) => !inheritedMap[item.traitType]);
+  }, [allTraits, inheritedTraits]);
+
   return (
     <CommonModal
       title={title}
+      closable={false}
       open={modal.visible}
       onCancel={onCancel}
       afterClose={modal.remove}
@@ -94,13 +104,17 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
               </div>
             </>
           }>
-          <TraitsList data={newTraits} showNew />
+          <TraitsList data={newTraitsList} showNew />
         </DescriptionItem>
         <DescriptionItem title="Select the Cat You Prefer">
+          <span className="text-functionalWarning text-base">
+            Please note: Once you confirm, the adoption will be completed, and you won't be able to change the cat
+            anymore.
+          </span>
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
         <DescriptionItem title="Traits">
-          <TraitsList data={inheritedTraits} />
+          <TraitsList data={allTraits} />
         </DescriptionItem>
         <TransactionFee {...transaction} />
         <Balance

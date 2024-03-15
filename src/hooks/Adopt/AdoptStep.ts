@@ -41,7 +41,7 @@ export const adoptStep1Handler = async ({
   };
 }) => {
   const amount = params.amount;
-  const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState().info.cmsInfo || {};
+  const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState()?.info.cmsInfo || {};
   if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
   await sleep(1000);
   const check = await checkAllowanceAndApprove({
@@ -101,3 +101,34 @@ export const fetchTraitsAndImages = async (adoptId: string, count = 0): Promise<
 };
 
 export const adoptStep2Handler = (params: IConfirmAdoptParams) => confirmAdopt(params);
+
+interface IConfirmEventLogs {
+  adoptId: string;
+  parent: string;
+  symbol: string;
+  totalSupply: number;
+  decimals: number;
+  gen: number;
+  attributes: IBaseTrait;
+  issuer: string;
+  owner: string;
+  issueChainId: number;
+  externalInfos: Record<string, string>;
+  tokenName: string;
+  deployer: string;
+}
+
+export const getAdoptConfirmEventLogs = async (TransactionResult: ITransactionResult): Promise<IConfirmEventLogs> => {
+  const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState()?.info.cmsInfo || {};
+  if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
+
+  const logs = await ProtoInstance.getLogEventResult<IConfirmEventLogs>({
+    contractAddress,
+    logsName: 'Confirmed',
+    TransactionResult,
+  });
+
+  if (!logs) throw AdoptActionErrorCode.parseEventLogsFailed;
+
+  return logs;
+};

@@ -1,8 +1,8 @@
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
-import { ISGRDetailTrait } from '../types';
 import { TSGRToken } from 'types/tokens';
+import { formatPercent } from 'utils/format';
 
 export default function ItemInfo({
   detail,
@@ -12,37 +12,21 @@ export default function ItemInfo({
   onAdoptNextGeneration: () => void;
 }) {
   const traits = () => {
-    const rowTraits = [];
-    const rowNum = 3;
-    for (let i = 0; i < detail.traits.length; i += rowNum) {
-      const chunk = detail.traits.slice(i, i + rowNum);
-      rowTraits.push(chunk);
-    }
-    const rowRrait = (traits: ISGRDetailTrait[]) => (
-      <div className="mb-[16px] flex flex-col lg:flex-row justify-between">
-        {traits.map((item) => (
-          <>
-            <div
-              key={item.traitType}
-              className="w-[198px] p-[24px] hidden lg:flex flex-col items-center bg-[#FAFAFA] rounded-lg">
-              <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
-              <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
-              <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
+    return (
+      <div className="w-full flex flex-wrap gap-[16px]">
+        {detail.traits.map((item) => (
+          <div
+            key={item.traitType}
+            className="w-[198px] p-[24px] hidden lg:flex flex-col items-center bg-[#FAFAFA] rounded-lg">
+            <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
+            <div className="w-full text-center mt-[8px] text-[#1A1A1A] font-medium text-xl overflow-hidden whitespace-nowrap text-ellipsis">
+              {item.value}
             </div>
-            <div
-              key={item.traitType}
-              className="w-full px-[24px] pt-[16px] flex lg:hidden flex-col h-[90px] mt-[16px] bg-[#FAFAFA] rounded-lg	">
-              <div className="text-[#919191] font-medium text-sm">{item.traitType}</div>
-              <div className="flex flex-row w-full justify-between">
-                <div className="mt-[8px] text-[#1A1A1A] font-medium text-xl">{item.value}</div>
-                <div className="mt-[8px] text-[#919191] font-medium text-base">{item.percent}%</div>
-              </div>
-            </div>
-          </>
+            <div className="mt-[8px] text-[#919191] font-medium text-base">{formatPercent(item.percent)}%</div>
+          </div>
         ))}
       </div>
     );
-    return <div className="w-full flex flex-col justify-center">{rowTraits.map((item) => rowRrait(item))}</div>;
   };
 
   const noTraits = () => {
@@ -55,8 +39,8 @@ export default function ItemInfo({
         </div>
         <Button
           type="primary"
-          className="!rounded-lg  bg-[#3888FF] !text-[#FFFFFF] mr-[12px] mt-[24px] mb-[56px] w-[239px]"
-          size="medium"
+          className="!rounded-lg mr-[12px] mt-[24px] mb-[56px] w-[239px]"
+          size="large"
           onClick={onAdoptNextGeneration}>
           Adopt Next-Gen Cat
         </Button>
@@ -70,7 +54,7 @@ export default function ItemInfo({
         <div className="text-[#1A1A1A] font-medium	text-lg">Item Generation</div>
         <div className="text-[#919191] font-medium	text-lg">{detail.generation}</div>
       </div>
-      <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] flex flex-col px-[16px] mt-[16px]">
+      <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] flex flex-col p-[16px] mt-[16px]">
         <div className="ml-[8px] w-full h-[72px] flex flex-row justify-between items-center">
           <div className="text-[#1A1A1A] font-medium	text-lg">Traits</div>
           <ArrowSVG className={clsx('size-4', 'mr-[16px]', { ['common-revert-180']: true })} />
