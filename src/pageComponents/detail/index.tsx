@@ -25,7 +25,7 @@ export default function DetailPage() {
   const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
-  const { showLoading, closeLoading } = useLoading();
+  const { showLoading, closeLoading, visible } = useLoading();
   const { isOK } = useCheckLoginAndToken();
   const marketModal = useModal(MarketModal);
 
@@ -64,7 +64,7 @@ export default function DetailPage() {
     route.back();
   };
 
-  const showAdopt = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
+  const showAdopt = useMemo(() => schrodingerDetail && (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail]);
   const showReset = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
 
   const adoptAndResetButton = () => {
@@ -138,7 +138,7 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex flex-row items-end">
             {adoptAndResetButton()}
-            {cmsInfo?.isTradeShow && (
+            {cmsInfo?.isTradeShow && !visible && (
               <Button
                 type="default"
                 className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
