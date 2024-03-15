@@ -72,11 +72,7 @@ export default function DetailPage() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
-          <Button
-            type="primary"
-            className="!rounded-lg bg-brandDefault !text-[#FFFFFF] mr-[12px]"
-            size="medium"
-            onClick={onAdoptNextGeneration}>
+          <Button type="primary" className="!rounded-lg mr-[12px]" size="large" onClick={onAdoptNextGeneration}>
             Adopt Next-Gen Cat
           </Button>
         )}
@@ -84,7 +80,7 @@ export default function DetailPage() {
           <Button
             type="default"
             className="!rounded-lg !border-brandDefault !text-brandDefault mr-[12px]"
-            size="medium"
+            size="large"
             onClick={onReset}>
             Reroll
           </Button>
@@ -93,23 +89,19 @@ export default function DetailPage() {
     );
   };
 
-  const adoptAndResetButtonSamll = () => {
+  const adoptAndResetButtonSmall = () => {
     return (
-      <div className="flex flex-row w-full justify-end mt-[40px] mb-[16px]">
+      <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
         {showAdopt && (
-          <Button
-            type="default"
-            className="!rounded-lg !border-brandDefault  bg-brandDefault !text-[#FFFFFF] flex-1"
-            size="medium"
-            onClick={onAdoptNextGeneration}>
+          <Button type="primary" className="!rounded-lg flex-1" size="large" onClick={onAdoptNextGeneration}>
             Adopt Next-Gen Cat
           </Button>
         )}
         {showReset && (
           <Button
             type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault ml-[12px] flex-1"
-            size="medium"
+            className="!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]"
+            size="large"
             onClick={onReset}>
             Reroll
           </Button>
@@ -132,7 +124,11 @@ export default function DetailPage() {
         <Breadcrumb
           items={[
             {
-              title: <a href="/">Schrodinger</a>,
+              title: (
+                <span className=" cursor-pointer" onClick={() => route.push('/')}>
+                  Schrodinger
+                </span>
+              ),
             },
             {
               title: <div>{schrodingerDetail?.symbol}</div>,
@@ -179,7 +175,7 @@ export default function DetailPage() {
         )}
         {schrodingerDetail && <ItemInfo detail={schrodingerDetail} onAdoptNextGeneration={onAdoptNextGeneration} />}
 
-        {adoptAndResetButtonSamll()}
+        {adoptAndResetButtonSmall()}
       </div>
     </section>
   );

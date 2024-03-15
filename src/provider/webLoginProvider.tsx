@@ -1,6 +1,9 @@
 'use client';
 import { ChainId, NetworkType } from '@portkey/provider-types';
+import { devicesEnv } from '@portkey/utils';
+import type { ExtraWalletNames } from 'aelf-web-login';
 import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { store } from 'redux/store';
 
 const APP_NAME = 'schrodinger';
@@ -63,8 +66,20 @@ const WebLoginProviderDynamic = dynamic(
   { ssr: false },
 );
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default ({ children }: { children: React.ReactNode }) => {
   const cmsInfo = store.getState().info.cmsInfo;
+  const [extraWallets, setExtraWallets] = useState<{ extraWallets?: ExtraWalletNames[] }>({});
+
+  const getExtraWallets = useCallback(async () => {
+    const app = await devicesEnv.getPortkeyShellApp();
+    app ? setExtraWallets({}) : setExtraWallets({ extraWallets: ['discover', 'elf'] });
+  }, []);
+
+  useEffect(() => {
+    getExtraWallets();
+  }, [getExtraWallets]);
+
   return (
     <PortkeyProviderDynamic networkType={cmsInfo?.networkType} networkTypeV2={cmsInfo?.networkTypeV2}>
       <WebLoginProviderDynamic
@@ -80,7 +95,7 @@ export default ({ children }: { children: React.ReactNode }) => {
             v2: true,
           },
         }}
-        extraWallets={['discover', 'elf']}
+        {...extraWallets}
         discover={{
           autoRequestAccount: true,
           autoLogoutOnDisconnected: true,

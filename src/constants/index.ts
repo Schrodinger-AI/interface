@@ -1,3 +1,5 @@
+import { ZERO } from './misc';
+
 export enum WalletType {
   unknown = 'unknown',
   discover = 'discover',
@@ -22,3 +24,7 @@ export const notFoundErrorTip = {
   [NotFoundType.domain]: 'The specified customised link does not exist.',
   [NotFoundType.path]: '',
 };
+
+export const ewellUrl = 'https://ewell.finance/';
+
+export const ADOPT_NEXT_RATE = ZERO.plus(0.95);

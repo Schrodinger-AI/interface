@@ -1,8 +1,19 @@
+import { useEffect } from 'react';
 import styles from './style.module.css';
 import useCountdown from 'pageComponents/home/hooks/useCountDown';
+import { useRouter } from 'next/navigation';
 
 export default function CountDownModule({ targetDate }: { targetDate: string }) {
-  const { hours, minutes, seconds, days } = useCountdown(targetDate);
+  const { hours, minutes, seconds, days, end } = useCountdown(targetDate);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (end) {
+      router.replace('/tokens');
+    }
+  }, [end, router]);
+
   return (
     <div className="flex gap-[4px] items-center">
       <span className={styles.timeText}>{days}</span>

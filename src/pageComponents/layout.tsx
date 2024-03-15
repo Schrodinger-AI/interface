@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, Suspense, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Layout as AntdLayout } from 'antd';
 import Header from 'components/Header';
 import dynamic from 'next/dynamic';
@@ -9,12 +9,11 @@ import { setIsMobile } from 'redux/reducer/info';
 import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
-import NotFoundPage from 'components/notFound/index';
-import { checkDomain } from 'api/request';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
+import SafeArea from 'components/SafeArea';
 import { usePathname } from 'next/navigation';
 
 const Layout = dynamic(async () => {
@@ -27,6 +26,8 @@ const Layout = dynamic(async () => {
     const { cmsInfo } = useGetStoreInfo();
 
     const webLoginContext = useWebLogin();
+
+    const pathname = usePathname();
 
     const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
       chainId: SupportedELFChainId.MAIN_NET,
@@ -44,10 +45,8 @@ const Layout = dynamic(async () => {
     useWalletInit();
     useBroadcastChannel();
 
-    const pathname = usePathname();
-
     const isGrayBackground = useMemo(() => {
-      return pathname === '/';
+      return pathname === '/coundown';
     }, [pathname]);
 
     useEffect(() => {
@@ -86,19 +85,31 @@ const Layout = dynamic(async () => {
       ]);
     }, [webLoginContext.loginState]);
 
+    const isHiddenHeader = useMemo(() => {
+      return ['/privacy-policy'].includes(pathname);
+    }, [pathname]);
+
+    const isHiddenLayout = useMemo(() => {
+      return ['/assets'].includes(pathname);
+    }, [pathname]);
+
     return (
-      <>
-        <AntdLayout id={PAGE_CONTAINER_ID} className="h-full overflow-scroll min-w-[360px]">
-          <Header />
-          <AntdLayout.Content
-            className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
-              isGrayBackground ? 'bg-neutralHoverBg' : ''
-            }`}>
-            {children}
-          </AntdLayout.Content>
-          <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
-        </AntdLayout>
-      </>
+      <SafeArea>
+        {!isHiddenLayout ? (
+          <AntdLayout id={PAGE_CONTAINER_ID} className="h-full overflow-scroll min-w-[360px]">
+            {!isHiddenHeader && <Header />}
+            <AntdLayout.Content
+              className={`schrodinger-content flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
+                isGrayBackground ? 'bg-neutralHoverBg' : ''
+              }`}>
+              {children}
+            </AntdLayout.Content>
+            <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
+          </AntdLayout>
+        ) : (
+          <>{children}</>
+        )}
+      </SafeArea>
     );
   };
 });

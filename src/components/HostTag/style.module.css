@@ -30,7 +30,7 @@
 
 @media screen and (max-width: 767px) {
   .navHostTag {
-    pad: 0 8px;
+    padding: 0 8px;
     font-size: 12px;
     margin-left: -22px;
     font-style: normal;

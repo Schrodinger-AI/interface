@@ -13,13 +13,11 @@ interface IEarnAmountCountProps {
 function computeAmountCount({ updateTime, amount, rate, followersNumber }: IEarnAmountCountProps) {
   const times = Math.floor(Math.max(0, Date.now() - updateTime) / 1000);
 
-  return Math.floor(
-    BigNumber(times)
-      .times(rate)
-      .times(followersNumber)
-      .plus(BigNumber(amount).dividedBy(10 ** 8))
-      .toNumber(),
-  );
+  return BigNumber(times)
+    .times(rate)
+    .times(followersNumber)
+    .plus(BigNumber(amount).dividedBy(10 ** 8))
+    .toNumber();
 }
 
 export function EarnAmountCount(props: IEarnAmountCountProps) {
