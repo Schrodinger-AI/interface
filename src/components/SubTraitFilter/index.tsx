@@ -84,7 +84,7 @@ export const SubTraitFilter = forwardRef(
       let _list = list;
       const _searchValue = searchValue.toLocaleUpperCase();
       if (searchValue) {
-        _list = list.filter((item) => item.value.toLocaleUpperCase().includes(_searchValue));
+        _list = list.filter((item) => item.value.toLocaleUpperCase() === _searchValue);
       }
 
       return _list.map((item) => {

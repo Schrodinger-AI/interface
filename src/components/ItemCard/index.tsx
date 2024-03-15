@@ -67,7 +67,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           />
           {containsInscriptionCode && (
             <div
-              className={`bg-black bg-opacity-60 absolute top-0 bottom-0 left-0 right-0 flex items-center z-20 invisible ${styles['inscription-info-wrap']}`}>
+              className={`bg-black bg-opacity-60 absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20 invisible ${styles['inscription-info-wrap']}`}>
               <CodeBlock value={inscriptionDeploy} decimals={decimals} />
             </div>
           )}
@@ -123,14 +123,14 @@ export function CodeBlock({ value, decimals = 8 }: { value: string; decimals?: n
   }, [decimals, value]);
 
   return (
-    <div className="flex w-full flex-col ml-[8px]">
-      <span className="text-white text-xs lg:text-sm">{`{`}</span>
+    <div className="flex flex-col ml-[8px]">
+      <span className="text-white text-xs main:text-sm">{`{`}</span>
       {list.map((item, index) => (
-        <span className="text-white text-xs lg:text-sm whitespace-pre" key={index}>
+        <span className="text-white text-xs main:text-sm whitespace-pre" key={index}>
           {item}
         </span>
       ))}
-      <span className="text-white text-xs lg:text-sm">{`}`}</span>
+      <span className="text-white text-xs main:text-sm">{`}`}</span>
     </div>
   );
 }

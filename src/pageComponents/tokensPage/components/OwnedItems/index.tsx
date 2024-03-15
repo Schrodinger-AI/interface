@@ -56,11 +56,11 @@ export default function OwnedItems() {
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const siderWidth = useMemo(() => {
     if (is2XL) {
-      return 440;
+      return '33%';
     } else if (is3XL) {
-      return 420;
+      return '28%';
     } else {
-      return 445;
+      return '22%';
     }
   }, [is2XL, is3XL]);
   const defaultRequestParams = useMemo(() => {
@@ -386,7 +386,7 @@ export default function OwnedItems() {
           </Layout.Sider>
         )}
         <Layout className="!bg-[var(--bg-page)] relative">
-          <Flex className="sticky top-0 bg-neutralWhiteBg z-[5] pb-5 pt-6 lg:pt-5" vertical gap={12}>
+          <Flex className="sticky top-0 bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5" vertical gap={12}>
             <Flex gap={16}>
               <Flex
                 className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
@@ -418,6 +418,7 @@ export default function OwnedItems() {
             InfiniteScrollProps={{
               total,
               hasMore,
+              hasSearch: !!tagList.length,
               loadingMore,
               loading: moreLoading,
               loadMore: loadMoreData,
