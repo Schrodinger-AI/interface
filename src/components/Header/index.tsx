@@ -12,8 +12,7 @@ import { message, Modal } from 'antd';
 import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
-
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
@@ -23,23 +22,13 @@ import Link from 'next/link';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
-import { ICompassProps, RouterItemType } from './type';
-import { useModal } from '@ebay/nice-modal-react';
-import MarketModal from 'components/MarketModal';
 import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
 import { ENVIRONMENT } from 'constants/url';
 import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
-
-const mockRouterItems = JSON.stringify({
-  items: [
-    {
-      title: 'Marketplace',
-      schema: '',
-      type: 'modal',
-    },
-  ],
-});
+import { ICompassProps, RouterItemType } from './type';
+import MarketModal from 'components/MarketModal';
+import { useModal } from '@ebay/nice-modal-react';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -48,7 +37,6 @@ export default function Header() {
   const { isLG } = useResponsive();
   const router = useRouter();
   const pathname = usePathname();
-  const navigate = useRouter();
   const marketModal = useModal(MarketModal);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
@@ -58,7 +46,6 @@ export default function Header() {
     try {
       const parsed = JSON.parse(routerItems) as ICompassProps;
       lists = parsed.items || [];
-      console.log('menuItems', lists);
     } catch (e) {
       console.error(e, 'parse routerItems failed');
     }
@@ -66,38 +53,45 @@ export default function Header() {
   }, [routerItems]);
 
   const onPressCompassItems = useCallback(
-    (event: any, to: string, type: ICompassType = 'inner') => {
-      if (type === 'externalLink') {
+    (event: any, item: ICompassProps) => {
+      const { type, schema, title } = item;
+
+      if (type === RouterItemType.ExternalLink) {
         event.preventDefault();
-        const newWindow = window.open(to, '_blank');
+        const newWindow = window.open(schema, '_blank');
         newWindow && (newWindow.opener = null);
         if (newWindow && typeof newWindow.focus === 'function') {
           newWindow.focus();
         }
+        return;
+      }
+
+      if (type === RouterItemType.MarketModal) {
+        marketModal.show({
+          title,
+        });
+      }
+
+      // type === 'inner';
+      if (!isLogin) {
+        event.preventDefault();
+        store.dispatch(setLoginTrigger('login'));
+        checkLogin();
       } else {
-        // type === 'inner';
-        if (!isLogin) {
-          event.preventDefault();
-          store.dispatch(setLoginTrigger('login'));
-          checkLogin();
-        } else {
-          setMenuModalVisibleModel(ModalViewModel.NONE);
-          router.push(to);
-        }
+        setMenuModalVisibleModel(ModalViewModel.NONE);
+        router.push(schema || '/');
       }
     },
-    [checkLogin, isLogin, router],
+    [checkLogin, isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
-
-  const [menuModalVisible, setMenuModalVisible] = useState(false);
 
   const { topSafeHeight } = useSafeAreaHeight();
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     setLogoutComplete(true);
-    setMenuModalVisible(false);
+    setMenuModalVisibleModel(ModalViewModel.NONE);
   });
 
   const CopyAddressItem = useCallback(() => {
@@ -181,25 +175,6 @@ export default function Header() {
     return menuItems;
   }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
 
-  const handleNavClick = useCallback(
-    (event: any, itemData: ICompassProps) => {
-      const { schema = '', type, title = '' } = itemData;
-
-      if (type === RouterItemType.MODAL) {
-        switch (title.toLocaleLowerCase()) {
-          case 'marketplace':
-            marketModal.show({ title });
-            return;
-          default:
-            return;
-        }
-      }
-
-      onPressCompassItems(event, schema, type);
-    },
-    [marketModal, onPressCompassItems],
-  );
-
   const firstClassCompassItems = useMemo(() => {
     return menuItems.map((item) => {
       return {
@@ -208,7 +183,7 @@ export default function Header() {
           <div
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
-              item?.schema && onPressCompassItems(event, item?.schema, item.type);
+              item?.schema && onPressCompassItems(event, item);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -216,11 +191,10 @@ export default function Header() {
         ),
       };
     });
-  }, [handleNavClick, menuItems]);
+  }, [menuItems, onPressCompassItems]);
 
   const CompassText = (props: { title?: string; schema?: string }) => {
-    const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
-    console.log('is Current ', isCurrent, props.title, props.schema, pathname);
+    const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? 'invalid');
     return (
       <span
         className={`!rounded-[12px] text-lg ${
@@ -231,18 +205,22 @@ export default function Header() {
     );
   };
 
-  const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
-    const isInner = type !== 'out';
-    const renderCom = <CompassText title={title} schema={to} />;
+  const CompassLink = ({
+    item,
+    ...props
+  }: { item: ICompassProps; children?: any; className?: string } & React.RefAttributes<HTMLAnchorElement>) => {
+    const { schema, type, title } = item;
+    const isInner = type !== RouterItemType.Out;
+    const renderCom = <CompassText title={title} schema={schema} />;
 
     return isInner ? (
-      <span onClick={(event) => onPressCompassItems(event, to, type)}>{renderCom}</span>
+      <span onClick={(event) => onPressCompassItems(event, item)}>{renderCom}</span>
     ) : (
       <Link
-        href={!isLogin ? '' : to}
+        href={!isLogin ? '' : schema || ''}
         scroll={false}
         onClick={(event) => {
-          onPressCompassItems(event, to, type);
+          onPressCompassItems(event, item);
         }}
         {...props}>
         {renderCom}
@@ -284,7 +262,7 @@ export default function Header() {
                         label: (
                           <CompassLink
                             key={sub.title}
-                            itemData={item}
+                            item={sub}
                             className="text-neutralPrimary rounded-[12px] hover:text-brandHover">
                             <CompassText title={sub.title} schema={sub.schema} />
                           </CompassLink>
@@ -299,7 +277,7 @@ export default function Header() {
               return (
                 <CompassLink
                   key={title}
-                  itemData={item}
+                  item={item}
                   className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
                 />
               );
@@ -366,11 +344,15 @@ export default function Header() {
               TEST
             </span>
           </div> */}
-          <img
-            src={require('assets/img/logo.png').default.src}
-            alt="logo"
-            className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
-          />
+
+          {
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={require('assets/img/logo.png').default.src}
+              alt="logo"
+              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+            />
+          }
           <NavHostTag />
         </div>
         {FunctionalArea(menuItems)}
