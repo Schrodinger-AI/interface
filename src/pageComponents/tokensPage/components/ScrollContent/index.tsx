@@ -29,7 +29,7 @@ interface IContentProps {
 
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
-  const { loading, loadMore } = InfiniteScrollProps;
+  const { loading, loadMore, hasSearch } = InfiniteScrollProps;
   const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
@@ -71,7 +71,7 @@ function ScrollContent(props: IContentProps) {
         locale={{
           emptyText: (
             <Flex justify="center" align="center">
-              <EmptyList isChannelShow defaultDescription="No inscriptions found" />
+              <EmptyList isChannelShow={!hasSearch} defaultDescription="No inscriptions found" />
             </Flex>
           ),
         }}

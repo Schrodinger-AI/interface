@@ -425,6 +425,7 @@ export default function OwnedItems() {
             InfiniteScrollProps={{
               total,
               hasMore,
+              hasSearch: !!tagList.length,
               loadingMore,
               loading: moreLoading,
               loadMore: loadMoreData,

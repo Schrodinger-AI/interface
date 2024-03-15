@@ -24,8 +24,8 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const emptyChannelGroupDescription = useMemo(() => {
-    return cmsInfo?.emptyChannelGroupDescription || defaultDescription;
-  }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription]);
+    return isChannelShow ? cmsInfo?.emptyChannelGroupDescription : defaultDescription;
+  }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription, isChannelShow]);
 
   const onChannelClick = useCallback((url: string) => {
     if (!url) return;
