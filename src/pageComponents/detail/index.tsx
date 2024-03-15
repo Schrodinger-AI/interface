@@ -138,7 +138,7 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex flex-row items-end">
             {adoptAndResetButton()}
-            {cmsInfo?.isTradeShow && !visible && (
+            {cmsInfo?.isTradeShow && schrodingerDetail && (
               <Button
                 type="default"
                 className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
@@ -163,7 +163,7 @@ export default function DetailPage() {
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
         {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
-        {cmsInfo?.isTradeShow && (
+        {cmsInfo?.isTradeShow && schrodingerDetail && (
           <Button
             type="default"
             className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
