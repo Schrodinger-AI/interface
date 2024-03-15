@@ -20,22 +20,6 @@ export const fetchCmsConfigInfo = async (): Promise<any> => {
   return request.get('/app/config');
 };
 
-export const fetchInscriptionDetail = async (): Promise<any> => {
-  // return request.get('/app/config');
-
-  return {
-    data: {
-      name: 'string',
-      symbol: 'string',
-      image: 'string',
-      amount: 'string',
-      generation: 'string',
-      blockTime: 'string',
-      traits: 'string',
-    },
-  };
-};
-
 export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: string }): Promise<IAdoptImageInfo> => {
   return request.get(`/app/schrodinger/imageInfo?adoptId=${adoptId}`);
 };
@@ -50,3 +34,5 @@ export const fetchWaterImageRequest = async (data: IWaterImageRequest): Promise<
 export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsData> => {
   return request.get('/app/my/points', { params });
 };
+
+export const checkAIService = () => request.get<boolean>('/app/schrodinger/IsOverloaded');

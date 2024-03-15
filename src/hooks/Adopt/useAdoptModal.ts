@@ -28,6 +28,7 @@ import { ISendResult } from 'types';
 import { useCmsInfo } from 'redux/hooks';
 import { useRouter } from 'next/navigation';
 import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
+import { checkAIService } from 'api/request';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -428,7 +429,12 @@ const useAdoptHandler = () => {
       try {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
+        const isAIserviceError = await checkAIService();
         closeLoading();
+
+        if (isAIserviceError)
+          throw 'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.';
+
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const adoptId = await approveAdopt({ amount, account, parentItemInfo });
         const infos = await fetchImages(adoptId);
