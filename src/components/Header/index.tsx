@@ -7,6 +7,7 @@ import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
+import { ReactComponent as StrayCats } from 'assets/img/strayCats.svg';
 import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
 import { message, Modal } from 'antd';
 import styles from './style.module.css';
@@ -129,6 +130,24 @@ export default function Header() {
     );
   }, [checkLogin, checkTokenValid, router]);
 
+  const StrayCatsItem = useCallback(() => {
+    return (
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          if (checkTokenValid()) {
+            router.push('/stray-cats');
+            setMenuModalVisibleModel(ModalViewModel.NONE);
+          } else {
+            checkLogin();
+          }
+        }}>
+        <StrayCats />
+        <span>Stray Cats</span>
+      </div>
+    );
+  }, [checkLogin, checkTokenValid, router]);
+
   const AssetItem = useCallback(() => {
     return (
       <div
@@ -150,6 +169,7 @@ export default function Header() {
         label: <CopyAddressItem />,
       },
       { key: 'asset', label: <AssetItem /> },
+      { key: 'stray cats', label: <StrayCatsItem /> },
       { key: 'points', label: <PointsItem /> },
       {
         key: 'logout',
@@ -160,7 +180,7 @@ export default function Header() {
       menuItems.splice(1, 1);
     }
     return menuItems;
-  }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
+  }, [AssetItem, CopyAddressItem, LogoutItem, StrayCatsItem, PointsItem, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
     return menuItems.map((item) => {
