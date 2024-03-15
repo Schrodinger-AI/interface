@@ -297,13 +297,13 @@ const useAdoptHandler = () => {
       image: string;
     }> => {
       return new Promise(async (resolve, reject) => {
-        showLoading();
+        // showLoading();
         const imageSignature = await fetchWaterImages({
           adoptId,
           image: originImage,
         });
         adoptNextModal.hide();
-        closeLoading();
+        // closeLoading();
         if (imageSignature?.error) {
           reject(imageSignature?.error);
           return;
