@@ -20,7 +20,7 @@ export default function StrayCatsPage() {
   const [dataSource, setDataSource] = useState<TStrayCats[]>();
   const [totalCount, setTotalCount] = useState<number>(30);
   const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const cmsInfo = useCmsInfo();
 
   const adoptConfirm = useAdoptConfirm();
