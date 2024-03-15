@@ -42,6 +42,7 @@ interface IAdoptNextModal {
 
 function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectImage, setSelectImage] = useState<number>(-1);
   const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
 
@@ -49,7 +50,10 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     setSelectImage(index);
   }, []);
 
-  const onClick = useCallback(() => onConfirm?.(images[selectImage]), [images, onConfirm, selectImage]);
+  const onClick = useCallback(() => {
+    setLoading(true);
+    onConfirm?.(images[selectImage]);
+  }, [images, onConfirm, selectImage]);
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
     modal.hide();
@@ -85,7 +89,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
       onCancel={onCancel}
       afterClose={modal.remove}
       footer={
-        <Button className="w-[356px]" disabled={selectImage < 0} onClick={onClick} type="primary">
+        <Button loading={loading} className="w-[356px]" disabled={selectImage < 0} onClick={onClick} type="primary">
           Confirm
         </Button>
       }>
