@@ -9,7 +9,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
-import { useEffectOnce } from 'react-use';
 import clsx from 'clsx';
 import { TSGRToken } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
@@ -24,9 +23,9 @@ export default function DetailPage() {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
   const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet, isLogin } = useWalletService();
+  const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
-  const { showLoading, closeLoading, visible: isLoading } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const { isOK } = useCheckLoginAndToken();
   const marketModal = useModal(MarketModal);
 

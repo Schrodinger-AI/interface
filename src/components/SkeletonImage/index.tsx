@@ -2,6 +2,7 @@ import { Skeleton } from 'antd';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useState } from 'react';
+import uriToHttp from 'utils/format';
 
 interface ISkeletonImage {
   img?: string;
@@ -50,7 +51,7 @@ function SkeletonImage(props: ISkeletonImage) {
           <img
             width={width}
             height={height}
-            src={imageUrl}
+            src={uriToHttp(imageUrl)}
             alt="image"
             className={clsx('w-full h-full', imageType[imageSizeType])}
             onLoad={() => {
