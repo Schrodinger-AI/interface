@@ -65,9 +65,11 @@ export default function Header() {
       }
 
       if (type === RouterItemType.MarketModal) {
+        setMenuModalVisibleModel(ModalViewModel.NONE);
         marketModal.show({
           title,
         });
+        return;
       }
 
       setMenuModalVisibleModel(ModalViewModel.NONE);
@@ -175,7 +177,7 @@ export default function Header() {
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
               event.preventDefault();
-              item?.schema && onPressCompassItems(item);
+              onPressCompassItems(item);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -203,7 +205,7 @@ export default function Header() {
     );
     if (!isLG) {
       return (
-        <span className="space-x-16 flex flex-row items-center">
+        <span className="space-x-8  2xl:space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
             const { title, items = [], schema, type } = item;
             if (items?.length > 0) {
