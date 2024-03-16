@@ -2,7 +2,7 @@ import { IContractError } from 'types';
 
 export const DEFAULT_ERROR = 'Something went wrong. Please try again later.';
 
-export const UserDeniedMessage = 'Request rejected. Forest needs your permission to continue';
+export const UserDeniedMessage = 'Request rejected. Schrodinger needs your permission to continue';
 export const EventEndedBack = "The event has ended. You'll be automatically redirected to the Drops page";
 export const EventEnded = 'The event has ended';
 export const DropMinted = 'Unable to mint additional NFTs. You have reached your maximum limit';
