@@ -15,8 +15,13 @@ export type TBaseSGRToken = {
   generation: number;
   blockTime: number;
   decimals: number;
-  inscriptionInfo?: string;
   inscriptionImageUri: string;
+};
+
+export type TSGRItem = TBaseSGRToken & {
+  inscriptionDeploy: string;
+  adopter: string;
+  adoptTime: number;
 };
 
 export type TSGRToken = GenerateType<

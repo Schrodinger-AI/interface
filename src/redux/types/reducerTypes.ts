@@ -28,13 +28,27 @@ export type InfoStateType = {
     routerItems: string;
 
     graphqlSchrodinger: string;
-    adoptRuleUrl?: string;
     emptyChannelGroupDescription: string;
     emptyChannelGroupList: string;
+
+    adoptRuleList: string;
+    isTradeShow: boolean;
+    isMarketShow: boolean;
+    tradeDescription: string;
+    tradeList: string;
+
+    forestUrl: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];
   hasToken?: boolean;
+};
+
+export type TTradeItem = {
+  title: string;
+  description: string;
+  imgUrl: string;
+  link: string;
 };
 
 export type TAssetsStateType = {

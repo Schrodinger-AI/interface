@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
-import ItemCard from 'components/ItemCard';
+import ItemCard, { CardType } from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
-import { TBaseSGRToken } from 'types/tokens';
+import { TBaseSGRToken, TSGRItem } from 'types/tokens';
 import { useRouter } from 'next/navigation';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
@@ -24,12 +24,12 @@ interface IContentProps {
     loadMore: () => void;
     clearFilter?: () => void;
   };
-  ListProps: ListProps<TBaseSGRToken>;
+  ListProps: ListProps<TSGRItem>;
 }
 
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
-  const { loading, loadMore } = InfiniteScrollProps;
+  const { loading, loadMore, hasSearch } = InfiniteScrollProps;
   const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
@@ -70,8 +70,8 @@ function ScrollContent(props: IContentProps) {
         grid={{ gutter, column }}
         locale={{
           emptyText: ListProps.dataSource ? (
-            <Flex justify="center" align="center">
-              <EmptyList isChannelShow defaultDescription="No inscriptions found" />
+            <Flex className="pt-0 lg:pt-6" justify="center" align="center">
+              <EmptyList isChannelShow={!hasSearch} defaultDescription="No inscriptions found" />
             </Flex>
           ) : (
             <></>
@@ -79,7 +79,7 @@ function ScrollContent(props: IContentProps) {
         }}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
-            <ItemCard item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
+            <ItemCard type={CardType.MY} item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
           </List.Item>
         )}
         {...ListProps}

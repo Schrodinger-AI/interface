@@ -14,12 +14,11 @@ import styles from './style.module.css';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { useCopyToClipboard } from 'react-use';
 import React, { useCallback, useMemo, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { useCmsInfo } from 'redux/hooks';
-import Link from 'next/link';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
@@ -27,6 +26,10 @@ import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
 import { ENVIRONMENT } from 'constants/url';
 import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
+import { ICompassProps, RouterItemType } from './type';
+import MarketModal from 'components/MarketModal';
+import { useModal } from '@ebay/nice-modal-react';
+import { CompassLink, CompassText } from './components/CompassLink';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -34,7 +37,7 @@ export default function Header() {
   const [, setCopied] = useCopyToClipboard();
   const { isLG } = useResponsive();
   const router = useRouter();
-  const pathname = usePathname();
+  const marketModal = useModal(MarketModal);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
@@ -50,27 +53,30 @@ export default function Header() {
   }, [routerItems]);
 
   const onPressCompassItems = useCallback(
-    (event: any, to: string, type: ICompassType = 'inner') => {
-      if (type === 'externalLink') {
-        event.preventDefault();
-        const newWindow = window.open(to, '_blank');
+    (item: ICompassProps) => {
+      const { type, schema, title } = item;
+
+      if (type === RouterItemType.ExternalLink) {
+        const newWindow = window.open(schema, '_blank');
         newWindow && (newWindow.opener = null);
         if (newWindow && typeof newWindow.focus === 'function') {
           newWindow.focus();
         }
-      } else {
-        // type === 'inner';
-        if (!isLogin) {
-          event.preventDefault();
-          store.dispatch(setLoginTrigger('login'));
-          checkLogin();
-        } else {
-          setMenuModalVisibleModel(ModalViewModel.NONE);
-          router.push(to);
-        }
+        return;
       }
+
+      if (type === RouterItemType.MarketModal) {
+        setMenuModalVisibleModel(ModalViewModel.NONE);
+        marketModal.show({
+          title,
+        });
+        return;
+      }
+
+      setMenuModalVisibleModel(ModalViewModel.NONE);
+      router.push(schema || '/');
     },
-    [checkLogin, isLogin, router],
+    [marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -190,7 +196,8 @@ export default function Header() {
           <div
             className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
             onClick={(event) => {
-              item?.schema && onPressCompassItems(event, item?.schema, item.type);
+              event.preventDefault();
+              onPressCompassItems(item);
             }}>
             <div className="text-lg">{item.title}</div>
             <ArrowIcon className="size-4" />
@@ -200,36 +207,6 @@ export default function Header() {
     });
   }, [menuItems, onPressCompassItems]);
 
-  const CompassText = (props: { title?: string; schema?: string }) => {
-    const isCurrent = pathname.includes(props.schema?.toLowerCase() ?? '');
-    return (
-      <span
-        className={`!rounded-[12px] text-lg ${
-          isCurrent ? 'text-compassActive' : 'text-compassNormal'
-        } hover:text-compassActive cursor-pointer font-medium	`}>
-        {props.title}
-      </span>
-    );
-  };
-
-  const CompassLink = ({ to, type, title, ...props }: any & React.RefAttributes<HTMLAnchorElement>) => {
-    const isInner = type !== 'out';
-    const renderCom = <CompassText title={title} schema={to} />;
-
-    return isInner ? (
-      <span onClick={(event) => onPressCompassItems(event, to, type)}>{renderCom}</span>
-    ) : (
-      <Link
-        href={!isLogin ? '' : to}
-        scroll={false}
-        onClick={(event) => {
-          onPressCompassItems(event, to, type);
-        }}
-        {...props}>
-        {renderCom}
-      </Link>
-    );
-  };
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
       <Button
@@ -248,7 +225,7 @@ export default function Header() {
     );
     if (!isLG) {
       return (
-        <span className="space-x-16 flex flex-row items-center">
+        <span className="space-x-8  2xl:space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
             const { title, items = [], schema, type } = item;
             if (items?.length > 0) {
@@ -265,12 +242,10 @@ export default function Header() {
                         label: (
                           <CompassLink
                             key={sub.title}
-                            to={sub.schema}
-                            type={sub.type}
-                            title={sub.title}
-                            className="text-neutralPrimary rounded-[12px] hover:text-brandHover">
-                            <CompassText title={sub.title} schema={sub.schema} />
-                          </CompassLink>
+                            item={sub}
+                            className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
+                            onPressCompassItems={onPressCompassItems}
+                          />
                         ),
                       } as ItemType;
                     }),
@@ -282,10 +257,9 @@ export default function Header() {
               return (
                 <CompassLink
                   key={title}
-                  to={schema}
-                  type={type}
-                  title={title}
+                  item={item}
                   className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
+                  onPressCompassItems={onPressCompassItems}
                 />
               );
             }
@@ -368,7 +342,7 @@ export default function Header() {
         mask={false}
         className={styles.menuModal}
         footer={null}
-        closeIcon={<CloseSVG />}
+        closeIcon={<CloseSVG className="size-4" />}
         style={{ paddingTop: Number(topSafeHeight) }}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}

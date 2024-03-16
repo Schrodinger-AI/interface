@@ -18,6 +18,19 @@ export function getSecondHostName() {
   return hostname.split('.')[0];
 }
 
+export function windowOpen(url: string, target?: string) {
+  window?.open(url, target || '_blank');
+}
+
+export function jsonParse(data: string) {
+  try {
+    return JSON.parse(data || '');
+  } catch (error) {
+    console.log('jsonParse error: ', error);
+    return undefined;
+  }
+}
+
 export function forbidScale() {
   document.addEventListener('touchstart', (event) => {
     if (event.touches.length > 1) {

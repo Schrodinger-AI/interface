@@ -16,12 +16,16 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
   const cmsInfo = useCmsInfo();
 
   const emptyChannelGroupList = useMemo(() => {
-    return JSON.parse(cmsInfo?.emptyChannelGroupList || '[]') as TEmptyChannelGroup[];
+    try {
+      return JSON.parse(cmsInfo?.emptyChannelGroupList || '[]') as TEmptyChannelGroup[];
+    } catch (error) {
+      return [];
+    }
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const emptyChannelGroupDescription = useMemo(() => {
-    return cmsInfo?.emptyChannelGroupDescription || defaultDescription;
-  }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription]);
+    return isChannelShow ? cmsInfo?.emptyChannelGroupDescription : defaultDescription;
+  }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription, isChannelShow]);
 
   const onChannelClick = useCallback((url: string) => {
     if (!url) return;

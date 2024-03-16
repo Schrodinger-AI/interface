@@ -1,7 +1,8 @@
-import { Checkbox, Col, Row } from 'antd';
+import { Checkbox, Col, Flex, Row } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxItemType, FilterType, ItemsSelectSourceType, SourceItemType } from '../../type';
 import { memo, useCallback, useMemo } from 'react';
+import FilterMenuEmpty from '../FilterMenuEmpty';
 import styles from './style.module.css';
 
 export interface CheckboxChoiceProps {
@@ -33,7 +34,10 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
       return (
         <Col key={item.value} span={24}>
           <Checkbox value={item.value} disabled={item.disabled}>
-            {item.label}
+            <Flex justify="space-between">
+              <span>{item.label}</span>
+              {!!item.count && <span>{item.count}</span>}
+            </Flex>
           </Checkbox>
         </Col>
       );
@@ -42,12 +46,12 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
   const getVal = useMemo(() => {
     return defaultValue?.map((item) => item.value);
   }, [defaultValue]);
-  return (
-    <>
-      <Checkbox.Group value={getVal} className={styles.checkbox} onChange={valueChange}>
-        <Row>{checkboxItem}</Row>
-      </Checkbox.Group>
-    </>
+  return dataSource?.data?.length ? (
+    <Checkbox.Group value={getVal} className={styles.checkbox} onChange={valueChange}>
+      <Row>{checkboxItem}</Row>
+    </Checkbox.Group>
+  ) : (
+    <FilterMenuEmpty />
   );
 }
 

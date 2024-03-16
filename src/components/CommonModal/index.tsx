@@ -5,9 +5,11 @@ import { ReactComponent as Close } from 'assets/img/clear.svg';
 import useResponsive from 'hooks/useResponsive';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
+  width?: number;
+  disableMobileLayout?: boolean;
 }
 function CommonModal(props: ModalProps) {
-  const { children, className, title, subTitle, wrapClassName } = props;
+  const { children, className, title, subTitle, wrapClassName, width = 800, disableMobileLayout = false } = props;
 
   const { isMD } = useResponsive();
 
@@ -17,10 +19,10 @@ function CommonModal(props: ModalProps) {
       maskClosable={false}
       destroyOnClose={true}
       closeIcon={<Close width={24} height={24} />}
-      width={800}
+      width={width}
       centered
       {...props}
-      className={`${styles.modal} ${isMD && styles['modal-mobile']} ${className || ''}`}
+      className={`${styles.modal} ${isMD && !disableMobileLayout && styles['modal-mobile']} ${className || ''}`}
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
