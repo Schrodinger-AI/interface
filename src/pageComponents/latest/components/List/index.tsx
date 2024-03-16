@@ -15,7 +15,7 @@ import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'gr
 const pageSize = 32;
 export default function List() {
   const [total, setTotal] = useState(0);
-  const [current, SetCurrent] = useState(1);
+  // const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>([]);
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
@@ -69,30 +69,30 @@ export default function List() {
       }
     },
     // There cannot be dependencies showLoading and closeLoading
-    [getLatestSchrodingerList],
+    [closeLoading, getLatestSchrodingerList, showLoading],
   );
 
-  const requestParams = useMemo(() => {
-    return {
-      chainId: cmsInfo?.curChain ?? 'tDVV',
-      skipCount: getPageNumber(current, pageSize),
-      maxResultCount: pageSize,
-    };
-  }, [cmsInfo?.curChain, current]);
+  // const requestParams = useMemo(() => {
+  //   return {
+  //     chainId: cmsInfo?.curChain ?? 'tDVV',
+  //     skipCount: getPageNumber(current, pageSize),
+  //     maxResultCount: pageSize,
+  //   };
+  // }, [cmsInfo?.curChain, current]);
 
   const loadMoreData = useCallback(() => {
-    setLoadingMore(true);
-    if (isLoading || !hasMore || moreLoading) return;
-    isLoadMore.current = true;
-    SetCurrent(current + 1);
-    fetchData({
-      params: {
-        ...requestParams,
-        skipCount: getPageNumber(current + 1, pageSize),
-      },
-      loadMore: true,
-    });
-  }, [isLoading, hasMore, moreLoading, current, fetchData, requestParams]);
+    // setLoadingMore(true);
+    // if (isLoading || !hasMore || moreLoading) return;
+    // isLoadMore.current = true;
+    // SetCurrent(current + 1);
+    // fetchData({
+    //   params: {
+    //     ...requestParams,
+    //     skipCount: getPageNumber(current + 1, pageSize),
+    //   },
+    //   loadMore: true,
+    // });
+  }, []);
 
   const defaultRequestParams = useMemo(() => {
     return {
