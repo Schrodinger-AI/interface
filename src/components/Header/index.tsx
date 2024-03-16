@@ -314,18 +314,7 @@ export default function Header() {
       )}
 
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex justify-start items-center" onClick={() => router.replace('/')}>
-          {/* <div className="flex relative">
-            <img
-              src={require('assets/img/logo.png').default.src}
-              alt="logo"
-              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
-            />
-            <span className="absolute flex items-center justify-center font-medium right-0 leading-[12px] lg:leading-[16px] text-[8px] lg:text-[10px] top-0 bg-neutralPrimary text-white px-[2px] lg:px-[4px] h-[12px] lg:h-[16px] rounded-[4px] rounded-bl-none">
-              TEST
-            </span>
-          </div> */}
-
+        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={() => router.replace('/')}>
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img

@@ -1,6 +1,7 @@
 .navHostTag {
   padding: 4px 12px;
   margin-left: -32px;
+  margin-right: 4px;
   color: #7936e5;
   text-align: center;
   font-size: 16px;
@@ -10,6 +11,9 @@
   border-radius: 12px 12px 12px 0;
   border: 1.5px solid #7936e5;
   cursor: pointer;
+  flex: 1;
+  overflow: hidden;
+  max-width: max-content;
 }
 
 .homeHostTag {
@@ -28,7 +32,7 @@
   left: calc(50% + 68px);
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1024px) {
   .navHostTag {
     padding: 0 8px;
     font-size: 12px;

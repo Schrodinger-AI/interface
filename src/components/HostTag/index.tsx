@@ -2,30 +2,30 @@
 import { Modal, Button, Tooltip } from 'antd';
 import { getSecondHostName, dotString } from 'utils/common';
 import { useMemo, useState } from 'react';
-import { useResponsive } from 'ahooks';
 import styles from './style.module.css';
+import useResponsive from 'hooks/useResponsive';
 
 export function NavHostTag() {
   const [open, setOpen] = useState(false);
   const hostName = useMemo(() => getSecondHostName(), []);
-  const responsive = useResponsive();
+  const { isLG } = useResponsive();
 
-  const hostStr = useMemo(() => dotString(hostName, responsive.md ? 16 : 10), [hostName, responsive.md]);
+  const hostStr = useMemo(() => dotString(hostName, !isLG ? 16 : 10), [hostName, isLG]);
 
   return (
     <>
       {hostName && (
         <>
           <div className={styles.navHostTag} onClick={() => setOpen(true)}>
-            {responsive.md ? (
+            {!isLG ? (
               <Tooltip color="black" title={hostName} overlayInnerStyle={{ color: 'white' }}>
-                {hostStr}
+                <p className="w-full overflow-hidden whitespace-nowrap text-ellipsis">{hostStr}</p>
               </Tooltip>
             ) : (
-              hostStr
+              <p className="w-full overflow-hidden whitespace-nowrap text-ellipsis max-w-max">{hostStr}</p>
             )}
           </div>
-          {responsive.md ? null : (
+          {!isLG ? null : (
             <Modal
               centered
               open={open}
@@ -47,19 +47,16 @@ export function NavHostTag() {
 export function HomeHostTag() {
   const [open, setOpen] = useState(false);
   const hostName = useMemo(() => getSecondHostName(), []);
-  const responsive = useResponsive();
+  const { isLG } = useResponsive();
 
-  const hostStr = useMemo(
-    () => 'Invited by ' + dotString(hostName, responsive.md ? 16 : 10),
-    [hostName, responsive.md],
-  );
+  const hostStr = useMemo(() => 'Invited by ' + dotString(hostName, !isLG ? 16 : 10), [hostName, isLG]);
 
   return (
     <>
       {hostName && (
         <>
           <div className={styles.homeHostTag} onClick={() => setOpen(true)}>
-            {responsive.md ? (
+            {!isLG ? (
               <Tooltip title={hostName} color="black" overlayInnerStyle={{ color: 'white' }}>
                 {hostStr}
               </Tooltip>
@@ -67,7 +64,7 @@ export function HomeHostTag() {
               hostStr
             )}
           </div>
-          {responsive.md ? null : (
+          {!isLG ? null : (
             <Modal
               title="Invited by"
               centered
