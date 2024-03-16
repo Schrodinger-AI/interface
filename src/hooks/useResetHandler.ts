@@ -19,6 +19,8 @@ import { getDomain, getOriginSymbol } from 'utils';
 import { timesDecimals } from 'utils/calculate';
 import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDetail';
 import { store } from 'redux/store';
+import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
+import { singleMessage } from '@portkey/did-ui-react';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -106,12 +108,21 @@ export const useResetHandler = () => {
         },
         buttonInfo: {
           btnText: status === Status.ERROR ? resetSGRMessage.error.button : successBtnText,
-          isRetry: true,
           openLoading: true,
           onConfirm: async () => {
             if (status === Status.ERROR) {
               resultModal.hide();
-              approveReset(parentItemInfo, amount);
+              try {
+                await approveReset(parentItemInfo, amount);
+                promptModal.hide();
+                showResultModal(Status.SUCCESS, parentItemInfo, amount);
+              } catch (error) {
+                promptModal.hide();
+                const _error = getAdoptErrorMessage(error);
+                singleMessage.error(_error);
+
+                showResultModal(Status.ERROR, parentItemInfo, amount);
+              }
             } else {
               if (originSymbol) {
                 await intervalFetch.start(originSymbol);
@@ -126,7 +137,7 @@ export const useResetHandler = () => {
         },
       });
     },
-    [approveReset, intervalFetch, resultModal, router],
+    [approveReset, intervalFetch, promptModal, resultModal, router],
   );
 
   return useCallback(

@@ -84,7 +84,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
               <div className="text-xs leading-[18px] text-neutralDisable">{adoptTimeStr || '--'}</div>
-              <div className="flex justify-between flex-col main:flex-row">
+              <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
                   <XIcon />

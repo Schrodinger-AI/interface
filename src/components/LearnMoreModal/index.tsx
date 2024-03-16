@@ -7,6 +7,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { TBaseSGRToken } from 'types/tokens';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { divDecimals } from 'utils/calculate';
+import { getCollection } from 'utils';
 
 interface ILearnMoreModalProps {
   item: TBaseSGRToken;
@@ -24,7 +25,9 @@ function LearnMoreModal({ item }: ILearnMoreModalProps) {
     const forestUrl = cmsInfo?.forestUrl || '';
     if (!forestUrl) return;
     // TODO: adjust window.open
-    window.open(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
+    // window.open(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
+    const collection = getCollection(item.symbol);
+    window.open(`${forestUrl}/explore-items/${cmsInfo?.curChain}-${collection}-0`, '_blank');
     modal.hide();
   }, [cmsInfo?.curChain, cmsInfo?.forestUrl, item.symbol, modal]);
 

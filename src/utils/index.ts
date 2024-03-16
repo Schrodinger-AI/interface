@@ -108,3 +108,5 @@ export const getOmittedStr = (
 export const getDomain = () => (!location.port ? location.host : 'schrodingernft.ai');
 
 export const getOriginSymbol = (symbol: string) => (symbol ? `${symbol.split('-')[0]}-1` : '');
+
+export const getCollection = (symbol: string) => (symbol ? symbol.split('-')[0] : '');
