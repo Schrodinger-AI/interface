@@ -1,7 +1,13 @@
 import { useModal } from '@ebay/nice-modal-react';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { useCallback } from 'react';
-import { adoptStep2Handler, fetchTraitsAndImages, fetchWaterImages, getAdoptConfirmEventLogs } from './AdoptStep';
+import {
+  IAdoptNextInfo,
+  adoptStep2Handler,
+  fetchTraitsAndImages,
+  fetchWaterImages,
+  getAdoptConfirmEventLogs,
+} from './AdoptStep';
 import { TSGRToken } from 'types/tokens';
 import { ZERO } from 'constants/misc';
 import AdoptNextModal from 'components/AdoptNextModal';
@@ -18,6 +24,7 @@ import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
 import { getExploreLink } from 'utils';
 import { store } from 'redux/store';
 import { useRouter } from 'next/navigation';
+import { divDecimals } from 'utils/calculate';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -39,9 +46,19 @@ export const useAdoptConfirm = () => {
   );
 
   const adoptConfirmInput = useCallback(
-    async (infos: IAdoptImageInfo, parentItemInfo: TSGRToken, account: string): Promise<string> => {
+    async ({
+      infos,
+      parentItemInfo,
+      childrenItemInfo,
+      account,
+    }: {
+      infos: IAdoptImageInfo;
+      parentItemInfo: TSGRToken;
+      childrenItemInfo: IAdoptNextInfo;
+      account: string;
+    }): Promise<string> => {
       return new Promise(async (resolve, reject) => {
-        const [symbolBalance, ELFBalance] = await getParentBalance({
+        const [, ELFBalance] = await getParentBalance({
           symbol: parentItemInfo.symbol,
           account,
           decimals: parentItemInfo.decimals,
@@ -53,9 +70,9 @@ export const useAdoptConfirm = () => {
           isAcross,
           data: {
             SGRToken: {
-              tokenName: parentItemInfo.tokenName,
-              symbol: parentItemInfo.symbol,
-              amount: symbolBalance,
+              tokenName: childrenItemInfo.tokenName,
+              symbol: childrenItemInfo.symbol,
+              amount: divDecimals(childrenItemInfo.outputAmount, parentItemInfo.decimals).toFixed(),
             },
             allTraits: infos.adoptImageInfo.attributes,
             images: infos.adoptImageInfo.images,
@@ -152,11 +169,11 @@ export const useAdoptConfirm = () => {
 
   const adoptConfirmHandler = useCallback(
     async ({
-      adoptId,
+      childrenItemInfo,
       image: originImage,
       parentItemInfo,
     }: {
-      adoptId: string;
+      childrenItemInfo: IAdoptNextInfo;
       image: string;
       parentItemInfo: TSGRToken;
     }): Promise<{
@@ -167,21 +184,22 @@ export const useAdoptConfirm = () => {
       return new Promise(async (resolve, reject) => {
         // showLoading();
         const imageSignature = await fetchWaterImages({
-          adoptId,
+          adoptId: childrenItemInfo.adoptId,
           image: originImage,
         });
         adoptNextModal.hide();
         // closeLoading();
-        if (imageSignature?.error) {
-          reject(imageSignature?.error);
+        if (imageSignature?.error || !imageSignature.signature) {
+          reject(imageSignature?.error || 'Failed to obtain watermark image');
           return;
         }
+
         const signature = imageSignature.signature;
         const image = imageSignature.image;
         const imageUri = imageSignature.imageUri;
 
         const confirmParams = {
-          adoptId,
+          adoptId: childrenItemInfo.adoptId,
           image: image,
           imageUri: imageUri,
           signature: Buffer.from(signature, 'hex').toString('base64'),
@@ -225,21 +243,21 @@ export const useAdoptConfirm = () => {
   const approveAdoptConfirm = useCallback(
     async ({
       infos,
-      adoptId,
+      childrenItemInfo,
       parentItemInfo,
       account,
     }: {
       infos: IAdoptImageInfo;
-      adoptId: string;
+      childrenItemInfo: IAdoptNextInfo;
       parentItemInfo: TSGRToken;
       account: string;
     }) => {
-      const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
+      const selectItem = await adoptConfirmInput({ infos, parentItemInfo, childrenItemInfo, account });
 
       const { txResult, imageUri } = await adoptConfirmHandler({
-        adoptId,
         image: selectItem,
         parentItemInfo,
+        childrenItemInfo,
       });
       let nextTokenName = '';
       let nextSymbol = '';
@@ -310,11 +328,11 @@ export const useAdoptConfirm = () => {
   );
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, adoptId: string, account: string) => {
-      const infos = await fetchImages(adoptId);
+    async (parentItemInfo: TSGRToken, childrenItemInfo: IAdoptNextInfo, account: string) => {
+      const infos = await fetchImages(childrenItemInfo.adoptId);
       const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
         infos,
-        adoptId,
+        childrenItemInfo,
         parentItemInfo,
         account,
       });

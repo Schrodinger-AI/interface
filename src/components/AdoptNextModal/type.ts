@@ -4,7 +4,7 @@ export interface IAdoptNextData {
   SGRToken: {
     tokenName?: string;
     symbol?: string;
-    amount?: string;
+    amount?: string | number;
   };
   allTraits: ITrait[];
   images: string[];
