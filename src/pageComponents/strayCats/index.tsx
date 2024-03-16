@@ -143,7 +143,16 @@ export default function StrayCatsPage() {
               type="primary"
               size="small"
               onClick={() => {
-                adoptConfirm(formatAdoptConfirmParams(record), record.adoptId, wallet.address);
+                adoptConfirm(
+                  formatAdoptConfirmParams(record),
+                  {
+                    adoptId: record.adoptId,
+                    outputAmount: record.nextAmount,
+                    symbol: record.nextSymbol,
+                    tokenName: record.nextTokenName,
+                  },
+                  wallet.address,
+                );
               }}>
               Adopt
             </Button>
