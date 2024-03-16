@@ -225,7 +225,7 @@ export default function Header() {
     );
     if (!isLG) {
       return (
-        <span className="space-x-8  2xl:space-x-16 flex flex-row items-center">
+        <span className="space-x-8 xl:space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
             const { title, items = [], schema, type } = item;
             if (items?.length > 0) {
