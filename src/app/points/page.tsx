@@ -1,4 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-export default dynamic(() => import('pageComponents/points'), { ssr: false });
+import { DynamicLoading } from 'components/DynamicLoading';
+
+export default dynamic(() => import('pageComponents/points'), { ssr: false, loading: () => <DynamicLoading /> });
