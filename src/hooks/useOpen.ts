@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { windowOpen } from 'utils/common';
+import { openExternalLink } from 'utils/openlink';
 
 export function useWindowOpen(url: string, target?: string) {
-  const open = useCallback(() => windowOpen(url, target), [target, url]);
+  const open = useCallback(() => openExternalLink(url, target), [target, url]);
   return open;
 }

@@ -30,6 +30,7 @@ import { ICompassProps, RouterItemType } from './type';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { CompassLink, CompassText } from './components/CompassLink';
+import { openExternalLink } from 'utils/openlink';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -57,8 +58,7 @@ export default function Header() {
       const { type, schema, title } = item;
 
       if (type === RouterItemType.ExternalLink) {
-        const newWindow = window.open(schema, '_blank');
-        newWindow && (newWindow.opener = null);
+        const newWindow = openExternalLink(schema, '_blank');
         if (newWindow && typeof newWindow.focus === 'function') {
           newWindow.focus();
         }
