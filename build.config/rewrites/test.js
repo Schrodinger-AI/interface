@@ -1,6 +1,6 @@
 module.exports = [
   { source: '/api/:path*', destination: 'https://schrodingerai.com/api/:path*' },
-  { source: '/cms/:path*', destination: 'https://test.eforest.finance/cms/:path*' },
+  { source: '/cms/:path*', destination: 'https://schrodingerai.com/cms/:path*' },
   {
     source: '/schrodingerGQL/:path*',
     destination:
