@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import dayjs, { Dayjs } from 'dayjs';
 import { ZERO } from 'constants/misc';
+import { getS3ImageURI } from './image';
 
 export function formatTime({
   minDigits = 2,
@@ -117,13 +118,6 @@ export function formatTimeByDayjs(date: dayjs.ConfigType, format?: string) {
   return dayjs(date).format(format ?? utcFormat);
 }
 
-//
-const s3ImagePrefixTestnet = 'https://schrodinger-testnet.s3.amazonaws.com/watermarkimage';
-// TODO
-const s3ImagePrefixMainnet = 'https://schrodinger.s3.amazonaws.com/watermarkimage';
-
-const s3ImageUri = process.env.NEXT_PUBLIC_APP_ENV === 'test' ? s3ImagePrefixTestnet : s3ImagePrefixMainnet;
-
 /* eslint-disable no-case-declarations */
 /**
  * Given a URI that may be ipfs, ipns, http, or https protocol, return the fetch-able http(s) URLs for the same content
@@ -137,10 +131,10 @@ export default function uriToHttp(uri: string): string[] {
       return [uri];
     case 'ipfs':
       const hash = uri.match(/^ipfs:(\/\/)?(.*)$/i)?.[2];
-      return [`${s3ImageUri}/${hash}`, `https://ipfs.io/ipfs/${hash}`];
+      return [`${getS3ImageURI()}/${hash}`, `https://ipfs.io/ipfs/${hash}`];
     case 'ipns':
       const name = uri.match(/^ipns:(\/\/)?(.*)$/i)?.[2];
-      return [`${s3ImageUri}/${hash}`, `https://ipfs.io/ipns/${name}`];
+      return [`${getS3ImageURI()}/${hash}`, `https://ipfs.io/ipns/${name}`];
     default:
       if (uri.includes('_next')) return [uri];
 
