@@ -101,7 +101,7 @@ function ResultModal({
 
   const modalFooter = useMemo(() => {
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-1 lg:flex-none flex-col justify-center items-center">
         {!hideButton ? (
           <div className={clsx('w-full flex flex-col items-center', styles['button-wrapper'])}>
             <Button
@@ -145,12 +145,13 @@ function ResultModal({
     <CommonModal
       title={
         modalTitle ? (
-          <p className="flex flex-col md:flex-row items-center">
-            <span className="mb-[16px] md:mr-[16px] md:mb-0">{Icon}</span>
-            <span className="text-neutralTitle font-semibold text-xl md:text-2xl text-center">{modalTitle}</span>
+          <p className="flex flex-nowrap">
+            <span className="mr-[8px] lg:mr-[12px] lg:mb-0">{Icon}</span>
+            <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">{modalTitle}</span>
           </p>
         ) : null
       }
+      disableMobileLayout={true}
       open={modal.visible}
       onOk={modal.hide}
       onCancel={onCancel || modal.hide}
@@ -159,10 +160,10 @@ function ResultModal({
       <div className="w-full h-full flex flex-col">
         {info ? <InfoCard {...info} layout="vertical" /> : null}
         {title || description ? (
-          <div className="flex flex-col items-center mb-[24px] md:mb-[32px] mt-[24px] md:mt-[48px]">
+          <div className="flex flex-col items-center mb-[24px] lg:mb-[32px] mt-[24px] lg:mt-[48px]">
             {title && (
-              <p className="flex flex-col md:flex-row items-center justify-center">
-                <span className="text-neutralTitle font-semibold text-xl md:text-2xl text-center">{title}</span>
+              <p className="flex flex-col lg:flex-row items-center justify-center">
+                <span className="text-neutralTitle font-semibold text-xl lg:text-2xl text-center">{title}</span>
               </p>
             )}
 
@@ -173,8 +174,8 @@ function ResultModal({
         ) : null}
 
         {card && (
-          <div className="flex flex-col h-max w-full border border-solid border-neutralBorder rounded-lg p-[16px] md:p-[32px]">
-            <span className="text-brandDefault font-semibold text-base md:text-xl text-center">{card.title}</span>
+          <div className="flex flex-col h-max w-full border border-solid border-neutralBorder rounded-lg p-[16px] lg:p-[32px]">
+            <span className="text-brandDefault font-semibold text-base lg:text-xl text-center">{card.title}</span>
             {card.description ? (
               <p className="text-base font-medium text-neutralSecondary mt-[8px] text-center">
                 {getDescriptionCom(card.description)}

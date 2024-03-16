@@ -11,7 +11,7 @@ export interface ModalProps extends AntdModalProps {
 function CommonModal(props: ModalProps) {
   const { children, className, title, subTitle, wrapClassName, width = 800, disableMobileLayout = false } = props;
 
-  const { isMD } = useResponsive();
+  const { isLG } = useResponsive();
 
   return (
     <AntdModal
@@ -22,7 +22,9 @@ function CommonModal(props: ModalProps) {
       width={width}
       centered
       {...props}
-      className={`${styles.modal} ${isMD && !disableMobileLayout && styles['modal-mobile']} ${className || ''}`}
+      className={`${styles.modal} ${isLG && styles['modal-mobile']} ${
+        isLG && !disableMobileLayout && styles['modal-full-screen']
+      } ${className || ''}`}
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
