@@ -132,7 +132,6 @@ export const useAdoptConfirm = () => {
             },
             buttonInfo: {
               btnText: 'Try Again',
-              isRetry: true,
               openLoading: true,
               onConfirm: async () => {
                 const result = await adoptStep2Handler(confirmParams);
@@ -237,14 +236,14 @@ export const useAdoptConfirm = () => {
     }) => {
       const selectItem = await adoptConfirmInput(infos, parentItemInfo, account);
 
-      const { image, txResult, imageUri } = await adoptConfirmHandler({
+      const { txResult, imageUri } = await adoptConfirmHandler({
         adoptId,
         image: selectItem,
         parentItemInfo,
       });
       let nextTokenName = '';
       let nextSymbol = '';
-      console.log(imageUri, 'imageUri==');
+
       try {
         const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
         nextTokenName = tokenName;
