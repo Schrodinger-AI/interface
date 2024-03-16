@@ -33,12 +33,8 @@ export default function StrayCatsPage() {
   const getStrayCats = useGetStrayCats();
 
   const handleTableChange = ({ pageSize, page }: { page: number; pageSize?: number }) => {
-    if (pageSize) {
-      setPageSize(pageSize);
-      setPageNum(1);
-    } else {
-      page && setPageNum(page);
-    }
+    pageSize && setPageSize(pageSize);
+    page && setPageNum(page);
   };
 
   const getStrayCatsData = useCallback(async () => {

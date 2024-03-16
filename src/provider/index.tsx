@@ -6,7 +6,7 @@ import WebLoginProvider from './webLoginProvider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { store } from 'redux/store';
 
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, message } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
 
 import { checkDomain, fetchCmsConfigInfo } from 'api/request';
@@ -100,6 +100,9 @@ function Provider({ children }: { children: React.ReactNode }) {
 
   useEffectOnce(() => {
     BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
+    message.config({
+      maxCount: 1,
+    });
   });
 
   return (
