@@ -37,8 +37,10 @@ export function formatTokenPrice(
   const priceBig: BigNumber = BigNumber.isBigNumber(price) ? price : new BigNumber(price);
   if (priceBig.isNaN()) return `${price}`;
 
-  if (!priceBig.isEqualTo(0) && priceBig.lt(0.0001)) {
-    return '< 0.0001';
+  const min = BigNumber(1).div(BigNumber(10).exponentiatedBy(decimalPlaces)).toFormat();
+
+  if (!priceBig.isEqualTo(0) && priceBig.lt(min)) {
+    return `< ${min}`;
   }
 
   const priceFixed = priceBig.toFixed(decimalPlaces, roundingMode);
