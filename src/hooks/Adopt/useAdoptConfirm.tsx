@@ -189,10 +189,11 @@ export const useAdoptConfirm = () => {
         });
         adoptNextModal.hide();
         // closeLoading();
-        if (imageSignature?.error) {
-          reject(imageSignature?.error);
+        if (imageSignature?.error || !imageSignature.signature) {
+          reject(imageSignature?.error || 'Failed to obtain watermark image');
           return;
         }
+
         const signature = imageSignature.signature;
         const image = imageSignature.image;
         const imageUri = imageSignature.imageUri;
