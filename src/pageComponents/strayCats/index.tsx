@@ -9,8 +9,12 @@ import SkeletonImage from 'components/SkeletonImage';
 import { divDecimals } from 'utils/calculate';
 import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
 import { useCmsInfo } from 'redux/hooks';
+import { formatTokenPrice } from 'utils/format';
 
-const textStyle = 'text-sm text-neutralTitle font-medium';
+const textStyle =
+  'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
+
+const amountStyle = 'text-sm text-neutralTitle';
 
 export default function StrayCatsPage() {
   const { isLogin } = useWalletService();
@@ -82,6 +86,12 @@ export default function StrayCatsPage() {
     };
   }, []);
 
+  const formatTokenAmount = useCallback((amount: number, decimals: number) => {
+    return formatTokenPrice(divDecimals(amount, decimals).toFixed(), {
+      decimalPlaces: decimals,
+    });
+  }, []);
+
   const columns: TableColumnsType<TStrayCats> = useMemo(
     () => [
       {
@@ -114,7 +124,7 @@ export default function StrayCatsPage() {
         dataIndex: 'consumeAmount',
         key: 'consumeAmount',
         render: (consumeAmount, record) => {
-          return <span className={textStyle}>{divDecimals(consumeAmount, record.decimals).toFixed()}</span>;
+          return <span className={amountStyle}>{formatTokenAmount(consumeAmount, record.decimals)}</span>;
         },
       },
       {
@@ -122,7 +132,7 @@ export default function StrayCatsPage() {
         dataIndex: 'receivedAmount',
         key: 'receivedAmount',
         render: (receivedAmount, record) => {
-          return <span className={textStyle}>{divDecimals(receivedAmount, record.decimals).toFixed()}</span>;
+          return <span className={amountStyle}>{formatTokenAmount(receivedAmount, record.decimals)}</span>;
         },
       },
       {
@@ -144,7 +154,7 @@ export default function StrayCatsPage() {
         },
       },
     ],
-    [adoptConfirm, formatAdoptConfirmParams, wallet.address],
+    [adoptConfirm, formatAdoptConfirmParams, formatTokenAmount, wallet.address],
   );
 
   useEffect(() => {
