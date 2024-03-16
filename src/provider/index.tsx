@@ -44,36 +44,15 @@ function Provider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const isCorrectPath = useMemo(() => {
-    return ['/', '/assets', '/points', '/privacy-policy'].includes(pathname);
-  }, [pathname]);
-
-  const redirect = useCallback(
-    (openTimeStamp: string) => {
-      if (!isCorrectPath) {
-        const currentTime = new Date().getTime();
-        if (BigNumber(openTimeStamp || 0).gt(currentTime)) {
-          // TODO
-          // router.replace('/coundown');
-        } else {
-          // TODO
-          // router.replace('/');
-        }
-      }
-    },
-    [isCorrectPath, router],
-  );
-
   const fetchGlobalConfig = useCallback(async () => {
     try {
       const res = await fetchCmsConfigInfo();
       store.dispatch(setCmsInfo(res));
-      redirect(res.openTimeStamp);
     } catch (err) {
       console.error('fetchGlobalConfig err', err);
     }
     setLoading(false);
-  }, [redirect]);
+  }, []);
 
   const isNoNeedLoadingPage = useMemo(() => {
     return ['/privacy-policy'].includes(pathname);

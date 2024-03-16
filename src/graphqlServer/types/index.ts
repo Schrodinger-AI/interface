@@ -97,6 +97,9 @@ export type TStrayCats = {
   receivedAmount: number;
   decimals: number;
   adoptId: string;
+  nextTokenName: string;
+  nextSymbol: string;
+  nextAmount: string;
   parentTraits: Omit<ITrait, 'percent'>[];
 };
 

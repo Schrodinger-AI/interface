@@ -82,6 +82,9 @@ export const GET_STRAY_CATS_QUERY = gql`
         consumeAmount
         receivedAmount
         decimals
+        nextTokenName
+        nextSymbol
+        nextAmount
         parentTraits {
           traitType
           value
