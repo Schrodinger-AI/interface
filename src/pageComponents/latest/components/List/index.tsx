@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { TSGRItem } from 'types/tokens';
 import ScrollContent from 'components/ScrollContent';
 import useLoading from 'hooks/useLoading';
-import { divDecimals, getPageNumber } from 'utils/calculate';
+import { divDecimals, getPageNumber, timesDecimals } from 'utils/calculate';
 
 import { useCmsInfo } from 'redux/hooks';
 import { CardType } from 'components/ItemCard';
@@ -112,7 +112,10 @@ export default function List() {
   const goForest = useCallback(
     (item: TSGRItem) => {
       learnMoreModal.show({
-        item,
+        item: {
+          ...item,
+          amount: timesDecimals(item.amount, item.decimals).toFixed(),
+        },
       });
     },
     [learnMoreModal],

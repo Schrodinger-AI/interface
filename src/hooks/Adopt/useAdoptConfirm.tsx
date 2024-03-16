@@ -62,7 +62,7 @@ export const useAdoptConfirm = () => {
             inheritedTraits: parentItemInfo.traits,
             transaction: {
               txFee: ZERO.plus(commonTxFee).toFixed(),
-              usd: `${commonTxFee && ELFPrice ? ZERO.plus(commonTxFee).times(ELFPrice).toFixed(2) : '--'}`,
+              usd: `${commonTxFee && ELFPrice ? ZERO.plus(commonTxFee).times(ELFPrice).toFixed(4) : '--'}`,
             },
             ELFBalance: {
               amount: ELFBalance,

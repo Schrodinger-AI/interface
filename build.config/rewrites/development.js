@@ -1,6 +1,6 @@
 module.exports = [
   { source: '/api/:path*', destination: 'https://schrodingernft.ai/api/:path*' },
-  { source: '/cms/:path*', destination: 'https://test.eforest.finance/cms/:path*' },
+  { source: '/cms/:path*', destination: 'https://schrodingernft.ai/cms/:path*' },
   { source: '/connect/:path*', destination: 'https://schrodingernft.ai/connect/:path*' },
   {
     source: '/AElfIndexer_DApp/PortKeyIndexerCASchema/:path*',
