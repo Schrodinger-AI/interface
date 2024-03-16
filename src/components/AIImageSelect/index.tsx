@@ -7,7 +7,6 @@ import useResponsive from 'hooks/useResponsive';
 import clsx from 'clsx';
 
 import styles from './style.module.css';
-import uriToHttp from 'utils/format';
 
 interface IAIImageProps {
   src: string;
@@ -22,7 +21,6 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   const [error, setError] = useState(false);
   const [random, setRandom] = useState<number>(0);
 
-  const imageSrc = useMemo(() => uriToHttp(src), [src]);
   const preview = useMemo<ImageProps['preview']>(() => {
     return isLG
       ? {
@@ -80,7 +78,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
         id="ai-image"
         className={clsx('w-full h-full')}
         // src={`${src}?${random}`}
-        src={imageSrc}
+        src={src}
         alt="AI-image"
         preview={preview}
         onError={onError}
