@@ -28,7 +28,7 @@ export enum TargetErrorType {
   Error7 = UserDeniedMessage,
 }
 
-const stringifyMsg = (message: string | object | unknown) => {
+const stringifyMsg = (message: any) => {
   if (typeof message === 'object') {
     return JSON.stringify(message);
   }

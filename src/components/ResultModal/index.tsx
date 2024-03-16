@@ -29,7 +29,6 @@ interface IProps {
   buttonInfo?: {
     btnText?: string;
     openLoading?: boolean;
-    isRetry?: boolean;
     onConfirm?: () => void | Promise<any>;
   };
   info: IInfoCard;
@@ -72,15 +71,12 @@ function ResultModal({
       } catch (error) {
         console.log(error, 'error==');
         const _error = getAdoptErrorMessage(error);
-        console.log(_error, 'error==');
+        console.log(_error, 'errorMessage');
 
         singleMessage.error(_error);
-        if (buttonInfo.isRetry) {
-          setLoading(false);
-          return;
-        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
 
       return;
     }
