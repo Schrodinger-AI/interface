@@ -1,8 +1,8 @@
 import { Skeleton } from 'antd';
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import CustomImageLoader from 'components/ImageLoader';
+import React from 'react';
 import { useState } from 'react';
-import uriToHttp from 'utils/format';
 
 interface ISkeletonImage {
   img?: string;
@@ -14,7 +14,7 @@ interface ISkeletonImage {
 }
 
 function SkeletonImage(props: ISkeletonImage) {
-  const { img, className, imageSizeType = 'cover', tag, width = 108, height = 108 } = props;
+  const { img: imageUrl, className, imageSizeType = 'cover', tag, width = 108, height = 108 } = props;
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,23 +24,6 @@ function SkeletonImage(props: ISkeletonImage) {
     contain: 'object-contain',
   };
 
-  const imageUrl = useMemo(() => {
-    if (typeof img === 'string') {
-      const pattern = /^(http|https):\/\/|\/_next/;
-
-      if (pattern.test(img)) {
-        return img;
-      }
-      if (img.startsWith('data:image')) {
-        return img;
-      } else {
-        return `data:image/png;base64,${img}`;
-      }
-    } else {
-      return img;
-    }
-  }, [img]);
-
   return (
     <div className={clsx('relative rounded-lg overflow-hidden', className)}>
       {(loading || !imageUrl) && (
@@ -48,10 +31,10 @@ function SkeletonImage(props: ISkeletonImage) {
       )}
       {imageUrl && (
         <div className="w-full h-full relative">
-          <img
+          <CustomImageLoader
             width={width}
             height={height}
-            src={uriToHttp(imageUrl)}
+            src={imageUrl}
             alt="image"
             className={clsx('w-full h-full', imageType[imageSizeType])}
             onLoad={() => {
