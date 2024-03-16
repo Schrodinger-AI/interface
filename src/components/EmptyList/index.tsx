@@ -5,6 +5,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useMemo } from 'react';
 import { ReactComponent as ArrowSVG } from 'assets/img/icons/arrow.svg';
 import { TEmptyChannelGroup } from 'types/misc';
+import { openExternalLink } from 'utils/openlink';
 
 export interface IEmptyListProps {
   isChannelShow?: boolean;
@@ -40,7 +41,7 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
 
   const onChannelClick = useCallback((url: string) => {
     if (!url) return;
-    window.open(url, '_blank');
+    openExternalLink(url, '_blank');
   }, []);
 
   return (
