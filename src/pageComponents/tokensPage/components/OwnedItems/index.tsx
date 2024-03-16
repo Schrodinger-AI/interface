@@ -22,7 +22,6 @@ import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import FilterMenuEmpty from '../FilterMenuEmpty';
 import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
-import { TBaseSGRToken } from 'types/tokens';
 import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
@@ -31,6 +30,7 @@ import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { TGetSchrodingerListParams, useGetSchrodingerList, useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
+import { TSGRItem } from 'types/tokens';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -47,7 +47,7 @@ export default function OwnedItems() {
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
-  const [dataSource, setDataSource] = useState<TBaseSGRToken[]>();
+  const [dataSource, setDataSource] = useState<TSGRItem[]>();
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -385,8 +385,12 @@ export default function OwnedItems() {
             {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
           </Layout.Sider>
         )}
+
         <Layout className="!bg-[var(--bg-page)] relative">
-          <Flex className="sticky top-0 bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5" vertical gap={12}>
+          <Flex
+            className={clsx('bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5', !isLG && 'sticky top-0')}
+            vertical
+            gap={12}>
             <Flex gap={16}>
               <Flex
                 className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
