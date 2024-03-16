@@ -23,9 +23,20 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
     }
   }, [cmsInfo?.emptyChannelGroupList]);
 
-  const emptyChannelGroupDescription = useMemo(() => {
-    return isChannelShow ? cmsInfo?.emptyChannelGroupDescription : defaultDescription;
+  const descriptionList = useMemo(() => {
+    if (!isChannelShow) return [defaultDescription];
+    const descriptionStr = cmsInfo?.emptyChannelGroupDescription || '';
+    try {
+      const list = JSON.parse(descriptionStr);
+      if (Array.isArray(list)) return list;
+    } catch (error) {
+      console.log('error', error);
+    }
+    return [];
   }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription, isChannelShow]);
+
+  const gitBookDescription = useMemo(() => cmsInfo?.gitBookDescription || '', [cmsInfo?.gitBookDescription]);
+  const gitBookLink = useMemo(() => cmsInfo?.gitBookLink || '', [cmsInfo?.gitBookLink]);
 
   const onChannelClick = useCallback((url: string) => {
     if (!url) return;
@@ -36,7 +47,13 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
     <div className={clsx([styles.emptyListWrap, className])}>
       <ArchiveSVG className={styles.emptyImg} />
 
-      <div className={styles.emptyTips}>{emptyChannelGroupDescription}</div>
+      <div className="flex flex-col items-start pt-[8px]">
+        {descriptionList.map((item, idx) => (
+          <div key={idx} className={styles.emptyTips}>
+            {item}
+          </div>
+        ))}
+      </div>
 
       {isChannelShow &&
         emptyChannelGroupList &&
@@ -56,6 +73,16 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
               ))}
           </div>
         ))}
+
+      {isChannelShow && gitBookDescription && (
+        <div className="text-base mt-[24px]">
+          <span className="text-neutralPrimary font-medium">{gitBookDescription} </span>
+          <a className="text-brandDefault font-medium" href={gitBookLink} target="_blank" rel="noreferrer">
+            GitBook
+          </a>
+          <span className="text-neutralPrimary font-medium">.</span>
+        </div>
+      )}
     </div>
   );
 };

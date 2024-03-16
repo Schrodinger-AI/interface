@@ -39,6 +39,8 @@ export type InfoStateType = {
 
     forestUrl: string;
     s3ImagePrefix: string;
+    gitBookDescription: string;
+    gitBookLink: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];
