@@ -148,7 +148,7 @@ export default function DetailPage() {
             )}
           </div>
         </div>
-        <div className="w-full mt-[24px] flex flex-row justify-between">
+        <div className="w-full mt-[24px] flex flex-row justify-between items-start">
           {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
           {schrodingerDetail && <ItemInfo detail={schrodingerDetail} onAdoptNextGeneration={onAdoptNextGeneration} />}
         </div>
