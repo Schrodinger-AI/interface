@@ -38,6 +38,7 @@ export type InfoStateType = {
     tradeList: string;
 
     forestUrl: string;
+    s3ImagePrefix: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];
