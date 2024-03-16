@@ -23,10 +23,9 @@ export default function DetailPage() {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
   const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible } = useLoading();
-  const { isOK } = useCheckLoginAndToken();
   const marketModal = useModal(MarketModal);
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
@@ -112,7 +111,7 @@ export default function DetailPage() {
   const onTrade = useCallback(() => marketModal.show({ title: 'Trade' }), [marketModal]);
 
   useTimeoutFn(() => {
-    if (!isOK) {
+    if (!isLogin) {
       route.push('/');
     }
   }, 3000);
