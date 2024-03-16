@@ -1,4 +1,11 @@
-import { getSchrodingerDetail, getSchrodingerList, getStrayCats, getSubTraits, getTraits } from '../request';
+import {
+  getLatestSchrodingerList,
+  getSchrodingerDetail,
+  getSchrodingerList,
+  getStrayCats,
+  getSubTraits,
+  getTraits,
+} from '../request';
 import { getGraphQLClient } from '../client';
 import { useCallback } from 'react';
 import { TGraphQLParamsType } from '../types';
@@ -38,4 +45,12 @@ export const useGetSubTraits = () => {
 export const useGetStrayCats = () => {
   const client = useGraphQLClient();
   return useCallback((params: TGraphQLParamsType<typeof getStrayCats>) => getStrayCats(client, params), [client]);
+};
+
+export const useGetLatestSchrodingerList = () => {
+  const client = useGraphQLClient();
+  return useCallback(
+    (params: TGraphQLParamsType<typeof getLatestSchrodingerList>) => getLatestSchrodingerList(client, params),
+    [client],
+  );
 };

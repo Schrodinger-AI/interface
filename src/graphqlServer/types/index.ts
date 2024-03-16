@@ -111,3 +111,21 @@ export type TGetStrayCats = (
   client: TGraphQLClient,
   params: TGetStrayCatsParams,
 ) => TCommonGraphQLResult<TGetStrayCatsResult>;
+
+export type TGetLatestSchrodingerListParams = {
+  input: {
+    chainId: string;
+    skipCount: number;
+    maxResultCount: number;
+  };
+};
+export type TGetLatestSchrodingerListResult = {
+  getLatestSchrodingerListAsync: {
+    totalCount: number;
+    data: Array<TSGRItem>;
+  };
+};
+export type TGetLatestSchrodingerList = (
+  client: TGraphQLClient,
+  params: TGetLatestSchrodingerListParams,
+) => TCommonGraphQLResult<TGetLatestSchrodingerListResult>;

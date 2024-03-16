@@ -90,3 +90,22 @@ export const GET_STRAY_CATS_QUERY = gql`
     }
   }
 `;
+
+export const GET_LATEST_SCHRODINGER_LIST_QUERY = gql`
+  query getLatestSchrodingerListAsync($input: GetLatestSchrodingerListInput) {
+    getLatestSchrodingerListAsync(input: $input) {
+      totalCount
+      data {
+        symbol
+        tokenName
+        inscriptionImageUri
+        amount
+        generation
+        decimals
+        inscriptionDeploy
+        adopter
+        adoptTime
+      }
+    }
+  }
+`;
