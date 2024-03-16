@@ -10,6 +10,7 @@ import { divDecimals } from 'utils/calculate';
 import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
 import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
+import { useTimeoutFn } from 'react-use';
 
 const textStyle =
   'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
@@ -157,11 +158,11 @@ export default function StrayCatsPage() {
     [adoptConfirm, formatAdoptConfirmParams, formatTokenAmount, wallet.address],
   );
 
-  useEffect(() => {
+  useTimeoutFn(() => {
     if (!isLogin) {
       router.push('/');
     }
-  }, [isLogin, router]);
+  }, 3000);
 
   return (
     <div className="w-full flex flex-col items-center">
