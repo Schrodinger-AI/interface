@@ -51,6 +51,8 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     onPress && onPress(item);
   }, [item, onPress]);
 
+  const adoptTimeStr = useMemo(() => formatTimeByDayjs(item.adoptTime), [item.adoptTime]);
+
   return (
     <div
       className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md cursor-pointer"
@@ -81,7 +83,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           </div>
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
-              <div className="text-xs leading-[18px] text-neutralDisable">{adoptTime || '--'}</div>
+              <div className="text-xs leading-[18px] text-neutralDisable">{adoptTimeStr || '--'}</div>
               <div className="flex justify-between flex-col main:flex-row">
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
