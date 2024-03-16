@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { TGraphQLClient } from './common';
-import { TSGRItem, TSGRToken } from 'types/tokens';
+import { ITrait, TSGRItem, TSGRToken } from 'types/tokens';
 import { TBaseFilterTrait, TFilterGeneration, TFilterTrait } from 'types/trait';
 export * from './common';
 
@@ -78,3 +78,36 @@ export type TGetSubTraits = (
   client: TGraphQLClient,
   params: TGetSubTraitsParams,
 ) => TCommonGraphQLResult<TGetSubTraitsResult>;
+
+export type TGetStrayCatsParams = {
+  input: {
+    adopter: string;
+    chainId: string;
+    skipCount?: number;
+    maxResultCount?: number;
+  };
+};
+
+export type TStrayCats = {
+  inscriptionImageUri: string;
+  tokenName: string;
+  gen: number;
+  symbol: string;
+  consumeAmount: number;
+  receivedAmount: number;
+  decimals: number;
+  adoptId: string;
+  parentTraits: Omit<ITrait, 'percent'>[];
+};
+
+export type TGetStrayCatsResult = {
+  getStrayCats: {
+    totalCount: number;
+    data: Array<TStrayCats>;
+  };
+};
+
+export type TGetStrayCats = (
+  client: TGraphQLClient,
+  params: TGetStrayCatsParams,
+) => TCommonGraphQLResult<TGetStrayCatsResult>;

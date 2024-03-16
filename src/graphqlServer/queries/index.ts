@@ -68,3 +68,25 @@ export const GET_SUB_TRAITS_QUERY = gql`
     }
   }
 `;
+
+export const GET_STRAY_CATS_QUERY = gql`
+  query getStrayCats($input: StrayCatInput) {
+    getStrayCats(input: $input) {
+      totalCount
+      data {
+        adoptId
+        inscriptionImageUri
+        tokenName
+        gen
+        symbol
+        consumeAmount
+        receivedAmount
+        decimals
+        parentTraits {
+          traitType
+          value
+        }
+      }
+    }
+  }
+`;

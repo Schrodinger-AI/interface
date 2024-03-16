@@ -10,7 +10,7 @@ export default function CountDownModule({ targetDate }: { targetDate: string }) 
 
   useEffect(() => {
     if (end) {
-      router.replace('/tokens');
+      router.replace('/');
     }
   }, [end, router]);
 
