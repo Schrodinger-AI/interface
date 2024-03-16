@@ -83,7 +83,7 @@ export default function ItemInfo({
         </div>
         {detail.generation == 0 ? noTraits() : traits()}
       </div>
-      {!isLearnMoreShow && (
+      {isLearnMoreShow && (
         <div className="flex justify-end mt-[16px]">
           <div className="cursor-pointer flex items-center" onClick={onLearnMoreClick}>
             <span className="text-[#1A1A1A] text-base">Learn More</span>
