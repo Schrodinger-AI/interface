@@ -1,7 +1,7 @@
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import { useCallback } from 'react';
-import { adoptStep1Handler } from './AdoptStep';
+import { IAdoptedLogs, adoptStep1Handler } from './AdoptStep';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
@@ -105,7 +105,7 @@ const useAdoptHandler = () => {
       account: string;
       amount: string;
       parentItemInfo: TSGRToken;
-    }): Promise<string> =>
+    }): Promise<IAdoptedLogs> =>
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
@@ -124,7 +124,7 @@ const useAdoptHandler = () => {
             try {
               const domain = getDomain();
 
-              const adoptId = await adoptStep1Handler({
+              const adoptedInfo = await adoptStep1Handler({
                 params: {
                   parent: parentItemInfo.symbol,
                   amount,
@@ -134,7 +134,7 @@ const useAdoptHandler = () => {
                 decimals: parentItemInfo.decimals,
               });
               promptModal.hide();
-              resolve(adoptId);
+              resolve(adoptedInfo);
             } catch (error) {
               console.log(error, 'error===');
               if (error === AdoptActionErrorCode.missingParams) {
@@ -167,9 +167,9 @@ const useAdoptHandler = () => {
           throw 'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.';
 
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
-        const adoptId = await approveAdopt({ amount, account, parentItemInfo });
+        const { adoptId, outputAmount, symbol, tokenName } = await approveAdopt({ amount, account, parentItemInfo });
 
-        await adoptConfirm(parentItemInfo, adoptId, account);
+        await adoptConfirm(parentItemInfo, { adoptId, symbol, outputAmount, tokenName }, account);
       } catch (error) {
         console.log(error, 'error==');
         if (error === AdoptActionErrorCode.cancel) return;

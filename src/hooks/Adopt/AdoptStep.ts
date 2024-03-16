@@ -12,14 +12,19 @@ export interface IAttribute {
   value: string;
 }
 
-export interface IAdopted {
+export interface IAdoptNextInfo {
+  symbol: string;
+  tokenName: string;
+  outputAmount: string | number;
   adoptId: string;
+}
+
+export interface IAdoptedLogs extends IAdoptNextInfo {
   parent: string;
   parentGen: number;
   inputAmount: number;
   lossAmount: number;
   commissionAmount: number;
-  outputAmount: number;
   imageCount: number;
   adopter: string;
   blockHeight: number;
@@ -61,14 +66,13 @@ export const adoptStep1Handler = async ({
 
   const TransactionResult = result.TransactionResult;
 
-  const logs = await ProtoInstance.getLogEventResult<IAdopted>({
+  const logs = await ProtoInstance.getLogEventResult<IAdoptedLogs>({
     contractAddress,
     logsName: 'Adopted',
     TransactionResult,
   });
   if (!logs) throw AdoptActionErrorCode.adoptFailed;
-  const { adoptId } = logs;
-  return adoptId;
+  return logs;
 };
 
 export const fetchWaterImages = async (
