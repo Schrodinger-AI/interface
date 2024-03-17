@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import dayjs, { Dayjs } from 'dayjs';
 import { ZERO } from 'constants/misc';
-import { getS3ImageURI } from './image';
+import { getIPFSImageURI, getS3ImageURI } from './image';
 
 export function formatTime({
   minDigits = 2,
@@ -131,7 +131,7 @@ export default function uriToHttp(uri: string): string[] {
       return [uri];
     case 'ipfs':
       const hash = uri.match(/^ipfs:(\/\/)?(.*)$/i)?.[2];
-      return [`${getS3ImageURI()}/${hash}`, `https://ipfs.io/ipfs/${hash}`];
+      return [`${getS3ImageURI()}/${hash}`, `${getIPFSImageURI()}/${hash}`, `https://ipfs.io/ipfs/${hash}`];
     case 'ipns':
       const name = uri.match(/^ipns:(\/\/)?(.*)$/i)?.[2];
       return [`${getS3ImageURI()}/${hash}`, `https://ipfs.io/ipns/${name}`];
