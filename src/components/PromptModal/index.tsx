@@ -134,7 +134,7 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
       afterClose={modal.remove}
       footer={footer()}>
       <div className="w-full h-full flex flex-col relative">
-        <InfoCard {...info} className="mt-[40px] lg:mt-0" layout={isLG ? 'vertical' : 'horizontal'} />
+        <InfoCard {...info} className="mt-[40px] lg:mt-0" />
         {content ? (
           <div className="mt-[32px] bg-neutralHoverBg rounded-lg p-[24px]">
             <div className="text-lg text-neutralPrimary font-medium">

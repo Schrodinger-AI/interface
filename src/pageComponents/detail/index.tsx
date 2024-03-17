@@ -133,9 +133,9 @@ export default function DetailPage() {
             },
           ]}
         />
-        <div className="w-full h-[68px] mt-[40px] flex flex-row justify-between">
+        <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
-          <div className="h-full flex flex-row items-end">
+          <div className="h-full flex-1 min-w-max flex flex-row items-end">
             {adoptAndResetButton()}
             {cmsInfo?.isTradeShow && schrodingerDetail && (
               <Button
