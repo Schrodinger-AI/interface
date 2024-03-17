@@ -120,6 +120,7 @@ export type TGetLatestSchrodingerListParams = {
     chainId: string;
     skipCount: number;
     maxResultCount: number;
+    blackList?: Array<string>;
   };
 };
 export type TGetLatestSchrodingerListResult = {

@@ -95,12 +95,23 @@ export default function List() {
   }, []);
 
   const defaultRequestParams = useMemo(() => {
-    return {
+    let blackList = undefined;
+    const params = {
       chainId: cmsInfo?.curChain ?? 'tDVV',
       skipCount: 0,
       maxResultCount: pageSize,
+      blackList: undefined,
     };
-  }, [cmsInfo?.curChain]);
+    try {
+      if (!cmsInfo?.blackList) throw 'not config';
+      blackList = JSON.parse(cmsInfo?.blackList);
+    } catch (error) {
+      //
+    }
+    if (blackList) params.blackList = blackList;
+    else delete params.blackList;
+    return params;
+  }, [cmsInfo?.blackList, cmsInfo?.curChain]);
 
   const initData = useCallback(() => {
     setDataSource([]);

@@ -1,4 +1,4 @@
-import { EXPLORE_URL } from 'constants/url';
+import { ENVIRONMENT, EXPLORE_URL } from 'constants/url';
 import { SupportedELFChainId } from 'types';
 
 export const sleep = (time: number) => {
@@ -105,7 +105,14 @@ export const getOmittedStr = (
   }
   return str;
 };
-export const getDomain = () => (!location.port ? location.host : 'schrodingernft.ai');
+
+const testnetDefaultDomain = 'schrodingerai.com';
+const mainnetDefaultDomain = 'schrodingernft.ai';
+
+const defaultDomain =
+  process.env.NEXT_PUBLIC_APP_ENV !== ENVIRONMENT.PRODUCTION ? testnetDefaultDomain : mainnetDefaultDomain;
+
+export const getDomain = () => (!location.port ? location.host : defaultDomain);
 
 export const getOriginSymbol = (symbol: string) => (symbol ? `${symbol.split('-')[0]}-1` : '');
 

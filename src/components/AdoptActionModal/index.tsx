@@ -10,7 +10,6 @@ import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import { useCmsInfo } from 'redux/hooks';
 import { Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
@@ -49,7 +48,6 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
-  const cmsInfo = useCmsInfo();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const [isInvalid, setIsInvalid] = useState(true);

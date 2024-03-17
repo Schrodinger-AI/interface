@@ -36,7 +36,11 @@ export type InfoStateType = {
     isMarketShow: boolean;
     tradeDescription: string;
     tradeList: string;
+    // symbol black list stringify
+    blackList?: string;
 
+    // user white list stringify
+    userWhiteList?: string;
     forestUrl: string;
     s3ImagePrefix: string;
     ifpsPrefix: string;

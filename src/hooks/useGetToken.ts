@@ -7,6 +7,7 @@ import { useRequest } from 'ahooks';
 import useDiscoverProvider from './useDiscoverProvider';
 import { store } from 'redux/store';
 import { setHasToken } from 'redux/reducer/info';
+import { useCheckJoined } from './useJoin';
 
 const AElf = require('aelf-sdk');
 
@@ -14,6 +15,7 @@ export const useGetToken = () => {
   const { loginState, wallet, getSignature, walletType, version } = useWebLogin();
 
   const { getSignatureAndPublicKey } = useDiscoverProvider();
+  const checkJoined = useCheckJoined();
 
   const { runAsync } = useRequest(fetchToken, {
     retryCount: 20,
@@ -44,6 +46,8 @@ export const useGetToken = () => {
 
   const getToken = useCallback(async () => {
     if (loginState !== WebLoginState.logined) return;
+    await checkJoined(wallet.address);
+
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === wallet.address) {
       return;
