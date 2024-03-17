@@ -1,3 +1,4 @@
+'use client';
 import { useWebLogin } from 'aelf-web-login';
 import BigNumber from 'bignumber.js';
 import { usePathname, useRouter } from 'next/navigation';

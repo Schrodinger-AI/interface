@@ -18,9 +18,11 @@ import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
 import Loading from 'components/PageLoading/index';
-import { Updater } from 'components/Updater';
 import { usePathname, useRouter } from 'next/navigation';
 import { forbidScale } from 'utils/common';
+import dynamic from 'next/dynamic';
+
+const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -93,9 +95,8 @@ function Provider({ children }: { children: React.ReactNode }) {
               <Loading content="Enrollment in progress"></Loading>
             ) : isCorrectDomain ? (
               <WebLoginProvider>
-                <Updater>
-                  <NiceModal.Provider>{children}</NiceModal.Provider>
-                </Updater>
+                <Updater />
+                <NiceModal.Provider>{children}</NiceModal.Provider>
               </WebLoginProvider>
             ) : (
               <NotFoundPage type={isCorrectDomain ? NotFoundType.path : NotFoundType.domain} />

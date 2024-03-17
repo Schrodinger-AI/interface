@@ -1,8 +1,11 @@
+'use client';
 import { useInitData } from 'hooks/useInitData';
 import { useRedirect } from 'hooks/useRedirect';
 
-export const Updater = ({ children }: { children: React.ReactNode }) => {
+const Updater = () => {
   useInitData();
   useRedirect();
-  return <>{children}</>;
+  return null;
 };
+
+export default Updater;

@@ -57,7 +57,7 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
             loading={loading}
             className={`${isLG ? 'w-full' : '!w-[256px]'}`}
             onClick={onClick}>
-            {buttonInfo?.btnText || 'Enroll'}
+            {buttonInfo?.btnText || 'Join'}
           </Button>
         </div>
       </div>
@@ -68,7 +68,7 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
     <CommonModal
       title={
         <p className="flex flex-nowrap">
-          <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">Welcome To Schrödinger!</span>
+          <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">Welcome to Schrödinger</span>
         </p>
       }
       width={500}
@@ -79,7 +79,8 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       afterClose={modal.remove}
       footer={modalFooter}>
       <div className="w-full h-full flex flex-col">
-        You have got SGR. In order to calculate your XPSGR points, please click the button below to enroll.
+        Schrödinger rewards users with Flux Points for their interactions with the platform. Click “Join” to calculate
+        your points.
       </div>
     </CommonModal>
   );
