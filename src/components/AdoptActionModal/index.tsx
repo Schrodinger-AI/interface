@@ -182,12 +182,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         <span className="text-neutralTitle mt-[4px] lg:mt-0">{receiveToken}</span>
       </div>
       <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
-        <span className="text-neutralSecondary flex items-center gap-[8px]">
-          {rateLabel}
-          <Tooltip color="black" title={'rate'} overlayInnerStyle={{ color: 'white' }}>
-            <QuestionSVG />
-          </Tooltip>
-        </span>
+        <span className="text-neutralSecondary flex items-center gap-[8px]">{rateLabel}</span>
         <span className="text-neutralTitle mt-[4px] lg:mt-0">{rateValue}</span>
       </div>
       {!isReset && (
