@@ -19,7 +19,7 @@ const useIntervalGetSchrodingerDetail = () => {
               const result = await getSDGDetail({
                 input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
               });
-              if (result.data.getSchrodingerDetail) {
+              if (result.data.getSchrodingerDetail?.symbol) {
                 clearInterval(intervalRef.current);
                 resolve(true);
               }
