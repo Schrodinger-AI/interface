@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { TSGRToken } from 'types/tokens';
 import { divDecimals } from 'utils/calculate';
+import styles from './styles.module.css';
+import clsx from 'clsx';
 
 export default function DetailTitle({ detail }: { detail: TSGRToken }) {
   const amountStr = useMemo(
@@ -9,14 +11,18 @@ export default function DetailTitle({ detail }: { detail: TSGRToken }) {
   );
 
   return (
-    <div className="h-[58px] lg:h-[68px] w-full lg:w-auto flex justify-between lg:justify-start">
-      <div className="h-full flex flex-col justify-between">
-        <div className="text-[#B8B8B8] text-sm	lg:text-xl font-medium">{detail.tokenName}</div>
-        <div className="text-[#1A1A1A] text-xl lg:text-2xl font-semibold">{detail.symbol}</div>
+    <div className="w-full mr-0 lg:mr-[12px] h-[58px] lg:h-[68px] flex justify-between lg:justify-start">
+      <div className={styles.card}>
+        <div className={styles.title}>Name</div>
+        <div className={styles.value}>{detail.tokenName}</div>
       </div>
-      <div className="ml-[68px] h-full flex flex-col justify-between">
-        <div className="text-[#B8B8B8] text-sm	lg:text-xl font-medium">Amount Owned</div>
-        <div className="text-[#1A1A1A] text-xl lg:text-2xl	 font-semibold text-right lg:text-left">{amountStr}</div>
+      <div className={clsx(styles.card, 'ml-[16px] lg:ml-[68px]')}>
+        <div className={styles.title}>Symbol</div>
+        <div className={styles.value}>{detail.symbol}</div>
+      </div>
+      <div className={clsx(styles.card, 'ml-[16px] lg:ml-[68px]')}>
+        <div className={clsx(styles.title, 'min-w-[102px]')}>Amount Owned</div>
+        <div className={clsx(styles.value, 'text-right lg:text-left')}>{amountStr}</div>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ function SkeletonImage(props: ISkeletonImage) {
             height={height}
             src={imageUrl}
             alt="image"
-            className={clsx('w-full h-full', imageType[imageSizeType])}
+            className={clsx('w-full h-full rounded-lg', imageType[imageSizeType])}
             onLoad={() => {
               setLoading(false);
               setSkeletonActive(false);
