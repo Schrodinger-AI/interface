@@ -52,10 +52,7 @@ export default function useCheckJoinStatus() {
     if (state === WebLoginState.logined) {
       try {
         const isJoin = await GetJoinRecord(addPrefixSuffix(wallet.address, cmsInfo?.curChain));
-        if (isJoin) {
-          setIsJoin(isJoin.value);
-          return;
-        }
+        if (isJoin) return setIsJoin(isJoin);
         setIsJoin(false);
       } catch (err) {
         console.error(err);

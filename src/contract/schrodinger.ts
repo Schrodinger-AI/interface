@@ -92,12 +92,12 @@ export const Join = async (
 
 export const GetJoinRecord = async (address: string, options?: IContractOptions): Promise<boolean> => {
   try {
-    console.log('=====lllll GetJoinRecord');
-    const res = (await schrodingerContractRequest('GetJoinRecord', address, {
+    const res: any = await schrodingerContractRequest('GetJoinRecord', address, {
       ...options,
       type: ContractMethodType.VIEW,
-    })) as boolean;
-    return Promise.resolve(res);
+    });
+    const isJoin = res?.value;
+    return Promise.resolve(Boolean(isJoin));
   } catch (error) {
     return Promise.reject(error);
   }
