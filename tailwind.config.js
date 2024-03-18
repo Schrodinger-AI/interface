@@ -32,6 +32,7 @@ module.exports = {
         compassActive: 'var(--compass-active)',
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
+        fillMask3: 'var(--fill-mask-3)',
       },
       fontSize: {
         xxs: ['10px', '16px'],
