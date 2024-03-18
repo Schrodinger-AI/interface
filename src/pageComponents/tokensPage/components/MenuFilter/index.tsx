@@ -61,9 +61,9 @@ interface IMenuFilterComponent extends React.FC<IMenuFilterProps> {
 
 const MenuFilter: IMenuFilterComponent = ({ label, count }) => {
   return (
-    <Flex justify="space-between">
-      <span>{label}</span>
-      <span>{count ?? '0'}</span>
+    <Flex justify="space-between" gap={16}>
+      <span className="truncate">{label}</span>
+      <span className="flex-none">{count ?? '0'}</span>
     </Flex>
   );
 };

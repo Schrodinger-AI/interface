@@ -46,5 +46,5 @@ code {
 }
 
 .aelfd-checkbox-wrapper > .aelfd-checkbox + span {
-  @apply block flex-1;
+  @apply block flex-1 min-w-0;
 }
