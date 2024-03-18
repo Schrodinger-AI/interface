@@ -23,7 +23,7 @@ function Description() {
       direction="end"
       expandText={<EllipsisController />}
       collapseText={<EllipsisController isCollapseController />}
-      content="An AI-powered ACS-404 inscription allowing you to adopt cats and enjoy the fun of dynamic gameplay and unpredictable transformation. Evolving your cats to higher levels equips them with more randomly AI-generated traits. More traits, more rare, it's gacha-style fun!"
+      content="AI-powered ACS-404 inscriptions that allows you to adopt cats and enjoy the fun of dynamic gameplay and unpredictable transformation. Evolving your cats to higher levels to equip them with more random traits generated using AI, thereby increasing their rarity. It's gacha-style fun!"
     />
   );
 }
@@ -35,7 +35,7 @@ export default function TokensInfo() {
       <Flex gap={16}>
         <SkeletonImage className={styles.schrodingerImg} img={require('assets/img/schrodinger.jpeg').default.src} />
         <Flex vertical justify={isLG ? 'center' : 'flex-start'}>
-          <span className={styles.title}>Schrödinger</span>
+          <span className={styles.title}>Schrödinger Cat</span>
           {!isLG && <Description />}
         </Flex>
       </Flex>
