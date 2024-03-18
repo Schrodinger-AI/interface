@@ -16,22 +16,19 @@ export default function TokensHome() {
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
   return (
-    <div className="pt-[24px]">
-      <div className="lg:fixed lg:top-[200px] lg:left-[36px]">
+    <div className="pt-[24px] relative">
+      <div className="lg:absolute lg:top-[40px] lg:left-[36px]">
         {isLG ? (
           <Image src={require('assets/img/home/Left.svg').default} width={118} height={128} alt={'logo'} />
         ) : (
           <LeftSVG />
         )}
       </div>
-      <div className={isLG ? styles.bgCenterMobile : styles.bgCenter}>
-        {isLG ? <BGCMobile className="w-[660px] h-[480px]" /> : <BGCSVG />}
-      </div>
       <Flex
         vertical
         align="center"
         justify="center"
-        className="gap-[32px] lg:gap-[48px] lg:w-[910px] mx-auto lg:pt-[208px]">
+        className="gap-[32px] lg:gap-[48px] lg:w-[910px] mx-auto lg:pt-[128px]">
         <div className="flex flex-col align-center justify-center lg:gap-[24px] gap-[16px]">
           <div className="flex items-center justify-center">
             <span className="relative">
@@ -65,7 +62,7 @@ export default function TokensHome() {
           </div>
         </Flex>
       </Flex>
-      <div className="flex justify-end pr-[28px] lg:fixed lg:top-[540px] lg:right-[140px]">
+      <div className="flex justify-end pr-[28px] lg:absolute lg:top-[380px] lg:right-[140px]">
         {isLG ? <ELFMobile /> : <ELFSVG />}
       </div>
     </div>
