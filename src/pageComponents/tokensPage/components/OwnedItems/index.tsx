@@ -35,7 +35,7 @@ import { TSGRItem } from 'types/tokens';
 export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
-  const { isLG, is2XL, is3XL } = useResponsive();
+  const { isLG, is2XL, is3XL, is4XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
   const [collapsed, setCollapsed] = useState(!isLG);
   const [total, setTotal] = useState(0);
@@ -59,10 +59,12 @@ export default function OwnedItems() {
       return '33%';
     } else if (is3XL) {
       return '28%';
-    } else {
+    } else if (is4XL) {
       return '22%';
+    } else {
+      return 405;
     }
-  }, [is2XL, is3XL]);
+  }, [is2XL, is3XL, is4XL]);
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
     return {

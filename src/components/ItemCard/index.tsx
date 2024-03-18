@@ -52,17 +52,17 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
 
   return (
     <div
-      className="w-full overflow-hidden border border-neutralBorder border-solid rounded-md cursor-pointer"
+      className="w-full overflow-hidden border border-neutralBorder border-solid rounded-lg cursor-pointer"
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
-          <div className="bg-black bg-opacity-60 px-1 flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
-            <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
+          <div className="bg-black bg-opacity-60 px-1 py-[1px] flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
+            <div className="text-white text-xxs font-medium">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
-            className="w-full h-auto aspect-square object-contain"
+            className={`${styles['item-card-img']} w-full h-auto aspect-square object-contain rounded-b-none`}
           />
           {containsInscriptionCode && (
             <div
@@ -74,9 +74,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
 
         <div className="px-4 py-4 flex flex-col">
           <div className="flex  flex-col text-lg leading-6 font-medium max-w-xs whitespace-nowrap">
-            <span className="text-sm text-neutralPrimary font-medium text-ellipsis overflow-hidden line-clamp-1">
-              {tokenName || '--'}
-            </span>
+            <span className="text-sm text-neutralPrimary font-medium truncate">{tokenName || '--'}</span>
           </div>
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
@@ -85,7 +83,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
                   <XIcon />
-                  <div className="ml-1 text-sm leading-5 text-gray-400">{transformedAmount}</div>
+                  <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
                 </div>
               </div>
             </div>
@@ -93,7 +91,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           {type === CardType.MY && (
             <div className="flex flex-row items-center pt-1">
               <XIcon />
-              <div className="ml-1 text-sm leading-5 text-gray-400">{transformedAmount}</div>
+              <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
             </div>
           )}
         </div>
