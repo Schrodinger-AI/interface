@@ -56,13 +56,13 @@ export default function OwnedItems() {
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const siderWidth = useMemo(() => {
     if (is2XL) {
-      return '33%';
+      return '25%';
     } else if (is3XL) {
-      return '28%';
-    } else if (is4XL) {
       return '22%';
+    } else if (is4XL) {
+      return '20%';
     } else {
-      return 405;
+      return 368;
     }
   }, [is2XL, is3XL, is4XL]);
   const defaultRequestParams = useMemo(() => {
