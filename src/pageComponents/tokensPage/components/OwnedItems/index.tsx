@@ -38,6 +38,7 @@ export default function OwnedItems() {
   const { isLG, is2XL, is3XL, is4XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
   const [collapsed, setCollapsed] = useState(!isLG);
+  const [ownedTotal, setOwnedTotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
@@ -110,6 +111,10 @@ export default function OwnedItems() {
         //   totalCount: 100,
         // };
         setTotal(res.totalCount ?? 0);
+        const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
+        if (!hasSearch) {
+          setOwnedTotal(res.totalCount ?? 0);
+        }
         const data = (res.data || []).map((item) => {
           return {
             ...item,
@@ -124,9 +129,7 @@ export default function OwnedItems() {
           setLoadingMore(false);
         }
       } catch {
-        if (!dataSource) {
-          setDataSource([]);
-        }
+        setDataSource((preData) => preData || []);
       } finally {
         closeLoading();
         setMoreLoading(false);
@@ -360,7 +363,7 @@ export default function OwnedItems() {
         gap={8}
         align="center">
         <span className="text-2xl font-semibold">Amount Owned</span>
-        <span className="text-base font-semibold">({total})</span>
+        <span className="text-base font-semibold">({ownedTotal})</span>
       </Flex>
       <Layout>
         {isMobile ? (
