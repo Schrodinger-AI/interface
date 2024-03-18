@@ -51,7 +51,6 @@ export default function OwnedItems() {
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
   const isLoadMore = useRef<boolean>(false);
   const [moreLoading, setMoreLoading] = useState<boolean>(false);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
@@ -99,17 +98,12 @@ export default function OwnedItems() {
         isLoadMore.current = false;
         showLoading();
       }
-      // await sleep(1000);
       try {
         const {
           data: { getSchrodingerList: res },
         } = await getSchrodingerList({
           input: params,
         });
-        // const res = {
-        //   data: mockData,
-        //   totalCount: 100,
-        // };
         setTotal(res.totalCount ?? 0);
         const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
         if (!hasSearch) {
@@ -123,10 +117,8 @@ export default function OwnedItems() {
         });
         if (isLoadMore.current) {
           setDataSource((preData) => [...(preData || []), ...data]);
-          setLoadingMore(true);
         } else {
           setDataSource(data);
-          setLoadingMore(false);
         }
       } catch {
         setDataSource((preData) => preData || []);
@@ -343,7 +335,6 @@ export default function OwnedItems() {
   }, [filterSelect, searchParam]);
 
   const loadMoreData = useCallback(() => {
-    setLoadingMore(true);
     if (isLoading || !hasMore || moreLoading) return;
     isLoadMore.current = true;
     SetCurrent(current + 1);
@@ -425,10 +416,7 @@ export default function OwnedItems() {
               dataSource,
             }}
             InfiniteScrollProps={{
-              total,
-              hasMore,
-              hasSearch: !!tagList.length,
-              loadingMore,
+              ownedTotal,
               loading: moreLoading,
               loadMore: loadMoreData,
             }}

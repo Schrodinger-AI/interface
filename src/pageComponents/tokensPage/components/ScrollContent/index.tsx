@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { Flex, List, ListProps } from 'antd';
 import ItemCard, { CardType } from 'components/ItemCard';
 import { EmptyList } from 'components/EmptyList';
-import { TBaseSGRToken, TSGRItem } from 'types/tokens';
+import { TSGRItem } from 'types/tokens';
 import { useRouter } from 'next/navigation';
 import useColumns from 'hooks/useColumns';
 import useResponsive from 'hooks/useResponsive';
@@ -16,20 +16,16 @@ interface IContentProps {
   collapsed: boolean;
   className?: string;
   InfiniteScrollProps: {
-    hasMore: boolean;
-    total: number;
-    hasSearch?: boolean;
-    loadingMore: boolean;
+    ownedTotal: number;
     loading: boolean;
     loadMore: () => void;
-    clearFilter?: () => void;
   };
   ListProps: ListProps<TSGRItem>;
 }
 
 function ScrollContent(props: IContentProps) {
   const { ListProps, InfiniteScrollProps } = props;
-  const { loading, loadMore, hasSearch } = InfiniteScrollProps;
+  const { loading, loadMore, ownedTotal } = InfiniteScrollProps;
   const router = useRouter();
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
@@ -71,7 +67,7 @@ function ScrollContent(props: IContentProps) {
         locale={{
           emptyText: ListProps.dataSource ? (
             <Flex className="pt-0 lg:pt-6" justify="center" align="center">
-              <EmptyList isChannelShow={!hasSearch} defaultDescription="No inscriptions found" />
+              <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" />
             </Flex>
           ) : (
             <></>
