@@ -34,7 +34,7 @@ export default function MyAsset() {
         <Asset
           // isShowRamp={info.isShowRampBuy || info.isShowRampSell}
           // isShowRampBuy={info.isShowRampBuy}
-          // isShowRampSell={info.isShowRampSell}
+          isShowRampSell={false}
           // faucet={{
           //   faucetContractAddress: configInfo?.faucetContractAddress,
           // }}

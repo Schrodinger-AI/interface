@@ -35,9 +35,10 @@ import { TSGRItem } from 'types/tokens';
 export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
-  const { isLG, is2XL, is3XL } = useResponsive();
+  const { isLG, is2XL, is3XL, is4XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
   const [collapsed, setCollapsed] = useState(!isLG);
+  const [ownedTotal, setOwnedTotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
@@ -56,13 +57,15 @@ export default function OwnedItems() {
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const siderWidth = useMemo(() => {
     if (is2XL) {
-      return '33%';
+      return '25%';
     } else if (is3XL) {
-      return '28%';
-    } else {
       return '22%';
+    } else if (is4XL) {
+      return '20%';
+    } else {
+      return 368;
     }
-  }, [is2XL, is3XL]);
+  }, [is2XL, is3XL, is4XL]);
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
     return {
@@ -108,6 +111,10 @@ export default function OwnedItems() {
         //   totalCount: 100,
         // };
         setTotal(res.totalCount ?? 0);
+        const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
+        if (!hasSearch) {
+          setOwnedTotal(res.totalCount ?? 0);
+        }
         const data = (res.data || []).map((item) => {
           return {
             ...item,
@@ -122,9 +129,7 @@ export default function OwnedItems() {
           setLoadingMore(false);
         }
       } catch {
-        if (!dataSource) {
-          setDataSource([]);
-        }
+        setDataSource((preData) => preData || []);
       } finally {
         closeLoading();
         setMoreLoading(false);
@@ -358,7 +363,7 @@ export default function OwnedItems() {
         gap={8}
         align="center">
         <span className="text-2xl font-semibold">Amount Owned</span>
-        <span className="text-base font-semibold">({total})</span>
+        <span className="text-base font-semibold">({ownedTotal})</span>
       </Flex>
       <Layout>
         {isMobile ? (

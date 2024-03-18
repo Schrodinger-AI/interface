@@ -2,9 +2,11 @@ import { Input } from 'aelf-design';
 import { ZERO } from 'constants/misc';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { isPotentialNumber } from 'utils';
-
+import { ReactComponent as QuestionIcon } from 'assets/img/icons/question.svg';
+import { ToolTip } from 'aelf-design';
 export interface ISGRAmountInputProps {
   title?: string;
+  tips?: string[];
   description?: string;
   className?: string;
   max?: string;
@@ -25,6 +27,7 @@ export const SGRAmountInput = forwardRef(
   (
     {
       title,
+      tips,
       description,
       className,
       min = '0',
@@ -95,13 +98,32 @@ export const SGRAmountInput = forwardRef(
       return amount;
     }, [amount]);
 
+    const ToolTipTitle = useMemo(() => {
+      if (!tips) return null;
+      return (
+        <div className="flex flex-col">
+          {tips.map((item, index) => {
+            return <span key={index}>{item}</span>;
+          })}
+        </div>
+      );
+    }, [tips]);
+
     useImperativeHandle(ref, () => ({
       getAmount,
     }));
 
     return (
       <div className={`flex flex-col ${className}`}>
-        <span className="text-neutralPrimary text-lg">{title}</span>
+        <span className="text-neutralPrimary font-medium text-lg flex items-center">
+          <span>{title}</span>
+
+          {tips && (
+            <ToolTip title={ToolTipTitle}>
+              <QuestionIcon className="ml-[8px]" />
+            </ToolTip>
+          )}
+        </span>
         <span className="mt-[4px] text-neutralSecondary text-base">{description}</span>
         <Input
           className="mt-[16px]"

@@ -67,7 +67,6 @@ export default function StrayCatsPage() {
       tick: '',
       symbol: record.symbol,
       tokenName: record.tokenName,
-      inscriptionImage: '',
       amount: '',
       generation: record.gen,
       blockTime: 0,

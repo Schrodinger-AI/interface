@@ -90,9 +90,9 @@ export const SubTraitFilter = forwardRef(
       return _list.map((item) => {
         return {
           label: (
-            <div className="flex justify-between h-[44px] items-center">
-              <span className="text-neutralPrimary">{item.value}</span>
-              <span className="text-neutralPrimary">{item.amount}</span>
+            <div className="flex justify-between h-[44px] items-center gap-4">
+              <span className="text-neutralPrimary truncate">{item.value}</span>
+              <span className="text-neutralPrimary flex-none">{item.amount}</span>
             </div>
           ),
           value: item.value,

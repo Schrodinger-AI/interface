@@ -207,7 +207,7 @@ export const useAdoptConfirm = () => {
 
         promptModal.show({
           info: {
-            logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
+            logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
