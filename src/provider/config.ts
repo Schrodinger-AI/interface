@@ -21,7 +21,7 @@ export const AELFDProviderTheme: ThemeConfig = {
       bodyBg: 'var(--neutral-white-bg)',
     },
     Tooltip: {
-      colorBgSpotlight: 'var(--fill-mask-1)',
+      colorBgSpotlight: 'var(--fill-mask-2)',
       colorTextLightSolid: 'var(--neutral-white-bg)',
       borderRadius: 4,
     },
