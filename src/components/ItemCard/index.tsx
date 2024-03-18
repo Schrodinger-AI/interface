@@ -1,8 +1,6 @@
 import { HashAddress } from 'aelf-design';
-import TextArea from 'antd/es/input/TextArea';
 import SkeletonImage from 'components/SkeletonImage';
-import React, { useCallback, useMemo, useState } from 'react';
-import { BigNumber } from 'bignumber.js';
+import React, { useCallback, useMemo } from 'react';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
 import { formatTimeByDayjs, formatTokenPrice } from 'utils/format';
@@ -22,7 +20,6 @@ interface IItemCard {
 
 export default function ItemCard({ item, onPress, type }: IItemCard) {
   const {
-    inscriptionImage,
     inscriptionImageUri,
     generation = '1',
     tokenName,
@@ -51,7 +48,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     onPress && onPress(item);
   }, [item, onPress]);
 
-  const adoptTimeStr = useMemo(() => formatTimeByDayjs(item.adoptTime), [item.adoptTime]);
+  const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
 
   return (
     <div
@@ -63,7 +60,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
             <div className="text-white text-xss leading-4 font-poppins">{`GEN ${generation}`}</div>
           </div>
           <SkeletonImage
-            img={inscriptionImageUri || inscriptionImage}
+            img={inscriptionImageUri}
             imageSizeType="contain"
             className="w-full h-auto aspect-square object-contain"
           />

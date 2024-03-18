@@ -10,7 +10,6 @@ export type TBaseSGRToken = {
   tick: string;
   symbol: string;
   tokenName: string;
-  inscriptionImage: string;
   amount: string;
   generation: number;
   blockTime: number;

@@ -58,7 +58,7 @@ const useAdoptHandler = () => {
         adoptActionModal.show({
           modalTitle: 'Adopt Next-Gen Cat',
           info: {
-            logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
+            logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
@@ -109,7 +109,7 @@ const useAdoptHandler = () => {
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
-            logo: parentItemInfo.inscriptionImageUri || parentItemInfo.inscriptionImage,
+            logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,

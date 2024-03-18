@@ -7,7 +7,6 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
       data {
         symbol
         tokenName
-        inscriptionImage
         inscriptionImageUri
         amount
         generation
@@ -25,7 +24,6 @@ export const GET_SCHRODINGER_DETAIL_QUERY = gql`
     getSchrodingerDetail(input: $input) {
       symbol
       tokenName
-      inscriptionImage
       inscriptionImageUri
       amount
       generation
