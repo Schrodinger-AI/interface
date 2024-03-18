@@ -65,8 +65,8 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
         <div className="text-neutralTitle">Adopt Next-Gen Cat</div>
         {isAcross && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
-            Congratulations on the opportunity to adopt CATs{' '}
-            <span className="text-functionalWarning">ACROSS GENERATIONS!</span>
+            Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
+            adoption and your cat will gain multiple traits in this adoption.
           </div>
         )}
       </div>
@@ -84,7 +84,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   return (
     <CommonModal
       title={title}
-      closable={false}
+      closable={true}
       open={modal.visible}
       onCancel={onCancel}
       afterClose={modal.remove}
@@ -94,7 +94,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
         </Button>
       }>
       <div className="flex flex-col gap-[24px] lg:gap-[32px]">
-        <NoticeBar text="Please don't close this window until you complete the adoption." />
+        <NoticeBar text="!Please don't close this window until you complete the adoption." />
         <SGRTokenInfo {...SGRToken} />
         <DescriptionItem
           title="Newly Generated Trait"

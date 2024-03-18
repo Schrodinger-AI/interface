@@ -78,7 +78,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
       <div
         className={clsx(
           styles.radio,
-          'bg-[var(--fill-mask-3)] shadow-selectShadow w-[28px] h-[28px] rounded-[28px] border-[2.5px] border-solid border-neutralWhiteBg hover:border-brandDefault',
+          'bg-fillMask3 shadow-selectShadow w-[28px] h-[28px] rounded-[28px] border-[2.5px] border-solid border-neutralWhiteBg hover:border-brandDefault mt-2 mr-2',
           active && '!border-brandDefault !bg-brandDefault',
         )}>
         {active ? <RadioSelect /> : null}
@@ -95,7 +95,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
       )}>
       {!error && (
         <div
-          className="flex justify-center items-center absolute w-[32px] h-[32px] right-[8px] top-[8px] cursor-pointer z-10"
+          className="flex absolute w-full h-full justify-end lg:justify-center lg:items-center lg:h-[36px] lg:w-[36px]  lg:top-0 lg:right-0 cursor-pointer z-10"
           onClick={onClick}>
           {Radio}
         </div>
@@ -111,7 +111,7 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
       />
       {isLG && !error && (
         <div
-          className="absolute bottom-3 left-3 flex justify-center items-center rounded-md px-1 py-2 bg-fillMask1 w-[24px] h-[24px]"
+          className="absolute bottom-3 left-3 flex justify-center items-center rounded-md px-1 py-2 bg-fillMask1 w-[24px] h-[24px] z-20 cursor-pointer"
           onClick={() => setShow(true)}>
           <EyeSVG />
         </div>

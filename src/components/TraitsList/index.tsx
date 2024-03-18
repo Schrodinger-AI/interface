@@ -5,6 +5,7 @@ import { ITrait } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
 import { formatPercent } from 'utils/format';
+import TextEllipsis from 'components/TextEllipsis';
 
 interface ITraitItem {
   item: ITrait;
@@ -22,11 +23,11 @@ function TraitsItem({ item, showNew, isLG }: ITraitItem) {
   return (
     <div
       className={clsx(
-        'relative flex flex-col justify-center py-[6px] px-[12px] bg-[#F6F6F6] rounded-md font-medium text-center text-xs text-[#919191]',
+        'relative flex flex-col justify-center py-[6px] px-[12px] bg-neutralDefaultBg rounded-md font-medium text-center text-xs text-neutralSecondary',
         !showNew && !isLG && 'px-[8px]',
       )}>
-      <div>{traitType}</div>
-      <div className="text-sm text-[#1A1A1A] w-full overflow-hidden whitespace-nowrap text-ellipsis">{value}</div>
+      <TextEllipsis value={traitType} />
+      <TextEllipsis className="text-sm text-neutralTitle" value={value} />
       <div>{formatPercent(percent)}%</div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>

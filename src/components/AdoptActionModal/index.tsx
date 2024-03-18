@@ -9,8 +9,6 @@ import { ONE, ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
-import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import { Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
 import { ADOPT_NEXT_RATE } from 'constants/index';
