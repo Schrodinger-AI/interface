@@ -94,7 +94,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
         </Button>
       }>
       <div className="flex flex-col gap-[24px] lg:gap-[32px]">
-        <NoticeBar text="!Please don't close this window until you complete the adoption." />
+        <NoticeBar text="Please don't close this window until you complete the adoption." />
         <SGRTokenInfo {...SGRToken} />
         <DescriptionItem
           title="Newly Generated Trait"
