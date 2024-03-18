@@ -117,7 +117,7 @@ export default function DetailPage() {
   }, 3000);
 
   return (
-    <section className="mt-[24px] lg:mt-[48px] flex flex-col items-center w-full">
+    <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
