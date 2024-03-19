@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import useResponsive from './useResponsive';
 
 export default function useColumns(collapsed: boolean) {
-  const { isMin, isSM, isMD, isLG, is2XL, is3XL } = useResponsive();
+  const { isMin, isSM, isMD, isLG, is2XL, is3XL, is4XL } = useResponsive();
   const columns = useMemo(() => {
     let result = 0;
     if (isMin) {
@@ -17,6 +17,8 @@ export default function useColumns(collapsed: boolean) {
       result = 6;
     } else if (is3XL) {
       result = 7;
+    } else if (is4XL) {
+      result = 8;
     } else {
       result = 9;
     }
@@ -24,7 +26,7 @@ export default function useColumns(collapsed: boolean) {
       result -= 2;
     }
     return result;
-  }, [isMin, isSM, isMD, isLG, is2XL, is3XL, collapsed]);
+  }, [isMin, isSM, isMD, isLG, is2XL, is3XL, is4XL, collapsed]);
 
   return columns;
 }
