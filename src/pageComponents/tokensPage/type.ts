@@ -27,7 +27,7 @@ export enum FilterKeyEnum {
   Generation = 'Generation',
 }
 
-export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Generation];
+export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Traits];
 
 export type CheckboxItemType = {
   key: FilterKeyEnum;
