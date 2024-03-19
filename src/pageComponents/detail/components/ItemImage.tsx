@@ -1,12 +1,12 @@
 import { TSGRToken } from 'types/tokens';
 import SkeletonImage from 'components/SkeletonImage';
 
-export default function ItemImage({ detail }: { detail: TSGRToken }) {
+export default function ItemImage({ detail: { generation, inscriptionImageUri } }: { detail: TSGRToken }) {
   return (
     <div className="relative aspect-square w-full lg:mr-[40px] mr-0 lg:w-[450px] flex items-center justify-center mt-[16px] lg:mt-[0px] rounded-2xl	border-solid border border-[#E1E1E1] bg-[#F5FEF7CC]">
-      <SkeletonImage img={detail.inscriptionImageUri} className="w-full" />
+      <SkeletonImage img={inscriptionImageUri} className="w-full" />
       <div className="absolute top-[12px] left-[12px] bg-[#00000099] text-white px-[6px] py-[2px] text-xs font-medium rounded-lg">
-        GEN {detail.generation}
+        GEN {generation}
       </div>
     </div>
   );

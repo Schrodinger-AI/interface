@@ -8,12 +8,16 @@ export interface IInfoCard {
   name: string;
   tag?: string;
   subName?: string;
+  items?: {
+    label: string;
+    value: string;
+  }[];
   className?: string;
   layout?: 'horizontal' | 'vertical';
 }
 
 function InfoCard(params: IInfoCard) {
-  const { logo, name, tag, subName, className, layout = 'horizontal' } = params;
+  const { logo, name, tag, items, subName, className, layout = 'horizontal' } = params;
   return (
     <div
       className={clsx(
@@ -45,6 +49,16 @@ function InfoCard(params: IInfoCard) {
             </span>
           </div>
         )}
+        {items?.map((val, index) => {
+          return (
+            <div key={index} className={clsx(styles.item, layout === 'vertical' ? 'flex-row' : 'flex-col', 'mt-[8px]')}>
+              <span className={clsx(styles.title, layout === 'vertical' ? 'min-w-[128px]' : '')}>{val.label}</span>
+              <span className={clsx(styles.value, layout === 'vertical' ? 'flex-1 ml-[16px] text-right' : 'w-full')}>
+                {val.value}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
