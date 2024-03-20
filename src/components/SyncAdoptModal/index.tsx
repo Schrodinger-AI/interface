@@ -5,12 +5,12 @@ import NiceModal, { useModal } from '@ebay/nice-modal-react';
 function SyncAdoptModal({
   closable = false,
   innerText = "Please don't close this window until you complete the adoption.",
-  showLoading,
+  showLoading = true,
   onCancel,
 }: {
   closable: boolean;
   innerText: string;
-  showLoading?: React.ReactDOM;
+  showLoading: boolean;
   onCancel: () => void;
 }) {
   const modal = useModal();
