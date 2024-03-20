@@ -167,6 +167,7 @@ const useAdoptHandler = () => {
       }
       asyncModal.show({
         closable: true,
+        showLoading: false,
         innerText:
           'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.',
         onCancel: () => {
