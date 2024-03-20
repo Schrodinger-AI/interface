@@ -13,7 +13,6 @@ import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
-import SafeArea from 'components/SafeArea';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
 
@@ -95,7 +94,7 @@ const Layout = dynamic(async () => {
     }, [pathname]);
 
     return (
-      <SafeArea>
+      <>
         {!isHiddenLayout ? (
           <AntdLayout className="h-full overflow-scroll min-w-[360px]">
             {!isHiddenHeader && <Header />}
@@ -112,7 +111,7 @@ const Layout = dynamic(async () => {
         ) : (
           <>{children}</>
         )}
-      </SafeArea>
+      </>
     );
   };
 });
