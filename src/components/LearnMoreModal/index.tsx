@@ -7,7 +7,6 @@ import { useCmsInfo } from 'redux/hooks';
 import { TBaseSGRToken } from 'types/tokens';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { divDecimals } from 'utils/calculate';
-import { getCollection } from 'utils';
 import { openExternalLink } from 'utils/openlink';
 
 interface ILearnMoreModalProps {
@@ -25,10 +24,9 @@ function LearnMoreModal({ item }: ILearnMoreModalProps) {
   const onJump = useCallback(() => {
     const forestUrl = cmsInfo?.forestUrl || '';
     if (!forestUrl) return;
-    // TODO: adjust window.open
-    // window.open(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
-    const collection = getCollection(item.symbol);
-    openExternalLink(`${forestUrl}/explore-items/${cmsInfo?.curChain}-${collection}-0`, '_blank');
+    // const collection = getCollection(item.symbol);
+    // openExternalLink(`${forestUrl}/explore-items/${cmsInfo?.curChain}-${collection}-0`, '_blank');
+    openExternalLink(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
     modal.hide();
   }, [cmsInfo?.curChain, cmsInfo?.forestUrl, item.symbol, modal]);
 

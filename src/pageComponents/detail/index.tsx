@@ -108,7 +108,10 @@ export default function DetailPage() {
     );
   };
 
-  const onTrade = useCallback(() => marketModal.show({ title: 'Trade' }), [marketModal]);
+  const onTrade = useCallback(
+    () => marketModal.show({ title: 'Trade', isTrade: true, symbol: symbol || '' }),
+    [marketModal, symbol],
+  );
 
   useTimeoutFn(() => {
     if (!isLogin) {
