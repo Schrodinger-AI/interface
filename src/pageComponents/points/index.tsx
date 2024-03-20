@@ -11,21 +11,25 @@ export default function PointsPage() {
   const { isLogin, wallet } = useWalletService();
   const router = useRouter();
   const { checkTokenValid } = useCheckLoginAndToken();
-  const { showLoading, closeLoading, visible } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
 
-  const getPointsData = useCallback(async () => {
-    if (!wallet.address) return;
-    showLoading();
-    const response = await getPoints({
-      domain: document.location.host,
-      address: wallet.address,
-    });
-    closeLoading();
-    return response;
-  }, [closeLoading, showLoading, wallet.address]);
+  const getPointsData = useCallback(
+    async (address: string) => {
+      if (!address) return;
+      showLoading();
+      const response = await getPoints({
+        domain: document.location.host,
+        address: address,
+      });
+      closeLoading();
+      return response;
+    },
+    [closeLoading, showLoading],
+  );
 
-  const { data } = useRequest(getPointsData, {
+  const { data, loading } = useRequest(() => getPointsData(wallet.address), {
     pollingInterval: 1000 * 60,
+    refreshDeps: [wallet.address],
     onError: (err) => {
       console.error('getPointsDataError', err);
     },
@@ -37,7 +41,7 @@ export default function PointsPage() {
     }
   }, 3000);
 
-  if (visible) return null;
+  if (loading) return null;
 
   return (
     <div className="w-full flex flex-col items-center">
