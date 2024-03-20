@@ -12,6 +12,6 @@ const AdoptActionErrorMessage: { [x in `${AdoptActionErrorCode}`]: string } = {
 export const getAdoptErrorMessage = (error: any, message?: string) => {
   const code = (typeof error === 'string' ? error : undefined) as `${AdoptActionErrorCode}`;
   if (code && AdoptActionErrorMessage[code]) return AdoptActionErrorMessage[code];
-  const _error = error?.errorMessage?.message || error?.errorMessage || error?.message;
+  const _error = error?.errorMessage?.message || error?.errorMessage || error?.message || error;
   return handleErrorMessage(_error, message);
 };
