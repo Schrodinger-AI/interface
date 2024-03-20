@@ -1,7 +1,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
-const needLoginPaths = ['/detail'];
+const needLoginPaths = ['/detail', '/points', '/stray-cats'];
 const useBackToHomeByRoute = () => {
   const pathname = usePathname();
   const router = useRouter();

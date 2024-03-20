@@ -1,23 +1,28 @@
 import { getPoints } from 'api/request';
 import { TokenEarnList } from 'components/EarnList';
-import { useWalletService } from 'hooks/useWallet';
+import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useRequest } from 'ahooks';
+import { useTimeoutFn } from 'react-use';
+import useLoading from 'hooks/useLoading';
 
 export default function PointsPage() {
-  const { isLogin } = useWalletService();
+  const { isLogin, wallet } = useWalletService();
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { checkTokenValid } = useCheckLoginAndToken();
+  const { showLoading, closeLoading, visible } = useLoading();
 
   const getPointsData = useCallback(async () => {
     if (!wallet.address) return;
+    showLoading();
     const response = await getPoints({
       domain: document.location.host,
       address: wallet.address,
     });
+    closeLoading();
     return response;
-  }, [wallet]);
+  }, [closeLoading, showLoading, wallet.address]);
 
   const { data } = useRequest(getPointsData, {
     pollingInterval: 1000 * 60,
@@ -26,11 +31,13 @@ export default function PointsPage() {
     },
   });
 
-  useEffect(() => {
-    if (!isLogin) {
+  useTimeoutFn(() => {
+    if (!isLogin && !checkTokenValid()) {
       router.push('/');
     }
-  }, [isLogin, router]);
+  }, 3000);
+
+  if (visible) return null;
 
   return (
     <div className="w-full flex flex-col items-center">
