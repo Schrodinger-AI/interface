@@ -11,12 +11,12 @@ function SyncAdoptModal() {
       closable={false}
       maskClosable={true}
       afterClose={modal.remove}
-      title={<div className="pb-[16px] text-2xl font-semibold">Pending Adopt</div>}
+      title={<div className="pb-[16px] text-2xl font-semibold">Adopt Cats</div>}
       footer={null}>
       <div className="flex flex-col gap-6">
-        <NoticeBar text="Please do not close this pop-up window." />
+        <NoticeBar text="Please don't close this window until you complete the adoption." />
         <div className="flex justify-center items-center gap-2">
-          <div className="text-base text-center text-neutralSecondary">Waiting for AI to generate images</div>
+          <div className="text-base text-center text-neutralSecondary">Generate your NFT image using AI</div>
           <img
             className="mt-1 animate-spin"
             src={require('assets/img/icons/loadingCircle.png').default.src}
