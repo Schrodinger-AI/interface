@@ -7,7 +7,6 @@ import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
 import { useWalletService } from 'hooks/useWallet';
-import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 
 export default function MyAsset() {
   const router = useRouter();
@@ -15,8 +14,6 @@ export default function MyAsset() {
   const { isLogin } = useWalletService();
 
   const { PortkeyAssetProvider, Asset } = useComponentFlex();
-
-  const { topSafeHeight } = useSafeAreaHeight();
 
   useEffect(() => {
     if (!isLogin) {
@@ -29,7 +26,7 @@ export default function MyAsset() {
   }
 
   return (
-    <div className={styles.asset} style={{ top: topSafeHeight }}>
+    <div className={styles.asset}>
       <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
         <Asset
           // isShowRamp={info.isShowRampBuy || info.isShowRampSell}

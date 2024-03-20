@@ -39,6 +39,10 @@ const WebLoginProviderDynamic = dynamic(
           baseURL: serverV2 || '',
         },
         serviceUrl: serverV2,
+        loginConfig: {
+          recommendIndexes: [0, 1],
+          loginMethodsOrder: ['Google', 'Apple', 'Telegram', 'Email'],
+        },
       },
       aelfReact: {
         appName: APP_NAME,

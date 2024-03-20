@@ -25,7 +25,6 @@ import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
 import { ENVIRONMENT } from 'constants/url';
-import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 import { ICompassProps, RouterItemType } from './type';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
@@ -80,8 +79,6 @@ export default function Header() {
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
-
-  const { topSafeHeight } = useSafeAreaHeight();
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     setLogoutComplete(true);
@@ -332,7 +329,6 @@ export default function Header() {
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG className="size-4" />}
-        style={{ paddingTop: Number(topSafeHeight) }}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable
