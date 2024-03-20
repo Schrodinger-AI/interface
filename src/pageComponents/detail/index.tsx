@@ -108,10 +108,10 @@ export default function DetailPage() {
     );
   };
 
-  const onTrade = useCallback(
-    () => marketModal.show({ title: 'Trade', isTrade: true, symbol: symbol || '' }),
-    [marketModal, symbol],
-  );
+  const onTrade = useCallback(() => {
+    if (!schrodingerDetail) return;
+    marketModal.show({ title: 'Trade', isTrade: true, detail: schrodingerDetail });
+  }, [marketModal, schrodingerDetail]);
 
   useTimeoutFn(() => {
     if (!isLogin) {

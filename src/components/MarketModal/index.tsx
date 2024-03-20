@@ -6,26 +6,38 @@ import { useCmsInfo } from 'redux/hooks';
 import { jsonParse } from 'utils/common';
 import { TTradeItem } from 'redux/types/reducerTypes';
 import { openExternalLink } from 'utils/openlink';
+import { TSGRToken } from 'types/tokens';
+import { divDecimals } from 'utils/calculate';
+import { ONE } from 'constants/misc';
 
 export interface IMarketModalProps {
   title: string;
   isTrade?: boolean;
-  symbol?: string;
+  detail?: TSGRToken;
 }
-function MarketModal({ title, isTrade = false, symbol = 'SGR' }: IMarketModalProps) {
+function MarketModal({ title, isTrade = false, detail }: IMarketModalProps) {
   const modal = useModal();
   const { tradeDescription = '', tradeList = '', forestUrl, curChain } = useCmsInfo() || {};
-  const list = useMemo<TTradeItem[]>(() => jsonParse(tradeList), [tradeList]);
+  const list = useMemo<TTradeItem[]>(() => {
+    const _list: TTradeItem[] = jsonParse(tradeList) || [];
+    if (!isTrade || !detail) return _list;
+    const { amount, decimals, generation } = detail;
+    if (generation === 0) return _list;
+    if (divDecimals(amount, decimals).lt(ONE)) {
+      return _list.filter((item) => item.title.toLocaleLowerCase() !== 'forest');
+    }
+    return _list;
+  }, [detail, isTrade, tradeList]);
 
   const onItemClick = useCallback(
     (item: TTradeItem) => {
-      console.log('isTrade', isTrade);
       const itemTitle = item?.title?.toLocaleLowerCase() || '';
       if (!isTrade || itemTitle !== 'forest') openExternalLink(item.link, '_blank');
       // forest item
+      const { symbol } = detail || {};
       openExternalLink(`${forestUrl}/detail/buy/${curChain}-${symbol}/${curChain}`, '_blank');
     },
-    [curChain, forestUrl, isTrade, symbol],
+    [curChain, detail, forestUrl, isTrade],
   );
 
   return (
