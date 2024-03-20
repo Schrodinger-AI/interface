@@ -41,6 +41,15 @@ export default function Header() {
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
+
+  const StrayCatsItem = useMemo(
+    () => ({
+      title: 'Stray Cats',
+      schema: '/stray-cats',
+      type: RouterItemType.Inner,
+    }),
+    [],
+  );
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
     try {
@@ -133,23 +142,23 @@ export default function Header() {
     );
   }, [checkLogin, checkTokenValid, router]);
 
-  const StrayCatsItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          if (checkTokenValid()) {
-            router.push('/stray-cats');
-            setMenuModalVisibleModel(ModalViewModel.NONE);
-          } else {
-            checkLogin();
-          }
-        }}>
-        <StrayCats />
-        <span>Stray Cats</span>
-      </div>
-    );
-  }, [checkLogin, checkTokenValid, router]);
+  // const StrayCatsItem = useCallback(() => {
+  //   return (
+  //     <div
+  //       className={styles.menuItem}
+  //       onClick={() => {
+  //         if (checkTokenValid()) {
+  //           router.push('/stray-cats');
+  //           setMenuModalVisibleModel(ModalViewModel.NONE);
+  //         } else {
+  //           checkLogin();
+  //         }
+  //       }}>
+  //       <StrayCats />
+  //       <span>Stray Cats</span>
+  //     </div>
+  //   );
+  // }, [checkLogin, checkTokenValid, router]);
 
   const AssetItem = useCallback(() => {
     return (
@@ -172,7 +181,7 @@ export default function Header() {
         label: <CopyAddressItem />,
       },
       { key: 'asset', label: <AssetItem /> },
-      { key: 'stray cats', label: <StrayCatsItem /> },
+      // { key: 'stray cats', label: <StrayCatsItem /> },
       { key: 'points', label: <PointsItem /> },
       {
         key: 'logout',
@@ -183,10 +192,13 @@ export default function Header() {
       menuItems.splice(1, 1);
     }
     return menuItems;
-  }, [AssetItem, CopyAddressItem, LogoutItem, StrayCatsItem, PointsItem, walletType]);
+  }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
-    return menuItems.map((item) => {
+    const _menuItems = [...menuItems];
+    isLogin && _menuItems.push(StrayCatsItem);
+
+    return _menuItems.map((item) => {
       return {
         key: item.title,
         label: (
@@ -202,7 +214,7 @@ export default function Header() {
         ),
       };
     });
-  }, [menuItems, onPressCompassItems]);
+  }, [StrayCatsItem, isLogin, menuItems, onPressCompassItems]);
 
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
@@ -261,6 +273,15 @@ export default function Header() {
               );
             }
           })}
+
+          {isLogin && (
+            <CompassLink
+              key={StrayCatsItem.title}
+              item={StrayCatsItem}
+              className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
+              onPressCompassItems={onPressCompassItems}
+            />
+          )}
           <div>{myComponent}</div>
         </span>
       );
