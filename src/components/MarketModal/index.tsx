@@ -32,7 +32,10 @@ function MarketModal({ title, isTrade = false, detail }: IMarketModalProps) {
   const onItemClick = useCallback(
     (item: TTradeItem) => {
       const itemTitle = item?.title?.toLocaleLowerCase() || '';
-      if (!isTrade || itemTitle !== 'forest') openExternalLink(item.link, '_blank');
+      if (!isTrade || itemTitle !== 'forest') {
+        openExternalLink(item.link, '_blank');
+        return;
+      }
       // forest item
       const { symbol } = detail || {};
       openExternalLink(`${forestUrl}/detail/buy/${curChain}-${symbol}/${curChain}`, '_blank');
