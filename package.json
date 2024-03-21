@@ -7,7 +7,7 @@
     "dev:test": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next dev",
     "build:dev": "NEXT_PUBLIC_APP_ENV=development next build",
     "build:test": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next build",
-    "build": "NEXT_PUBLIC_APP_ENV=production next build",
+    "build": "NEXT_PUBLIC_APP_ENV=production NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier -c --write '**/*'",

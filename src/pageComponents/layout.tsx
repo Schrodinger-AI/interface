@@ -8,7 +8,7 @@ import { store } from 'redux/store';
 import { setIsMobile } from 'redux/reducer/info';
 import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
-import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
+import { useWalletInit } from 'hooks/useWallet';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
@@ -43,7 +43,6 @@ const Layout = dynamic(async () => {
     });
 
     useWalletInit();
-    useBroadcastChannel();
 
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';

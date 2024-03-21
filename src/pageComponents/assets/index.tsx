@@ -39,6 +39,9 @@ export default function MyAsset() {
           onOverviewBack={() => {
             router.push('/');
           }}
+          onDeleteAccount={() => {
+            router.push('/');
+          }}
           onLifeCycleChange={(lifeCycle: any) => {
             console.log(lifeCycle, 'onLifeCycleChange');
           }}
