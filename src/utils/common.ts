@@ -12,7 +12,8 @@ export function dotString(str: string, maxLength = 16) {
 }
 
 export function getSecondHostName() {
-  const mainDomain = 'schrodingernft.ai';
+  const env = process.env.NEXT_PUBLIC_APP_ENV;
+  const mainDomain = env === 'test' ? 'schrodingerai.com' : 'schrodingernft.ai';
   const hostname = window?.location.hostname || '';
   if (!hostname || hostname === mainDomain) return '';
   return hostname.split('.')[0];

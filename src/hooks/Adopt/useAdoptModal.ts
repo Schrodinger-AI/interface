@@ -18,6 +18,7 @@ import { getDomain } from 'utils';
 import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
 import SyncAdoptModal from 'components/SyncAdoptModal';
+import { AIServerError } from 'utils/formattError';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -168,8 +169,7 @@ const useAdoptHandler = () => {
       asyncModal.show({
         closable: true,
         showLoading: false,
-        innerText:
-          'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.',
+        innerText: AIServerError,
         onCancel: () => {
           asyncModal.hide();
           reject(AdoptActionErrorCode.cancel);

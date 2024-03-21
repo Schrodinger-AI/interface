@@ -4,6 +4,8 @@ export const DEFAULT_ERROR = 'Something went wrong. Please try again later.';
 
 export const UserDeniedMessage = 'Request rejected. Schrödinger needs your permission to continue';
 export const EventEnded = 'The event has ended';
+export const AIServerError =
+  'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.';
 
 enum SourceErrorType {
   Error1 = 'Operation canceled',
