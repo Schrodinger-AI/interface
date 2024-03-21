@@ -6,6 +6,8 @@ export const UserDeniedMessage = 'Request rejected. Schrödinger needs your perm
 export const EventEnded = 'The event has ended';
 export const AIServerError =
   'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.';
+export const TransactionFeeNotEnough =
+  'Failed to be enrolled. Please transfer some ELF to this address before you try again.';
 
 enum SourceErrorType {
   Error1 = 'Operation canceled',
