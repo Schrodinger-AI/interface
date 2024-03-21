@@ -11,7 +11,7 @@ import { useWalletService } from 'hooks/useWallet';
 export default function MyAsset() {
   const router = useRouter();
   const { wallet } = useWebLogin();
-  const { isLogin } = useWalletService();
+  const { isLogin, logout } = useWalletService();
 
   const { PortkeyAssetProvider, Asset } = useComponentFlex();
 
@@ -40,7 +40,7 @@ export default function MyAsset() {
             router.push('/');
           }}
           onDeleteAccount={() => {
-            router.push('/');
+            logout();
           }}
           onLifeCycleChange={(lifeCycle: any) => {
             console.log(lifeCycle, 'onLifeCycleChange');
