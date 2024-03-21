@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { TSGRItem } from 'types/tokens';
 import ScrollContent from 'components/ScrollContent';
 import useLoading from 'hooks/useLoading';
@@ -15,11 +15,8 @@ import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'gr
 const pageSize = 32;
 export default function List() {
   const [total, setTotal] = useState(0);
-  // const [current, SetCurrent] = useState(1);
+  const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>([]);
-  const isLoadMore = useRef<boolean>(false);
-  const [moreLoading, setMoreLoading] = useState<boolean>(false);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const cmsInfo = useCmsInfo();
   const gutter = useLatestGutter();
@@ -33,16 +30,11 @@ export default function List() {
   const getLatestSchrodingerList = useGetLatestSchrodingerList();
 
   const fetchData = useCallback(
-    async ({ params, loadMore = false }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {
+    async ({ params }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {
       if (!params.chainId) {
         return;
       }
-      if (loadMore) {
-        setMoreLoading(true);
-      } else {
-        isLoadMore.current = false;
-        showLoading();
-      }
+      showLoading();
       try {
         const {
           data: { getLatestSchrodingerListAsync: res },
@@ -56,43 +48,33 @@ export default function List() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
-        if (isLoadMore.current) {
-          setDataSource((preData) => [...preData, ...data]);
-          setLoadingMore(true);
-        } else {
-          setDataSource(data);
-          setLoadingMore(false);
-        }
+        setDataSource((preData) => [...preData, ...data]);
       } finally {
         closeLoading();
-        setMoreLoading(false);
       }
     },
     // There cannot be dependencies showLoading and closeLoading
     [closeLoading, getLatestSchrodingerList, showLoading],
   );
 
-  // const requestParams = useMemo(() => {
-  //   return {
-  //     chainId: cmsInfo?.curChain ?? 'tDVV',
-  //     skipCount: getPageNumber(current, pageSize),
-  //     maxResultCount: pageSize,
-  //   };
-  // }, [cmsInfo?.curChain, current]);
+  const requestParams = useMemo(() => {
+    return {
+      chainId: cmsInfo?.curChain ?? 'tDVV',
+      skipCount: getPageNumber(current, pageSize),
+      maxResultCount: pageSize,
+    };
+  }, [cmsInfo?.curChain, current]);
 
   const loadMoreData = useCallback(() => {
-    // setLoadingMore(true);
-    // if (isLoading || !hasMore || moreLoading) return;
-    // isLoadMore.current = true;
-    // SetCurrent(current + 1);
-    // fetchData({
-    //   params: {
-    //     ...requestParams,
-    //     skipCount: getPageNumber(current + 1, pageSize),
-    //   },
-    //   loadMore: true,
-    // });
-  }, []);
+    if (isLoading || !hasMore) return;
+    SetCurrent(current + 1);
+    fetchData({
+      params: {
+        ...requestParams,
+        skipCount: getPageNumber(current + 1, pageSize),
+      },
+    });
+  }, [current, fetchData, hasMore, isLoading, requestParams]);
 
   const defaultRequestParams = useMemo(() => {
     let blackList = undefined;
@@ -144,13 +126,7 @@ export default function List() {
         ListProps={{
           dataSource,
         }}
-        InfiniteScrollProps={{
-          total,
-          hasMore,
-          loadingMore,
-          loading: moreLoading,
-          loadMore: loadMoreData,
-        }}
+        // loadMore={loadMoreData}
       />
     </>
   );

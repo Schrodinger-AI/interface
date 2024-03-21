@@ -12,43 +12,20 @@ import styles from './style.module.css';
 import { ListGridType } from 'antd/es/list';
 
 interface IContentProps {
-  // collapsed?: boolean;
   type: CardType;
   className?: string;
   grid: ListGridType;
   emptyText?: ReactNode;
-  InfiniteScrollProps: {
-    hasMore: boolean;
-    total: number;
-    hasSearch?: boolean;
-    loadingMore: boolean;
-    loading: boolean;
-    loadMore: () => void;
-    clearFilter?: () => void;
-  };
+  loadMore?: () => void;
   onPress: (item: TSGRItem) => void;
   ListProps: ListProps<TSGRItem>;
 }
 
 function ScrollContent(props: IContentProps) {
-  const { ListProps, InfiniteScrollProps, type, grid, emptyText, onPress } = props;
-  const { loading, loadMore } = InfiniteScrollProps;
+  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress } = props;
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
-  // const { isLG } = useResponsive();
-  // const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
-  // const column = useColumns(props.collapsed);
-  const { showLoading, closeLoading } = useLoading();
-
-  useEffect(() => {
-    if (loading) {
-      showLoading();
-    } else {
-      closeLoading();
-    }
-    // There cannot be dependencies showLoading and closeLoading
-  }, [loading]);
 
   const handleScroll = useCallback(
     async (event: Event) => {
