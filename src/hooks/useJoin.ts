@@ -1,8 +1,11 @@
 import { useModal } from '@ebay/nice-modal-react';
+import { message } from 'antd';
 import JoinModal from 'components/JoinModal';
 import { GetJoinRecord, Join } from 'contract/schrodinger';
 import { useCallback } from 'react';
+import { IContractError } from 'types';
 import { getDomain } from 'utils';
+import { TransactionFeeNotEnough } from 'utils/formattError';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
@@ -22,6 +25,12 @@ export const useCheckJoined = () => {
               console.log(res, 'res==checkJoined');
             } catch (error) {
               resolve(false);
+              const errorMessage = (error as IContractError).errorMessage?.message;
+              if (errorMessage?.includes('Pre-Error: Transaction fee not enough')) {
+                message.error(TransactionFeeNotEnough);
+                return;
+              }
+              message.error(errorMessage);
               console.log(error, 'error===checkJoined');
             } finally {
               JoinModalInit.hide();

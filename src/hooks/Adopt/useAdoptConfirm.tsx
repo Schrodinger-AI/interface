@@ -92,7 +92,7 @@ export const useAdoptConfirm = () => {
 
             onClose: () => {
               adoptNextModal.hide();
-              // reject(AdoptActionErrorCode.cancel);
+              reject(AdoptActionErrorCode.cancel);
             },
             onConfirm: (selectImage) => {
               resolve(selectImage);
@@ -349,6 +349,9 @@ export const useAdoptConfirm = () => {
           symbol: nextSymbol,
         });
       } catch (error) {
+        if (error === AdoptActionErrorCode.cancel) {
+          return;
+        }
         message.error(
           typeof error === 'string'
             ? error
