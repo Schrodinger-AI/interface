@@ -55,6 +55,9 @@ module.exports = {
           '100%': { transform: 'rotate(-360deg)' },
         },
       },
+      backgroundImage: {
+        inviteCardBg: 'linear-gradient(180deg, #DFECFE 0%, #FFFFFF 50.18%)',
+      },
       animation: {
         loading: 'loading 800ms linear infinite',
       },
