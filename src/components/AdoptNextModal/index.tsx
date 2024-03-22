@@ -86,7 +86,11 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     const traitTypeList = allTraits.map((item) => item.traitType);
     const valueList = allTraits.map((item) => item.value);
 
-    getRarity(traitTypeList, valueList);
+    try {
+      getRarity(traitTypeList, valueList);
+    } catch (error) {
+      console.error('getRarity error:', error);
+    }
   }, [allTraits]);
 
   return (
