@@ -9,8 +9,8 @@ export const CompassText = (props: { title?: string; schema?: string }) => {
   return (
     <span
       className={`!rounded-[12px] text-lg ${
-        isCurrent ? 'text-compassActive' : 'text-compassNormal'
-      } hover:text-compassActive cursor-pointer font-medium	`}>
+        isCurrent ? 'text-brandDefault' : 'text-neutralTitle'
+      } hover:text-brandDefault cursor-pointer font-medium	`}>
       {props.title}
     </span>
   );

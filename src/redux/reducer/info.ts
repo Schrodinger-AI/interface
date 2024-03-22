@@ -44,6 +44,15 @@ export const infoSlice = createSlice({
     setHasToken(state, action) {
       state.hasToken = action.payload;
     },
+    setTheme(state, action) {
+      state.theme = action.payload;
+      localStorage?.setItem('theme', action.payload);
+      if (action.payload === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+      } else {
+        document.documentElement.classList.remove('dark-theme');
+      }
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -57,7 +66,7 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setCmsInfo, setJoinInfo, setLoginTrigger, setHasToken } =
+export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setJoinInfo, setLoginTrigger, setHasToken } =
   infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinInfo = (state: AppState) => state.info.joinInfo;
