@@ -34,5 +34,12 @@ export const getRarity = (typeArray: string[], valueArray: string[]) => {
       )}`,
     );
   });
-  console.info('rarityInfo', levelsObject);
+  // console.info('rarityInfo', levelsObject);
+  const levelsObjectFormatted: any = {};
+  Object.keys(levelsObject).forEach((key) => {
+    const item = levelsObject[key];
+    levelsObjectFormatted[key] = `amount: ${item.amount}, rarity: ${item.rarity}`;
+  });
+
+  console.info('rarityInfo', JSON.stringify(levelsObjectFormatted, null, 4));
 };
