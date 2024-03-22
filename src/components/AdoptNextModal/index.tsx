@@ -83,10 +83,9 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   }, [allTraits, inheritedTraits]);
 
   useEffect(() => {
-    const traitTypeList = allTraits.map((item) => item.traitType);
-    const valueList = allTraits.map((item) => item.value);
-
     try {
+      const traitTypeList = allTraits.map((item) => item.traitType.trim());
+      const valueList = allTraits.map((item) => item.value.trim());
       getRarity(traitTypeList, valueList);
     } catch (error) {
       console.error('getRarity error:', error);
