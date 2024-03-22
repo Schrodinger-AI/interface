@@ -54,8 +54,6 @@ export default function OwnedItems() {
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
-  const isLoadMore = useRef<boolean>(false);
-  const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
   const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
@@ -102,15 +100,7 @@ export default function OwnedItems() {
       if (!params.chainId || !params.address) {
         return;
       }
-      // if (loadMore) {
-      //   setMoreLoading(true);
-      // } else {
-      //   isLoadMore.current = false;
-      //   showLoading();
-      // }
       showLoading();
-      // if (!loadMore) isLoadMore.current = false;
-
       try {
         const {
           data: { getSchrodingerList: res },
@@ -128,7 +118,6 @@ export default function OwnedItems() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
-        // if (isLoadMore.current) {
         if (loadMore) {
           setDataSource((preData) => [...(preData || []), ...data]);
         } else {
@@ -138,7 +127,6 @@ export default function OwnedItems() {
         setDataSource((preData) => preData || []);
       } finally {
         closeLoading();
-        setMoreLoading(false);
       }
     },
     // There cannot be dependencies showLoading and closeLoading
@@ -350,7 +338,6 @@ export default function OwnedItems() {
 
   const loadMoreData = useCallback(() => {
     if (isLoading || !hasMore) return;
-    // isLoadMore.current = true;
     SetCurrent(current + 1);
     fetchData({
       params: {
@@ -440,17 +427,6 @@ export default function OwnedItems() {
               clearSearchChange={clearSearchChange}
             />
           </Flex>
-          {/* <ScrollContent
-            collapsed={collapsed}
-            ListProps={{
-              dataSource,
-            }}
-            InfiniteScrollProps={{
-              ownedTotal,
-              loading: moreLoading,
-              loadMore: loadMoreData,
-            }}
-          /> */}
           <ScrollContent
             type={CardType.MY}
             grid={{ gutter, column }}
