@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
-import { InfoStateType } from 'redux/types/reducerTypes';
+import { InfoStateType, ThemeType } from 'redux/types/reducerTypes';
 
 const initialState: InfoStateType = {
   isMobile: false,
@@ -9,7 +9,7 @@ const initialState: InfoStateType = {
   baseInfo: {
     rpcUrl: '',
   },
-  theme: 'light',
+  theme: ThemeType.light,
   itemsFromLocal: [],
   joinInfo: {
     isJoin: false,
@@ -47,7 +47,7 @@ export const infoSlice = createSlice({
     setTheme(state, action) {
       state.theme = action.payload;
       localStorage?.setItem('theme', action.payload);
-      if (action.payload === 'dark') {
+      if (action.payload === ThemeType.dark) {
         document.documentElement.classList.add('dark-theme');
       } else {
         document.documentElement.classList.remove('dark-theme');
