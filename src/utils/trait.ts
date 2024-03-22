@@ -24,7 +24,7 @@ export const getRarity = (typeArray: string[], valueArray: string[]) => {
     const rarity = rarityBignumber.toNumber();
     // console.log('levels.indexOf(rarity):', levels.indexOf(rarity), rarity);
     levelsObject[TRAIT_LEVELS.indexOf(rarity)].amount += 1;
-    console.log(
+    console.info(
       `${typeIndex} Type ${type} rarity: ${typeRarity} %; Value ${valueArray[typeIndex]} rarity: ${new BigNumber(
         valueRarity,
       )
@@ -34,5 +34,5 @@ export const getRarity = (typeArray: string[], valueArray: string[]) => {
       )}`,
     );
   });
-  console.log('rarityInfo', levelsObject);
+  console.info('rarityInfo', levelsObject);
 };
