@@ -50,6 +50,10 @@ export type InfoStateType = {
   };
   itemsFromLocal?: string[];
   hasToken?: boolean;
+  joinInfo: {
+    isJoin: boolean;
+    loading: boolean;
+  };
 };
 
 export type TTradeItem = {

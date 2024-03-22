@@ -11,6 +11,10 @@ const initialState: InfoStateType = {
   },
   theme: 'light',
   itemsFromLocal: [],
+  joinInfo: {
+    isJoin: false,
+    loading: false,
+  },
 };
 
 // Actual Slice
@@ -27,6 +31,12 @@ export const infoSlice = createSlice({
     },
     setCmsInfo(state, action) {
       state.cmsInfo = action.payload;
+    },
+    setJoinInfo(state, action) {
+      state.cmsInfo = {
+        ...state.cmsInfo,
+        ...action.payload,
+      };
     },
     setLoginTrigger(state, action) {
       state.loginTrigger = action.payload;
@@ -47,7 +57,9 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setCmsInfo, setLoginTrigger, setHasToken } = infoSlice.actions;
+export const { setIsMobile, setItemsFromLocal, setCmsInfo, setJoinInfo, setLoginTrigger, setHasToken } =
+  infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
+export const getJoinInfo = (state: AppState) => state.info.joinInfo;
 
 export default infoSlice.reducer;
