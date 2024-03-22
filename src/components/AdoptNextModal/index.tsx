@@ -12,7 +12,7 @@ import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import AIImageSelect from 'components/AIImageSelect';
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
-import { getRarity, getTraitPercent, getTraitTypePercent } from 'utils/trait';
+import { getRarity } from 'utils/trait';
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
   tip?: string | React.ReactNode;
@@ -83,11 +83,11 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   }, [allTraits, inheritedTraits]);
 
   useEffect(() => {
-    const traitTypeList = newTraitsList.map((item) => item.traitType);
-    const valueList = newTraitsList.map((item) => item.value);
+    const traitTypeList = allTraits.map((item) => item.traitType);
+    const valueList = allTraits.map((item) => item.value);
 
     getRarity(traitTypeList, valueList);
-  }, [newTraitsList]);
+  }, [allTraits]);
 
   return (
     <CommonModal

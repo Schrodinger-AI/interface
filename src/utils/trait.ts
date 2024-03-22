@@ -1,4 +1,3 @@
-import { ZERO } from 'constants/misc';
 import { TRAIT_DATA, TRAIT_TYPE_DATA, TRAIT_LEVELS } from 'constants/traitData';
 import BigNumber from 'bignumber.js';
 
@@ -11,26 +10,29 @@ export const getTraitTypePercent = (traitType: string) => {
 };
 
 export const getRarity = (typeArray: string[], valueArray: string[]) => {
-  const levelsObject: Record<string, { amount: number; rarity: string }> = {};
+  const levelsObject: any = {};
   TRAIT_LEVELS.forEach((level, index) => {
     levelsObject[index] = {
       amount: 0,
-      rarity: ZERO.plus(level).times(100).toString() + '%',
+      rarity: new BigNumber(level).times(100).toString() + '%',
     };
   });
   typeArray.forEach((type, typeIndex) => {
     const typeRarity = TRAIT_TYPE_DATA[type];
     const valueRarity = TRAIT_DATA[type][valueArray[typeIndex]];
-    const rarity = new BigNumber(typeRarity).times(valueRarity).div(100).toNumber();
+    const rarityBignumber = new BigNumber(typeRarity).times(valueRarity).div(100);
+    const rarity = rarityBignumber.toNumber();
     // console.log('levels.indexOf(rarity):', levels.indexOf(rarity), rarity);
     levelsObject[TRAIT_LEVELS.indexOf(rarity)].amount += 1;
-    console.info(
+    console.log(
       `${typeIndex} Type ${type} rarity: ${typeRarity} %; Value ${valueArray[typeIndex]} rarity: ${new BigNumber(
         valueRarity,
       )
         .times(100)
-        .toString()} %; total rarity: ${rarity} %, level: ${TRAIT_LEVELS.indexOf(rarity)}`,
+        .toString()} %; total rarity: ${rarityBignumber.times(100).toNumber()} %, level: ${TRAIT_LEVELS.indexOf(
+        rarity,
+      )}`,
     );
   });
-  console.info('rarityInfo', levelsObject);
+  console.log('rarityInfo', levelsObject);
 };
