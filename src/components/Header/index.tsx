@@ -2,17 +2,10 @@
 import { Button, Dropdown } from 'aelf-design';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
-import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
-import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
-import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
-import { ReactComponent as StrayCats } from 'assets/img/strayCats.svg';
-import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
-import { message, Modal } from 'antd';
+import { Modal, message } from 'antd';
 import styles from './style.module.css';
-import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
-import { useCopyToClipboard } from 'react-use';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
@@ -25,24 +18,35 @@ import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
 import useResponsive from 'hooks/useResponsive';
 import { ENVIRONMENT } from 'constants/url';
-import useSafeAreaHeight from 'hooks/useSafeAreaHeight';
 import { ICompassProps, RouterItemType } from './type';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { CompassLink, CompassText } from './components/CompassLink';
 import { openExternalLink } from 'utils/openlink';
 import clsx from 'clsx';
+import CopyAddressItem from './components/CopyAddressItem';
+import AssetItem from './components/AssetItem';
+import PointsItem from './components/PointsItem';
+import ReferralItem from './components/ReferralItem';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, isLogin, walletType } = useWalletService();
-  const [, setCopied] = useCopyToClipboard();
   const { isLG } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
+
+  const StrayCatsItem = useMemo(
+    () => ({
+      title: 'Stray Cats',
+      schema: '/stray-cats',
+      type: RouterItemType.Inner,
+    }),
+    [],
+  );
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
     try {
@@ -82,27 +86,10 @@ export default function Header() {
 
   const [logoutComplete, setLogoutComplete] = useState(true);
 
-  const { topSafeHeight } = useSafeAreaHeight();
-
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     setLogoutComplete(true);
     setMenuModalVisibleModel(ModalViewModel.NONE);
   });
-
-  const CopyAddressItem = useCallback(() => {
-    return (
-      <div className={styles.menuItem}>
-        <WalletSVG />
-        <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
-        <CopySVG
-          onClick={() => {
-            setCopied(addPrefixSuffix(wallet.address));
-            message.success('Copied');
-          }}
-        />
-      </div>
-    );
-  }, [setCopied, wallet.address]);
 
   const LogoutItem = useCallback(() => {
     return (
@@ -119,65 +106,34 @@ export default function Header() {
     );
   }, [logout]);
 
-  const PointsItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          if (checkTokenValid()) {
-            router.push('/points');
-            setMenuModalVisibleModel(ModalViewModel.NONE);
-          } else {
-            checkLogin();
-          }
-        }}>
-        <PointsSVG />
-        <span>My Flux Points</span>
-      </div>
-    );
-  }, [checkLogin, checkTokenValid, router]);
+  const closeMenuModal = () => {
+    setMenuModalVisibleModel(ModalViewModel.NONE);
+  };
 
-  const StrayCatsItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          if (checkTokenValid()) {
-            router.push('/stray-cats');
-            setMenuModalVisibleModel(ModalViewModel.NONE);
-          } else {
-            checkLogin();
-          }
-        }}>
-        <StrayCats />
-        <span>Stray Cats</span>
-      </div>
-    );
-  }, [checkLogin, checkTokenValid, router]);
-
-  const AssetItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          router.push('/assets');
-          setMenuModalVisibleModel(ModalViewModel.NONE);
-        }}>
-        <AssetSVG />
-        <span>My Assets</span>
-      </div>
-    );
-  }, [router]);
+  const checkAndRedirect = useCallback(
+    (path: string) => {
+      if (checkTokenValid()) {
+        router.push(path);
+        setMenuModalVisibleModel(ModalViewModel.NONE);
+      } else {
+        checkLogin();
+      }
+    },
+    [checkLogin, checkTokenValid, router],
+  );
 
   const items = useMemo(() => {
     const menuItems = [
       {
         key: 'address',
-        label: <CopyAddressItem />,
+        label: <CopyAddressItem address={wallet.address} />,
       },
-      { key: 'asset', label: <AssetItem /> },
-      { key: 'stray cats', label: <StrayCatsItem /> },
-      { key: 'points', label: <PointsItem /> },
+      {
+        key: 'asset',
+        label: <AssetItem closeMenuModal={closeMenuModal} />,
+      },
+      { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
+      { key: 'referral', label: <ReferralItem checkAndRedirect={checkAndRedirect} /> },
       {
         key: 'logout',
         label: <LogoutItem />,
@@ -187,10 +143,13 @@ export default function Header() {
       menuItems.splice(1, 1);
     }
     return menuItems;
-  }, [AssetItem, CopyAddressItem, LogoutItem, StrayCatsItem, PointsItem, walletType]);
+  }, [wallet.address, checkAndRedirect, LogoutItem, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
-    return menuItems.map((item) => {
+    const _menuItems = [...menuItems];
+    isLogin && _menuItems.push(StrayCatsItem);
+
+    return _menuItems.map((item) => {
       return {
         key: item.title,
         label: (
@@ -206,7 +165,7 @@ export default function Header() {
         ),
       };
     });
-  }, [menuItems, onPressCompassItems]);
+  }, [StrayCatsItem, isLogin, menuItems, onPressCompassItems]);
 
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
@@ -228,7 +187,7 @@ export default function Header() {
       return (
         <span className="space-x-8 xl:space-x-16 flex flex-row items-center">
           {itemList.map((item) => {
-            const { title, items = [], schema, type } = item;
+            const { title, items = [], schema } = item;
             if (items?.length > 0) {
               return (
                 <Dropdown
@@ -265,6 +224,15 @@ export default function Header() {
               );
             }
           })}
+
+          {isLogin && (
+            <CompassLink
+              key={StrayCatsItem.title}
+              item={StrayCatsItem}
+              className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
+              onPressCompassItems={onPressCompassItems}
+            />
+          )}
           <div>{myComponent}</div>
         </span>
       );
@@ -333,7 +301,6 @@ export default function Header() {
         className={styles.menuModal}
         footer={null}
         closeIcon={<CloseSVG className="size-4" />}
-        style={{ paddingTop: Number(topSafeHeight) }}
         title={menuModalVisibleModel === ModalViewModel.MY ? 'My' : 'Menu'}
         open={menuModalVisibleModel !== ModalViewModel.NONE}
         closable

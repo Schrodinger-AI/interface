@@ -8,12 +8,11 @@ import { store } from 'redux/store';
 import { setIsMobile } from 'redux/reducer/info';
 import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
-import { useBroadcastChannel, useWalletInit } from 'hooks/useWallet';
+import { useWalletInit } from 'hooks/useWallet';
 import WebLoginInstance from 'contract/webLogin';
 import { SupportedELFChainId } from 'types';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
-import SafeArea from 'components/SafeArea';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
 import clsx from 'clsx';
@@ -45,7 +44,6 @@ const Layout = dynamic(async () => {
     });
 
     useWalletInit();
-    useBroadcastChannel();
 
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';
@@ -96,7 +94,7 @@ const Layout = dynamic(async () => {
     }, [pathname]);
 
     return (
-      <SafeArea>
+      <>
         {!isHiddenLayout ? (
           <AntdLayout className={clsx('h-full overflow-scroll min-w-[360px]', styles['dark-bg'])}>
             {!isHiddenHeader && <Header />}
@@ -113,7 +111,7 @@ const Layout = dynamic(async () => {
         ) : (
           <>{children}</>
         )}
-      </SafeArea>
+      </>
     );
   };
 });

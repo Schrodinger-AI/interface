@@ -16,7 +16,7 @@ import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { AdoptActionErrorCode } from './adopt';
 import PromptModal from 'components/PromptModal';
-import { ISendResult } from 'types';
+import { IContractError, ISendResult } from 'types';
 import { getAdoptErrorMessage } from './getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import ResultModal, { Status } from 'components/ResultModal';
@@ -25,6 +25,8 @@ import { getExploreLink } from 'utils';
 import { store } from 'redux/store';
 import { useRouter } from 'next/navigation';
 import { divDecimals } from 'utils/calculate';
+import { message } from 'antd';
+import { DEFAULT_ERROR, formatErrorMsg } from 'utils/formattError';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -58,44 +60,47 @@ export const useAdoptConfirm = () => {
       account: string;
     }): Promise<string> => {
       return new Promise(async (resolve, reject) => {
-        const [, ELFBalance] = await getParentBalance({
-          symbol: parentItemInfo.symbol,
-          account,
-          decimals: parentItemInfo.decimals,
-        });
+        try {
+          const [, ELFBalance] = await getParentBalance({
+            symbol: parentItemInfo.symbol,
+            account,
+            decimals: parentItemInfo.decimals,
+          });
 
-        const isAcross = ZERO.plus(parentItemInfo.generation).plus(1).lt(infos.adoptImageInfo.generation);
+          const isAcross = ZERO.plus(parentItemInfo.generation).plus(1).lt(infos.adoptImageInfo.generation);
 
-        adoptNextModal.show({
-          isAcross,
-          data: {
-            SGRToken: {
-              tokenName: childrenItemInfo.tokenName,
-              symbol: childrenItemInfo.symbol,
-              amount: divDecimals(childrenItemInfo.outputAmount, parentItemInfo.decimals).toFixed(),
+          adoptNextModal.show({
+            isAcross,
+            data: {
+              SGRToken: {
+                tokenName: childrenItemInfo.tokenName,
+                symbol: childrenItemInfo.symbol,
+                amount: divDecimals(childrenItemInfo.outputAmount, parentItemInfo.decimals).toFixed(),
+              },
+              allTraits: infos.adoptImageInfo.attributes,
+              images: infos.adoptImageInfo.images,
+              inheritedTraits: parentItemInfo.traits,
+              transaction: {
+                txFee: ZERO.plus(commonTxFee).toFixed(),
+                usd: `${commonTxFee && ELFPrice ? ZERO.plus(commonTxFee).times(ELFPrice).toFixed(4) : '--'}`,
+              },
+              ELFBalance: {
+                amount: ELFBalance,
+                usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
+              },
             },
-            allTraits: infos.adoptImageInfo.attributes,
-            images: infos.adoptImageInfo.images,
-            inheritedTraits: parentItemInfo.traits,
-            transaction: {
-              txFee: ZERO.plus(commonTxFee).toFixed(),
-              usd: `${commonTxFee && ELFPrice ? ZERO.plus(commonTxFee).times(ELFPrice).toFixed(4) : '--'}`,
-            },
-            ELFBalance: {
-              amount: ELFBalance,
-              usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
-            },
-          },
 
-          onClose: () => {
-            adoptNextModal.hide();
-
-            reject(AdoptActionErrorCode.cancel);
-          },
-          onConfirm: (selectImage) => {
-            resolve(selectImage);
-          },
-        });
+            onClose: () => {
+              adoptNextModal.hide();
+              reject(AdoptActionErrorCode.cancel);
+            },
+            onConfirm: (selectImage) => {
+              resolve(selectImage);
+            },
+          });
+        } catch (error) {
+          reject(error);
+        }
       });
     },
     [ELFPrice, adoptNextModal, commonTxFee, getParentBalance],
@@ -329,20 +334,30 @@ export const useAdoptConfirm = () => {
 
   return useCallback(
     async (parentItemInfo: TSGRToken, childrenItemInfo: IAdoptNextInfo, account: string) => {
-      const infos = await fetchImages(childrenItemInfo.adoptId);
-      const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
-        infos,
-        childrenItemInfo,
-        parentItemInfo,
-        account,
-      });
-
-      await adoptConfirmSuccess({
-        transactionId: txResult.TransactionId,
-        image,
-        name: nextTokenName,
-        symbol: nextSymbol,
-      });
+      try {
+        const infos = await fetchImages(childrenItemInfo.adoptId);
+        const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
+          infos,
+          childrenItemInfo,
+          parentItemInfo,
+          account,
+        });
+        await adoptConfirmSuccess({
+          transactionId: txResult.TransactionId,
+          image,
+          name: nextTokenName,
+          symbol: nextSymbol,
+        });
+      } catch (error) {
+        if (error === AdoptActionErrorCode.cancel) {
+          return;
+        }
+        message.error(
+          typeof error === 'string'
+            ? error
+            : formatErrorMsg(error as IContractError).errorMessage.message || DEFAULT_ERROR,
+        );
+      }
     },
     [adoptConfirmSuccess, approveAdoptConfirm, fetchImages],
   );

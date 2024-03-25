@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
-import { InfoStateType } from 'redux/types/reducerTypes';
+import { InfoStateType, ThemeType } from 'redux/types/reducerTypes';
 
 const initialState: InfoStateType = {
   isMobile: false,
@@ -9,8 +9,12 @@ const initialState: InfoStateType = {
   baseInfo: {
     rpcUrl: '',
   },
-  theme: 'light',
+  theme: ThemeType.light,
   itemsFromLocal: [],
+  joinInfo: {
+    isJoin: false,
+    loading: false,
+  },
 };
 
 // Actual Slice
@@ -28,11 +32,26 @@ export const infoSlice = createSlice({
     setCmsInfo(state, action) {
       state.cmsInfo = action.payload;
     },
+    setJoinInfo(state, action) {
+      state.cmsInfo = {
+        ...state.cmsInfo,
+        ...action.payload,
+      };
+    },
     setLoginTrigger(state, action) {
       state.loginTrigger = action.payload;
     },
     setHasToken(state, action) {
       state.hasToken = action.payload;
+    },
+    setTheme(state, action) {
+      state.theme = action.payload;
+      localStorage?.setItem('theme', action.payload);
+      if (action.payload === ThemeType.dark) {
+        document.documentElement.classList.add('dark-theme');
+      } else {
+        document.documentElement.classList.remove('dark-theme');
+      }
     },
   },
 
@@ -47,7 +66,9 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setCmsInfo, setLoginTrigger, setHasToken } = infoSlice.actions;
+export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setJoinInfo, setLoginTrigger, setHasToken } =
+  infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
+export const getJoinInfo = (state: AppState) => state.info.joinInfo;
 
 export default infoSlice.reducer;

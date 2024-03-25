@@ -29,8 +29,8 @@ export default function ItemInfo({
   const { isLG } = useResponsive();
 
   const isLearnMoreShow = useMemo(
-    () => divDecimals(detail.amount, detail.decimals).gte(ONE),
-    [detail.amount, detail.decimals],
+    () => detail.generation === 0 || divDecimals(detail.amount, detail.decimals).gte(ONE),
+    [detail.amount, detail.decimals, detail.generation],
   );
 
   const traits = () => {

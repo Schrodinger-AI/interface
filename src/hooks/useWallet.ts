@@ -265,35 +265,8 @@ export const useElfWebLoginLifeCircleHookService = () => {
     });
   };
 
-  // useWebLoginEvent(WebLoginEvents.LOGINED, async () => {
-  //   const hooks = hooksMap[WebLoginState.logined];
-  //   if (hooks?.length) {
-  //     for (let i = 0; i < hooks.length; ++i) {
-  //       console.log(`await hooks ${i} execute`);
-  //       await hooks[i]();
-  //     }
-  //   }
-  // });
-
   return {
     login,
     registerHook,
   };
-};
-
-export const useBroadcastChannel = () => {
-  useEffect(() => {
-    const onStorageChange = (e: StorageEvent) => {
-      if (e.key === storages.accountInfo) {
-        const oldValue = JSON.parse(e.oldValue || '{}');
-        const newValue = JSON.parse(e.newValue || '{}');
-        if (!newValue.account && !!oldValue.account) {
-          // old has value and new has no value, logout
-          window.location.reload();
-          return;
-        }
-      }
-    };
-    window.addEventListener('storage', onStorageChange);
-  }, []);
 };

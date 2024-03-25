@@ -1,9 +1,14 @@
 import { TEmptyChannelInfo, TEmptyChannelGroup } from 'types/misc';
 
+export enum ThemeType {
+  'dark' = 'dark',
+  'light' = 'light',
+}
+
 export type InfoStateType = {
   isMobile?: boolean;
   isSmallScreen?: boolean;
-  theme: string | undefined | null;
+  theme: ThemeType;
   baseInfo: {
     rpcUrl?: string;
     identityPoolID?: string;
@@ -50,6 +55,10 @@ export type InfoStateType = {
   };
   itemsFromLocal?: string[];
   hasToken?: boolean;
+  joinInfo: {
+    isJoin: boolean;
+    loading: boolean;
+  };
 };
 
 export type TTradeItem = {

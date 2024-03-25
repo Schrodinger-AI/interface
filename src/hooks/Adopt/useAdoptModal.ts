@@ -17,6 +17,8 @@ import { WalletType, useWebLogin } from 'aelf-web-login';
 import { getDomain } from 'utils';
 import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
+import SyncAdoptModal from 'components/SyncAdoptModal';
+import { AIServerError } from 'utils/formattError';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -25,6 +27,7 @@ const useAdoptHandler = () => {
   const promptModal = useModal(PromptModal);
   const { showLoading, closeLoading } = useLoading();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
+  const asyncModal = useModal(SyncAdoptModal);
 
   const adoptConfirm = useAdoptConfirm();
 
@@ -155,16 +158,33 @@ const useAdoptHandler = () => {
     [promptModal, walletType],
   );
 
+  const checkAIServer = useCallback(async () => {
+    return new Promise(async (resolve, reject) => {
+      const isAIserviceError = await checkAIService();
+
+      if (!isAIserviceError) {
+        resolve('continue');
+        return;
+      }
+      asyncModal.show({
+        closable: true,
+        showLoading: false,
+        innerText: AIServerError,
+        onCancel: () => {
+          asyncModal.hide();
+          reject(AdoptActionErrorCode.cancel);
+        },
+      });
+    });
+  }, [asyncModal]);
+
   return useCallback(
     async (parentItemInfo: TSGRToken, account: string) => {
       try {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
-        const isAIserviceError = await checkAIService();
         closeLoading();
-
-        if (isAIserviceError)
-          throw 'The network is currently congested due to the simultaneous generation of numerous images. Please consider trying again later.';
+        await checkAIServer();
 
         const amount = await adoptInput(parentItemInfo, account, parentPrice);
         const { adoptId, outputAmount, symbol, tokenName } = await approveAdopt({ amount, account, parentItemInfo });
@@ -177,7 +197,7 @@ const useAdoptHandler = () => {
         singleMessage.error(errorMessage);
       }
     },
-    [adoptConfirm, adoptInput, approveAdopt, closeLoading, getTokenPrice, showLoading],
+    [adoptConfirm, adoptInput, approveAdopt, checkAIServer, closeLoading, getTokenPrice, showLoading],
   );
 };
 

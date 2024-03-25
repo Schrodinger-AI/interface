@@ -11,6 +11,12 @@ import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
 import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
 import { useTimeoutFn } from 'react-use';
+import { checkAIService } from 'api/request';
+import { useModal } from '@ebay/nice-modal-react';
+import SyncAdoptModal from 'components/SyncAdoptModal';
+import { AIServerError } from 'utils/formattError';
+import { AdoptActionErrorCode } from 'hooks/Adopt/adopt';
+import useLoading from 'hooks/useLoading';
 
 const textStyle =
   'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
@@ -21,12 +27,14 @@ export default function StrayCatsPage() {
   const { isLogin } = useWalletService();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const { showLoading, closeLoading } = useLoading();
   const { wallet } = useWalletService();
   const [dataSource, setDataSource] = useState<TStrayCats[]>();
   const [totalCount, setTotalCount] = useState<number>(30);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const cmsInfo = useCmsInfo();
+  const asyncModal = useModal(SyncAdoptModal);
 
   const adoptConfirm = useAdoptConfirm();
 
@@ -88,6 +96,48 @@ export default function StrayCatsPage() {
     });
   }, []);
 
+  const checkAIServer = useCallback(async () => {
+    return new Promise(async (resolve, reject) => {
+      const isAIserviceError = await checkAIService();
+      if (!isAIserviceError) {
+        resolve('continue');
+        return;
+      }
+      asyncModal.show({
+        closable: true,
+        showLoading: false,
+        innerText: AIServerError,
+        onCancel: () => {
+          asyncModal.hide();
+          reject(AdoptActionErrorCode.cancel);
+        },
+      });
+    });
+  }, [asyncModal]);
+
+  const onAdopt = useCallback(
+    async (record: TStrayCats) => {
+      try {
+        showLoading();
+        await checkAIServer();
+        closeLoading();
+        adoptConfirm(
+          formatAdoptConfirmParams(record),
+          {
+            adoptId: record.adoptId,
+            outputAmount: record.nextAmount,
+            symbol: record.nextSymbol,
+            tokenName: record.nextTokenName,
+          },
+          wallet.address,
+        );
+      } catch (error) {
+        closeLoading();
+      }
+    },
+    [adoptConfirm, checkAIServer, closeLoading, formatAdoptConfirmParams, showLoading, wallet.address],
+  );
+
   const columns: TableColumnsType<TStrayCats> = useMemo(
     () => [
       {
@@ -138,28 +188,14 @@ export default function StrayCatsPage() {
         fixed: 'right',
         render: (_, record) => {
           return (
-            <Button
-              type="primary"
-              size="small"
-              onClick={() => {
-                adoptConfirm(
-                  formatAdoptConfirmParams(record),
-                  {
-                    adoptId: record.adoptId,
-                    outputAmount: record.nextAmount,
-                    symbol: record.nextSymbol,
-                    tokenName: record.nextTokenName,
-                  },
-                  wallet.address,
-                );
-              }}>
+            <Button type="primary" size="small" onClick={() => onAdopt(record)}>
               Adopt
             </Button>
           );
         },
       },
     ],
-    [adoptConfirm, formatAdoptConfirmParams, formatTokenAmount, wallet.address],
+    [formatTokenAmount, onAdopt],
   );
 
   useTimeoutFn(() => {

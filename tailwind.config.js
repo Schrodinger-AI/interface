@@ -28,8 +28,6 @@ module.exports = {
         functionalErrorBg: 'var(--functional-error-bg)',
         functionalErrorHover: 'var(--functional-error-hover)',
         functionalErrorPressed: 'var(--functional-error-pressed)',
-        compassNormal: 'var(--compass-normal)',
-        compassActive: 'var(--compass-active)',
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
         fillMask3: 'var(--fill-mask-3)',
