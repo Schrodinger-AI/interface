@@ -15,6 +15,7 @@ import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
+import { useResponsive } from 'hooks/useResponsive';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -63,6 +64,8 @@ const Layout = dynamic(async () => {
       };
     }, []);
 
+    const { isLG } = useResponsive();
+
     useEffect(() => {
       console.log('webLoginContext.loginState', webLoginContext.loginState);
       WebLoginInstance.get().setContractMethod([
@@ -99,9 +102,9 @@ const Layout = dynamic(async () => {
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
               <AntdLayout.Content
-                className={`${styles['schrodinger-content']} flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
-                  isGrayBackground ? 'bg-neutralHoverBg' : ''
-                }`}>
+                className={`${
+                  isLG ? styles['schrodinger-mobile-content'] : styles['schrodinger-content']
+                } flex-shrink-0 pb-16 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
                 {children}
               </AntdLayout.Content>
               <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />

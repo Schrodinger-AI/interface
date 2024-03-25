@@ -57,7 +57,7 @@ export default function TokensHome() {
             }}>
             Connect Wallet
           </Button>
-          <div className="max-w-[188px] lg:max-w-[334px] text-sm leading-[22px] text-[#919191] text-center">
+          <div className="max-w-[334px] text-sm leading-[22px] text-[#919191] text-center">
             Log in to view your cats, or adopt new cats.
           </div>
         </Flex>
