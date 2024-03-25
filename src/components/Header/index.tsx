@@ -31,6 +31,7 @@ import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { CompassLink, CompassText } from './components/CompassLink';
 import { openExternalLink } from 'utils/openlink';
+import clsx from 'clsx';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -305,13 +306,13 @@ export default function Header() {
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
   return (
-    <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
-      {env === ENVIRONMENT.TEST && (
+    <section className={clsx('bg-white sticky top-0 left-0 z-[100] flex-shrink-0', 'bg-transparent')}>
+      {/* {env === ENVIRONMENT.TEST && (
         <p className=" w-full bg-brandBg p-[16px] lg:p-[20px] text-sm text-brandDefault font-medium text-center">
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
-      )}
+      )} */}
 
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={() => router.replace('/')}>

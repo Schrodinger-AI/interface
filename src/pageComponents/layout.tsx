@@ -16,6 +16,7 @@ import { PAGE_CONTAINER_ID } from 'constants/index';
 import SafeArea from 'components/SafeArea';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
+import clsx from 'clsx';
 
 const Layout = dynamic(async () => {
   const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
@@ -97,7 +98,7 @@ const Layout = dynamic(async () => {
     return (
       <SafeArea>
         {!isHiddenLayout ? (
-          <AntdLayout className="h-full overflow-scroll min-w-[360px]">
+          <AntdLayout className={clsx('h-full overflow-scroll min-w-[360px]', styles['dark-bg'])}>
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
               <AntdLayout.Content
