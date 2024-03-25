@@ -1,3 +1,8 @@
 .schrodinger-content {
   min-height: calc(100% - 64px);
 }
+.dark-bg{
+  @apply bg-neutralTitle;
+
+  background-image: url('../assets/img/referral/bg.png');
+}
