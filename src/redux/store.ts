@@ -6,11 +6,13 @@ import storage from 'redux-persist/lib/storage';
 import InfoReducer, { infoSlice } from './reducer/info';
 import DataReducer, { dataSlice } from './reducer/data';
 import UserInfoReducer, { userInfoSlice } from './reducer/userInfo';
+import AssetsReducer, { assetsSlice } from './reducer/assets';
 
 const rootReducer = combineReducers({
   [infoSlice.name]: InfoReducer,
   [dataSlice.name]: DataReducer,
   [userInfoSlice.name]: UserInfoReducer,
+  [assetsSlice.name]: AssetsReducer,
 });
 
 const makeStore = () => {

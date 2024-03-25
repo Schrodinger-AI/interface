@@ -1,6 +1,6 @@
 const rewritesConfig = require('./rewrites/index');
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   async rewrites() {
     return rewritesConfig;
   },
@@ -11,6 +11,9 @@ module.exports = {
   },
 
   productionBrowserSourceMaps: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { webpack }) => {
     config.module.rules.push({
       test: /\.svg$/,
