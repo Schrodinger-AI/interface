@@ -5,8 +5,8 @@ const sentryWebpackPluginOptions = {
   include: '.next',
   configFile: '.sentryclirc',
   urlPrefix: '~/_next',
-  org: 'Schrödinger',
-  project: 'Schrödinger',
+  org: 'blockchainforever',
+  project: 'schrodinger',
 };
 
 module.exports = [
