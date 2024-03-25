@@ -2,7 +2,7 @@
 import { useTimeoutFn } from 'react-use';
 import { GetJoinRecord } from 'contract/schrodinger';
 import { useWalletService } from 'hooks/useWallet';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import useLoading from 'hooks/useLoading';
 import inviteHomeLogo from 'assets/img/inviteHomeLogo.png';
@@ -12,6 +12,11 @@ import { QRCode } from 'react-qrcode-logo';
 import Image from 'next/image';
 import { Button } from 'aelf-design';
 import SkeletonImage from 'components/SkeletonImage';
+import { PrimaryDomainName } from 'constants/common';
+import { useEffectOnce } from 'react-use';
+import { dispatch } from 'redux/store';
+import { setCustomTheme } from 'redux/reducer/customTheme';
+import { CustomThemeType } from 'redux/types/reducerTypes';
 
 function Referral() {
   const { wallet, isLogin } = useWalletService();
@@ -53,6 +58,37 @@ function Referral() {
   //   }
   // }, 3000);
 
+  const updateTheme = (isCommon: boolean) => {
+    if (isCommon) {
+      dispatch(
+        setCustomTheme({
+          layoutBackground: 'bg-neutralWhiteBg',
+          hideHeaderMenu: false,
+          headerTheme: CustomThemeType.light,
+          footerTheme: CustomThemeType.light,
+        }),
+      );
+    } else {
+      dispatch(
+        setCustomTheme({
+          layoutBackground: 'bg-neutralTitle',
+          hideHeaderMenu: false,
+          headerTheme: CustomThemeType.light,
+          footerTheme: CustomThemeType.light,
+        }),
+      );
+    }
+  };
+
+  useEffectOnce(() => {
+    updateTheme(false);
+    return () => {
+      updateTheme(true);
+    };
+  });
+
+  const shareLink = useMemo(() => `${PrimaryDomainName}/invitee`, []);
+
   if (visible) return null;
 
   return (
@@ -80,7 +116,7 @@ function Referral() {
             <div className="w-full flex justify-center items-center mt-[16px] lg:mt-[32px]">
               <div className="rounded-md overflow-hidden">
                 <QRCode
-                  value="https://schrodingerai.com/"
+                  value={shareLink}
                   size={145.45}
                   quietZone={7.25}
                   logoImage={require('assets/img/schrodingerLogo.png').default.src}
@@ -92,7 +128,7 @@ function Referral() {
             </div>
             <div className="w-full mt-[16px] lg:mt-[24px] flex items-center rounded-md bg-neutralDefaultBg">
               <span className="flex-1 text-sm lg:text-lg text-neutralTitle truncate py-[16px] pl-[16px] pr-[4px] font-medium">
-                http://share.schrodinger.com/referral/referral/referral
+                {shareLink}
               </span>
               <div
                 className="h-full flex items-center justify-center pr-[16px] pl-[4px] cursor-pointer"

@@ -74,3 +74,15 @@ export type TAssetsStateType = {
   };
   tokenPriceMap?: Record<string, string>;
 };
+
+export enum CustomThemeType {
+  'dark' = 'dark',
+  'light' = 'light',
+}
+
+export type TCustomThemeType = {
+  layoutBackground?: string;
+  headerTheme?: CustomThemeType;
+  hideHeaderMenu: boolean;
+  footerTheme?: CustomThemeType;
+};
