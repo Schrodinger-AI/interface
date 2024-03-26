@@ -1,5 +1,5 @@
 .schrodinger-content {
-  min-height: calc(100% - 64px);
+  min-height: calc(100% - 98px);
 }
 .dark-bg{
   @apply bg-neutralTitle;

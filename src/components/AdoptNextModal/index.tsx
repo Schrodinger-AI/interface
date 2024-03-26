@@ -10,8 +10,9 @@ import SGRTokenInfo from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import AIImageSelect from 'components/AIImageSelect';
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
+import { getRarity } from 'utils/trait';
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
   tip?: string | React.ReactNode;
@@ -80,6 +81,16 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
     });
     return allTraits.filter((item) => !inheritedMap[item.traitType]);
   }, [allTraits, inheritedTraits]);
+
+  useEffect(() => {
+    try {
+      const traitTypeList = allTraits.map((item) => item.traitType.trim());
+      const valueList = allTraits.map((item) => item.value.trim());
+      getRarity(traitTypeList, valueList);
+    } catch (error) {
+      console.error('getRarity error:', error);
+    }
+  }, [allTraits]);
 
   return (
     <CommonModal

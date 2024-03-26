@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import { divDecimals } from 'utils/calculate';
 import { message } from 'antd';
 import { DEFAULT_ERROR, formatErrorMsg } from 'utils/formattError';
+import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMessage';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -132,6 +133,16 @@ export const useAdoptConfirm = () => {
         } catch (error) {
           promptModal.hide();
 
+          captureMessage({
+            type: SentryMessageType.CONTRACT,
+            params: {
+              name: 'adoptStep2Handler',
+              method: MethodType.CALLSENDMETHOD,
+              query: confirmParams,
+              description: error,
+            },
+          });
+
           console.log(error, 'error===');
           if (error === AdoptActionErrorCode.missingParams) throw error;
 
@@ -196,6 +207,18 @@ export const useAdoptConfirm = () => {
         // closeLoading();
         if (imageSignature?.error || !imageSignature.signature) {
           reject(imageSignature?.error || 'Failed to obtain watermark image');
+          captureMessage({
+            type: SentryMessageType.HTTP,
+            params: {
+              name: 'fetchWaterImages',
+              method: 'post',
+              query: {
+                adoptId: childrenItemInfo.adoptId,
+                image: originImage,
+              },
+              description: imageSignature,
+            },
+          });
           return;
         }
 
