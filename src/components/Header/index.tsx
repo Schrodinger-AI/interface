@@ -28,6 +28,8 @@ import CopyAddressItem from './components/CopyAddressItem';
 import AssetItem from './components/AssetItem';
 import PointsItem from './components/PointsItem';
 import ReferralItem from './components/ReferralItem';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
+import { CustomThemeType } from 'redux/types/reducerTypes';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -35,6 +37,7 @@ export default function Header() {
   const { isLG } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
+  const customTheme = useGetCustomTheme();
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const { routerItems = '{}' } = useCmsInfo() || {};
@@ -172,7 +175,7 @@ export default function Header() {
       <Button
         type="primary"
         size={!isLG ? 'large' : 'small'}
-        className="!rounded-lg md:!rounded-[12px]"
+        className="!rounded-lg lg:!rounded-[12px]"
         disabled={!logoutComplete}
         onClick={() => {
           store.dispatch(setLoginTrigger('login'));
@@ -240,7 +243,10 @@ export default function Header() {
       return (
         <span className="space-x-4 flex flex-row items-center">
           {myComponent}
-          <MenuIcon className="size-8" onClick={() => setMenuModalVisibleModel(ModalViewModel.MENU)} />
+          <MenuIcon
+            className={clsx('size-8', styles['mobile-menu-icon'])}
+            onClick={() => setMenuModalVisibleModel(ModalViewModel.MENU)}
+          />
         </span>
       );
     }
@@ -250,7 +256,7 @@ export default function Header() {
     if (!isLG) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button type="default" className="!rounded-[12px] text-brandDefault border-brandDefault" size="large">
+          <Button type="default" className={clsx('!rounded-[12px]', styles['button-my'])} size="large">
             <MenuMySVG className="mr-[8px]" />
             My
           </Button>
@@ -260,7 +266,7 @@ export default function Header() {
     return (
       <Button
         type="default"
-        className="!rounded-lg !border-brandDefault !text-brandDefault"
+        className={clsx('!rounded-lg', styles['button-my'])}
         size="small"
         onClick={() => {
           setMenuModalVisibleModel(ModalViewModel.MY);
@@ -273,8 +279,15 @@ export default function Header() {
 
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
+  const logoImage = useMemo(() => {
+    return {
+      [CustomThemeType.light]: require('assets/img/logo.svg').default,
+      [CustomThemeType.dark]: require('assets/img/logoWhite.svg').default,
+    }[customTheme.header.theme];
+  }, [customTheme.header.theme]);
+
   return (
-    <section className={clsx('bg-white sticky top-0 left-0 z-[100] flex-shrink-0', 'bg-transparent')}>
+    <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
         <p className=" w-full bg-brandBg p-[16px] text-sm text-brandDefault font-medium text-center">
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
@@ -282,19 +295,20 @@ export default function Header() {
         </p>
       )}
 
-      <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={() => router.replace('/')}>
+      <div className="px-[16px] lg:px-[40px] h-[60px] lg:h-[80px] mx-auto flex justify-between items-center w-full">
+        <div className="flex flex-1 overflow-hidden justify-start items-center">
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={require('assets/img/logo.png').default.src}
+              src={logoImage}
               alt="logo"
-              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+              className="w-[120px] h-[24px] lg:w-[160px] lg:h-[32px]"
+              onClick={() => router.replace('/')}
             />
           }
           <NavHostTag />
         </div>
-        {FunctionalArea(menuItems)}
+        {customTheme.header.hideMenu ? null : FunctionalArea(menuItems)}
       </div>
       <Modal
         mask={false}

@@ -3,11 +3,21 @@ import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
 import { TCustomThemeType, CustomThemeType } from 'redux/types/reducerTypes';
 
-const initialState: TCustomThemeType = {
-  layoutBackground: 'bg-neutralWhiteBg',
-  hideHeaderMenu: false,
-  headerTheme: CustomThemeType.light,
-  footerTheme: CustomThemeType.light,
+const initialState: {
+  customTheme: TCustomThemeType;
+} = {
+  customTheme: {
+    layout: {
+      backgroundStyle: 'bg-neutralWhiteBg',
+    },
+    header: {
+      theme: CustomThemeType.light,
+      hideMenu: false,
+    },
+    footer: {
+      theme: CustomThemeType.light,
+    },
+  },
 };
 
 // Actual Slice
@@ -16,10 +26,10 @@ export const customThemeSlice = createSlice({
   initialState,
   reducers: {
     setCustomTheme(state, action) {
-      state = {
-        ...state,
-        ...action.payload,
-      };
+      state.customTheme = action.payload;
+    },
+    resetCustomTheme(state) {
+      state.customTheme = initialState.customTheme;
     },
   },
 
@@ -28,13 +38,13 @@ export const customThemeSlice = createSlice({
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload.customTheme,
       };
     },
   },
 });
 
-export const { setCustomTheme } = customThemeSlice.actions;
-export const getCustomTheme = (state: AppState) => state;
+export const { setCustomTheme, resetCustomTheme } = customThemeSlice.actions;
+export const getCustomTheme = (state: AppState) => state.customTheme;
 
 export default customThemeSlice.reducer;

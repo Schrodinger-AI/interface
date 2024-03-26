@@ -87,37 +87,6 @@ function Referral() {
   //   }
   // }, 3000);
 
-  const updateTheme = (isCommon: boolean) => {
-    if (isCommon) {
-      dispatch(
-        setCustomTheme({
-          layoutBackground: 'bg-neutralWhiteBg',
-          backgroundImage: undefined,
-          hideHeaderMenu: false,
-          headerTheme: CustomThemeType.light,
-          footerTheme: CustomThemeType.light,
-        }),
-      );
-    } else {
-      dispatch(
-        setCustomTheme({
-          layoutBackground: 'bg-neutralTitle',
-          hideHeaderMenu: false,
-          backgroundImage: undefined,
-          headerTheme: CustomThemeType.dark,
-          footerTheme: CustomThemeType.dark,
-        }),
-      );
-    }
-  };
-
-  useEffectOnce(() => {
-    updateTheme(false);
-    return () => {
-      updateTheme(true);
-    };
-  });
-
   if (visible) return null;
 
   return (
