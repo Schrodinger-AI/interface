@@ -20,6 +20,7 @@ import { setCustomTheme } from 'redux/reducer/customTheme';
 import { CustomThemeType } from 'redux/types/reducerTypes';
 import styles from './styles.module.css';
 import clsx from 'clsx';
+import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
 
 function Referral() {
   const { wallet, isLogin } = useWalletService();
@@ -47,9 +48,33 @@ function Referral() {
     }
   }, [closeLoading, router, wallet.address]);
 
-  const onCopy = (value: string) => {
-    setCopied(value);
+  const shareLink = useMemo(() => `${PrimaryDomainName}/invitee`, []);
+
+  const onCopy = () => {
+    setCopied(shareLink);
     message.success('Copied');
+  };
+
+  const onInvite = () => {
+    const isAPPEnviroment = !!window.portkeyShellApp;
+
+    if (isAPPEnviroment) {
+      const app = window.portkeyShellApp as IClient;
+      const request: IRequest<ISocialShareParams> = {
+        type: 'socialShare',
+        params: { url: shareLink },
+      };
+
+      app.invokeClientMethod(request, (args: IResponse) => {
+        if (args.status === 1) {
+          message.success('share success');
+        } else {
+          message.success('share failed');
+        }
+      });
+    } else {
+      onCopy();
+    }
   };
 
   // useTimeoutFn(() => {
@@ -67,6 +92,7 @@ function Referral() {
       dispatch(
         setCustomTheme({
           layoutBackground: 'bg-neutralWhiteBg',
+          backgroundImage: undefined,
           hideHeaderMenu: false,
           headerTheme: CustomThemeType.light,
           footerTheme: CustomThemeType.light,
@@ -77,8 +103,9 @@ function Referral() {
         setCustomTheme({
           layoutBackground: 'bg-neutralTitle',
           hideHeaderMenu: false,
-          headerTheme: CustomThemeType.light,
-          footerTheme: CustomThemeType.light,
+          backgroundImage: undefined,
+          headerTheme: CustomThemeType.dark,
+          footerTheme: CustomThemeType.dark,
         }),
       );
     }
@@ -90,8 +117,6 @@ function Referral() {
       updateTheme(true);
     };
   });
-
-  const shareLink = useMemo(() => `${PrimaryDomainName}/invitee`, []);
 
   if (visible) return null;
 
@@ -144,7 +169,7 @@ function Referral() {
               </span>
               <div
                 className="h-full flex items-center justify-center pr-[16px] pl-[4px] cursor-pointer"
-                onClick={() => onCopy('copy content')}>
+                onClick={onCopy}>
                 <img
                   src={require('assets/img/copy.svg').default}
                   alt="copy"
@@ -152,7 +177,7 @@ function Referral() {
                 />
               </div>
             </div>
-            <Button type="primary" className="mt-[16px] lg:mt-[32px] w-full !rounded-lg">
+            <Button type="primary" className="mt-[16px] lg:mt-[32px] w-full !rounded-lg" onClick={onInvite}>
               Invite Friends
             </Button>
           </div>

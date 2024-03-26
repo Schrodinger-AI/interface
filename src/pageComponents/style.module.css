@@ -5,4 +5,6 @@
   @apply bg-neutralTitle;
 
   background-image: url('../assets/img/referral/bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }

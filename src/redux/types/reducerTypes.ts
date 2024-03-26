@@ -82,6 +82,7 @@ export enum CustomThemeType {
 
 export type TCustomThemeType = {
   layoutBackground?: string;
+  backgroundImage?: string;
   headerTheme?: CustomThemeType;
   hideHeaderMenu: boolean;
   footerTheme?: CustomThemeType;
