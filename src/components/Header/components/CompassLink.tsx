@@ -2,15 +2,20 @@ import { ICompassProps, RouterItemType } from '../type';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
+import styles from '../style.module.css';
+import clsx from 'clsx';
 
 export const CompassText = (props: { title?: string; schema?: string }) => {
   const pathname = usePathname();
   const isCurrent = pathname?.toLocaleLowerCase() === props.schema?.toLowerCase();
   return (
     <span
-      className={`!rounded-[12px] text-lg ${
-        isCurrent ? 'text-brandDefault' : 'text-neutralTitle'
-      } hover:text-brandDefault cursor-pointer font-medium	`}>
+      className={clsx(
+        styles['header-menu'],
+        `!rounded-[12px] text-lg ${
+          isCurrent ? 'text-brandDefault' : ''
+        } hover:text-brandDefault cursor-pointer font-medium`,
+      )}>
       {props.title}
     </span>
   );

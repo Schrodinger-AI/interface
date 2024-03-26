@@ -57,3 +57,51 @@
     }
   }
 }
+
+.light {
+  @apply bg-neutralWhiteBg;
+
+  .button-my {
+    @apply border-brandDefault text-brandDefault;
+
+    svg {
+      @apply fill-brandDefault;
+    }
+  }
+
+  .header-menu {
+    @apply text-neutralTitle;
+  }
+
+  .mobile-menu-icon {
+    @apply fill-neutralTitle;
+  }
+}
+
+.dark {
+  @apply bg-transparent;
+
+  .button-my {
+    @apply border-neutralWhiteBg text-neutralWhiteBg bg-transparent;
+
+    svg {
+      @apply fill-neutralWhiteBg;
+    }
+
+    &:hover {
+      @apply !bg-transparent !border-brandDefault !text-brandDefault;
+
+      svg {
+        @apply fill-brandDefault;
+      }
+    }
+  }
+
+  .header-menu {
+    @apply text-neutralWhiteBg;
+  }
+
+  .mobile-menu-icon {
+    @apply fill-neutralWhiteBg;
+  }
+}
