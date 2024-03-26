@@ -29,6 +29,7 @@ export const AELFDProviderTheme: ThemeConfig = {
       borderColorDisabled: 'var(--neutral-hover-bg)',
       colorTextDisabled: 'var(--neutral-disable)',
       colorBgContainerDisabled: 'var(--neutral-hover-bg)',
+      borderRadius: 12,
     },
   },
 };
