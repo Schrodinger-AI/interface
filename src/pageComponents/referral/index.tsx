@@ -2,29 +2,25 @@
 import { useTimeoutFn } from 'react-use';
 import { GetJoinRecord } from 'contract/schrodinger';
 import { useWalletService } from 'hooks/useWallet';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import useLoading from 'hooks/useLoading';
-import inviteHomeLogo from 'assets/img/inviteHomeLogo.png';
 import { useCopyToClipboard } from 'react-use';
 import { message } from 'antd';
 import { QRCode } from 'react-qrcode-logo';
-import Image from 'next/image';
 import { Button } from 'aelf-design';
 import useResponsive from 'hooks/useResponsive';
 import SkeletonImage from 'components/SkeletonImage';
 import { PrimaryDomainName } from 'constants/common';
-import { useEffectOnce } from 'react-use';
-import { dispatch } from 'redux/store';
-import { setCustomTheme } from 'redux/reducer/customTheme';
-import { CustomThemeType } from 'redux/types/reducerTypes';
 import clsx from 'clsx';
 import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
+import { useJoinStatus } from 'redux/hooks';
 
 function Referral() {
   const { wallet, isLogin } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const { isLG } = useResponsive();
+  const isJoin = useJoinStatus();
 
   const { showLoading, closeLoading, visible } = useLoading();
 
@@ -32,22 +28,18 @@ function Referral() {
 
   const checkJoined = useCallback(async () => {
     try {
-      if (!wallet.address) {
-        router.push('/');
-        return;
-      }
       const isJoin = await GetJoinRecord(wallet.address);
       if (!isJoin) {
-        router.push('/');
+        router.replace('/');
       }
     } catch (error) {
-      router.push('/');
+      router.replace('/');
     } finally {
       closeLoading();
     }
   }, [closeLoading, router, wallet.address]);
 
-  const shareLink = useMemo(() => `${PrimaryDomainName}/invitee`, []);
+  const shareLink = useMemo(() => `${PrimaryDomainName}/invitee?referrer=${wallet.address}`, [wallet.address]);
 
   const onCopy = () => {
     setCopied(shareLink);
@@ -76,15 +68,20 @@ function Referral() {
     }
   };
 
-  // useTimeoutFn(() => {
-  //   showLoading();
-  //   if (!isLogin) {
-  //     closeLoading();
-  //     router.push('/');
-  //   } else {
-  //     checkJoined();
-  //   }
-  // }, 3000);
+  useTimeoutFn(() => {
+    if (!isLogin) {
+      router.replace('/');
+    }
+  }, 3000);
+
+  useEffect(() => {
+    showLoading();
+    if (wallet.address && !isJoin) {
+      checkJoined();
+    } else {
+      closeLoading();
+    }
+  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 
