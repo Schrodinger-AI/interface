@@ -18,7 +18,6 @@ import { useEffectOnce } from 'react-use';
 import { dispatch } from 'redux/store';
 import { setCustomTheme } from 'redux/reducer/customTheme';
 import { CustomThemeType } from 'redux/types/reducerTypes';
-import styles from './styles.module.css';
 import clsx from 'clsx';
 import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
 
@@ -104,7 +103,7 @@ function Referral() {
           <div
             className={clsx(
               'w-[160px] lg:w-[360px] h-[160px] lg:h-[360px] mt-[24px] flex justify-start items-center',
-              isLG ? styles.rotate : '',
+              isLG ? 'rotate-y-180' : '',
             )}>
             <SkeletonImage
               img={require('assets/img/inviteHomeLogo.png').default.src}

@@ -109,7 +109,7 @@ const Layout = dynamic(async () => {
               <AntdLayout.Content
                 className={`${
                   isLG ? styles['schrodinger-mobile-content'] : styles['schrodinger-content']
-                } flex-shrink-0 pb-16 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
+                } flex-shrink-0 pb-4 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
                 {children}
               </AntdLayout.Content>
               <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />

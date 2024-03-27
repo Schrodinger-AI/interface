@@ -13,7 +13,7 @@ export default function Invitee() {
   const { showLoading, closeLoading } = useLoading();
   const [showLogin, setShowLogin] = useState(true);
   const { checkLogin } = useCheckLoginAndToken();
-  const { newUser, oldUser, modal } = useAccountModal();
+  const { newUser, oldUser } = useAccountModal();
   const { getJoinStatus } = useCheckJoined();
 
   const toLogin = useCallback(() => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'aelf-design';
-import { inviteLogoPng } from 'assets/img/referral';
+// import { inviteLogoPng } from 'assets/img/referral';
+import inviteHomeLogo from 'assets/img/inviteHomeLogo.png';
 import Image from 'next/image';
 
 interface ILoginProps {
@@ -24,7 +25,11 @@ function Login({ onClick }: ILoginProps) {
             Log in
           </Button>
         </div>
-        <Image className="lg:w-[360px] lg:h-[360px] w-[280px] h-[280px]" src={inviteLogoPng} alt="invite logo" />
+        <Image
+          className="lg:w-[360px] lg:h-[360px] w-[280px] h-[280px] rotate-y-180"
+          src={inviteHomeLogo}
+          alt="invite logo"
+        />
       </div>
     </div>
   );
