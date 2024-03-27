@@ -41,6 +41,7 @@ export const useWalletInit = () => {
 
   const callBack = useCallback(
     (state: WebLoginState) => {
+      console.log('useWalletInit -------useLoginState-------', state);
       if (state === WebLoginState.lock) {
         backToHomeByRoute();
       }
@@ -216,6 +217,7 @@ export const useCheckLoginAndToken = () => {
   const { hasToken } = useGetStoreInfo();
 
   const checkLogin = async () => {
+    console.log('checkLogin--isLogin', isLogin);
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isLogin) {
       if (accountInfo.token) {

@@ -22,7 +22,6 @@ function AccountModal({ title, content, btnText, onOk }: IAccountModal) {
 
   return (
     <Modal
-      centered
       width={isLG ? 343 : 438}
       className={styles['invitee-modal']}
       title={<div className="text-2xl font-semibold">{title}</div>}

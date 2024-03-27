@@ -51,6 +51,7 @@ export default function useCheckJoinStatus() {
   useLoginState(async (state: WebLoginState) => {
     if (state === WebLoginState.logined) {
       try {
+        console.log('countdown loginState-------');
         const isJoin = await GetJoinRecord(addPrefixSuffix(wallet.address, cmsInfo?.curChain));
         if (isJoin) return setIsJoin(isJoin);
         setIsJoin(false);

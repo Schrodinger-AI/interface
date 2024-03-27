@@ -1,27 +1,41 @@
-import { Button } from 'aelf-design';
-import { Flex } from 'antd';
-import AccountModal from './components/AccountModal';
-import { useModal } from '@ebay/nice-modal-react';
+import Login from './components/Login';
+import { store } from 'redux/store';
+import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useCallback, useEffect, useState } from 'react';
+import { setLoginTrigger } from 'redux/reducer/info';
+import { useCheckJoined } from 'hooks/useJoin';
+import useAccountModal from './useAccountModal';
+import useLoading from 'hooks/useLoading';
 
 export default function Invitee() {
-  const modal = useModal(AccountModal);
+  // const isJoin = useJoinStatus();
+  const { isLogin } = useWalletService();
+  const { showLoading, closeLoading } = useLoading();
+  const [showLogin, setShowLogin] = useState(true);
+  const { checkLogin } = useCheckLoginAndToken();
+  const { newUser, oldUser, modal } = useAccountModal();
+  const { getJoinStatus } = useCheckJoined();
 
-  const onClick = () => {
-    modal.show({
-      title: 'Accept Invitation',
-      content: 'Accept the invitation and join Schrödinger now to earn Flux Points for your interactions.',
-      btnText: 'Accept',
-      onOk: () => {
-        console.log('ok');
-      },
-    });
-  };
+  const toLogin = useCallback(() => {
+    store.dispatch(setLoginTrigger('login'));
+    checkLogin();
+  }, [checkLogin]);
 
-  return (
-    <div>
-      <Button type="primary" onClick={onClick}>
-        Log in
-      </Button>
-    </div>
-  );
+  const checkJoin = useCallback(async () => {
+    if (!isLogin || !showLogin) return;
+    showLoading();
+    const joined = await getJoinStatus();
+    closeLoading();
+    setShowLogin(false);
+    joined ? oldUser() : newUser();
+  }, [closeLoading, getJoinStatus, isLogin, newUser, oldUser, showLoading, showLogin]);
+
+  useEffect(() => {
+    if (isLogin) {
+      checkJoin();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogin]);
+
+  return <>{showLogin && <Login onClick={toLogin} />}</>;
 }
