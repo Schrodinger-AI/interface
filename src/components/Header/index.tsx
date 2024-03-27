@@ -4,7 +4,7 @@ import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
-import { Modal, message } from 'antd';
+import { Modal } from 'antd';
 import styles from './style.module.css';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,6 @@ import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
 import { useCmsInfo } from 'redux/hooks';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
@@ -21,7 +20,7 @@ import { ENVIRONMENT } from 'constants/url';
 import { ICompassProps, RouterItemType } from './type';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
-import { CompassLink, CompassText } from './components/CompassLink';
+import { CompassLink } from './components/CompassLink';
 import { openExternalLink } from 'utils/openlink';
 import clsx from 'clsx';
 import CopyAddressItem from './components/CopyAddressItem';
@@ -30,6 +29,9 @@ import PointsItem from './components/PointsItem';
 import ReferralItem from './components/ReferralItem';
 import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
 import { CustomThemeType } from 'redux/types/reducerTypes';
+import MenuDropdown from './components/MenuDropdown';
+import MenuCollapse from './components/MenuCollapse/MenuCollapse';
+import { needLoginPaths } from 'hooks/useBackToHomeByRoute';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -65,6 +67,14 @@ export default function Header() {
     (item: ICompassProps) => {
       const { type, schema, title } = item;
 
+      if (schema && needLoginPaths.includes(schema)) {
+        if (!isLogin) {
+          store.dispatch(setLoginTrigger('login'));
+          checkLogin();
+          return;
+        }
+      }
+
       if (type === RouterItemType.ExternalLink) {
         const newWindow = openExternalLink(schema, '_blank');
         if (newWindow && typeof newWindow.focus === 'function') {
@@ -84,7 +94,7 @@ export default function Header() {
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
     },
-    [marketModal, router],
+    [isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -153,20 +163,37 @@ export default function Header() {
     isLogin && _menuItems.push(StrayCatsItem);
 
     return _menuItems.map((item) => {
-      return {
-        key: item.title,
-        label: (
-          <div
-            className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
-            onClick={(event) => {
-              event.preventDefault();
-              onPressCompassItems(item);
-            }}>
-            <div className="text-lg">{item.title}</div>
-            <ArrowIcon className="size-4" />
-          </div>
-        ),
-      };
+      if (item.items?.length) {
+        return {
+          key: item.title,
+          label: (
+            <MenuCollapse
+              title={
+                <div className="flex flex-row items-center justify-between cursor-pointer w-[100%]">
+                  <div className="text-lg">{item.title}</div>
+                </div>
+              }
+              item={item}
+              onPressCompassItems={onPressCompassItems}
+            />
+          ),
+        };
+      } else {
+        return {
+          key: item.title,
+          label: (
+            <div
+              className="flex flex-row items-center justify-between cursor-pointer w-[100%] px-[16px]"
+              onClick={(event) => {
+                event.preventDefault();
+                onPressCompassItems(item);
+              }}>
+              <div className="text-lg">{item.title}</div>
+              <ArrowIcon className="size-4" />
+            </div>
+          ),
+        };
+      }
     });
   }, [StrayCatsItem, isLogin, menuItems, onPressCompassItems]);
 
@@ -193,28 +220,13 @@ export default function Header() {
             const { title, items = [], schema } = item;
             if (items?.length > 0) {
               return (
-                <Dropdown
+                <MenuDropdown
                   key={title}
-                  overlayClassName={styles.dropdown}
-                  placement="bottomCenter"
-                  menu={{
-                    items: items.map((sub) => {
-                      return {
-                        key: sub.title,
-                        type: 'group',
-                        label: (
-                          <CompassLink
-                            key={sub.title}
-                            item={sub}
-                            className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
-                            onPressCompassItems={onPressCompassItems}
-                          />
-                        ),
-                      } as ItemType;
-                    }),
-                  }}>
-                  <CompassText title={title} schema={schema} />
-                </Dropdown>
+                  title={title}
+                  schema={schema}
+                  items={items}
+                  onPressCompassItems={onPressCompassItems}
+                />
               );
             } else {
               return (
@@ -324,9 +336,7 @@ export default function Header() {
         }}>
         {(menuModalVisibleModel === ModalViewModel.MY ? items : firstClassCompassItems).map((item, index) => {
           return (
-            <div
-              className="w-full h-[64px] flex items-center border-x-0 border-t-0 border-b-[1px] border-solid border-[#EDEDED] text-[16px] font-medium text-[#1A1A1A]"
-              key={index}>
+            <div className="w-full min-h-[64px] flex items-center text-base font-medium text-neutralTitle" key={index}>
               {item.label}
             </div>
           );
