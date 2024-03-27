@@ -1,10 +1,7 @@
 .schrodinger-content {
-  min-height: calc(100% - 64px);
+  min-height: calc(100% - 94px);
 }
-.dark-bg{
-  @apply bg-neutralTitle;
 
-  background-image: url('../assets/img/referral/bg.png');
-  background-repeat: no-repeat;
-  background-size: cover;
+.schrodinger-mobile-content {
+  min-height: calc(100% - 98px);
 }

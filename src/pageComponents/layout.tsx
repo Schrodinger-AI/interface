@@ -16,15 +16,16 @@ import { PAGE_CONTAINER_ID } from 'constants/index';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
 import clsx from 'clsx';
+import { useResponsive } from 'hooks/useResponsive';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
 
 const Layout = dynamic(async () => {
-  const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
-    'aelf-web-login'
-  ).then((module) => module);
+  const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
 
     const { cmsInfo } = useGetStoreInfo();
+    const customTheme = useGetCustomTheme();
 
     const webLoginContext = useWebLogin();
 
@@ -64,6 +65,8 @@ const Layout = dynamic(async () => {
       };
     }, []);
 
+    const { isLG } = useResponsive();
+
     useEffect(() => {
       console.log('webLoginContext.loginState', webLoginContext.loginState);
       WebLoginInstance.get().setContractMethod([
@@ -96,13 +99,17 @@ const Layout = dynamic(async () => {
     return (
       <>
         {!isHiddenLayout ? (
-          <AntdLayout className={clsx('h-full overflow-scroll min-w-[360px]', styles['dark-bg'])}>
+          <AntdLayout
+            className={clsx(
+              'h-full overflow-scroll min-w-[360px] bg-no-repeat bg-cover bg-center',
+              customTheme.layout.backgroundStyle,
+            )}>
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
               <AntdLayout.Content
-                className={`${styles['schrodinger-content']} flex-shrink-0 pb-12 px-4 lg:px-10 w-full ${
-                  isGrayBackground ? 'bg-neutralHoverBg' : ''
-                }`}>
+                className={`${
+                  isLG ? styles['schrodinger-mobile-content'] : styles['schrodinger-content']
+                } flex-shrink-0 pb-16 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
                 {children}
               </AntdLayout.Content>
               <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
