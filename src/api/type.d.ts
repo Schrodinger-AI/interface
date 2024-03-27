@@ -61,6 +61,10 @@ interface IPointItem {
   amount: number;
   rate: number;
   updateTime: number;
+  inviteFollowersNumber: number;
+  inviteRate: number;
+  thirdFollowersNumber: number;
+  thirdRate: number;
 }
 
 interface IGetPointsData {
