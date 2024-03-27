@@ -5,7 +5,10 @@ import { CompassLink, CompassText } from './CompassLink';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import clsx from 'clsx';
 import { ReactComponent as ArrowDownIcon } from 'assets/img/arrow.svg';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useJoinStatus } from 'redux/hooks';
+
+const needJoin = ['/referral'];
 
 interface IProps {
   title?: string;
@@ -16,6 +19,7 @@ interface IProps {
 
 function MenuDropdown({ title, items, schema, onPressCompassItems }: IProps) {
   const [rotate, setRotate] = useState<boolean>(false);
+  const isJoin = useJoinStatus();
 
   const onOpenChange = (open: boolean) => {
     if (open) {
@@ -25,6 +29,31 @@ function MenuDropdown({ title, items, schema, onPressCompassItems }: IProps) {
     }
   };
 
+  const subMenuItems = useMemo(() => {
+    return items
+      .filter((val) => {
+        if (val.schema && needJoin.includes(val.schema)) {
+          if (isJoin) return true;
+          return false;
+        } else {
+          return true;
+        }
+      })
+      .map((sub) => {
+        return {
+          key: sub.title,
+          label: (
+            <CompassLink
+              key={sub.title}
+              item={sub}
+              className={clsx('text-neutralPrimary rounded-[12px] hover:text-brandHover', styles.menuItem)}
+              onPressCompassItems={onPressCompassItems}
+            />
+          ),
+        } as ItemType;
+      });
+  }, [isJoin, items, onPressCompassItems]);
+
   return (
     <Dropdown
       key={title}
@@ -32,19 +61,7 @@ function MenuDropdown({ title, items, schema, onPressCompassItems }: IProps) {
       placement="bottomLeft"
       onOpenChange={onOpenChange}
       menu={{
-        items: items.map((sub) => {
-          return {
-            key: sub.title,
-            label: (
-              <CompassLink
-                key={sub.title}
-                item={sub}
-                className={clsx('text-neutralPrimary rounded-[12px] hover:text-brandHover', styles.menuItem)}
-                onPressCompassItems={onPressCompassItems}
-              />
-            ),
-          } as ItemType;
-        }),
+        items: subMenuItems,
       }}>
       <span className={clsx('flex justify-center items-center', styles['menu-dropdown-title'])}>
         <CompassText title={title} schema={schema} />

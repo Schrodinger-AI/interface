@@ -15,11 +15,13 @@ import { PrimaryDomainName } from 'constants/common';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
+import { useJoinStatus } from 'redux/hooks';
 
 function Referral() {
   const { wallet, isLogin } = useWalletService();
   const [, setCopied] = useCopyToClipboard();
   const { isLG } = useResponsive();
+  const isJoin = useJoinStatus();
 
   const { showLoading, closeLoading, visible } = useLoading();
 
@@ -74,17 +76,13 @@ function Referral() {
   }, 3000);
 
   useEffect(() => {
-    if (wallet.address) {
-      checkJoined();
-    }
-  }, [checkJoined, wallet.address]);
-
-  useEffect(() => {
     showLoading();
-    return () => {
+    if (wallet.address && !isJoin) {
+      checkJoined();
+    } else {
       closeLoading();
-    };
-  }, [closeLoading, showLoading]);
+    }
+  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 
