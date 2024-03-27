@@ -12,7 +12,6 @@ import { Button } from 'aelf-design';
 import useResponsive from 'hooks/useResponsive';
 import SkeletonImage from 'components/SkeletonImage';
 import { PrimaryDomainName } from 'constants/common';
-import styles from './styles.module.css';
 import clsx from 'clsx';
 import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
 import { useJoinStatus } from 'redux/hooks';
@@ -101,7 +100,7 @@ function Referral() {
           <div
             className={clsx(
               'w-[160px] lg:w-[360px] h-[160px] lg:h-[360px] mt-[24px] flex justify-start items-center',
-              isLG ? styles.rotate : '',
+              isLG ? 'rotate-y-180' : '',
             )}>
             <SkeletonImage
               img={require('assets/img/inviteHomeLogo.png').default.src}

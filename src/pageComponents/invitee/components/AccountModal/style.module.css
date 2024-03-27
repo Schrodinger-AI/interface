@@ -1,6 +1,5 @@
 .invitee-modal {
-  transform: translateX(-50%);
-  @apply !text-center !absolute !top-[200px] !left-1/2;
+  @apply !text-center !top-[200px];
   :global(.aelfd-modal-content) {
     @apply px-8 py-8 rounded-lg border-2 border-solid border-white;
   }
