@@ -26,7 +26,6 @@ import clsx from 'clsx';
 import CopyAddressItem from './components/CopyAddressItem';
 import AssetItem from './components/AssetItem';
 import PointsItem from './components/PointsItem';
-import ReferralItem from './components/ReferralItem';
 import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
 import { CustomThemeType } from 'redux/types/reducerTypes';
 import MenuDropdown from './components/MenuDropdown';
@@ -146,7 +145,6 @@ export default function Header() {
         label: <AssetItem closeMenuModal={closeMenuModal} />,
       },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
-      { key: 'referral', label: <ReferralItem checkAndRedirect={checkAndRedirect} /> },
       {
         key: 'logout',
         label: <LogoutItem />,
@@ -215,7 +213,7 @@ export default function Header() {
     );
     if (!isLG) {
       return (
-        <span className="space-x-8 xl:space-x-16 flex flex-row items-center">
+        <span className="space-x-8 xl:space-x-12 flex flex-row items-center">
           {itemList.map((item) => {
             const { title, items = [], schema } = item;
             if (items?.length > 0) {
