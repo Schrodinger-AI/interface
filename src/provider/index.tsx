@@ -18,7 +18,7 @@ import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
 import Loading from 'components/PageLoading/index';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { forbidScale } from 'utils/common';
 import dynamic from 'next/dynamic';
 
@@ -27,7 +27,6 @@ const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isCorrectDomain, setIsCorrectDomain] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
 
   const checkHost = useCallback(async () => {

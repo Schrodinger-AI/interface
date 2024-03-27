@@ -31,6 +31,7 @@ module.exports = {
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
         fillMask3: 'var(--fill-mask-3)',
+        fillMask5: 'var(--fill-mask-5)',
       },
       fontSize: {
         xxs: ['10px', '16px'],
