@@ -18,6 +18,8 @@ import styles from './style.module.css';
 import clsx from 'clsx';
 import { useResponsive } from 'hooks/useResponsive';
 import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
+import { isWeChatBrowser } from 'utils/isWeChatBrowser';
+import WeChatGuide from 'components/WeChatGuide';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -118,6 +120,7 @@ const Layout = dynamic(async () => {
         ) : (
           <>{children}</>
         )}
+        {isWeChatBrowser() && <WeChatGuide />}
       </>
     );
   };
