@@ -34,7 +34,7 @@ export default function TokensHome() {
             <span className="relative">
               <span className="text-center text-[48px] lg:text-[80px] font-bold">Schrödinger</span>
               {env === ENVIRONMENT.TEST && (
-                <span className="absolute -top-[16px] lg:-top-[12px] right-0 lg:-right-[96px] flex text-[16px] lg:text-[24px] font-semibold justify-center items-center bg-brandDefault text-white rounded-[8px] lg:rounded-[12px] h-[24px] lg:h-[40px] w-[53px] lg:w-[80px] !rounded-bl-none">
+                <span className="absolute -top-[16px] lg:-top-[12px] right-0 lg:-right-[96px] flex text-[16px] lg:text-[24px] font-semibold justify-center items-center bg-[#F55D6E] text-white rounded-[8px] lg:rounded-[12px] h-[24px] lg:h-[40px] w-[53px] lg:w-[80px] !rounded-bl-none">
                   TEST
                 </span>
               )}

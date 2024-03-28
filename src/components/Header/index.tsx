@@ -325,7 +325,7 @@ export default function Header() {
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
       {env === ENVIRONMENT.TEST && (
-        <p className=" w-full bg-brandBg p-[16px] text-sm text-brandDefault font-medium text-center">
+        <p className=" w-full bg-[#FEEFF1] p-[16px] text-sm text-[#F55D6E] font-medium text-center">
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
