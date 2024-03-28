@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from 'aelf-design';
-// import { inviteLogoPng } from 'assets/img/referral';
 import inviteHomeLogo from 'assets/img/inviteHomeLogo.png';
 import Image from 'next/image';
 

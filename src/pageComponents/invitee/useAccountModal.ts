@@ -1,14 +1,15 @@
 import AccountModal from './components/AccountModal';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useModal } from '@ebay/nice-modal-react';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { AcceptReferral } from 'contract/schrodinger';
-import { useCheckJoined } from 'hooks/useJoin';
+import useLoading from 'hooks/useLoading';
+import { singleMessage } from '@portkey/did-ui-react';
+import { IContractError } from 'types';
 
 export default function useAccountModal() {
   const modal = useModal(AccountModal);
-  const { toJoin } = useCheckJoined();
-  // const { showLoading, closeLoading } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const urlSearchParams = useSearchParams();
 
@@ -18,18 +19,23 @@ export default function useAccountModal() {
       content: 'Accept the invitation and join Schrödinger now to earn Flux Points for your interactions.',
       btnText: 'Accept',
       onOk: async () => {
-        console.log('referrer', urlSearchParams.get('referrer'));
-        const isJoined = await toJoin();
-        if (isJoined) {
+        try {
+          const referrerAddress = urlSearchParams.get('referrer') || '';
+          console.log('referrer', referrerAddress);
+          showLoading();
           await AcceptReferral({
-            referrer: urlSearchParams.get('referrer') || '',
+            referrer: referrerAddress,
           });
+          closeLoading();
           modal.hide();
           router.push('/');
+        } catch (error) {
+          closeLoading();
+          singleMessage.error((error as IContractError).errorMessage?.message);
         }
       },
     });
-  }, [modal, router, toJoin, urlSearchParams]);
+  }, [closeLoading, modal, router, showLoading, urlSearchParams]);
 
   const oldUser = useCallback(() => {
     modal.show({
