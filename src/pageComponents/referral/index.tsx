@@ -13,8 +13,8 @@ import useResponsive from 'hooks/useResponsive';
 import SkeletonImage from 'components/SkeletonImage';
 import { PrimaryDomainName } from 'constants/common';
 import clsx from 'clsx';
-import { IClient, IRequest, IResponse, ISocialShareParams } from './type';
 import { useJoinStatus } from 'redux/hooks';
+import { appEnvironmentShare } from 'utils/appEnvironmentShare';
 
 function Referral() {
   const { wallet, isLogin } = useWalletService();
@@ -41,32 +41,20 @@ function Referral() {
 
   const shareLink = useMemo(() => `${PrimaryDomainName}/invitee?referrer=${wallet.address}`, [wallet.address]);
 
-  const onCopy = () => {
+  const onCopy = useCallback(() => {
     setCopied(shareLink);
     message.success('Copied');
-  };
+  }, [setCopied, shareLink]);
 
-  const onInvite = () => {
-    const isAPPEnviroment = !!window.portkeyShellApp;
-
-    if (isAPPEnviroment) {
-      const app = window.portkeyShellApp as IClient;
-      const request: IRequest<ISocialShareParams> = {
-        type: 'socialShare',
-        params: { url: shareLink },
-      };
-
-      app.invokeClientMethod(request, (args: IResponse) => {
-        if (args.status === 1) {
-          message.success('share success');
-        } else {
-          message.success('share failed');
-        }
+  const onInvite = useCallback(() => {
+    try {
+      appEnvironmentShare({
+        shareContent: shareLink,
       });
-    } else {
+    } catch (error) {
       onCopy();
     }
-  };
+  }, [onCopy, shareLink]);
 
   useTimeoutFn(() => {
     if (!isLogin) {

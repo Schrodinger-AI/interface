@@ -4,6 +4,11 @@ import CustomImageLoader from 'components/ImageLoader';
 import React from 'react';
 import { useState } from 'react';
 
+const imageType = {
+  cover: 'object-cover',
+  contain: 'object-contain',
+};
+
 interface ISkeletonImage {
   img?: string;
   tag?: string;
@@ -18,11 +23,6 @@ function SkeletonImage(props: ISkeletonImage) {
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const imageType = {
-    cover: 'object-cover',
-    contain: 'object-contain',
-  };
 
   return (
     <div className={clsx('relative rounded-lg overflow-hidden', className)}>
