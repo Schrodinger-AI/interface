@@ -17,6 +17,7 @@ import useLoading from 'hooks/useLoading';
 import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
+import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -27,6 +28,7 @@ export default function DetailPage() {
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible } = useLoading();
   const marketModal = useModal(MarketModal);
+  const { tradeModal } = useDeviceCmsConfig() || {};
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
   const adoptHandler = useAdoptHandler();
@@ -110,7 +112,7 @@ export default function DetailPage() {
 
   const onTrade = useCallback(() => {
     if (!schrodingerDetail) return;
-    marketModal.show({ title: 'Trade', isTrade: true, detail: schrodingerDetail });
+    marketModal.show({ isTrade: true, detail: schrodingerDetail });
   }, [marketModal, schrodingerDetail]);
 
   useTimeoutFn(() => {
@@ -140,7 +142,7 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {adoptAndResetButton()}
-            {cmsInfo?.isTradeShow && schrodingerDetail && (
+            {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
                 className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
@@ -165,7 +167,7 @@ export default function DetailPage() {
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
         {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
-        {cmsInfo?.isTradeShow && schrodingerDetail && (
+        {tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
             className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
