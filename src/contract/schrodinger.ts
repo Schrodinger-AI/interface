@@ -1,9 +1,9 @@
 import { webLoginInstance } from './webLogin';
-import { sleep } from 'utils';
 import { formatErrorMsg } from 'utils/formattError';
 import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
-import { getTxResult } from 'utils/aelfUtils';
 import { store } from 'redux/store';
+import { getTxResultRetry } from 'utils/getTxResult';
+import { sleep } from '@portkey/utils';
 
 const schrodingerContractRequest = async <T, R>(
   method: string,
@@ -63,7 +63,10 @@ const schrodingerContractRequest = async <T, R>(
       const { transactionId, TransactionId } = result.result || result;
       const resTransactionId = TransactionId || transactionId;
       await sleep(1000);
-      const transaction = await getTxResult(resTransactionId!, info!.curChain, options?.reGetCount);
+      const transaction = await getTxResultRetry({
+        TransactionId: resTransactionId!,
+        chainId: info!.curChain,
+      });
 
       console.log('=====schrodingerContractRequest transaction: ', method, transaction);
 
@@ -109,7 +112,7 @@ export const Adopt = async (
     amount: string;
     domain: string;
   },
-  options: IContractOptions = { reGetCount: -280 },
+  options?: IContractOptions,
 ): Promise<ISendResult> => await schrodingerContractRequest('Adopt', params, options);
 
 export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>
