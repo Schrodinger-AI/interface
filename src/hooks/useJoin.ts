@@ -55,6 +55,7 @@ export const useCheckJoined = () => {
     async (address?: string) => {
       try {
         const isJoin = await GetJoinRecord(address || wallet.address);
+        console.log('----store---setIsjoin---true');
         store.dispatch(setIsJoin(isJoin));
         return isJoin;
       } catch (error) {

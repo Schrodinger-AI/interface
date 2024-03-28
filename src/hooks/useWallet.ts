@@ -25,7 +25,7 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
-import { setHasToken, setItemsFromLocal } from 'redux/reducer/info';
+import { setHasToken, setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { mainChain } from 'constants/index';
 
@@ -67,6 +67,10 @@ export const useWalletInit = () => {
         getToken();
         dispatch(setWalletInfo(cloneDeep(walletInfo)));
         setLocalWalletInfo(cloneDeep(walletInfo));
+      }
+      if (state === WebLoginState.logouting) {
+        console.log('----store---setIsJoin--false');
+        store.dispatch(setIsJoin(false));
       }
     },
     [backToHomeByRoute, wallet, walletType, getToken, setLocalWalletInfo],
