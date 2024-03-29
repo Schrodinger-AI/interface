@@ -11,6 +11,7 @@ import Header from '../Header';
 import LearnMoreModal from 'components/LearnMoreModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'graphqlServer';
+import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 const pageSize = 32;
 export default function List() {
@@ -25,6 +26,7 @@ export default function List() {
   const gutter = useLatestGutter();
   const column = useLatestColumns();
   const learnMoreModal = useModal(LearnMoreModal);
+  const { latestModal } = useDeviceCmsConfig() || {};
 
   const hasMore = useMemo(() => {
     return total > dataSource.length;
@@ -122,6 +124,9 @@ export default function List() {
 
   const goForest = useCallback(
     (item: TSGRItem) => {
+      if (!latestModal?.show) {
+        return;
+      }
       learnMoreModal.show({
         item: {
           ...item,
@@ -129,7 +134,7 @@ export default function List() {
         },
       });
     },
-    [learnMoreModal],
+    [latestModal?.show, learnMoreModal],
   );
 
   useEffect(() => initData(), [fetchData, defaultRequestParams, initData]);

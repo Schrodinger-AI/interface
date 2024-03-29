@@ -1,4 +1,4 @@
-import { TEmptyChannelInfo, TEmptyChannelGroup } from 'types/misc';
+import { ICompassProps } from 'components/Header/type';
 
 export type InfoStateType = {
   isMobile?: boolean;
@@ -32,10 +32,6 @@ export type InfoStateType = {
     emptyChannelGroupList: string;
 
     adoptRuleList: string;
-    isTradeShow: boolean;
-    isMarketShow: boolean;
-    tradeDescription: string;
-    tradeList: string;
     // symbol black list stringify
     blackList?: string;
 
@@ -46,6 +42,7 @@ export type InfoStateType = {
     ifpsPrefix: string;
     gitBookDescription: string;
     gitBookLink: string;
+    customization: string;
     [key: string]: any;
   };
   itemsFromLocal?: string[];
@@ -57,6 +54,7 @@ export type TTradeItem = {
   description: string;
   imgUrl: string;
   link: string;
+  show: boolean;
 };
 
 export type TAssetsStateType = {
@@ -64,4 +62,34 @@ export type TAssetsStateType = {
     common: number;
   };
   tokenPriceMap?: Record<string, string>;
+};
+
+export type TCustomizationType = {
+  pc: TCustomizationItemType;
+  android: TCustomizationItemType;
+  ios: TCustomizationItemType;
+};
+
+export type TCustomizationItemType = {
+  routerItems: {
+    items: Array<ICompassProps>;
+  };
+  latestModal: {
+    show: boolean;
+    title: string;
+    desc: string;
+    btnText: string;
+    btnUrl: string;
+  };
+  tradeModal: {
+    show: boolean;
+    title: string;
+    desc: string;
+    items: Array<TTradeItem>;
+  };
+  tradeModalOnMarketPlace: {
+    title: string;
+    desc: string;
+    items: Array<TTradeItem>;
+  };
 };

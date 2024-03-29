@@ -8,6 +8,7 @@ import { TBaseSGRToken } from 'types/tokens';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { divDecimals } from 'utils/calculate';
 import { openExternalLink } from 'utils/openlink';
+import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 interface ILearnMoreModalProps {
   item: TBaseSGRToken;
@@ -16,27 +17,33 @@ interface ILearnMoreModalProps {
 function LearnMoreModal({ item }: ILearnMoreModalProps) {
   const modal = useModal();
   const cmsInfo = useCmsInfo();
+  const { latestModal } = useDeviceCmsConfig() || {};
 
   const onCancel = useCallback(() => {
     modal.hide();
   }, [modal]);
 
   const onJump = useCallback(() => {
+    if (latestModal?.btnUrl) {
+      openExternalLink(latestModal.btnUrl, '_blank');
+      modal.hide();
+      return;
+    }
     const forestUrl = cmsInfo?.forestUrl || '';
     if (!forestUrl) return;
     // const collection = getCollection(item.symbol);
     // openExternalLink(`${forestUrl}/explore-items/${cmsInfo?.curChain}-${collection}-0`, '_blank');
     openExternalLink(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
     modal.hide();
-  }, [cmsInfo?.curChain, cmsInfo?.forestUrl, item.symbol, modal]);
+  }, [cmsInfo?.curChain, cmsInfo?.forestUrl, item.symbol, latestModal?.btnUrl, modal]);
 
   const confirmBtn = useMemo(
     () => (
       <Button className="md:w-[356px]" onClick={onJump} type="primary">
-        Go to Forest
+        {latestModal?.btnText || 'Go to Forest'}
       </Button>
     ),
-    [onJump],
+    [latestModal?.btnText, onJump],
   );
 
   const transformedAmount = useMemo(
@@ -46,7 +53,7 @@ function LearnMoreModal({ item }: ILearnMoreModalProps) {
 
   return (
     <CommonModal
-      title="Notice"
+      title={latestModal?.title || 'Notice'}
       width={438}
       open={modal.visible}
       onOk={onCancel}
@@ -55,7 +62,7 @@ function LearnMoreModal({ item }: ILearnMoreModalProps) {
       footer={confirmBtn}
       disableMobileLayout={true}>
       <div className="text-neutralPrimary text-sm mb-[24px]">
-        Please go to the Forest NFT marketplace to learn more about the inscription.
+        {latestModal?.desc || 'Please go to the Forest NFT marketplace to learn more about the inscription.'}
       </div>
       <div className="rounded-[16px] bg-[#F6F6F6] p-[12px] flex flex-row items-center">
         <SkeletonImage img={item.inscriptionImageUri} className={'w-[64px] h-[64px]'} />
