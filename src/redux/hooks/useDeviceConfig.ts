@@ -13,9 +13,9 @@ export default function useDeviceCmsConfig() {
     try {
       const parsed: TCustomizationType = jsonParse(customization);
 
-      if (platform === DeviceType.Android) {
+      if (platform === 'android') {
         setParsedResult(parsed.android);
-      } else if (platform === DeviceType.IOS) {
+      } else if (platform === 'ios') {
         setParsedResult(parsed.ios);
       } else {
         setParsedResult(parsed.pc);
