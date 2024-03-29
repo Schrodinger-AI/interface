@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { TCustomizationType, TCustomizationItemType } from 'redux/types/reducerTypes';
-import isMobile from 'utils/isMobile';
 import { useCmsInfo } from '.';
 import { jsonParse } from 'utils/common';
+
+const { platform } = window?.portkeyShellApp?.deviceEnv ?? {};
 
 export default function useDeviceCmsConfig() {
   const { customization = '{}' } = useCmsInfo() || {};
@@ -12,9 +13,9 @@ export default function useDeviceCmsConfig() {
     try {
       const parsed: TCustomizationType = jsonParse(customization);
 
-      if (isMobile().android.device) {
+      if (platform === 'android') {
         setParsedResult(parsed.android);
-      } else if (isMobile().apple.device) {
+      } else if (platform === 'ios') {
         setParsedResult(parsed.ios);
       } else {
         setParsedResult(parsed.pc);
