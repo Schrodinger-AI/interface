@@ -3,22 +3,39 @@ import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import useResponsive from 'hooks/useResponsive';
 import Image from 'next/image';
 import styles from './style.module.css';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { singleMessage } from '@portkey/did-ui-react';
+import { IContractError } from 'types';
 
 interface IAccountModal {
+  showLoading?: boolean;
   title: string;
   content: string;
   btnText: string;
   onOk: () => void;
 }
 
-function AccountModal({ title, content, btnText, onOk }: IAccountModal) {
+function AccountModal({ showLoading, title, content, btnText, onOk }: IAccountModal) {
   const modal = useModal();
   const { isLG } = useResponsive();
+  const [loading, setLoading] = useState(false);
 
   const [tokenWidth, catWidth, [ribbonWidth, ribbonHeight]] = useMemo(() => {
     return isLG ? [32, 64, [200, 100]] : [48, 80, [280, 140]];
   }, [isLG]);
+
+  const handleClick = useCallback(async () => {
+    if (showLoading) {
+      setLoading(true);
+    }
+    try {
+      await onOk();
+    } catch (error) {
+      singleMessage.error((error as IContractError).errorMessage?.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [onOk, showLoading]);
 
   return (
     <Modal
@@ -30,7 +47,7 @@ function AccountModal({ title, content, btnText, onOk }: IAccountModal) {
       mask={false}
       closeIcon={false}
       footer={
-        <Button className="w-full" type="primary" onClick={onOk}>
+        <Button className="w-full" type="primary" onClick={handleClick} loading={loading}>
           {btnText}
         </Button>
       }>

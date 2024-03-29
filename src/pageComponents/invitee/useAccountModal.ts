@@ -1,7 +1,7 @@
 import AccountModal from './components/AccountModal';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useModal } from '@ebay/nice-modal-react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { AcceptReferral } from 'contract/schrodinger';
 import useLoading from 'hooks/useLoading';
 import { singleMessage } from '@portkey/did-ui-react';
@@ -9,33 +9,26 @@ import { IContractError } from 'types';
 
 export default function useAccountModal() {
   const modal = useModal(AccountModal);
-  const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const urlSearchParams = useSearchParams();
 
   const newUser = useCallback(() => {
     modal.show({
+      showLoading: true,
       title: 'Accept Invitation',
       content: 'Accept the invitation and join Schrödinger now to earn Flux Points for your interactions.',
       btnText: 'Accept',
       onOk: async () => {
-        try {
-          const referrerAddress = urlSearchParams.get('referrer') || '';
-          console.log('referrer', referrerAddress);
-          showLoading();
-          await AcceptReferral({
-            referrer: referrerAddress,
-          });
-          closeLoading();
-          modal.hide();
-          router.push('/');
-        } catch (error) {
-          closeLoading();
-          singleMessage.error((error as IContractError).errorMessage?.message);
-        }
+        const referrerAddress = urlSearchParams.get('referrer') || '';
+        console.log('referrer', referrerAddress);
+        await AcceptReferral({
+          referrer: referrerAddress,
+        });
+        modal.hide();
+        router.push('/');
       },
     });
-  }, [closeLoading, modal, router, showLoading, urlSearchParams]);
+  }, [modal, router, urlSearchParams]);
 
   const oldUser = useCallback(() => {
     modal.show({
@@ -50,5 +43,5 @@ export default function useAccountModal() {
     });
   }, [modal, router]);
 
-  return { newUser, oldUser, modal };
+  return { newUser, oldUser };
 }
