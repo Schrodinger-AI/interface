@@ -1,4 +1,4 @@
-import { useLottie } from 'lottie-react';
+import Lottie from 'lottie-react';
 import LoadingAnimation from 'assets/img/loading-animation.json';
 import LoadingAnimationBlue from 'assets/img/loading-animation-blue.json';
 import { useMemo } from 'react';
@@ -22,8 +22,7 @@ function Loading({ color = 'blue' }: IProps) {
     };
   }, [color]);
 
-  const { View } = useLottie(options, { width: '40px', height: '40px' });
-  return View;
+  return <Lottie {...options} className="w-[40px] h-[40px]" />;
 }
 
 export default React.memo(Loading);
