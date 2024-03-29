@@ -3,13 +3,12 @@ import { TCustomizationType, TCustomizationItemType } from 'redux/types/reducerT
 import { useCmsInfo } from '.';
 import { jsonParse } from 'utils/common';
 
-const { platform } = window?.portkeyShellApp?.deviceEnv ?? {};
-
 export default function useDeviceCmsConfig() {
   const { customization = '{}' } = useCmsInfo() || {};
   const [parsedResult, setParsedResult] = useState<TCustomizationItemType>();
 
   useEffect(() => {
+    const { platform } = window?.portkeyShellApp?.deviceEnv ?? {};
     try {
       const parsed: TCustomizationType = jsonParse(customization);
 
