@@ -8,13 +8,16 @@ import clsx from 'clsx';
 export const CompassText = (props: { title?: string; schema?: string }) => {
   const pathname = usePathname();
   const isCurrent = pathname?.toLocaleLowerCase() === props.schema?.toLowerCase();
+
+  console.log('=====isCurrent', isCurrent);
+
   return (
     <span
       className={clsx(
         styles['header-menu'],
         `!rounded-[12px] text-lg ${
-          isCurrent ? 'text-brandDefault' : ''
-        } hover:text-brandDefault cursor-pointer font-medium`,
+          isCurrent ? '!text-brandDefault' : ''
+        } hover:text-brandHover cursor-pointer font-medium`,
       )}>
       {props.title}
     </span>
