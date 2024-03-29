@@ -1,3 +1,10 @@
+enum DeviceType {
+  Android = 'android',
+  IOS = 'ios',
+  Windows = 'windows',
+  Macos = 'macos',
+  Web = 'web',
+}
 interface Window {
   ethereum?: {
     isMetaMask?: true;
@@ -14,7 +21,7 @@ interface Window {
     deviceEnv?: {
       statusBarHeight?: number;
       bottomBarHeight?: number;
-      platform?: 'ios' | 'android' | 'windows' | 'macos' | 'web';
+      platform?: DeviceType;
     };
   };
 }
