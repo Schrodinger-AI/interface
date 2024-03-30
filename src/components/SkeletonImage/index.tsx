@@ -3,6 +3,13 @@ import clsx from 'clsx';
 import CustomImageLoader from 'components/ImageLoader';
 import React from 'react';
 import { useState } from 'react';
+import styles from './index.module.css';
+import { CodeBlock } from 'components/ItemCard';
+
+const imageType = {
+  cover: 'object-cover',
+  contain: 'object-contain',
+};
 
 interface ISkeletonImage {
   img?: string;
@@ -11,25 +18,36 @@ interface ISkeletonImage {
   imageSizeType?: 'cover' | 'contain';
   width?: number;
   height?: number;
+  rank?: string;
+  hideRankHover?: boolean;
+  containsInscriptionCode?: {
+    inscriptionDeploy: string;
+    decimals?: number;
+  };
 }
 
 function SkeletonImage(props: ISkeletonImage) {
-  const { img: imageUrl, className, imageSizeType = 'cover', tag, width = 108, height = 108 } = props;
+  const {
+    img: imageUrl,
+    className,
+    rank,
+    hideRankHover = false,
+    imageSizeType = 'cover',
+    tag,
+    containsInscriptionCode,
+    width = 108,
+    height = 108,
+  } = props;
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const imageType = {
-    cover: 'object-cover',
-    contain: 'object-contain',
-  };
-
   return (
-    <div className={clsx('relative rounded-lg overflow-hidden', className)}>
+    <div className={clsx('relative rounded-lg overflow-hidden', styles['skeleton-image'], className)}>
       {(loading || !imageUrl) && (
         <Skeleton.Image className="absolute top-0 left-0 !w-full !h-full" active={imageUrl ? skeletonActive : false} />
       )}
-      {imageUrl && (
+      {imageUrl ? (
         <div className="w-full h-full relative">
           <CustomImageLoader
             width={width}
@@ -45,13 +63,31 @@ function SkeletonImage(props: ISkeletonImage) {
               setSkeletonActive(false);
             }}
           />
-          {tag && (
+          {tag ? (
             <div className="absolute top-[4px] text-white left-[4px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium">
               {tag}
             </div>
-          )}
+          ) : null}
+          {containsInscriptionCode ? (
+            <div
+              className={`bg-black bg-opacity-60 absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20 invisible ${styles['inscription-info-wrap']}`}>
+              <CodeBlock
+                value={containsInscriptionCode.inscriptionDeploy}
+                decimals={containsInscriptionCode.decimals}
+              />
+            </div>
+          ) : null}
+          {rank ? (
+            <div
+              className={clsx(
+                'absolute bottom-0 left-0 w-full h-[24px] bg-fillMask1 flex justify-center items-center text-white text-[10px] leading-[16px] font-medium',
+                hideRankHover ? styles['hide-rank'] : '',
+              )}>
+              {rank}
+            </div>
+          ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

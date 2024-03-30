@@ -12,6 +12,10 @@ import LearnMoreModal from 'components/LearnMoreModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'graphqlServer';
 import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
+import { formatTraits } from 'utils/formatTraits';
+import { getCatsRankProbability } from 'utils/getCatsRankProbability';
+import { addPrefixSuffix } from 'utils/addressFormatting';
+import { useWalletService } from 'hooks/useWallet';
 
 const pageSize = 32;
 export default function List() {
@@ -27,12 +31,53 @@ export default function List() {
   const column = useLatestColumns();
   const learnMoreModal = useModal(LearnMoreModal);
   const { latestModal } = useDeviceCmsConfig() || {};
+  const { wallet } = useWalletService();
 
   const hasMore = useMemo(() => {
     return total > dataSource.length;
   }, [total, dataSource]);
 
   const getLatestSchrodingerList = useGetLatestSchrodingerList();
+
+  const getRankInfo = useCallback(
+    async (data: TSGRItem[]) => {
+      try {
+        const needShowRankingIndexList: number[] = [];
+        const catsRankProbabilityParams: TCatsRankProbabilityTraits[] = [];
+        const needShowRankingList = data.filter((item, index) => {
+          if (item.generation === 9) {
+            needShowRankingIndexList.push(index);
+            return true;
+          }
+          return false;
+        });
+
+        if (!needShowRankingList.length) return false;
+
+        needShowRankingList.map((item) => {
+          const params = formatTraits(item.traits);
+          params && catsRankProbabilityParams.push(params);
+        });
+
+        try {
+          const catsRankProbability = await getCatsRankProbability({
+            catsTraits: catsRankProbabilityParams,
+            address: addPrefixSuffix(wallet.address),
+          });
+
+          return {
+            catsRankProbability,
+            needShowRankingIndexList,
+          };
+        } catch (error) {
+          return false;
+        }
+      } catch (error) {
+        return false;
+      }
+    },
+    [wallet.address],
+  );
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {
@@ -51,6 +96,12 @@ export default function List() {
         } = await getLatestSchrodingerList({
           input: params,
         });
+
+        const { catsRankProbability, needShowRankingIndexList } = (await getRankInfo(res.data)) || {
+          catsRankProbability: false,
+          needShowRankingIndexList: [],
+        };
+
         setTotal(res.totalCount ?? 0);
         const data = (res.data || []).map((item) => {
           return {
@@ -58,6 +109,12 @@ export default function List() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
+
+        needShowRankingIndexList.forEach((item, index) => {
+          data[item].rankInfo =
+            catsRankProbability && catsRankProbability?.[index] ? catsRankProbability?.[index] : undefined;
+        });
+
         if (isLoadMore.current) {
           setDataSource((preData) => [...preData, ...data]);
           setLoadingMore(true);
@@ -70,30 +127,11 @@ export default function List() {
         setMoreLoading(false);
       }
     },
-    // There cannot be dependencies showLoading and closeLoading
-    [closeLoading, getLatestSchrodingerList, showLoading],
+    [closeLoading, getLatestSchrodingerList, getRankInfo, showLoading],
   );
 
-  // const requestParams = useMemo(() => {
-  //   return {
-  //     chainId: cmsInfo?.curChain ?? 'tDVV',
-  //     skipCount: getPageNumber(current, pageSize),
-  //     maxResultCount: pageSize,
-  //   };
-  // }, [cmsInfo?.curChain, current]);
-
   const loadMoreData = useCallback(() => {
-    // setLoadingMore(true);
-    // if (isLoading || !hasMore || moreLoading) return;
-    // isLoadMore.current = true;
-    // SetCurrent(current + 1);
-    // fetchData({
-    //   params: {
-    //     ...requestParams,
-    //     skipCount: getPageNumber(current + 1, pageSize),
-    //   },
-    //   loadMore: true,
-    // });
+    // TODO
   }, []);
 
   const defaultRequestParams = useMemo(() => {
@@ -127,6 +165,7 @@ export default function List() {
       if (!latestModal?.show) {
         return;
       }
+
       learnMoreModal.show({
         item: {
           ...item,

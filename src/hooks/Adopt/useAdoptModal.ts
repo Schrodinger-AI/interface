@@ -19,6 +19,7 @@ import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formattError';
+import { getRankInfoToShow } from 'utils/formatTraits';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -41,7 +42,7 @@ const useAdoptHandler = () => {
   );
 
   const adoptInput = useCallback(
-    (parentItemInfo: TSGRToken, account: string, parentPrice?: string): Promise<string> => {
+    (parentItemInfo: TSGRToken, account: string, parentPrice?: string, rankInfo?: IRankInfo): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         showLoading();
         let symbolBalance;
@@ -65,6 +66,7 @@ const useAdoptHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
+            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
           },
 
           inputProps: {
@@ -179,14 +181,14 @@ const useAdoptHandler = () => {
   }, [asyncModal]);
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, account: string) => {
+    async (parentItemInfo: TSGRToken, account: string, rankInfo?: IRankInfo) => {
       try {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         closeLoading();
         await checkAIServer();
 
-        const amount = await adoptInput(parentItemInfo, account, parentPrice);
+        const amount = await adoptInput(parentItemInfo, account, parentPrice, rankInfo);
         const { adoptId, outputAmount, symbol, tokenName } = await approveAdopt({ amount, account, parentItemInfo });
 
         await adoptConfirm(parentItemInfo, { adoptId, symbol, outputAmount, tokenName }, account);

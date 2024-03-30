@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { TCustomizationType, TCustomizationItemType } from 'redux/types/reducerTypes';
 import { useCmsInfo } from '.';
 import { jsonParse } from 'utils/common';
+
 import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMessage';
 
 export default function useDeviceCmsConfig() {
@@ -13,13 +14,23 @@ export default function useDeviceCmsConfig() {
     try {
       const parsed: TCustomizationType = jsonParse(customization);
 
-      if (platform === 'android') {
-        setParsedResult(parsed.android);
-      } else if (platform === 'ios') {
-        setParsedResult(parsed.ios);
-      } else {
-        setParsedResult(parsed.pc);
+      let config = parsed.pc;
+      switch (platform) {
+        case 'android':
+          config = parsed.android;
+          break;
+        case 'ios':
+          config = parsed.ios;
+          break;
+        case 'macos':
+        case 'windows':
+        case 'web':
+          config = parsed.pc;
+          break;
+        default:
+          break;
       }
+      setParsedResult(config);
     } catch (e) {
       console.error(e, 'parse globalConfig failed');
       captureMessage({

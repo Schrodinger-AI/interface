@@ -18,6 +18,9 @@ import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
+import { formatTraits } from 'utils/formatTraits';
+import { getCatsRankProbability } from 'utils/getCatsRankProbability';
+import { addPrefixSuffix } from 'utils/addressFormatting';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -31,6 +34,8 @@ export default function DetailPage() {
   const { tradeModal } = useDeviceCmsConfig() || {};
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
+  const [rankInfo, setRankInfo] = useState<IRankInfo>();
+
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
 
@@ -40,10 +45,24 @@ export default function DetailPage() {
     const result = await getSchrodingerDetail({
       input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
     });
-    console.log('result', result);
-    setSchrodingerDetail(result.data.getSchrodingerDetail);
-    console.log('schrodingerDetail', result.data.getSchrodingerDetail);
-    closeLoading();
+
+    try {
+      const paramsTraits = formatTraits(result.data.getSchrodingerDetail.traits);
+      if (!paramsTraits) {
+        setSchrodingerDetail(result.data.getSchrodingerDetail);
+        closeLoading();
+        return;
+      }
+      const catsRankProbability = await getCatsRankProbability({
+        catsTraits: [paramsTraits],
+        address: addPrefixSuffix(wallet.address),
+      });
+      setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
+    } finally {
+      setSchrodingerDetail(result.data.getSchrodingerDetail);
+      closeLoading();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cmsInfo?.curChain, getSchrodingerDetail, symbol, wallet.address]);
 
@@ -53,12 +72,12 @@ export default function DetailPage() {
 
   const onAdoptNextGeneration = () => {
     if (!schrodingerDetail) return;
-    adoptHandler(schrodingerDetail, wallet.address);
+    adoptHandler(schrodingerDetail, wallet.address, rankInfo);
   };
 
   const onReset = () => {
     if (!schrodingerDetail) return;
-    resetHandler(schrodingerDetail, wallet.address);
+    resetHandler(schrodingerDetail, wallet.address, rankInfo);
   };
 
   const onBack = () => {
@@ -155,7 +174,9 @@ export default function DetailPage() {
         </div>
         <div className="w-full mt-[24px] flex flex-row justify-between items-start">
           {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
-          {schrodingerDetail && <ItemInfo detail={schrodingerDetail} onAdoptNextGeneration={onAdoptNextGeneration} />}
+          {schrodingerDetail && (
+            <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+          )}
         </div>
       </div>
 
@@ -176,7 +197,9 @@ export default function DetailPage() {
             Trade
           </Button>
         )}
-        {schrodingerDetail && <ItemInfo detail={schrodingerDetail} onAdoptNextGeneration={onAdoptNextGeneration} />}
+        {schrodingerDetail && (
+          <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+        )}
 
         {adoptAndResetButtonSmall()}
       </div>

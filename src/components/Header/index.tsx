@@ -163,7 +163,7 @@ export default function Header() {
   }, [router]);
 
   const items = useMemo(() => {
-    const menuItems = [
+    let menuItems = [
       {
         key: 'address',
         label: <CopyAddressItem />,
@@ -179,6 +179,16 @@ export default function Header() {
     if (walletType !== WalletType.portkey) {
       menuItems.splice(1, 1);
     }
+
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      menuItems = menuItems.filter((menuItem) => {
+        return menuItem.key !== 'asset';
+      });
+    }
+
     return menuItems;
   }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
 
@@ -300,6 +310,17 @@ export default function Header() {
 
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
+  const handleRoute = () => {
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      return;
+    }
+
+    router.replace('/');
+  };
+
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
       {env === ENVIRONMENT.TEST && (
@@ -310,7 +331,7 @@ export default function Header() {
       )}
 
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={() => router.replace('/')}>
+        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img

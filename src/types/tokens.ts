@@ -15,12 +15,20 @@ export type TBaseSGRToken = {
   blockTime: number;
   decimals: number;
   inscriptionImageUri: string;
+  rank?: string;
+  rankInfo?: {
+    probability?: string;
+    rank: string;
+    total?: string;
+  };
 };
 
 export type TSGRItem = TBaseSGRToken & {
   inscriptionDeploy: string;
   adopter: string;
   adoptTime: number;
+  rankInfo?: IRankInfo;
+  traits: ITrait[];
 };
 
 export type TSGRToken = GenerateType<
