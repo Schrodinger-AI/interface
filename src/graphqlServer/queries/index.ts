@@ -14,6 +14,10 @@ export const GET_SCHRODINGER_LIST_QUERY = gql`
         inscriptionDeploy
         adopter
         adoptTime
+        traits {
+          traitType
+          value
+        }
       }
     }
   }
@@ -106,6 +110,10 @@ export const GET_LATEST_SCHRODINGER_LIST_QUERY = gql`
         inscriptionDeploy
         adopter
         adoptTime
+        traits {
+          traitType
+          value
+        }
       }
     }
   }

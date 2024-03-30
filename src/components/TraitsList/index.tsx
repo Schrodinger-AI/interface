@@ -11,14 +11,16 @@ interface ITraitItem {
   item: ITrait;
   isLG: boolean;
   showNew?: boolean;
+  traitsProbability?: number;
 }
 
 interface ITraitsListProps {
   data: ITrait[];
+  rankInfo?: IRankInfo;
   showNew?: boolean;
 }
 
-function TraitsItem({ item, showNew, isLG }: ITraitItem) {
+function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
   const { traitType, value, percent } = item;
   return (
     <div
@@ -28,13 +30,15 @@ function TraitsItem({ item, showNew, isLG }: ITraitItem) {
       )}>
       <TextEllipsis value={traitType} />
       <TextEllipsis className="text-sm text-neutralTitle" value={value} />
-      <div>{formatPercent(percent)}%</div>
+      <div>
+        {formatPercent(percent)}%{traitsProbability && ` (${traitsProbability}%)`}
+      </div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>
   );
 }
 
-export default function TraitsList({ data = [], showNew = false }: ITraitsListProps) {
+export default function TraitsList({ data = [], showNew = false, rankInfo }: ITraitsListProps) {
   const { isLG } = useResponsive();
   const colSpan = useMemo(() => {
     if (isLG) return 24;
@@ -46,7 +50,12 @@ export default function TraitsList({ data = [], showNew = false }: ITraitsListPr
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (
         <Col span={colSpan} key={index}>
-          <TraitsItem item={item} showNew={showNew} isLG={isLG} />
+          <TraitsItem
+            item={item}
+            showNew={showNew}
+            isLG={isLG}
+            traitsProbability={rankInfo?.traitsProbability?.[item.value]}
+          />
         </Col>
       ))}
     </Row>

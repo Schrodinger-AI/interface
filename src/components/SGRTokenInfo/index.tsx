@@ -1,12 +1,14 @@
 import React from 'react';
 import styles from './index.module.css';
+import { getRankInfoToShow } from 'utils/formatTraits';
 export interface ISGRTokenInfoProps {
   tokenName?: string;
   symbol?: string;
   amount?: string | number;
+  rankInfo?: IRankInfo;
 }
 
-function SGRTokenInfo({ tokenName, symbol, amount }: ISGRTokenInfoProps) {
+function SGRTokenInfo({ tokenName, symbol, amount, rankInfo }: ISGRTokenInfoProps) {
   return (
     <div className={styles['token-info']}>
       <div className="text-lg font-medium text-neutralTitle">Info</div>
@@ -23,6 +25,12 @@ function SGRTokenInfo({ tokenName, symbol, amount }: ISGRTokenInfoProps) {
           <span className={styles.title}>Amount Owned</span>
           <span className={styles.value}>{amount ?? '--'}</span>
         </div>
+        {rankInfo?.rank ? (
+          <div className={styles.item}>
+            <span className={styles.title}>Rank</span>
+            <span className={styles.value}>{getRankInfoToShow(rankInfo)}</span>
+          </div>
+        ) : null}
       </div>
     </div>
   );

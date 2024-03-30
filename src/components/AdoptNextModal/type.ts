@@ -1,11 +1,8 @@
+import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { ITrait } from 'types/tokens';
 
 export interface IAdoptNextData {
-  SGRToken: {
-    tokenName?: string;
-    symbol?: string;
-    amount?: string | number;
-  };
+  SGRToken: ISGRTokenInfoProps;
   allTraits: ITrait[];
   images: string[];
   inheritedTraits: ITrait[];

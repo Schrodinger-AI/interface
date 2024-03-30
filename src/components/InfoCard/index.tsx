@@ -7,6 +7,7 @@ export interface IInfoCard {
   logo?: string;
   name: string;
   tag?: string;
+  rank?: string;
   subName?: string;
   items?: {
     label: string;
@@ -17,7 +18,8 @@ export interface IInfoCard {
 }
 
 function InfoCard(params: IInfoCard) {
-  const { logo, name, tag, items, subName, className, layout = 'horizontal' } = params;
+  const { logo, name, tag, rank, items, subName, className, layout = 'horizontal' } = params;
+
   return (
     <div
       className={clsx(
@@ -27,9 +29,7 @@ function InfoCard(params: IInfoCard) {
         className,
       )}>
       <div className="flex items-center">
-        {logo ? (
-          <SkeletonImage img={logo} tag={tag} className={clsx('w-[96px] lg:w-[120px] h-[96px] lg:h-[120px]')} />
-        ) : null}
+        {logo ? <SkeletonImage img={logo} tag={tag} rank={rank} className={clsx('w-[180px] h-[180px]')} /> : null}
       </div>
       <div
         className={`overflow-hidden flex flex-col ${layout === 'vertical' ? 'mt-[16px] w-full' : 'ml-[16px] flex-1'}`}>
