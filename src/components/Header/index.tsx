@@ -298,7 +298,8 @@ export default function Header() {
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
-        <p className=" w-full bg-[#FEEFF1] p-[16px] text-sm text-[#F55D6E] font-medium text-center">
+        <p
+          className={clsx('w-full p-[16px] text-sm text-[#F55D6E] font-medium text-center', styles['testnet-warning'])}>
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
