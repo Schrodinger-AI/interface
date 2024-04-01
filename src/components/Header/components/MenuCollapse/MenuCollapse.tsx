@@ -3,6 +3,7 @@ import { ICompassProps } from '../../type';
 import React, { ReactElement } from 'react';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import styles from './style.module.css';
+import { useJoinStatus } from 'redux/hooks';
 
 interface IProps {
   title: ReactElement;
@@ -10,7 +11,11 @@ interface IProps {
   onPressCompassItems: (item: ICompassProps) => void;
 }
 
+const needJoin = ['/referral'];
+
 function MenuCollapse({ title, item, onPressCompassItems }: IProps) {
+  const isJoin = useJoinStatus();
+
   return (
     <Collapse
       ghost
@@ -19,17 +24,26 @@ function MenuCollapse({ title, item, onPressCompassItems }: IProps) {
         {
           key: item.title,
           label: title,
-          children: item?.items?.map((sub) => {
-            return (
-              <div
-                className="h-[56px] pr-[16px] pl-[40px] flex items-center justify-between"
-                key={sub.title}
-                onClick={() => onPressCompassItems(sub)}>
-                <span className="text-base font-medium text-neutralTitle">{sub.title}</span>
-                <ArrowIcon className="size-[14px]" />
-              </div>
-            );
-          }),
+          children: item?.items
+            ?.filter((val) => {
+              if (val.schema && needJoin.includes(val.schema)) {
+                if (isJoin) return true;
+                return false;
+              } else {
+                return true;
+              }
+            })
+            .map((sub) => {
+              return (
+                <div
+                  className="h-[56px] pr-[16px] pl-[40px] flex items-center justify-between"
+                  key={sub.title}
+                  onClick={() => onPressCompassItems(sub)}>
+                  <span className="text-base font-medium text-neutralTitle">{sub.title}</span>
+                  <ArrowIcon className="size-[14px]" />
+                </div>
+              );
+            }),
         },
       ]}
     />
