@@ -46,8 +46,6 @@ const Layout = dynamic(async () => {
       rpcUrl: cmsInfo?.rpcUrlTDVW,
     });
 
-    useWalletInit();
-
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';
     }, [pathname]);
@@ -70,7 +68,7 @@ const Layout = dynamic(async () => {
     const { isLG } = useResponsive();
 
     useEffect(() => {
-      console.log('webLoginContext.loginState', webLoginContext.loginState);
+      console.log('WebLoginInstance.setContractMethod', webLoginContext.loginState);
       WebLoginInstance.get().setContractMethod([
         {
           chain: SupportedELFChainId.MAIN_NET,
@@ -88,7 +86,10 @@ const Layout = dynamic(async () => {
           viewMethod: callTDVWViewMethod,
         },
       ]);
-    }, [webLoginContext.loginState]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useWalletInit();
 
     const isHiddenHeader = useMemo(() => {
       return ['/privacy-policy'].includes(pathname);
