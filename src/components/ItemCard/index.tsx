@@ -7,6 +7,7 @@ import { formatTimeByDayjs, formatTokenPrice } from 'utils/format';
 import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
+import { getRankInfoToShow } from 'utils/formatTraits';
 
 export enum CardType {
   MY = 'my',
@@ -28,9 +29,11 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     adoptTime,
     adopter,
     inscriptionDeploy,
+    rankInfo,
   } = item || {};
 
   const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
+  const rank = rankInfo && getRankInfoToShow(rankInfo, 'Rank');
 
   const cmsInfo = useCmsInfo();
 
@@ -45,7 +48,11 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [inscriptionDeploy]);
 
   const onCardClick = useCallback(() => {
-    onPress && onPress(item);
+    onPress &&
+      onPress({
+        ...item,
+        rank,
+      });
   }, [item, onPress]);
 
   const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
@@ -62,14 +69,18 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
+            rank={rank}
+            hideRankHover={true}
+            containsInscriptionCode={
+              containsInscriptionCode
+                ? {
+                    inscriptionDeploy,
+                    decimals,
+                  }
+                : undefined
+            }
             className={`${styles['item-card-img']} w-full h-auto aspect-square object-contain rounded-b-none`}
           />
-          {containsInscriptionCode && (
-            <div
-              className={`bg-black bg-opacity-60 absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20 invisible ${styles['inscription-info-wrap']}`}>
-              <CodeBlock value={inscriptionDeploy} decimals={decimals} />
-            </div>
-          )}
         </div>
 
         <div className="px-4 py-4 flex flex-col">

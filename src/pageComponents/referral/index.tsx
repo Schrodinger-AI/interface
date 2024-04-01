@@ -58,6 +58,7 @@ function Referral() {
 
   useTimeoutFn(() => {
     if (!isLogin) {
+      closeLoading();
       router.replace('/');
     }
   }, 3000);

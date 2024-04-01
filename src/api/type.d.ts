@@ -85,3 +85,23 @@ interface ICatItemModel {
     percent: number;
   }>;
 }
+
+type TCatsRankProbabilityTraits = [[string[], string[]], [string[], string[]]];
+interface ICatsRankProbabilityParams {
+  catsTraits: TCatsRankProbabilityTraits[];
+  address: string;
+}
+
+interface ICatsRankProbabilityData {
+  rankGenOne: IRankInfo;
+  rankTwoToNine: IRankInfo;
+  rank: IRankInfo;
+}
+
+interface IRankInfo {
+  rank: number;
+  total: number;
+  probability: string;
+  percent: string;
+  traitsProbability: Record<string, number>;
+}

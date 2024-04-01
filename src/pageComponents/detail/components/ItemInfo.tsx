@@ -12,12 +12,15 @@ import { ONE } from 'constants/misc';
 import { Col, Row } from 'antd';
 import { useResponsive } from 'hooks/useResponsive';
 import TextEllipsis from 'components/TextEllipsis';
+import { getRankInfoToShow } from 'utils/formatTraits';
 
 export default function ItemInfo({
   detail,
+  rankInfo,
   onAdoptNextGeneration,
 }: {
   detail: TSGRToken;
+  rankInfo?: IRankInfo;
   onAdoptNextGeneration: () => void;
 }) {
   const learnMoreModal = useModal(LearnMoreModal);
@@ -49,8 +52,11 @@ export default function ItemInfo({
                   className="w-full text-left lg:text-center mt-[8px] text-[#1A1A1A] font-medium text-xl"
                 />
               </div>
-              <div className="mt-[8px] w-[60px] text-[#919191] flex justify-end lg:justify-center font-medium text-base">
-                {formatPercent(item.percent)}%
+
+              <div className="mt-[8px] text-[#919191] flex justify-end lg:justify-center font-medium text-base">
+                {`${formatPercent(item.percent)}% ${
+                  rankInfo?.traitsProbability[item.value] ? `(${rankInfo?.traitsProbability[item.value]}%)` : ''
+                }`}
               </div>
             </div>
           </Col>
@@ -84,6 +90,13 @@ export default function ItemInfo({
         <div className="text-[#1A1A1A] font-medium	text-lg">Item Generation</div>
         <div className="text-[#919191] font-medium	text-lg">{detail.generation}</div>
       </div>
+      {rankInfo?.rank && detail.generation === 9 ? (
+        <div className="w-full h-[72px] rounded-2xl border-solid border border-[#E1E1E1] flex flex-row justify-between items-center px-[24px] mt-[16px]">
+          <div className="text-[#1A1A1A] font-medium	text-lg">Rank</div>
+          <div className="text-[#919191] font-medium	text-lg">{getRankInfoToShow(rankInfo)}</div>
+        </div>
+      ) : null}
+
       <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] flex flex-col mt-[16px]">
         <div className="ml-[8px] w-full h-[72px] flex flex-row justify-between items-center p-[24px]">
           <div className="text-[#1A1A1A] font-medium	text-lg">Traits</div>

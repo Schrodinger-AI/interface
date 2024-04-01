@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
-import { useCmsInfo } from 'redux/hooks';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
@@ -31,6 +30,7 @@ import { CustomThemeType } from 'redux/types/reducerTypes';
 import MenuDropdown from './components/MenuDropdown';
 import MenuCollapse from './components/MenuCollapse/MenuCollapse';
 import { needLoginPaths } from 'hooks/useBackToHomeByRoute';
+import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -41,26 +41,16 @@ export default function Header() {
   const customTheme = useGetCustomTheme();
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
-  const { routerItems = '{}' } = useCmsInfo() || {};
+  const { routerItems } = useDeviceCmsConfig() || {};
 
-  const StrayCatsItem = useMemo(
-    () => ({
-      title: 'Stray Cats',
-      schema: '/stray-cats',
-      type: RouterItemType.Inner,
-    }),
-    [],
-  );
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
-    try {
-      const parsed = JSON.parse(routerItems) as ICompassProps;
-      lists = parsed.items || [];
-    } catch (e) {
-      console.error(e, 'parse routerItems failed');
+    lists = routerItems?.items.filter((i) => i.show) || [];
+    if (!isLogin) {
+      return (lists = lists.filter((i) => i.title !== 'Stray Cats'));
     }
     return lists;
-  }, [routerItems]);
+  }, [isLogin, routerItems?.items]);
 
   const onPressCompassItems = useCallback(
     (item: ICompassProps) => {
@@ -84,16 +74,14 @@ export default function Header() {
 
       if (type === RouterItemType.MarketModal) {
         setMenuModalVisibleModel(ModalViewModel.NONE);
-        marketModal.show({
-          title,
-        });
+        marketModal.show();
         return;
       }
 
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
     },
-    [isLogin, marketModal, router],
+    [checkLogin, isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -135,7 +123,7 @@ export default function Header() {
   );
 
   const items = useMemo(() => {
-    const menuItems = [
+    let menuItems = [
       {
         key: 'address',
         label: <CopyAddressItem address={wallet.address} />,
@@ -153,12 +141,21 @@ export default function Header() {
     if (walletType !== WalletType.portkey) {
       menuItems.splice(1, 1);
     }
+
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      menuItems = menuItems.filter((menuItem) => {
+        return menuItem.key !== 'asset';
+      });
+    }
+
     return menuItems;
-  }, [wallet.address, checkAndRedirect, LogoutItem, walletType]);
+  }, [wallet.address, checkAndRedirect, LogoutItem, walletType, routerItems?.items]);
 
   const firstClassCompassItems = useMemo(() => {
     const _menuItems = [...menuItems];
-    isLogin && _menuItems.push(StrayCatsItem);
 
     return _menuItems.map((item) => {
       if (item.items?.length) {
@@ -193,7 +190,7 @@ export default function Header() {
         };
       }
     });
-  }, [StrayCatsItem, isLogin, menuItems, onPressCompassItems]);
+  }, [menuItems, onPressCompassItems]);
 
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
@@ -237,15 +234,6 @@ export default function Header() {
               );
             }
           })}
-
-          {isLogin && (
-            <CompassLink
-              key={StrayCatsItem.title}
-              item={StrayCatsItem}
-              className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
-              onPressCompassItems={onPressCompassItems}
-            />
-          )}
           <div>{myComponent}</div>
         </span>
       );
@@ -289,6 +277,17 @@ export default function Header() {
 
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
+  const handleRoute = () => {
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      return;
+    }
+
+    router.replace('/');
+  };
+
   const logoImage = useMemo(() => {
     return {
       [CustomThemeType.light]: require('assets/img/logo.svg').default,
@@ -299,14 +298,14 @@ export default function Header() {
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
-        <p className=" w-full bg-brandBg p-[16px] text-sm text-brandDefault font-medium text-center">
+        <p className=" w-full bg-[#FEEFF1] p-[16px] text-sm text-[#F55D6E] font-medium text-center">
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
       )}
 
       <div className="px-[16px] lg:px-[40px] h-[60px] lg:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex flex-1 overflow-hidden justify-start items-center">
+        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img

@@ -6,6 +6,7 @@ export enum RouterItemType {
 }
 
 export interface ICompassProps {
+  show?: boolean;
   title?: string;
   schema?: string;
   type?: RouterItemType; // default is inner

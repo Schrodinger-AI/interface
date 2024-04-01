@@ -36,6 +36,9 @@ import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
+import { formatTraits } from 'utils/formatTraits';
+import { getCatsRankProbability } from 'utils/getCatsRankProbability';
+import { addPrefixSuffix } from 'utils/addressFormatting';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -95,6 +98,45 @@ export default function OwnedItems() {
 
   const getSchrodingerList = useGetSchrodingerList();
 
+  const getRankInfo = useCallback(
+    async (data: TSGRItem[]) => {
+      try {
+        const needShowRankingIndexList: number[] = [];
+        const catsRankProbabilityParams: TCatsRankProbabilityTraits[] = [];
+        const needShowRankingList = data.filter((item, index) => {
+          if (item.generation === 9) {
+            needShowRankingIndexList.push(index);
+            return true;
+          }
+          return false;
+        });
+
+        if (!needShowRankingList.length) return false;
+
+        needShowRankingList.map((item) => {
+          const params = formatTraits(item.traits);
+          params && catsRankProbabilityParams.push(params);
+        });
+
+        try {
+          const catsRankProbability = await getCatsRankProbability({
+            catsTraits: catsRankProbabilityParams,
+            address: addPrefixSuffix(wallet.address),
+          });
+
+          return {
+            catsRankProbability,
+            needShowRankingIndexList,
+          };
+        } catch (error) {
+          return false;
+        }
+      } catch (error) {
+        return false;
+      }
+    },
+    [wallet.address],
+  );
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: TGetSchrodingerListParams['input']; loadMore?: boolean }) => {
       if (!params.chainId || !params.address) {
@@ -107,6 +149,12 @@ export default function OwnedItems() {
         } = await getSchrodingerList({
           input: params,
         });
+
+        const { catsRankProbability, needShowRankingIndexList } = (await getRankInfo(res.data)) || {
+          catsRankProbability: false,
+          needShowRankingIndexList: [],
+        };
+
         setTotal(res.totalCount ?? 0);
         const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
         if (!hasSearch) {
@@ -118,6 +166,12 @@ export default function OwnedItems() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
+
+        needShowRankingIndexList.forEach((item, index) => {
+          data[item].rankInfo =
+            catsRankProbability && catsRankProbability?.[index] ? catsRankProbability?.[index] : undefined;
+        });
+
         if (loadMore) {
           setDataSource((preData) => [...(preData || []), ...data]);
         } else {
@@ -129,8 +183,7 @@ export default function OwnedItems() {
         closeLoading();
       }
     },
-    // There cannot be dependencies showLoading and closeLoading
-    [getSchrodingerList],
+    [closeLoading, getRankInfo, getSchrodingerList, showLoading],
   );
 
   useEffect(() => {

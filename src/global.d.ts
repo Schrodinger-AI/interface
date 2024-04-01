@@ -14,6 +14,7 @@ interface Window {
     deviceEnv?: {
       statusBarHeight?: number;
       bottomBarHeight?: number;
+      platform?: 'ios' | 'android' | 'windows' | 'macos' | 'web';
     };
   };
 }
