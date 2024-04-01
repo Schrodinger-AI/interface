@@ -68,7 +68,7 @@ const Layout = dynamic(async () => {
     const { isLG } = useResponsive();
 
     useEffect(() => {
-      console.log('WebLoginInstance.setContractMethod', webLoginContext.loginState);
+      console.log('webLoginContext.loginState', webLoginContext.loginState);
       WebLoginInstance.get().setContractMethod([
         {
           chain: SupportedELFChainId.MAIN_NET,
@@ -87,7 +87,7 @@ const Layout = dynamic(async () => {
         },
       ]);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [webLoginContext.loginState]);
 
     useWalletInit();
 
