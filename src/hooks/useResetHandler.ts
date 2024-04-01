@@ -21,6 +21,7 @@ import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDe
 import { store } from 'redux/store';
 import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
+import { getRankInfoToShow } from 'utils/formatTraits';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -36,7 +37,7 @@ export const useResetHandler = () => {
   const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const approveReset = useCallback(
-    async (parentItemInfo: TSGRToken, amount: string): Promise<void> =>
+    async (parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo): Promise<void> =>
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
@@ -44,6 +45,7 @@ export const useResetHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
+            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
           },
           title: 'Pending Approval',
           content: {
@@ -88,9 +90,10 @@ export const useResetHandler = () => {
   );
 
   const showResultModal = useCallback(
-    (status: Status, parentItemInfo: TSGRToken, amount: string) => {
+    (status: Status, parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
       const successBtnText = originSymbol ? `View ${originSymbol.split('-')[0]}(${originSymbol})` : 'View';
+      console.log('----rankInfo', rankInfo);
 
       resultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
@@ -99,6 +102,7 @@ export const useResetHandler = () => {
           logo: parentItemInfo.inscriptionImageUri,
           subName: parentItemInfo.symbol,
           tag: `GEN ${parentItemInfo.generation}`,
+          rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
         },
         id: 'sgr-reset-modal',
         status: status,
@@ -141,7 +145,7 @@ export const useResetHandler = () => {
   );
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, account: string) => {
+    async (parentItemInfo: TSGRToken, account: string, rankInfo?: IRankInfo) => {
       showLoading();
       let parentPrice: string | undefined = undefined;
       try {
@@ -161,6 +165,7 @@ export const useResetHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
+            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
           },
           inputProps: {
             max: symbolBalance,
@@ -182,12 +187,12 @@ export const useResetHandler = () => {
             console.log('amount', amount);
             resetModal.hide();
             try {
-              await approveReset(parentItemInfo, amount);
+              await approveReset(parentItemInfo, amount, rankInfo);
               promptModal.hide();
-              showResultModal(Status.SUCCESS, parentItemInfo, amount);
+              showResultModal(Status.SUCCESS, parentItemInfo, amount, rankInfo);
             } catch (error) {
               promptModal.hide();
-              showResultModal(Status.ERROR, parentItemInfo, amount);
+              showResultModal(Status.ERROR, parentItemInfo, amount, rankInfo);
             }
           },
         });

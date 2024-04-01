@@ -18,7 +18,6 @@ import { useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
-import { useCmsInfo } from 'redux/hooks';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
@@ -30,6 +29,7 @@ import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { CompassLink, CompassText } from './components/CompassLink';
 import { openExternalLink } from 'utils/openlink';
+import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -40,26 +40,16 @@ export default function Header() {
   const marketModal = useModal(MarketModal);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
-  const { routerItems = '{}' } = useCmsInfo() || {};
+  const { routerItems } = useDeviceCmsConfig() || {};
 
-  const StrayCatsItem = useMemo(
-    () => ({
-      title: 'Stray Cats',
-      schema: '/stray-cats',
-      type: RouterItemType.Inner,
-    }),
-    [],
-  );
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
-    try {
-      const parsed = JSON.parse(routerItems) as ICompassProps;
-      lists = parsed.items || [];
-    } catch (e) {
-      console.error(e, 'parse routerItems failed');
+    lists = routerItems?.items.filter((i) => i.show) || [];
+    if (!isLogin) {
+      return (lists = lists.filter((i) => i.title !== 'Stray Cats'));
     }
     return lists;
-  }, [routerItems]);
+  }, [isLogin, routerItems?.items]);
 
   const onPressCompassItems = useCallback(
     (item: ICompassProps) => {
@@ -75,9 +65,7 @@ export default function Header() {
 
       if (type === RouterItemType.MarketModal) {
         setMenuModalVisibleModel(ModalViewModel.NONE);
-        marketModal.show({
-          title,
-        });
+        marketModal.show();
         return;
       }
 
@@ -175,7 +163,7 @@ export default function Header() {
   }, [router]);
 
   const items = useMemo(() => {
-    const menuItems = [
+    let menuItems = [
       {
         key: 'address',
         label: <CopyAddressItem />,
@@ -191,12 +179,21 @@ export default function Header() {
     if (walletType !== WalletType.portkey) {
       menuItems.splice(1, 1);
     }
+
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      menuItems = menuItems.filter((menuItem) => {
+        return menuItem.key !== 'asset';
+      });
+    }
+
     return menuItems;
   }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
     const _menuItems = [...menuItems];
-    isLogin && _menuItems.push(StrayCatsItem);
 
     return _menuItems.map((item) => {
       return {
@@ -214,7 +211,7 @@ export default function Header() {
         ),
       };
     });
-  }, [StrayCatsItem, isLogin, menuItems, onPressCompassItems]);
+  }, [menuItems, onPressCompassItems]);
 
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
@@ -273,15 +270,6 @@ export default function Header() {
               );
             }
           })}
-
-          {isLogin && (
-            <CompassLink
-              key={StrayCatsItem.title}
-              item={StrayCatsItem}
-              className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
-              onPressCompassItems={onPressCompassItems}
-            />
-          )}
           <div>{myComponent}</div>
         </span>
       );
@@ -322,17 +310,28 @@ export default function Header() {
 
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
+  const handleRoute = () => {
+    const homeRoute = routerItems?.items.find((menu) => {
+      return menu.title === 'Inscriptions';
+    });
+    if (homeRoute && !homeRoute?.show) {
+      return;
+    }
+
+    router.replace('/');
+  };
+
   return (
     <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
       {env === ENVIRONMENT.TEST && (
-        <p className=" w-full bg-brandBg p-[16px] text-sm text-brandDefault font-medium text-center">
+        <p className=" w-full bg-[#FEEFF1] p-[16px] text-sm text-[#F55D6E] font-medium text-center">
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
       )}
 
       <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
-        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={() => router.replace('/')}>
+        <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img
