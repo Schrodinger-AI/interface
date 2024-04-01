@@ -1,11 +1,10 @@
 import AccountModal from './components/AccountModal';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useModal } from '@ebay/nice-modal-react';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { AcceptReferral } from 'contract/schrodinger';
-import useLoading from 'hooks/useLoading';
-import { singleMessage } from '@portkey/did-ui-react';
-import { IContractError } from 'types';
+import { store } from 'redux/store';
+import { setIsJoin } from 'redux/reducer/info';
 
 export default function useAccountModal() {
   const modal = useModal(AccountModal);
@@ -21,9 +20,11 @@ export default function useAccountModal() {
       onOk: async () => {
         const referrerAddress = urlSearchParams.get('referrer') || '';
         console.log('referrer', referrerAddress);
+        // auto joined
         await AcceptReferral({
           referrer: referrerAddress,
         });
+        store.dispatch(setIsJoin(true));
         modal.hide();
         router.push('/');
       },
