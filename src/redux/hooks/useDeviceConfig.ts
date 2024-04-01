@@ -4,6 +4,7 @@ import { useCmsInfo } from '.';
 import { jsonParse } from 'utils/common';
 
 import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMessage';
+import { DeviceTypeEnum } from 'types';
 
 export default function useDeviceCmsConfig() {
   const { customization = '{}' } = useCmsInfo() || {};
@@ -16,15 +17,15 @@ export default function useDeviceCmsConfig() {
 
       let config = parsed.pc;
       switch (platform) {
-        case 'android':
+        case DeviceTypeEnum.Android:
           config = parsed.android;
           break;
-        case 'ios':
+        case DeviceTypeEnum.iOS:
           config = parsed.ios;
           break;
-        case 'macos':
-        case 'windows':
-        case 'web':
+        case DeviceTypeEnum.Macos:
+        case DeviceTypeEnum.Windows:
+        case DeviceTypeEnum.Web:
           config = parsed.pc;
           break;
         default:
