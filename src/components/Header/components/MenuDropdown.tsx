@@ -33,7 +33,7 @@ function MenuDropdown({ title, items, schema, onPressCompassItems }: IProps) {
     return items
       .filter((val) => {
         if (val.schema && needJoin.includes(val.schema)) {
-          if (isJoin) return true;
+          if (isJoin && val.show) return true;
           return false;
         } else {
           return true;
