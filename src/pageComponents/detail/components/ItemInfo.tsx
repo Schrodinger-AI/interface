@@ -1,7 +1,7 @@
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
-import { TSGRToken } from 'types/tokens';
+import { ITrait, TSGRToken } from 'types/tokens';
 import { formatPercent } from 'utils/format';
 import { ReactComponent as RightArrowSVG } from 'assets/img/right_arrow.svg';
 import { useModal } from '@ebay/nice-modal-react';
@@ -13,6 +13,7 @@ import { Col, Row } from 'antd';
 import { useResponsive } from 'hooks/useResponsive';
 import TextEllipsis from 'components/TextEllipsis';
 import { getRankInfoToShow } from 'utils/formatTraits';
+import BigNumber from 'bignumber.js';
 
 export default function ItemInfo({
   detail,
@@ -36,33 +37,38 @@ export default function ItemInfo({
     [detail.amount, detail.decimals, detail.generation],
   );
 
-  const traits = () => {
-    return (
-      <Row gutter={[16, 16]}>
-        {detail.traits.map((item) => (
-          <Col span={isLG ? 24 : 8} key={item.traitType} className="px-[8px]">
-            <div className="flex flex-row lg:flex-col justify-center items-end lg:items-center bg-[#FAFAFA] overflow-hidden rounded-lg cursor-default py-[16px] lg:py-[24px] !px-[24px]">
-              <div key={item.traitType} className="flex-1 lg:flex-none lg:w-full overflow-hidden mr-[16px] lg:mr-0">
-                <TextEllipsis
-                  value={item.traitType}
-                  className="text-[#919191] text-left lg:text-center font-medium text-sm"
-                />
-                <TextEllipsis
-                  value={item.value}
-                  className="w-full text-left lg:text-center mt-[8px] text-[#1A1A1A] font-medium text-xl"
-                />
-              </div>
-
-              <div className="mt-[8px] text-[#919191] flex justify-end lg:justify-center font-medium text-base">
-                {`${formatPercent(item.percent)}% ${
-                  rankInfo?.traitsProbability[item.value] ? `(${rankInfo?.traitsProbability[item.value]}%)` : ''
-                }`}
-              </div>
+  const renderTraitsCard = useCallback(
+    (item: ITrait) => {
+      const traitsProbability = rankInfo?.traitsProbability[item.value]
+        ? Number(BigNumber(rankInfo?.traitsProbability[item.value]).multipliedBy(100).toFixed(2))
+        : '';
+      const traitsProbabilityStr = `${traitsProbability ? `(${traitsProbability}%)` : ''}`;
+      return (
+        <Col span={isLG ? 24 : 8} key={item.traitType} className="px-[8px]">
+          <div className="flex flex-row lg:flex-col justify-center items-end lg:items-center bg-[#FAFAFA] overflow-hidden rounded-lg cursor-default py-[16px] lg:py-[24px] !px-[24px]">
+            <div key={item.traitType} className="flex-1 lg:flex-none lg:w-full overflow-hidden mr-[16px] lg:mr-0">
+              <TextEllipsis
+                value={item.traitType}
+                className="text-[#919191] text-left lg:text-center font-medium text-sm"
+              />
+              <TextEllipsis
+                value={item.value}
+                className="w-full text-left lg:text-center mt-[8px] text-[#1A1A1A] font-medium text-xl"
+              />
             </div>
-          </Col>
-        ))}
-      </Row>
-    );
+
+            <div className="mt-[8px] text-[#919191] flex justify-end lg:justify-center font-medium text-base">
+              {`${formatPercent(item.percent)}% ${traitsProbabilityStr}`}
+            </div>
+          </div>
+        </Col>
+      );
+    },
+    [isLG, rankInfo?.traitsProbability],
+  );
+
+  const traits = () => {
+    return <Row gutter={[16, 16]}>{detail.traits.map((item) => renderTraitsCard(item))}</Row>;
   };
 
   const noTraits = () => {
