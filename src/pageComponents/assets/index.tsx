@@ -37,7 +37,7 @@ export default function MyAsset() {
           // }}
           backIcon={<LeftOutlined rev={undefined} />}
           onOverviewBack={() => {
-            router.push('/');
+            router.back();
           }}
           onDeleteAccount={() => {
             logout();
