@@ -163,7 +163,7 @@ export default function Header() {
   }, [router]);
 
   const items = useMemo(() => {
-    let menuItems = [
+    const menuItems = [
       {
         key: 'address',
         label: <CopyAddressItem />,
@@ -178,15 +178,6 @@ export default function Header() {
     ];
     if (walletType !== WalletType.portkey) {
       menuItems.splice(1, 1);
-    }
-
-    const homeRoute = routerItems?.items.find((menu) => {
-      return menu.title === 'Inscriptions';
-    });
-    if (homeRoute && !homeRoute?.show) {
-      menuItems = menuItems.filter((menuItem) => {
-        return menuItem.key !== 'asset';
-      });
     }
 
     return menuItems;
