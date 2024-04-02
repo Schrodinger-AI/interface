@@ -4,7 +4,7 @@ import NewIcon from 'components/NewIcon';
 import { ITrait } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
-import { formatPercent } from 'utils/format';
+import { convertDecimalToPercentage, formatPercent } from 'utils/format';
 import TextEllipsis from 'components/TextEllipsis';
 
 interface ITraitItem {
@@ -22,6 +22,7 @@ interface ITraitsListProps {
 
 function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
   const { traitType, value, percent } = item;
+  const traitsProbabilityStr = traitsProbability ? ` (${convertDecimalToPercentage(traitsProbability)}%)` : '';
   return (
     <div
       className={clsx(
@@ -31,7 +32,7 @@ function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
       <TextEllipsis value={traitType} />
       <TextEllipsis className="text-sm text-neutralTitle" value={value} />
       <div>
-        {formatPercent(percent)}%{traitsProbability && ` (${traitsProbability}%)`}
+        {formatPercent(percent)}%{`${traitsProbabilityStr}`}
       </div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>
