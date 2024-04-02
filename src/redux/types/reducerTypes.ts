@@ -29,8 +29,6 @@ export type InfoStateType = {
     schrodingerSideAddress: string;
     tokenMainAddress: string;
     tokenSideAddress: string;
-    openTimeStamp: string;
-    routerItems: string;
 
     graphqlSchrodinger: string;
     emptyChannelGroupDescription: string;
