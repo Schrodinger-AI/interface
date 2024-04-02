@@ -27,6 +27,7 @@ export const useCheckJoined = () => {
               const res = await Join({
                 domain,
               });
+              store.dispatch(setIsJoin(true));
               resolve(true);
               console.log(res, 'res==checkJoined');
             } catch (error) {
