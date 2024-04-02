@@ -26,8 +26,9 @@ function MenuCollapse({ title, item, onPressCompassItems }: IProps) {
           label: title,
           children: item?.items
             ?.filter((val) => {
+              if (!val.show) return false;
               if (val.schema && needJoin.includes(val.schema)) {
-                if (isJoin && val.show) return true;
+                if (isJoin) return true;
                 return false;
               } else {
                 return true;
