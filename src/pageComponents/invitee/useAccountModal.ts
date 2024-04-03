@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import { AcceptReferral } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
+import { joinContent, joinTitle, joinButton } from 'constants/joinMessage';
 
 export default function useAccountModal() {
   const modal = useModal(AccountModal);
@@ -14,9 +15,9 @@ export default function useAccountModal() {
   const newUser = useCallback(() => {
     modal.show({
       showLoading: true,
-      title: 'Accept Invitation',
-      content: 'Accept the invitation and join Schrödinger now to earn Flux Points for your interactions.',
-      btnText: 'Accept',
+      title: joinTitle,
+      content: joinContent,
+      btnText: joinButton,
       onOk: async () => {
         const referrerAddress = urlSearchParams.get('referrer') || '';
         console.log('referrer', referrerAddress);
