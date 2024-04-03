@@ -7,7 +7,7 @@ import { CustomThemeType } from 'redux/types/reducerTypes';
 const needHideMenu = ['/invitee'];
 const needSetUpCustomTheme = ['/referral', '/invitee'];
 
-const backgroundStyle: Record<string, string> = {
+export const backgroundStyle: Record<string, string> = {
   invitee: 'bg-[url(../assets/img/referral/invitee.png)]',
   referral: 'bg-[url(../assets/img/referral/inviter.png)]',
 };

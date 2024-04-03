@@ -6,6 +6,7 @@ import { timesDecimals } from './calculate';
 import BigNumber from 'bignumber.js';
 import { IContractError } from 'types';
 import { CONTRACT_AMOUNT } from 'constants/common';
+import { MethodType, SentryMessageType, captureMessage } from './captureMessage';
 
 const httpProviders: any = {};
 export function getAElf(rpcUrl?: string) {
@@ -42,6 +43,19 @@ export const approve = async (spender: string, symbol: string, amount: string, c
 
     if (approveResult.error) {
       message.error(approveResult?.errorMessage?.message || DEFAULT_ERROR);
+      captureMessage({
+        type: SentryMessageType.CONTRACT,
+        params: {
+          name: 'approve',
+          method: MethodType.CALLSENDMETHOD,
+          query: {
+            spender: spender,
+            symbol,
+            amount: Number(amount),
+          },
+          description: approveResult,
+        },
+      });
       return false;
     }
 
@@ -57,6 +71,19 @@ export const approve = async (spender: string, symbol: string, amount: string, c
     if (resError) {
       message.error(resError?.errorMessage?.message || DEFAULT_ERROR);
     }
+    captureMessage({
+      type: SentryMessageType.CONTRACT,
+      params: {
+        name: 'approve error',
+        method: MethodType.CALLSENDMETHOD,
+        query: {
+          spender: spender,
+          symbol,
+          amount: Number(amount),
+        },
+        description: error,
+      },
+    });
     return false;
   }
 };
@@ -102,6 +129,15 @@ export const checkAllowanceAndApprove = async (options: {
     if (resError) {
       message.error(resError.errorMessage?.message || DEFAULT_ERROR);
     }
+    captureMessage({
+      type: SentryMessageType.CONTRACT,
+      params: {
+        name: 'checkAllowanceAndApproveGetAllowance',
+        method: MethodType.CALLVIEWMETHOD,
+        query: options,
+        description: error,
+      },
+    });
     return false;
   }
 };
