@@ -108,8 +108,8 @@ function Referral() {
               <div className="rounded-md overflow-hidden">
                 <QRCode
                   value={shareLink}
-                  size={145.45}
-                  quietZone={7.25}
+                  size={160}
+                  quietZone={8}
                   logoImage={require('assets/img/schrodingerLogo.png').default.src}
                   fgColor="#1A1A1A"
                   logoWidth={30}
