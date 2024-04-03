@@ -38,8 +38,6 @@ export type InfoStateType = {
     // symbol black list stringify
     blackList?: string;
 
-    // user white list stringify
-    userWhiteList?: string;
     forestUrl: string;
     s3ImagePrefix: string;
     ifpsPrefix: string;
