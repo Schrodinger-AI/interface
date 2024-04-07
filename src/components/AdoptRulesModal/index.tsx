@@ -8,13 +8,9 @@ import { useCmsInfo } from 'redux/hooks';
 function AdoptRulesModal() {
   const modal = useModal();
   const cmsInfo = useCmsInfo();
+
   const adoptRuleList: string[] = useMemo(() => {
-    const adoptRuleListStr = cmsInfo?.adoptRuleList || '';
-    try {
-      return JSON.parse(adoptRuleListStr);
-    } catch (error) {
-      return [];
-    }
+    return cmsInfo?.adoptRuleList || [];
   }, [cmsInfo]);
 
   const onCancel = useCallback(() => {

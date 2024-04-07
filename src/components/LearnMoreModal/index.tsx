@@ -8,7 +8,6 @@ import { TSGRItem, TSGRToken } from 'types/tokens';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { divDecimals } from 'utils/calculate';
 import { openExternalLink } from 'utils/openlink';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 import { formatTokenPrice } from 'utils/format';
 
 interface ILearnMoreModalProps {
@@ -22,7 +21,10 @@ interface ILearnMoreModalProps {
 function LearnMoreModal({ item }: ILearnMoreModalProps) {
   const modal = useModal();
   const cmsInfo = useCmsInfo();
-  const { latestModal } = useDeviceCmsConfig() || {};
+
+  const latestModal = useMemo(() => {
+    return cmsInfo?.latestModal;
+  }, [cmsInfo?.latestModal]);
 
   const onCancel = useCallback(() => {
     modal.hide();

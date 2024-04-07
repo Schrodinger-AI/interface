@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { TSGRItem } from 'types/tokens';
 import ScrollContent from 'components/ScrollContent';
 import useLoading from 'hooks/useLoading';
@@ -11,7 +11,6 @@ import Header from '../Header';
 import LearnMoreModal from 'components/LearnMoreModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'graphqlServer';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
@@ -20,18 +19,18 @@ import { useWalletService } from 'hooks/useWallet';
 const pageSize = 32;
 export default function List() {
   const [total, setTotal] = useState(0);
-  // const [current, SetCurrent] = useState(1);
+  const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>([]);
-  const isLoadMore = useRef<boolean>(false);
-  const [moreLoading, setMoreLoading] = useState<boolean>(false);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const cmsInfo = useCmsInfo();
   const gutter = useLatestGutter();
   const column = useLatestColumns();
   const learnMoreModal = useModal(LearnMoreModal);
-  const { latestModal } = useDeviceCmsConfig() || {};
   const { wallet } = useWalletService();
+
+  const latestModal = useMemo(() => {
+    return cmsInfo?.latestModal;
+  }, [cmsInfo?.latestModal]);
 
   const hasMore = useMemo(() => {
     return total > dataSource.length;
@@ -80,16 +79,11 @@ export default function List() {
   );
 
   const fetchData = useCallback(
-    async ({ params, loadMore = false }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {
+    async ({ params }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {
       if (!params.chainId) {
         return;
       }
-      if (loadMore) {
-        setMoreLoading(true);
-      } else {
-        isLoadMore.current = false;
-        showLoading();
-      }
+      showLoading();
       try {
         const {
           data: { getLatestSchrodingerListAsync: res },
@@ -125,16 +119,9 @@ export default function List() {
           }
         });
 
-        if (isLoadMore.current) {
-          setDataSource((preData) => [...preData, ...data]);
-          setLoadingMore(true);
-        } else {
-          setDataSource(data);
-          setLoadingMore(false);
-        }
+        setDataSource(data);
       } finally {
         closeLoading();
-        setMoreLoading(false);
       }
     },
     [closeLoading, getLatestSchrodingerList, getRankInfo, showLoading],
@@ -146,20 +133,22 @@ export default function List() {
 
   const defaultRequestParams = useMemo(() => {
     let blackList = undefined;
-    const params = {
+    const params: {
+      chainId: Chain;
+      skipCount: number;
+      maxResultCount: number;
+      blackList: undefined | Array<string>;
+    } = {
       chainId: cmsInfo?.curChain ?? 'tDVV',
       skipCount: 0,
       maxResultCount: pageSize,
       blackList: undefined,
     };
-    try {
-      if (!cmsInfo?.blackList) throw 'not config';
-      blackList = JSON.parse(cmsInfo?.blackList);
-    } catch (error) {
-      //
-    }
-    if (blackList) params.blackList = blackList;
-    else delete params.blackList;
+    if (!cmsInfo?.blackList) throw 'not config';
+    blackList = cmsInfo.blackList;
+    if (blackList) {
+      params.blackList = blackList;
+    } else delete params.blackList;
     return params;
   }, [cmsInfo?.blackList, cmsInfo?.curChain]);
 
@@ -198,13 +187,7 @@ export default function List() {
         ListProps={{
           dataSource,
         }}
-        InfiniteScrollProps={{
-          total,
-          hasMore,
-          loadingMore,
-          loading: moreLoading,
-          loadMore: loadMoreData,
-        }}
+        // loadMore={loadMoreData}
       />
     </>
   );

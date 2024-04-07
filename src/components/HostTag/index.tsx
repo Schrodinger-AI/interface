@@ -4,11 +4,14 @@ import { getSecondHostName, dotString } from 'utils/common';
 import { useMemo, useState } from 'react';
 import styles from './style.module.css';
 import useResponsive from 'hooks/useResponsive';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
+import clsx from 'clsx';
 
 export function NavHostTag() {
   const [open, setOpen] = useState(false);
   const hostName = useMemo(() => getSecondHostName(), []);
   const { isLG } = useResponsive();
+  const customTheme = useGetCustomTheme();
 
   const hostStr = useMemo(() => dotString(hostName, !isLG ? 16 : 10), [hostName, isLG]);
 
@@ -16,13 +19,13 @@ export function NavHostTag() {
     <>
       {hostName && (
         <>
-          <div className={styles.navHostTag} onClick={() => setOpen(true)}>
+          <div className={clsx(styles.navHostTag, styles[customTheme.header.theme])} onClick={() => setOpen(true)}>
             {!isLG ? (
               <Tooltip color="black" title={hostName} overlayInnerStyle={{ color: 'white' }}>
-                <p className="w-full overflow-hidden whitespace-nowrap text-ellipsis">{hostStr}</p>
+                <p className="w-full truncate">{hostStr}</p>
               </Tooltip>
             ) : (
-              <p className="w-full overflow-hidden whitespace-nowrap text-ellipsis max-w-max">{hostStr}</p>
+              <p className="w-full truncate max-w-max">{hostStr}</p>
             )}
           </div>
           {!isLG ? null : (

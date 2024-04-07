@@ -1,5 +1,3 @@
-import { getRpcUrls } from 'constants/url';
-import { sleep } from 'utils';
 import AElf from 'aelf-sdk';
 import { Approve, GetAllowance } from 'contract/multiToken';
 import { message } from 'antd';
@@ -8,6 +6,7 @@ import { timesDecimals } from './calculate';
 import BigNumber from 'bignumber.js';
 import { IContractError } from 'types';
 import { CONTRACT_AMOUNT } from 'constants/common';
+import { MethodType, SentryMessageType, captureMessage } from './captureMessage';
 
 const httpProviders: any = {};
 export function getAElf(rpcUrl?: string) {
@@ -16,48 +15,6 @@ export function getAElf(rpcUrl?: string) {
     httpProviders[rpc] = new AElf(new AElf.providers.HttpProvider(rpc));
   }
   return httpProviders[rpc];
-}
-
-export async function getTxResult(
-  TransactionId: string,
-  chainId: Chain,
-  reGetCount = 0,
-  retryCountWhenNotExist = 0,
-): Promise<any> {
-  const rpcUrl = getRpcUrls()[chainId];
-  const txResult = await getAElf(rpcUrl).chain.getTxResult(TransactionId);
-  if (txResult.error && txResult.errorMessage) {
-    throw Error(txResult.errorMessage.message || txResult.errorMessage.Message);
-  }
-
-  if (!txResult) {
-    throw Error('Failed to retrieve transaction result.');
-  }
-
-  if (txResult.Status.toLowerCase() === 'notexisted') {
-    if (retryCountWhenNotExist > 5) {
-      throw Error({ ...txResult.Error, TransactionId } || 'Transaction error');
-    }
-    await sleep(1000);
-    retryCountWhenNotExist++;
-    return getTxResult(TransactionId, chainId, reGetCount, retryCountWhenNotExist);
-  }
-
-  if (txResult.Status.toLowerCase() === 'pending') {
-    // || txResult.Status.toLowerCase() === 'notexisted'
-    if (reGetCount > 10) {
-      throw Error(`Timeout. Transaction ID:${TransactionId}`);
-    }
-    await sleep(1000);
-    reGetCount++;
-    return getTxResult(TransactionId, chainId, reGetCount, retryCountWhenNotExist);
-  }
-
-  if (txResult.Status.toLowerCase() === 'mined') {
-    return { TransactionId, txResult };
-  }
-
-  throw Error({ ...txResult.Error, TransactionId } || 'Transaction error');
 }
 
 const isNightElf = () => {
@@ -86,6 +43,19 @@ export const approve = async (spender: string, symbol: string, amount: string, c
 
     if (approveResult.error) {
       message.error(approveResult?.errorMessage?.message || DEFAULT_ERROR);
+      captureMessage({
+        type: SentryMessageType.CONTRACT,
+        params: {
+          name: 'approve',
+          method: MethodType.CALLSENDMETHOD,
+          query: {
+            spender: spender,
+            symbol,
+            amount: Number(amount),
+          },
+          description: approveResult,
+        },
+      });
       return false;
     }
 
@@ -101,6 +71,19 @@ export const approve = async (spender: string, symbol: string, amount: string, c
     if (resError) {
       message.error(resError?.errorMessage?.message || DEFAULT_ERROR);
     }
+    captureMessage({
+      type: SentryMessageType.CONTRACT,
+      params: {
+        name: 'approve error',
+        method: MethodType.CALLSENDMETHOD,
+        query: {
+          spender: spender,
+          symbol,
+          amount: Number(amount),
+        },
+        description: error,
+      },
+    });
     return false;
   }
 };
@@ -146,6 +129,15 @@ export const checkAllowanceAndApprove = async (options: {
     if (resError) {
       message.error(resError.errorMessage?.message || DEFAULT_ERROR);
     }
+    captureMessage({
+      type: SentryMessageType.CONTRACT,
+      params: {
+        name: 'checkAllowanceAndApproveGetAllowance',
+        method: MethodType.CALLVIEWMETHOD,
+        query: options,
+        description: error,
+      },
+    });
     return false;
   }
 };

@@ -15,7 +15,7 @@ export const useGetToken = () => {
   const { loginState, wallet, getSignature, walletType, version } = useWebLogin();
 
   const { getSignatureAndPublicKey } = useDiscoverProvider();
-  const checkJoined = useCheckJoined();
+  const { checkJoined } = useCheckJoined();
 
   const { runAsync } = useRequest(fetchToken, {
     retryCount: 20,

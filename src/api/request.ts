@@ -1,5 +1,6 @@
 import { ICatsListData } from 'types/tokens';
-import request, { tokenRequest } from './axios';
+import { TCustomizationItemType, TGlobalConfigType } from 'redux/types/reducerTypes';
+import request, { cmsRequest, tokenRequest } from './axios';
 import qs from 'qs';
 
 export const checkDomain = async (): Promise<any> => {
@@ -15,10 +16,6 @@ export const fetchToken = async (data: ITokenParams) => {
       expires_in: number;
     }
   >('/token', qs.stringify(data) as any);
-};
-
-export const fetchCmsConfigInfo = async (): Promise<any> => {
-  return request.get('/app/config');
 };
 
 export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: string }): Promise<IAdoptImageInfo> => {
@@ -44,4 +41,20 @@ export const catsRankProbability = async (data: ICatsRankProbabilityParams): Pro
 
 export const catsList = async (data: ICatsListParams): Promise<ICatsListData> => {
   return request.post('/app/cat/list', data);
+};
+
+export const getGlobalConfig = async (): Promise<{ data: TGlobalConfigType }> => {
+  return cmsRequest.get('/items/schrodingerDefaultConfig');
+};
+
+export const getDefaultCustomization = async (): Promise<{ data: TCustomizationItemType }> => {
+  return cmsRequest.get('/items/schrodingerCustomization');
+};
+
+export const getAndroidCustomization = async (): Promise<{ data: TCustomizationItemType }> => {
+  return cmsRequest.get('/items/schrodingerAndroidCustomization');
+};
+
+export const getIOSCustomization = async (): Promise<{ data: TCustomizationItemType }> => {
+  return cmsRequest.get('/items/schrodingerIOSCustomization');
 };
