@@ -1,7 +1,6 @@
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-const NotNeedAutoJoinPath = ['/invitee'];
+import { NOT_NEED_AUTO_JOIN_PAGE } from 'constants/router';
 
 export default function useAutoJoin() {
   const [notAutoJoin, setNotAutoJoin] = useState(true);
@@ -9,7 +8,7 @@ export default function useAutoJoin() {
 
   useEffect(() => {
     const path = '/' + pathname.split('/')[1];
-    setNotAutoJoin(NotNeedAutoJoinPath.includes(path));
+    setNotAutoJoin(NOT_NEED_AUTO_JOIN_PAGE.includes(path));
   }, [pathname]);
 
   return [notAutoJoin];

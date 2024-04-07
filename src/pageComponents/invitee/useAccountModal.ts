@@ -20,7 +20,6 @@ export default function useAccountModal() {
       btnText: joinButton,
       onOk: async () => {
         const referrerAddress = urlSearchParams.get('referrer') || '';
-        console.log('referrer', referrerAddress);
         // auto joined
         await AcceptReferral({
           referrer: referrerAddress,
