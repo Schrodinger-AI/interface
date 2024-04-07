@@ -1,14 +1,14 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
+import { NEED_LOGIN_PAGE } from 'constants/router';
 
-export const needLoginPaths = ['/detail', '/points', '/stray-cats', '/assets', '/referral'];
 const useBackToHomeByRoute = () => {
   const pathname = usePathname();
   const router = useRouter();
   const backToHomeByRoute = useCallback(() => {
     try {
       const firstPathName = '/' + pathname.split('/')[1];
-      if (needLoginPaths.includes(firstPathName)) {
+      if (NEED_LOGIN_PAGE.includes(firstPathName)) {
         router.push('/');
       }
     } catch (e) {

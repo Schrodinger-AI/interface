@@ -27,16 +27,16 @@ function Referral() {
   const router = useRouter();
 
   const checkJoined = useCallback(async () => {
+    let isJoin = false;
     try {
-      const isJoin = await GetJoinRecord(wallet.address);
-      if (!isJoin) {
-        router.replace('/');
-      }
+      isJoin = await GetJoinRecord(wallet.address);
     } catch (error) {
-      router.replace('/');
+      console.log('Referral-Record-error', error);
     } finally {
       closeLoading();
     }
+
+    !isJoin && router.replace('/');
   }, [closeLoading, router, wallet.address]);
 
   const shareLink = useMemo(() => `${PrimaryDomainName}/invitee?referrer=${wallet.address}`, [wallet.address]);

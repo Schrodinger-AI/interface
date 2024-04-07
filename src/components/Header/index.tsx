@@ -29,7 +29,8 @@ import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
 import { CustomThemeType } from 'redux/types/reducerTypes';
 import MenuDropdown from './components/MenuDropdown';
 import MenuCollapse from './components/MenuCollapse/MenuCollapse';
-import { needLoginPaths } from 'hooks/useBackToHomeByRoute';
+import { NEED_LOGIN_PAGE } from 'constants/router';
+
 import { useCmsInfo } from 'redux/hooks';
 
 export default function Header() {
@@ -60,7 +61,7 @@ export default function Header() {
     (item: ICompassProps) => {
       const { type, schema, title } = item;
 
-      if (schema && needLoginPaths.includes(schema)) {
+      if (schema && NEED_LOGIN_PAGE.includes(schema)) {
         if (!isLogin) {
           store.dispatch(setLoginTrigger('login'));
           checkLogin();

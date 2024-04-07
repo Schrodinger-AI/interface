@@ -7,8 +7,7 @@ import clsx from 'clsx';
 import { ReactComponent as ArrowDownIcon } from 'assets/img/arrow.svg';
 import React, { useMemo, useState } from 'react';
 import { useJoinStatus } from 'redux/hooks';
-
-const needJoin = ['/referral'];
+import { NEED_JOIN_PAGE } from 'constants/router';
 
 interface IProps {
   title?: string;
@@ -33,7 +32,7 @@ function MenuDropdown({ title, items, schema, onPressCompassItems }: IProps) {
     return items
       .filter((val) => {
         if (!val.show) return false;
-        if (val.schema && needJoin.includes(val.schema)) {
+        if (val.schema && NEED_JOIN_PAGE.includes(val.schema)) {
           if (isJoin) return true;
           return false;
         } else {
