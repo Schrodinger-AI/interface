@@ -27,6 +27,24 @@ export function timeFillDigits(n: number | string) {
   return `${String(n).length < 2 ? `0${n}` : n}`;
 }
 
+export function formatTokenPriceOnItemCard(price: number | BigNumber | string) {
+  const priceBig: BigNumber = BigNumber.isBigNumber(price) ? price : new BigNumber(price);
+  if (priceBig.isNaN()) return `${price}`;
+  if (priceBig.lt(BigNumber(10).exponentiatedBy(6))) {
+    return formatTokenPrice(priceBig, {
+      decimalPlaces: 2,
+    });
+  } else if (priceBig.lt(BigNumber(10).exponentiatedBy(9))) {
+    const priceFixed = priceBig.div(BigNumber(10).exponentiatedBy(6)).toFixed(4);
+    const res = new BigNumber(priceFixed).toFormat();
+    return res + 'M';
+  } else {
+    const priceFixed = priceBig.div(BigNumber(10).exponentiatedBy(9)).toFixed(4);
+    const res = new BigNumber(priceFixed).toFormat();
+    return res + 'B';
+  }
+}
+
 export function formatTokenPrice(
   price: number | BigNumber | string,
   toFixedProps?: {

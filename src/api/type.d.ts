@@ -92,6 +92,7 @@ interface ICatsRankProbabilityData {
   rankGenOne: IRankInfo;
   rankTwoToNine: IRankInfo;
   rank: IRankInfo;
+  levelInfo: ILevelInfo;
 }
 
 interface IRankInfo {
@@ -99,5 +100,20 @@ interface IRankInfo {
   total: number;
   probability: string;
   percent: string;
+  levelInfo: ILevelInfo;
   traitsProbability: Record<string, number>;
+}
+
+interface ILevelInfo {
+  singleProbability: number | string;
+  items: number | string;
+  situation: number | string;
+  totalProbability: number | string;
+  token: number | string;
+  classify: number | string;
+  level: number | string;
+  grade: number | string;
+  star: number | string;
+  describe: string;
+  awakenPrice: string | number;
 }
