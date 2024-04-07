@@ -25,6 +25,7 @@ export enum FilterKeyEnum {
   Chain = 'Chain',
   Traits = 'Traits',
   Generation = 'Generation',
+  Rarity = 'Rarity',
 }
 
 export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Traits];
@@ -63,6 +64,15 @@ export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuChe
       type: FilterType.Checkbox,
       data: [],
     },
+    {
+      key: FilterKeyEnum.Rarity,
+      title: FilterKeyEnum.Rarity,
+      type: FilterType.Checkbox,
+      data: [
+        { value: 1, label: 'Diamod' },
+        { value: 2, label: 'Gold' },
+      ],
+    },
   ];
   return filterList;
 };
@@ -80,6 +90,10 @@ export interface IFilterSelect {
     type: FilterType.Checkbox;
     data: SourceItemType[];
   };
+  [FilterKeyEnum.Rarity]: {
+    type: FilterType.Checkbox;
+    data: Array<any>;
+  };
 }
 
 export const getDefaultFilter = (ChainId: string): IFilterSelect => {
@@ -93,6 +107,10 @@ export const getDefaultFilter = (ChainId: string): IFilterSelect => {
       data: [],
     },
     [FilterKeyEnum.Generation]: {
+      type: FilterType.Checkbox,
+      data: [],
+    },
+    [FilterKeyEnum.Rarity]: {
       type: FilterType.Checkbox,
       data: [],
     },
@@ -131,6 +149,7 @@ export const getFilter = (filterSelect: IFilterSelect) => {
       values: item.values?.map((subItem) => subItem.value) || [],
     })),
     generations: filterSelect.Generation.data.map((item) => item.value) as number[],
+    // rarity: filterSelect.Rarity.data.map((item) => item.value) as number[],
   };
 };
 
