@@ -9,8 +9,6 @@ export const CompassText = (props: { title?: string; schema?: string }) => {
   const pathname = usePathname();
   const isCurrent = pathname?.toLocaleLowerCase() === props.schema?.toLowerCase();
 
-  console.log('=====isCurrent', isCurrent);
-
   return (
     <span
       className={clsx(
