@@ -8,6 +8,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import { getRankInfoToShow } from 'utils/formatTraits';
+import DecorationModule from './components/DecorationModule';
 
 export enum CardType {
   MY = 'my',
@@ -63,9 +64,12 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
-          <div className="bg-black bg-opacity-60 px-1 py-[1px] flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
-            <div className="text-white text-xxs font-medium">{`GEN ${generation}`}</div>
-          </div>
+          {/* <DecorationModule
+            generation={generation}
+            level={4}
+            honor="Bronze IV"
+            className="absolute top-0 left-0 p-2 z-10"
+          /> */}
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
