@@ -21,6 +21,7 @@ export const getCatsRankProbability: (params: ICatsRankProbabilityParams) => Pro
           ...(item.rankGenOne.traitsProbability || {}),
           ...(item.rankTwoToNine.traitsProbability || {}),
         },
+        levelInfo: item.levelInfo || {},
       };
     });
     return formatRankProbability;

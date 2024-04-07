@@ -3,7 +3,7 @@ import SkeletonImage from 'components/SkeletonImage';
 import React, { useCallback, useMemo } from 'react';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
-import { formatTimeByDayjs, formatTokenPrice } from 'utils/format';
+import { formatTimeByDayjs, formatTokenPrice, formatTokenPriceOnItemCard } from 'utils/format';
 import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
@@ -33,7 +33,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     rankInfo,
   } = item || {};
 
-  const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
+  const transformedAmount = useMemo(() => formatTokenPriceOnItemCard(amount), [amount]);
   const rank = rankInfo && getRankInfoToShow(rankInfo, 'Rank');
 
   const cmsInfo = useCmsInfo();
@@ -64,12 +64,12 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
-          {/* <DecorationModule
+          <DecorationModule
             generation={generation}
-            level={4}
-            honor="Bronze IV"
+            level={rankInfo?.levelInfo.level}
+            honor={rankInfo?.levelInfo.describe}
             className="absolute top-0 left-0 p-2 z-10"
-          /> */}
+          />
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
@@ -97,16 +97,26 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
-                  <XIcon />
-                  <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
+                  <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
                 </div>
+                {rankInfo?.levelInfo.awakenPrice && (
+                  <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
+                    {formatTokenPriceOnItemCard(rankInfo?.levelInfo.awakenPrice)} ELF
+                  </div>
+                )}
               </div>
             </div>
           )}
           {type === CardType.MY && (
-            <div className="flex flex-row items-center pt-1">
-              <XIcon />
-              <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
+            <div>
+              <div className="flex flex-row items-center pt-1">
+                <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
+              </div>
+              {rankInfo?.levelInfo.awakenPrice && (
+                <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
+                  {formatTokenPriceOnItemCard(rankInfo?.levelInfo.awakenPrice)} ELF
+                </div>
+              )}
             </div>
           )}
         </div>
