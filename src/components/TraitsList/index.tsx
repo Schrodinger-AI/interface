@@ -4,9 +4,8 @@ import NewIcon from 'components/NewIcon';
 import { ITrait } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
-import { formatPercent } from 'utils/format';
+import { convertDecimalToPercentage, formatPercent } from 'utils/format';
 import TextEllipsis from 'components/TextEllipsis';
-import BigNumber from 'bignumber.js';
 
 interface ITraitItem {
   item: ITrait;
@@ -23,9 +22,7 @@ interface ITraitsListProps {
 
 function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
   const { traitType, value, percent } = item;
-  const traitsProbabilityStr = traitsProbability
-    ? ` (${Number(BigNumber(traitsProbability).multipliedBy(100).toFixed(2))}%)`
-    : '';
+  const traitsProbabilityStr = traitsProbability ? ` (${convertDecimalToPercentage(traitsProbability)}%)` : '';
   return (
     <div
       className={clsx(

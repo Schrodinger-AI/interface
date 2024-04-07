@@ -2,7 +2,7 @@ import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { ITrait, TSGRToken } from 'types/tokens';
-import { formatPercent } from 'utils/format';
+import { convertDecimalToPercentage, formatPercent } from 'utils/format';
 import { ReactComponent as RightArrowSVG } from 'assets/img/right_arrow.svg';
 import { useModal } from '@ebay/nice-modal-react';
 import LearnMoreModal from 'components/LearnMoreModal';
@@ -40,7 +40,7 @@ export default function ItemInfo({
   const renderTraitsCard = useCallback(
     (item: ITrait) => {
       const traitsProbability = rankInfo?.traitsProbability[item.value]
-        ? Number(BigNumber(rankInfo?.traitsProbability[item.value]).multipliedBy(100).toFixed(2))
+        ? convertDecimalToPercentage(rankInfo?.traitsProbability[item.value])
         : '';
       const traitsProbabilityStr = `${traitsProbability ? `(${traitsProbability}%)` : ''}`;
       return (

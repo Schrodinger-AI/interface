@@ -15,16 +15,20 @@ import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
+import clsx from 'clsx';
 import { useResponsive } from 'hooks/useResponsive';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
+import { isWeChatBrowser } from 'utils/isWeChatBrowser';
+import WeChatGuide from 'components/WeChatGuide';
+import { backgroundStyle } from 'provider/useNavigationGuard';
 
 const Layout = dynamic(async () => {
-  const { WebLoginState, useWebLogin, useCallContract, WebLoginEvents, useWebLoginEvent } = await import(
-    'aelf-web-login'
-  ).then((module) => module);
+  const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
 
     const { cmsInfo } = useGetStoreInfo();
+    const customTheme = useGetCustomTheme();
 
     const webLoginContext = useWebLogin();
 
@@ -42,8 +46,6 @@ const Layout = dynamic(async () => {
       chainId: SupportedELFChainId.TDVW_NET,
       rpcUrl: cmsInfo?.rpcUrlTDVW,
     });
-
-    useWalletInit();
 
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';
@@ -85,7 +87,10 @@ const Layout = dynamic(async () => {
           viewMethod: callTDVWViewMethod,
         },
       ]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [webLoginContext.loginState]);
+
+    useWalletInit();
 
     const isHiddenHeader = useMemo(() => {
       return ['/privacy-policy'].includes(pathname);
@@ -98,13 +103,17 @@ const Layout = dynamic(async () => {
     return (
       <>
         {!isHiddenLayout ? (
-          <AntdLayout className="h-full overflow-scroll min-w-[360px]">
+          <AntdLayout
+            className={clsx(
+              'h-full overflow-scroll min-w-[360px] bg-no-repeat bg-cover bg-center',
+              customTheme.layout.backgroundStyle,
+            )}>
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
               <AntdLayout.Content
                 className={`${
                   isLG ? styles['schrodinger-mobile-content'] : styles['schrodinger-content']
-                } flex-shrink-0 pb-16 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
+                } flex-shrink-0 pb-4 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
                 {children}
               </AntdLayout.Content>
               <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />
@@ -113,6 +122,17 @@ const Layout = dynamic(async () => {
         ) : (
           <>{children}</>
         )}
+        <div
+          className={clsx(
+            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000]',
+            backgroundStyle.invitee,
+          )}></div>
+        <div
+          className={clsx(
+            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000]',
+            backgroundStyle.referral,
+          )}></div>
+        {isWeChatBrowser() && <WeChatGuide />}
       </>
     );
   };

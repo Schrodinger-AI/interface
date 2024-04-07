@@ -8,7 +8,6 @@ import { openExternalLink } from 'utils/openlink';
 import { TSGRToken } from 'types/tokens';
 import { divDecimals } from 'utils/calculate';
 import { ONE } from 'constants/misc';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 
 export interface IMarketModalProps {
   isTrade?: boolean;
@@ -16,8 +15,7 @@ export interface IMarketModalProps {
 }
 function MarketModal({ isTrade = false, detail }: IMarketModalProps) {
   const modal = useModal();
-  const { forestUrl, curChain } = useCmsInfo() || {};
-  const { tradeModal, tradeModalOnMarketPlace } = useDeviceCmsConfig() || {};
+  const { forestUrl, curChain, tradeModal, tradeModalOnMarketPlace } = useCmsInfo() || {};
 
   const tradeModalData = useMemo(() => {
     return isTrade ? tradeModal : tradeModalOnMarketPlace;

@@ -4,11 +4,11 @@ module.exports = {
   async rewrites() {
     return rewritesConfig;
   },
-  images: {
-    loader: 'akamai',
-    path: '',
-    domains: ['raw.githubusercontent.com'],
-  },
+  // images: {
+  //   loader: 'akamai',
+  //   path: '',
+  //   domains: ['raw.githubusercontent.com'],
+  // },
 
   productionBrowserSourceMaps: true,
   typescript: {
