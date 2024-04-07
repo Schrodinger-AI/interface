@@ -177,7 +177,6 @@ export default function List() {
         ListProps={{
           dataSource,
         }}
-        // loadMore={loadMoreData}
       />
     </>
   );
