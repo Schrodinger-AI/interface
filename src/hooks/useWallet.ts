@@ -41,7 +41,6 @@ export const useWalletInit = () => {
 
   const callBack = useCallback(
     (state: WebLoginState) => {
-      console.log('useWalletInit -------useLoginState-------', state);
       if (state === WebLoginState.lock) {
         backToHomeByRoute();
       }
@@ -69,7 +68,7 @@ export const useWalletInit = () => {
         setLocalWalletInfo(cloneDeep(walletInfo));
       }
       if (state === WebLoginState.logouting) {
-        console.log('----store---setIsJoin--false');
+        console.info('----store---setIsJoin--false');
         store.dispatch(setIsJoin(false));
       }
     },
@@ -231,7 +230,6 @@ export const useCheckLoginAndToken = () => {
   const { hasToken } = useGetStoreInfo();
 
   const checkLogin = async () => {
-    console.log('checkLogin--isLogin', isLogin);
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isLogin) {
       if (accountInfo.token) {
