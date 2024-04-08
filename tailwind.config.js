@@ -35,7 +35,7 @@ module.exports = {
         fillMask3: 'var(--fill-mask-3)',
         rarityPlatinum: 'var(--rarity-platinum)',
         rarityBronze: 'var(--rarity-bronze)',
-        raritySilver: 'var(rarity-silver)',
+        raritySilver: 'var(--rarity-silver)',
         rarityGold: 'var(--rarity-gold)',
         rarityHalcyon: 'var(--rarity-halcyon)',
         rarityDiamond: 'var(--rarity-diamond)',
