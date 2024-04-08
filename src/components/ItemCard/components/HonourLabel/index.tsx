@@ -35,7 +35,7 @@ export default function HonourLabel({ text, className }: { text: string; classNa
         </div>
       );
     } else {
-      return `${strArr[0]} ${strArr[1]}`;
+      return `${strArr[0]} ${strArr[2]}`;
     }
   }, [text]);
 

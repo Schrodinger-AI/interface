@@ -2,7 +2,7 @@ import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { ITrait, TSGRToken } from 'types/tokens';
-import { formatNumber, formatPercent } from 'utils/format';
+import { formatNumber, formatPercent, formatTokenPrice } from 'utils/format';
 import { ReactComponent as RightArrowSVG } from 'assets/img/right_arrow.svg';
 import { useModal } from '@ebay/nice-modal-react';
 import LearnMoreModal from 'components/LearnMoreModal';
@@ -91,12 +91,20 @@ export default function ItemInfo({
   };
 
   const levelInfoToken = useMemo(() => {
-    return formatNumber(rankInfo?.levelInfo?.token || '');
-  }, [rankInfo?.levelInfo?.token]);
+    if (isLG) {
+      return formatNumber(rankInfo?.levelInfo?.token || '');
+    } else {
+      return formatTokenPrice(rankInfo?.levelInfo?.token || '');
+    }
+  }, [rankInfo?.levelInfo?.token, isLG]);
 
   const awakenPrice = useMemo(() => {
-    return formatNumber(rankInfo?.levelInfo?.awakenPrice || '');
-  }, [rankInfo?.levelInfo?.awakenPrice]);
+    if (isLG) {
+      return formatNumber(rankInfo?.levelInfo?.awakenPrice || '');
+    } else {
+      return formatTokenPrice(rankInfo?.levelInfo?.awakenPrice || '');
+    }
+  }, [rankInfo?.levelInfo?.awakenPrice, isLG]);
 
   return (
     <div className="flex flex-col w-full flex-none lg:flex-1 mt-[16px] lg:mt-[0px]">
@@ -129,7 +137,7 @@ export default function ItemInfo({
         )}
         {(rankInfo?.levelInfo?.token || rankInfo?.levelInfo?.awakenPrice) && (
           <div className="flex flex-row justify-between items-start mt-2 text-lg font-normal">
-            <div className="text-neutralSecondary">Recommended Price</div>
+            <div className="text-neutralSecondary max-w-[170px] md:max-w-max">Recommended Price</div>
             <div className="flex flex-col items-end">
               {rankInfo?.levelInfo?.token && <div className="text-neutralTitle font-medium">{levelInfoToken} SGR</div>}
               {rankInfo?.levelInfo?.awakenPrice && (
