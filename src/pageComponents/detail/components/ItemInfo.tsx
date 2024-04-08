@@ -26,9 +26,12 @@ export default function ItemInfo({
   const learnMoreModal = useModal(LearnMoreModal);
   const onLearnMoreClick = useCallback(() => {
     learnMoreModal.show({
-      item: detail,
+      item: {
+        ...detail,
+        rank: rankInfo?.rank ? `${rankInfo?.rank}` : '',
+      },
     });
-  }, [detail, learnMoreModal]);
+  }, [detail, learnMoreModal, rankInfo?.rank]);
   const { isLG } = useResponsive();
 
   const isLearnMoreShow = useMemo(
