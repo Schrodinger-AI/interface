@@ -7,6 +7,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import DecorationModule from './components/DecorationModule';
+import { store } from 'redux/store';
 
 export enum CardType {
   MY = 'my',
@@ -23,7 +24,6 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     inscriptionImageUri,
     generation = '1',
     tokenName,
-    amount,
     decimals,
     adoptTime,
     adopter,
@@ -31,13 +31,22 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     level,
     describe,
     awakenPrice,
+    token,
     inscriptionDeploy,
   } = item || {};
 
-  const transformedAmount = useMemo(() => formatNumber(amount), [amount]);
   const rankDisplay = useMemo(() => {
-    return rank ? `Rank: ${formatTokenPrice(rank)}` : '';
+    const isAddressValidProbability = store.getState().info.isAddressValidProbability;
+    return rank && isAddressValidProbability ? `Rank: ${formatTokenPrice(rank)}` : '';
   }, [rank]);
+
+  const awakenPriceDisplay = useMemo(() => {
+    return awakenPrice ? `${formatNumber(awakenPrice)} ELF` : '';
+  }, [awakenPrice]);
+
+  const tokenDisplay = useMemo(() => {
+    return token ? `${formatNumber(token)} SGR` : '';
+  }, [token]);
 
   const cmsInfo = useCmsInfo();
 
@@ -96,26 +105,23 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
-                  <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
+                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
                 </div>
-                {awakenPrice && (
-                  <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
-                    {formatNumber(awakenPrice)} ELF
-                  </div>
-                )}
+                <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                  {awakenPriceDisplay}
+                </div>
               </div>
             </div>
           )}
           {type === CardType.MY && (
             <div>
               <div className="flex flex-row items-center pt-1">
-                <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
+                <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
               </div>
-              {awakenPrice && (
-                <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
-                  {formatNumber(awakenPrice)} ELF
-                </div>
-              )}
+
+              <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                {awakenPriceDisplay}
+              </div>
             </div>
           )}
         </div>

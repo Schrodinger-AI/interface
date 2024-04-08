@@ -45,3 +45,11 @@ export const catsRankProbability = async (data: ICatsRankProbabilityParams): Pro
 export const catsList = async (data: ICatsListParams): Promise<ICatsListData> => {
   return request.post('/app/cat/list', data);
 };
+
+export const getIsAddressValidProbability = async (params: {
+  address: string;
+}): Promise<{
+  isAddressValid: boolean;
+}> => {
+  return request.get('/probability/isAddressValid', { params });
+};

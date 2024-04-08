@@ -27,6 +27,7 @@ export type TSGRItem = TBaseSGRToken & {
   rarity?: string;
   describe?: string;
   awakenPrice?: string;
+  token?: string;
 };
 
 export type TSGRToken = GenerateType<

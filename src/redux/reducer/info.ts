@@ -11,6 +11,7 @@ const initialState: InfoStateType = {
   },
   theme: 'light',
   itemsFromLocal: [],
+  isAddressValidProbability: false,
 };
 
 // Actual Slice
@@ -34,6 +35,9 @@ export const infoSlice = createSlice({
     setHasToken(state, action) {
       state.hasToken = action.payload;
     },
+    setIsAddressValidProbability(state, action) {
+      state.isAddressValidProbability = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -47,7 +51,15 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setCmsInfo, setLoginTrigger, setHasToken } = infoSlice.actions;
+export const {
+  setIsMobile,
+  setItemsFromLocal,
+  setCmsInfo,
+  setLoginTrigger,
+  setIsAddressValidProbability,
+  setHasToken,
+} = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
+export const getIsAddressValidProbability = (state: AppState) => state.info.isAddressValidProbability;
 
 export default infoSlice.reducer;
