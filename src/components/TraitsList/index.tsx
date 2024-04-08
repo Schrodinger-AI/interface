@@ -6,26 +6,20 @@ import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
 import { formatPercent } from 'utils/format';
 import TextEllipsis from 'components/TextEllipsis';
-import BigNumber from 'bignumber.js';
 
 interface ITraitItem {
   item: ITrait;
   isLG: boolean;
   showNew?: boolean;
-  traitsProbability?: number;
 }
 
 interface ITraitsListProps {
   data: ITrait[];
-  rankInfo?: IRankInfo;
   showNew?: boolean;
 }
 
-function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
+function TraitsItem({ item, showNew, isLG }: ITraitItem) {
   const { traitType, value, percent } = item;
-  const traitsProbabilityStr = traitsProbability
-    ? ` (${Number(BigNumber(traitsProbability).multipliedBy(100).toFixed(2))}%)`
-    : '';
   return (
     <div
       className={clsx(
@@ -34,15 +28,13 @@ function TraitsItem({ item, showNew, isLG, traitsProbability }: ITraitItem) {
       )}>
       <TextEllipsis value={traitType} />
       <TextEllipsis className="text-sm text-neutralTitle" value={value} />
-      <div>
-        {formatPercent(percent)}%{`${traitsProbabilityStr}`}
-      </div>
+      <div>{formatPercent(percent)}%</div>
       {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
     </div>
   );
 }
 
-export default function TraitsList({ data = [], showNew = false, rankInfo }: ITraitsListProps) {
+export default function TraitsList({ data = [], showNew = false }: ITraitsListProps) {
   const { isLG } = useResponsive();
   const colSpan = useMemo(() => {
     if (isLG) return 24;
@@ -54,12 +46,7 @@ export default function TraitsList({ data = [], showNew = false, rankInfo }: ITr
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (
         <Col span={colSpan} key={index}>
-          <TraitsItem
-            item={item}
-            showNew={showNew}
-            isLG={isLG}
-            traitsProbability={rankInfo?.traitsProbability?.[item.value]}
-          />
+          <TraitsItem item={item} showNew={showNew} isLG={isLG} />
         </Col>
       ))}
     </Row>

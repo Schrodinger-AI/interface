@@ -27,6 +27,24 @@ export function timeFillDigits(n: number | string) {
   return `${String(n).length < 2 ? `0${n}` : n}`;
 }
 
+export function formatTokenPriceOnItemCard(price: number | BigNumber | string) {
+  const priceBig: BigNumber = BigNumber.isBigNumber(price) ? price : new BigNumber(price);
+  if (priceBig.isNaN()) return `${price}`;
+  if (priceBig.lt(BigNumber(10).exponentiatedBy(6))) {
+    return formatTokenPrice(priceBig, {
+      decimalPlaces: 2,
+    });
+  } else if (priceBig.lt(BigNumber(10).exponentiatedBy(9))) {
+    const priceFixed = priceBig.div(BigNumber(10).exponentiatedBy(6)).toFixed(4);
+    const res = new BigNumber(priceFixed).toFormat();
+    return res + 'M';
+  } else {
+    const priceFixed = priceBig.div(BigNumber(10).exponentiatedBy(9)).toFixed(4);
+    const res = new BigNumber(priceFixed).toFormat();
+    return res + 'B';
+  }
+}
+
 export function formatTokenPrice(
   price: number | BigNumber | string,
   toFixedProps?: {
@@ -85,7 +103,7 @@ export function formatNumber(
     roundingMode?: BigNumber.RoundingMode;
   },
 ) {
-  const { decimalPlaces = 2, roundingMode = BigNumber.ROUND_DOWN } = toFixedProps || {};
+  const { decimalPlaces = 4, roundingMode = BigNumber.ROUND_DOWN } = toFixedProps || {};
   const numberBig: BigNumber = BigNumber.isBigNumber(number) ? number : new BigNumber(number);
   if (numberBig.isNaN() || numberBig.eq(0)) return '0';
 
@@ -98,10 +116,9 @@ export function formatNumber(
     return numberBig.div(BUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'B';
   } else if (abs.gte(MUnit)) {
     return numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'M';
-  } else if (abs.gte(KUnit)) {
-    return numberBig.div(KUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'K';
+  } else {
+    return numberBig.toFixed(2, roundingMode);
   }
-  return BigNumber.isBigNumber(number) ? number.toNumber() : number;
 }
 
 const reg = /^https?:/;

@@ -1,8 +1,8 @@
 import { catsRankProbability } from 'api/request';
 
-export const getCatsRankProbability: (params: ICatsRankProbabilityParams) => Promise<IRankInfo[] | false> = async (
+export const getCatsRankProbability: (
   params: ICatsRankProbabilityParams,
-) => {
+) => Promise<TRankInfoAddLevelInfo[] | false> = async (params: ICatsRankProbabilityParams) => {
   try {
     if (!params?.catsTraits?.length) return false;
     const rankProbability = await catsRankProbability(params);
@@ -11,16 +11,10 @@ export const getCatsRankProbability: (params: ICatsRankProbabilityParams) => Pro
       return false;
     }
 
-    const formatRankProbability: IRankInfo[] = rankProbability.map((item) => {
+    const formatRankProbability: TRankInfoAddLevelInfo[] = rankProbability.map((item) => {
       return {
-        rank: item.rank.rank,
-        total: item.rank.total,
-        probability: item.rank.probability,
-        percent: item.rank.percent,
-        traitsProbability: {
-          ...(item.rankGenOne.traitsProbability || {}),
-          ...(item.rankTwoToNine.traitsProbability || {}),
-        },
+        ...item.rank,
+        levelInfo: item.levelInfo,
       };
     });
     return formatRankProbability;

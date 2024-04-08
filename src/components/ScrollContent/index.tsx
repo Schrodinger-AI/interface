@@ -47,8 +47,7 @@ function ScrollContent(props: IContentProps) {
     } else {
       closeLoading();
     }
-    // There cannot be dependencies showLoading and closeLoading
-  }, [loading]);
+  }, [closeLoading, loading, showLoading]);
 
   const handleScroll = useCallback(
     async (event: Event) => {
