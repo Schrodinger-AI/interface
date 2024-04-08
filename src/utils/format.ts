@@ -118,8 +118,9 @@ export function formatNumber(
     return numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'M';
   } else if (abs.gte(KUnit)) {
     return numberBig.div(KUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'K';
+  } else {
+    return numberBig.toFixed(decimalPlaces, roundingMode);
   }
-  return BigNumber.isBigNumber(number) ? number.toNumber() : number;
 }
 
 const reg = /^https?:/;

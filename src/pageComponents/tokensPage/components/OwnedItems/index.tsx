@@ -29,7 +29,7 @@ import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { useGetSchrodingerList, useGetTraits } from 'graphqlServer';
+import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
@@ -90,8 +90,6 @@ export default function OwnedItems() {
     };
   }, [filterSelect, walletAddress, current, searchParam]);
 
-  const getSchrodingerList = useGetSchrodingerList();
-
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
       if (!params.chainId || !params.address) {
@@ -107,7 +105,8 @@ export default function OwnedItems() {
         const res = await catsList(params);
 
         setTotal(res.totalCount ?? 0);
-        const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
+        const hasSearch =
+          params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
         if (!hasSearch) {
           setOwnedTotal(res.totalCount ?? 0);
         }

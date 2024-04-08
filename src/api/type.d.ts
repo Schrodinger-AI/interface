@@ -122,9 +122,9 @@ interface ILevelInfo {
   items: number | string;
   situation: number | string;
   totalProbability: number | string;
-  token: number | string;
+  token: string;
   classify: number | string;
-  level: number | string;
+  level: string;
   grade: number | string;
   star: number | string;
   describe: string;
