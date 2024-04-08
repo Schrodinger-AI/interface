@@ -111,8 +111,18 @@ export default function List() {
         });
 
         needShowRankingIndexList.forEach((item, index) => {
-          data[item].rankInfo =
+          const curCatsRankProbability =
             catsRankProbability && catsRankProbability?.[index] ? catsRankProbability?.[index] : undefined;
+          if (curCatsRankProbability) {
+            data[item] = {
+              ...data[item],
+              level: curCatsRankProbability.levelInfo?.level,
+              token: curCatsRankProbability.levelInfo?.token,
+              rank: `${curCatsRankProbability.rank}`,
+              describe: curCatsRankProbability.levelInfo?.describe,
+              awakenPrice: `${curCatsRankProbability.levelInfo?.awakenPrice}`,
+            };
+          }
         });
 
         if (isLoadMore.current) {

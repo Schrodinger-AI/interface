@@ -25,15 +25,15 @@ import { divDecimals, getPageNumber } from 'utils/calculate';
 import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
+import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { TGetSchrodingerListParams, useGetSchrodingerList, useGetTraits } from 'graphqlServer';
+import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
-import { formatTraits } from 'utils/formatTraits';
-import { getCatsRankProbability } from 'utils/getCatsRankProbability';
-import { addPrefixSuffix } from 'utils/addressFormatting';
+import { ToolTip } from 'aelf-design';
+import { catsList } from 'api/request';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -90,49 +90,8 @@ export default function OwnedItems() {
     };
   }, [filterSelect, walletAddress, current, searchParam]);
 
-  const getSchrodingerList = useGetSchrodingerList();
-
-  const getRankInfo = useCallback(
-    async (data: TSGRItem[]) => {
-      try {
-        const needShowRankingIndexList: number[] = [];
-        const catsRankProbabilityParams: TCatsRankProbabilityTraits[] = [];
-        const needShowRankingList = data.filter((item, index) => {
-          if (item.generation === 9) {
-            needShowRankingIndexList.push(index);
-            return true;
-          }
-          return false;
-        });
-
-        if (!needShowRankingList.length) return false;
-
-        needShowRankingList.map((item) => {
-          const params = formatTraits(item.traits);
-          params && catsRankProbabilityParams.push(params);
-        });
-
-        try {
-          const catsRankProbability = await getCatsRankProbability({
-            catsTraits: catsRankProbabilityParams,
-            address: addPrefixSuffix(wallet.address),
-          });
-
-          return {
-            catsRankProbability,
-            needShowRankingIndexList,
-          };
-        } catch (error) {
-          return false;
-        }
-      } catch (error) {
-        return false;
-      }
-    },
-    [wallet.address],
-  );
   const fetchData = useCallback(
-    async ({ params, loadMore = false }: { params: TGetSchrodingerListParams['input']; loadMore?: boolean }) => {
+    async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
       if (!params.chainId || !params.address) {
         return;
       }
@@ -143,19 +102,11 @@ export default function OwnedItems() {
         showLoading();
       }
       try {
-        const {
-          data: { getSchrodingerList: res },
-        } = await getSchrodingerList({
-          input: params,
-        });
-
-        const { catsRankProbability, needShowRankingIndexList } = (await getRankInfo(res.data)) || {
-          catsRankProbability: false,
-          needShowRankingIndexList: [],
-        };
+        const res = await catsList(params);
 
         setTotal(res.totalCount ?? 0);
-        const hasSearch = params.traits?.length || params.generations?.length || !!params.keyword;
+        const hasSearch =
+          params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
         if (!hasSearch) {
           setOwnedTotal(res.totalCount ?? 0);
         }
@@ -164,11 +115,6 @@ export default function OwnedItems() {
             ...item,
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
-        });
-
-        needShowRankingIndexList.forEach((item, index) => {
-          data[item].rankInfo =
-            catsRankProbability && catsRankProbability?.[index] ? catsRankProbability?.[index] : undefined;
         });
 
         if (isLoadMore.current) {
@@ -183,7 +129,7 @@ export default function OwnedItems() {
         setMoreLoading(false);
       }
     },
-    [closeLoading, getRankInfo, getSchrodingerList, showLoading],
+    [closeLoading, showLoading],
   );
 
   useEffect(() => {
@@ -283,6 +229,24 @@ export default function OwnedItems() {
     }
   }, [isMobile, collapsed, clearAllCompChildSearches]);
 
+  const renderCollapseItemsLabel = useCallback(
+    ({ title, tips }: { title: string; tips?: string }) => {
+      return (
+        <div className="flex items-center h-[26px]">
+          {title}
+          {tips ? (
+            <ToolTip title={tips} trigger={isLG ? 'click' : 'hover'}>
+              <div className="px-[8px] h-full flex items-center" onClick={(e) => e.stopPropagation()}>
+                <QuestionSVG />
+              </div>
+            </ToolTip>
+          ) : null}
+        </div>
+      );
+    },
+    [isLG],
+  );
+
   const collapseItems = useMemo(() => {
     return filterList?.map((item) => {
       const value = tempFilterSelect[item.key]?.data;
@@ -330,11 +294,14 @@ export default function OwnedItems() {
       }
       return {
         key: item.key,
-        label: item.title,
+        label: renderCollapseItemsLabel({
+          title: item.title,
+          tips: item?.tips,
+        }),
         children,
       };
     });
-  }, [filterList, tempFilterSelect, filterChange, compChildRefs]);
+  }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
