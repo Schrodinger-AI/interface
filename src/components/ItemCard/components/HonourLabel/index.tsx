@@ -9,7 +9,7 @@ enum HonourTypeEnum {
   Silver = 'Silver',
   Gold = 'Gold',
   Platinum = 'Platinum',
-  Halcyon = 'Halcyon',
+  Emerald = 'Emerald',
   Diamond = 'Diamond',
 }
 
@@ -18,7 +18,7 @@ const stylesMap: Record<HonourTypeEnum, string> = {
   [HonourTypeEnum.Silver]: styles.silver,
   [HonourTypeEnum.Gold]: styles.gold,
   [HonourTypeEnum.Platinum]: styles.platinum,
-  [HonourTypeEnum.Halcyon]: styles.halcyon,
+  [HonourTypeEnum.Emerald]: styles.halcyon,
   [HonourTypeEnum.Diamond]: styles.diamond,
 };
 

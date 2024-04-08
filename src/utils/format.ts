@@ -103,7 +103,7 @@ export function formatNumber(
     roundingMode?: BigNumber.RoundingMode;
   },
 ) {
-  const { decimalPlaces = 2, roundingMode = BigNumber.ROUND_DOWN } = toFixedProps || {};
+  const { decimalPlaces = 4, roundingMode = BigNumber.ROUND_DOWN } = toFixedProps || {};
   const numberBig: BigNumber = BigNumber.isBigNumber(number) ? number : new BigNumber(number);
   if (numberBig.isNaN() || numberBig.eq(0)) return '0';
 

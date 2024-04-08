@@ -2,11 +2,7 @@ import { ITrait } from 'types/tokens';
 import { formatTokenPrice } from './format';
 
 export const getRankInfoToShow = (rankInfo: IRankInfo, prefix = '') => {
-  return rankInfo?.rank
-    ? `${prefix ? `${prefix}: ` : ''}${formatTokenPrice(rankInfo?.rank)} ${
-        rankInfo?.total ? ` / ${formatTokenPrice(rankInfo?.total)}` : ''
-      }`
-    : '';
+  return rankInfo?.rank ? `${prefix ? `${prefix}: ` : ''}${formatTokenPrice(rankInfo?.rank)}` : '';
 };
 
 const map: {

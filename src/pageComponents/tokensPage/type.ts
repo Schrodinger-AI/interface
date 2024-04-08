@@ -35,6 +35,7 @@ export type CheckboxItemType = {
   title: string;
   type: FilterType.Checkbox;
   data: SourceItemType[];
+  tips?: string;
 };
 
 export type MenuCheckboxItemType = {
@@ -42,6 +43,7 @@ export type MenuCheckboxItemType = {
   title: string;
   type: FilterType.MenuCheckbox;
   data: MenuCheckboxItemDataType[];
+  tips?: string;
 };
 
 export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuCheckboxItemType> => {
@@ -68,13 +70,18 @@ export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuChe
       key: FilterKeyEnum.Rarity,
       title: FilterKeyEnum.Rarity,
       type: FilterType.Checkbox,
+      tips: 'Only Gen-9 Cats support Rarity filtering.',
       data: [
-        { value: 1, label: 'Diamod' },
-        { value: 2, label: 'Gold' },
+        { value: 'Diamond', label: 'Diamond' },
+        { value: 'Emerald', label: 'Emerald' },
+        { value: 'Platinum', label: 'Platinum' },
+        { value: 'Gold', label: 'Gold' },
+        { value: 'Silver', label: 'Silver' },
+        { value: 'Bronze', label: 'Bronze' },
       ],
     },
   ];
-  return filterList;
+  return filterList as Array<CheckboxItemType | MenuCheckboxItemType>;
 };
 
 export interface IFilterSelect {
@@ -149,7 +156,7 @@ export const getFilter = (filterSelect: IFilterSelect) => {
       values: item.values?.map((subItem) => subItem.value) || [],
     })),
     generations: filterSelect.Generation.data.map((item) => item.value) as number[],
-    // rarity: filterSelect.Rarity.data.map((item) => item.value) as number[],
+    rarities: filterSelect.Rarity.data.map((item) => item.value) as string[],
   };
 };
 

@@ -1,3 +1,4 @@
+import { ICatsListData } from 'types/tokens';
 import request, { tokenRequest } from './axios';
 import qs from 'qs';
 
@@ -39,4 +40,8 @@ export const checkAIService = () => request.get<boolean>('/app/schrodinger/IsOve
 
 export const catsRankProbability = async (data: ICatsRankProbabilityParams): Promise<ICatsRankProbabilityData[]> => {
   return request.post('/app/item/level', data);
+};
+
+export const catsList = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/list', data);
 };

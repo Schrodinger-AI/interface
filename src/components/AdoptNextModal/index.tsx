@@ -119,7 +119,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
               </div>
             </>
           }>
-          <TraitsList data={newTraitsList} showNew rankInfo={SGRToken.rankInfo} />
+          <TraitsList data={newTraitsList} showNew />
         </DescriptionItem>
         <DescriptionItem title="Select the Cat You Prefer">
           <span className="text-functionalWarning text-base">
@@ -129,7 +129,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
           <AIImageSelect list={images} onSelect={onSelect} />
         </DescriptionItem>
         <DescriptionItem title="Traits">
-          <TraitsList data={allTraits} rankInfo={SGRToken.rankInfo} />
+          <TraitsList data={allTraits} />
         </DescriptionItem>
         <TransactionFee {...transaction} />
         <Balance

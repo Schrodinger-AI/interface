@@ -1,13 +1,11 @@
 import { HashAddress } from 'aelf-design';
 import SkeletonImage from 'components/SkeletonImage';
 import React, { useCallback, useMemo } from 'react';
-import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
-import { formatTimeByDayjs, formatTokenPrice, formatTokenPriceOnItemCard } from 'utils/format';
+import { formatNumber, formatTimeByDayjs, formatTokenPrice } from 'utils/format';
 import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
-import { getRankInfoToShow } from 'utils/formatTraits';
 import DecorationModule from './components/DecorationModule';
 
 export enum CardType {
@@ -29,12 +27,17 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     decimals,
     adoptTime,
     adopter,
+    rank,
+    level,
+    describe,
+    awakenPrice,
     inscriptionDeploy,
-    rankInfo,
   } = item || {};
 
-  const transformedAmount = useMemo(() => formatTokenPriceOnItemCard(amount), [amount]);
-  const rank = rankInfo && getRankInfoToShow(rankInfo, 'Rank');
+  const transformedAmount = useMemo(() => formatNumber(amount), [amount]);
+  const rankDisplay = useMemo(() => {
+    return rank ? `Rank: ${formatTokenPrice(rank)}` : '';
+  }, [rank]);
 
   const cmsInfo = useCmsInfo();
 
@@ -49,11 +52,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [inscriptionDeploy]);
 
   const onCardClick = useCallback(() => {
-    onPress &&
-      onPress({
-        ...item,
-        rank,
-      });
+    onPress && onPress(item);
   }, [item, onPress]);
 
   const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
@@ -66,14 +65,14 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
         <div className={styles['item-card-img-wrap']}>
           <DecorationModule
             generation={generation}
-            level={rankInfo?.levelInfo.level}
-            honor={rankInfo?.levelInfo.describe}
+            level={level}
+            honor={describe}
             className="absolute top-0 left-0 p-2 z-10"
           />
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
-            rank={rank}
+            rank={rankDisplay}
             hideRankHover={true}
             containsInscriptionCode={
               containsInscriptionCode
@@ -99,9 +98,9 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
                 <div className="flex flex-row items-center">
                   <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
                 </div>
-                {rankInfo?.levelInfo.awakenPrice && (
+                {awakenPrice && (
                   <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
-                    {formatTokenPriceOnItemCard(rankInfo?.levelInfo.awakenPrice)} ELF
+                    {formatNumber(awakenPrice)} ELF
                   </div>
                 )}
               </div>
@@ -112,9 +111,9 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               <div className="flex flex-row items-center pt-1">
                 <div className="text-xs text-neutralSecondary">{transformedAmount} SGR</div>
               </div>
-              {rankInfo?.levelInfo.awakenPrice && (
+              {awakenPrice && (
                 <div className="text-neutralSecondary font-normal text-[10px] leading-[18px]">
-                  {formatTokenPriceOnItemCard(rankInfo?.levelInfo.awakenPrice)} ELF
+                  {formatNumber(awakenPrice)} ELF
                 </div>
               )}
             </div>
