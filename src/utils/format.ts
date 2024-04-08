@@ -116,10 +116,8 @@ export function formatNumber(
     return numberBig.div(BUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'B';
   } else if (abs.gte(MUnit)) {
     return numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'M';
-  } else if (abs.gte(KUnit)) {
-    return numberBig.div(KUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'K';
   } else {
-    return numberBig.toFixed(decimalPlaces, roundingMode);
+    return numberBig.toFixed(2, roundingMode);
   }
 }
 
