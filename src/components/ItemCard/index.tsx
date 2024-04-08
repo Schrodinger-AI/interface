@@ -36,8 +36,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   } = item || {};
 
   const rankDisplay = useMemo(() => {
-    const isAddressValidProbability = store.getState().info.isAddressValidProbability;
-    return rank && isAddressValidProbability ? `Rank: ${formatTokenPrice(rank)}` : '';
+    return rank ? `Rank: ${formatTokenPrice(rank)}` : '';
   }, [rank]);
 
   const awakenPriceDisplay = useMemo(() => {

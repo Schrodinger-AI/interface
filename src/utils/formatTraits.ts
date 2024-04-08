@@ -1,13 +1,8 @@
 import { ITrait } from 'types/tokens';
 import { formatTokenPrice } from './format';
-import { store } from 'redux/store';
 
 export const getRankInfoToShow = (rankInfo: IRankInfo, prefix = '') => {
   try {
-    const isAddressValidProbability = store.getState().info.isAddressValidProbability;
-
-    if (!isAddressValidProbability) return '';
-
     return rankInfo?.rank ? `${prefix ? `${prefix}: ` : ''}${formatTokenPrice(rankInfo?.rank)}` : '';
   } catch (error) {
     return '';

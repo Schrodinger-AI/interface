@@ -9,7 +9,6 @@ export type InfoStateType = {
     identityPoolID?: string;
     // some config
   };
-  isAddressValidProbability: boolean;
   loginTrigger?: 'join' | 'login';
   cmsInfo?: {
     networkType: 'TESTNET' | 'MAIN';
