@@ -47,9 +47,15 @@ export default function DetailPage() {
     });
 
     try {
-      if (result?.data?.getSchrodingerDetail?.generation !== 9) throw '';
+      if (result?.data?.getSchrodingerDetail?.generation !== 9) {
+        setRankInfo(undefined);
+        throw '';
+      }
       const paramsTraits = formatTraits(result.data.getSchrodingerDetail.traits);
-      if (!paramsTraits) throw '';
+      if (!paramsTraits) {
+        setRankInfo(undefined);
+        throw '';
+      }
       const catsRankProbability = await getCatsRankProbability({
         catsTraits: [paramsTraits],
         address: addPrefixSuffix(wallet.address),
