@@ -15,24 +15,29 @@ export type TBaseSGRToken = {
   blockTime: number;
   decimals: number;
   inscriptionImageUri: string;
-  rank?: string;
-  rankInfo?: {
-    probability?: string;
-    rank: string;
-    total?: string;
-  };
 };
 
 export type TSGRItem = TBaseSGRToken & {
   inscriptionDeploy: string;
   adopter: string;
   adoptTime: number;
-  rankInfo?: IRankInfo;
   traits: ITrait[];
+  level?: string;
+  rank?: string;
+  rarity?: string;
+  describe?: string;
+  awakenPrice?: string;
+  token?: string;
 };
 
 export type TSGRToken = GenerateType<
   TBaseSGRToken & {
+    rankInfo?: TRankInfoAddLevelInfo;
     traits: ITrait[];
   }
 >;
+
+export interface ICatsListData {
+  totalCount: number;
+  data: TSGRItem[];
+}

@@ -7,7 +7,7 @@ import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
 import { TSGRToken } from 'types/tokens';
@@ -34,7 +34,7 @@ export default function DetailPage() {
   const { tradeModal } = useDeviceCmsConfig() || {};
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
-  const [rankInfo, setRankInfo] = useState<IRankInfo>();
+  const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
@@ -47,11 +47,14 @@ export default function DetailPage() {
     });
 
     try {
+      if (result?.data?.getSchrodingerDetail?.generation !== 9) {
+        setRankInfo(undefined);
+        throw '';
+      }
       const paramsTraits = formatTraits(result.data.getSchrodingerDetail.traits);
       if (!paramsTraits) {
-        setSchrodingerDetail(result.data.getSchrodingerDetail);
-        closeLoading();
-        return;
+        setRankInfo(undefined);
+        throw '';
       }
       const catsRankProbability = await getCatsRankProbability({
         catsTraits: [paramsTraits],
@@ -62,9 +65,7 @@ export default function DetailPage() {
       setSchrodingerDetail(result.data.getSchrodingerDetail);
       closeLoading();
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cmsInfo?.curChain, getSchrodingerDetail, symbol, wallet.address]);
+  }, [closeLoading, cmsInfo?.curChain, getSchrodingerDetail, showLoading, symbol, wallet.address]);
 
   useEffect(() => {
     getDetail();

@@ -77,7 +77,7 @@ function SkeletonImage(props: ISkeletonImage) {
               />
             </div>
           ) : null}
-          {rank ? (
+          {rank && rank !== '0' ? (
             <div
               className={clsx(
                 'absolute bottom-0 left-0 w-full h-[24px] bg-fillMask1 flex justify-center items-center text-white text-[10px] leading-[16px] font-medium',
