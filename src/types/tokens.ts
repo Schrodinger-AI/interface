@@ -23,7 +23,7 @@ export type TSGRItem = TBaseSGRToken & {
   adoptTime: number;
   traits: ITrait[];
   level?: string;
-  rank?: string;
+  rank?: number;
   rarity?: string;
   describe?: string;
   awakenPrice?: string;
