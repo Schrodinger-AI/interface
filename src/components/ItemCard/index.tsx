@@ -7,7 +7,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import DecorationModule from './components/DecorationModule';
-
+import { ReactComponent as XIcon } from 'assets/img/x.svg';
 export enum CardType {
   MY = 'my',
   LATEST = 'latest',
@@ -26,6 +26,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     decimals,
     adoptTime,
     adopter,
+    amount,
     rank,
     level,
     describe,
@@ -33,6 +34,8 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     token,
     inscriptionDeploy,
   } = item || {};
+
+  const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
 
   const rankDisplay = useMemo(() => {
     return rank && rank !== '0' ? `Rank: ${formatTokenPrice(rank)}` : '';
@@ -103,6 +106,10 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
+                  <XIcon className="fill-neutralDisable" />
+                  <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
+                </div>
+                <div className="flex flex-row items-center">
                   <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
                 </div>
                 <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
@@ -113,6 +120,10 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           )}
           {type === CardType.MY && (
             <div>
+              <div className="flex flex-row items-center pt-1">
+                <XIcon className="fill-neutralDisable" />
+                <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
+              </div>
               <div className="flex flex-row items-center pt-1">
                 <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
               </div>
