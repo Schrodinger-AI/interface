@@ -75,7 +75,11 @@ function ScrollContent(props: IContentProps) {
         }}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
-            <ItemCard type={CardType.MY} item={item} onPress={() => router.push(`/detail?symbol=${item.symbol}`)} />
+            <ItemCard
+              type={CardType.MY}
+              item={item}
+              onPress={() => router.push(`/detail?symbol=${item.symbol}&address=${item.address}`)}
+            />
           </List.Item>
         )}
         {...ListProps}

@@ -26,6 +26,8 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
+  const address = searchParams.get('address') || '';
+
   const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
@@ -38,12 +40,13 @@ export default function DetailPage() {
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
+  const isMyself = address === wallet.address;
 
   const getDetail = useCallback(async () => {
     if (!wallet.address) return;
     showLoading();
     const result = await getSchrodingerDetail({
-      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
+      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
     });
 
     try {
@@ -161,7 +164,7 @@ export default function DetailPage() {
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
-            {adoptAndResetButton()}
+            {isMyself && <> {adoptAndResetButton()}</>}
             {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
@@ -183,7 +186,12 @@ export default function DetailPage() {
             />
           )}
           {schrodingerDetail && (
-            <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+            <ItemInfo
+              showAdopt={isMyself}
+              detail={schrodingerDetail}
+              rankInfo={rankInfo}
+              onAdoptNextGeneration={onAdoptNextGeneration}
+            />
           )}
         </div>
       </div>
@@ -216,7 +224,7 @@ export default function DetailPage() {
           <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
         )}
 
-        {adoptAndResetButtonSmall()}
+        {isMyself && <> {adoptAndResetButtonSmall()}</>}
       </div>
     </section>
   );

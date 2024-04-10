@@ -360,7 +360,7 @@ export const useAdoptConfirm = () => {
               await intervalFetch.start(symbol);
               intervalFetch.remove();
               resultModal.hide();
-              router.replace(`/detail?symbol=${symbol}`);
+              router.replace(`/detail?symbol=${symbol}&address=${wallet.address}`);
             },
           },
           onCancel: () => {
