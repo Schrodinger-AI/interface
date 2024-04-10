@@ -111,13 +111,13 @@ export function formatNumber(
 
   const abs = numberBig.abs();
   if (abs.gt(TUnit)) {
-    return numberBig.div(TUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'T';
+    return BigNumber(numberBig.div(TUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'T';
   } else if (abs.gte(BUnit)) {
-    return numberBig.div(BUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'B';
+    return BigNumber(numberBig.div(BUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'B';
   } else if (abs.gte(MUnit)) {
-    return numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode).replace(regexp, '$1') + 'M';
+    return BigNumber(numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'M';
   } else {
-    return numberBig.toFixed(2, roundingMode);
+    return BigNumber(numberBig.toFixed(2, roundingMode)).toFormat();
   }
 }
 

@@ -27,13 +27,13 @@
   --fill-mask-2: rgb(0 0 0 / 80%);
   --fill-mask-3: rgb(67 67 67 / 30%);
   --fill-mask-4: rgb(0 0 0 / 50%);
-  --rarity-platinum: #bbd3d9;
-  --rarity-bronze: #cf9c6d;
-  --rarity-silver: #c2d1dd;
-  --rarity-gold: #f8df84;
-  --rarity-halcyon: #bde8d8;
-  --rarity-diamond: #c7bfea;
   --fill-mask-5: rgb(0 0 0 / 85%);
+  --rarity-platinum: #91C0CC;
+  --rarity-bronze: #D2965E;
+  --rarity-silver: #ADC4D5;
+  --rarity-gold: #E3CA69;
+  --rarity-halcyon: #7DC7AD;
+  --rarity-diamond: #AA98FF;
 }
 
 .dark-theme {
@@ -65,12 +65,13 @@
   --functional-success-bg: #e0f6e8;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
-  --rarity-platinum: #bbd3d9;
-  --rarity-bronze: #cf9c6d;
-  --rarity-silver: #c2d1dd;
-  --rarity-gold: #f8df84;
-  --rarity-halcyon: #bde8d8;
-  --rarity-diamond: #c7bfea;
   --fill-mask-3: rgb(67 67 67 / 30%);
   --fill-mask-4: rgb(0 0 0 / 50%);
+  --fill-mask-5: rgb(0 0 0 / 85%);
+  --rarity-platinum: #91C0CC;
+  --rarity-bronze: #D2965E;
+  --rarity-silver: #ADC4D5;
+  --rarity-gold: #E3CA69;
+  --rarity-halcyon: #7DC7AD;
+  --rarity-diamond: #AA98FF;
 }
