@@ -12,9 +12,11 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
+  MenuCheckboxItemType,
 } from '../../type';
 import clsx from 'clsx';
-import { Flex, Layout, MenuProps } from 'antd';
+import { Flex, Layout, MenuProps, Radio } from 'antd';
+import type { RadioChangeEvent } from 'antd';
 import CommonSearch from 'components/CommonSearch';
 import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
@@ -57,6 +59,8 @@ export default function OwnedItems() {
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
+  const filterListRef = useRef<any>();
+
   const siderWidth = useMemo(() => {
     if (is2XL) {
       return '25%';
@@ -70,6 +74,33 @@ export default function OwnedItems() {
       return 368;
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
+
+  const options = [
+    { label: 'My cats', value: 1 },
+    { label: 'View all', value: 2 },
+  ];
+
+  const [pageState, setPageState] = useState(1);
+  const [searchAddress, setSearchAddress] = useState<string | undefined>(undefined);
+
+  const handleRadioChange = ({ target: { value } }: RadioChangeEvent) => {
+    setPageState(value);
+    // clear all status
+    handleBaseClearAll();
+    const filterList: any[] = [];
+    Object.assign(filterList, filterListRef.current);
+
+    if (value === 2) {
+      delete filterList[3];
+    }
+    setFilterList(filterList);
+    setSearchAddress(value === 1 ? undefined : walletAddress);
+  };
+
+  useEffect(() => {
+    fetchData({ params: requestParams });
+  }, [searchAddress]);
+
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
     return {
@@ -83,16 +114,17 @@ export default function OwnedItems() {
     const filter = getFilter(filterSelect);
     return {
       ...filter,
-      address: walletAddress,
+      address: pageState === 1 ? walletAddress : undefined,
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
+      searchAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam]);
+  }, [filterSelect, walletAddress, current, searchParam, pageState]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
-      if (!params.chainId || !params.address) {
+      if (!params.chainId) {
         return;
       }
       if (loadMore) {
@@ -173,6 +205,7 @@ export default function OwnedItems() {
           }
           return item;
         });
+        filterListRef.current = newFilterList;
         return newFilterList;
       });
     } catch (error) {
@@ -202,7 +235,7 @@ export default function OwnedItems() {
         applyFilter(newFilterSelect);
       }
     },
-    [filterSelect, isMobile, collapsed, applyFilter],
+    [filterSelect, isMobile, collapsed, applyFilter, pageState],
   );
 
   const compChildRefs = useMemo(() => {
@@ -372,11 +405,20 @@ export default function OwnedItems() {
   return (
     <div>
       <Flex
-        className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle"
-        gap={8}
-        align="center">
-        <span className="text-2xl font-semibold">Amount Owned</span>
-        <span className="text-base font-semibold">({ownedTotal})</span>
+        className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
+        align="center"
+        justify="space-between">
+        <div>
+          <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
+          <span className="text-base font-semibold">({total})</span>
+        </div>
+        <Radio.Group
+          className="min-w-[179px]"
+          options={options}
+          onChange={handleRadioChange}
+          value={pageState}
+          optionType="button"
+        />
       </Flex>
       <Layout>
         {isMobile ? (
