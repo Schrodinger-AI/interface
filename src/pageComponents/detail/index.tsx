@@ -174,7 +174,13 @@ export default function DetailPage() {
           </div>
         </div>
         <div className="w-full mt-[24px] flex flex-row justify-between items-start">
-          {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
+          {schrodingerDetail && (
+            <ItemImage
+              detail={schrodingerDetail}
+              level={rankInfo?.levelInfo?.level}
+              rarity={rankInfo?.levelInfo?.describe}
+            />
+          )}
           {schrodingerDetail && (
             <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
           )}
@@ -188,7 +194,13 @@ export default function DetailPage() {
         </div>
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
-        {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
+        {schrodingerDetail && (
+          <ItemImage
+            detail={schrodingerDetail}
+            level={rankInfo?.levelInfo?.level}
+            rarity={rankInfo?.levelInfo?.describe}
+          />
+        )}
         {tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
