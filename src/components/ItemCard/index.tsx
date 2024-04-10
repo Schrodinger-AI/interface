@@ -6,7 +6,6 @@ import { formatNumber, formatTimeByDayjs, formatTokenPrice } from 'utils/format'
 import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
-import DecorationModule from './components/DecorationModule';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 export enum CardType {
   MY = 'my',
@@ -73,16 +72,13 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
-          <DecorationModule
-            generation={generation}
-            level={level}
-            honor={describe}
-            className="absolute top-0 left-0 p-2 z-10"
-          />
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
             rank={rankDisplay}
+            tag={`GEN ${generation}`}
+            level={level && `Lv. ${level}`}
+            rarity={describe}
             hideRankHover={true}
             containsInscriptionCode={
               containsInscriptionCode
@@ -103,14 +99,16 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
               <div className="text-xs leading-[18px] text-neutralDisable">{adoptTimeStr || '--'}</div>
-              <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
+              <div onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
                   <XIcon className="fill-neutralDisable" />
                   <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
                 </div>
                 <div className="flex flex-row items-center">
-                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
+                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                    {tokenDisplay}
+                  </div>
                 </div>
                 <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
                   {awakenPriceDisplay}
@@ -125,7 +123,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
                 <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
               </div>
               <div className="flex flex-row items-center pt-1">
-                <div className="text-[10px] h-[18px] leading-[18px] text-neutralSecondary">{tokenDisplay}</div>
+                <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">{tokenDisplay}</div>
               </div>
 
               <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">

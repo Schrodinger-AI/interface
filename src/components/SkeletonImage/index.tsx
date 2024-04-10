@@ -77,7 +77,7 @@ function SkeletonImage(props: ISkeletonImage) {
           {tag ? (
             <div
               className={clsx(
-                'absolute top-[4px] text-white left-[4px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
+                'absolute top-[8px] text-white left-[8px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
                 tagStyle,
               )}>
               {tag}
@@ -104,14 +104,14 @@ function SkeletonImage(props: ISkeletonImage) {
           {level ? (
             <div
               className={clsx(
-                'absolute top-[26px] text-white left-[4px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
+                'absolute top-[30px] text-white left-[8px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
                 levelStyle,
               )}>
               {level}
             </div>
           ) : null}
           {rarity ? (
-            <div className={clsx('absolute top-[4px] right-[4px] flex justify-center items-center', rarityStyle)}>
+            <div className={clsx('absolute top-[8px] right-[8px] flex justify-center items-center', rarityStyle)}>
               <HonourLabel text={rarity} />
             </div>
           ) : null}
