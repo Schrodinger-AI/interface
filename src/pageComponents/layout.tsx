@@ -124,12 +124,12 @@ const Layout = dynamic(async () => {
         )}
         <div
           className={clsx(
-            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000]',
+            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000] invisible',
             backgroundStyle.invitee,
           )}></div>
         <div
           className={clsx(
-            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000]',
+            'w-[100vw] h-[100vh] absolute top-0 left-0 !bg-cover bg-center bg-no-repeat z-[-1000] invisible',
             backgroundStyle.referral,
           )}></div>
         {isWeChatBrowser() && <WeChatGuide />}
