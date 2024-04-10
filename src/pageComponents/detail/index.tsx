@@ -179,6 +179,7 @@ export default function DetailPage() {
               detail={schrodingerDetail}
               level={rankInfo?.levelInfo?.level}
               rarity={rankInfo?.levelInfo?.describe}
+              rank={rankInfo?.rank}
             />
           )}
           {schrodingerDetail && (
@@ -199,6 +200,7 @@ export default function DetailPage() {
             detail={schrodingerDetail}
             level={rankInfo?.levelInfo?.level}
             rarity={rankInfo?.levelInfo?.describe}
+            rank={rankInfo?.rank}
           />
         )}
         {tradeModal?.show && schrodingerDetail && (
