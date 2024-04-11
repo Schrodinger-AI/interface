@@ -137,7 +137,8 @@ type TRankInfoAddLevelInfo = IRankInfo & {
 
 interface ICatsListParams {
   chainId: string;
-  address?: string;
+  address?: string; // wallet address
+  searchAddress?: string; // search address
   tick?: string;
   traits?: Array<{
     traitType: string;
