@@ -18,10 +18,12 @@ export default function ItemInfo({
   detail,
   rankInfo,
   onAdoptNextGeneration,
+  showAdopt,
 }: {
   detail: TSGRToken;
   rankInfo?: TRankInfoAddLevelInfo;
   onAdoptNextGeneration: () => void;
+  showAdopt?: boolean;
 }) {
   const learnMoreModal = useModal(LearnMoreModal);
   const onLearnMoreClick = useCallback(() => {
@@ -37,11 +39,6 @@ export default function ItemInfo({
   const isLearnMoreShow = useMemo(
     () => detail.generation === 0 || divDecimals(detail.amount, detail.decimals).gte(ONE),
     [detail.amount, detail.decimals, detail.generation],
-  );
-
-  const amountStr = useMemo(
-    () => divDecimals(detail.amount, detail.decimals).toFixed(),
-    [detail.amount, detail.decimals],
   );
 
   const renderTraitsCard = useCallback(
@@ -82,13 +79,15 @@ export default function ItemInfo({
           Take this kitten to the next level by adopting a next-gen cat, <br />
           generating brand new and unpredictable traits.
         </div>
-        <Button
-          type="primary"
-          className="!rounded-lg mr-[12px] mt-[24px] mb-[56px] w-[239px]"
-          size="large"
-          onClick={onAdoptNextGeneration}>
-          Adopt Next-Gen Cat
-        </Button>
+        {showAdopt && (
+          <Button
+            type="primary"
+            className="!rounded-lg mr-[12px] mt-[24px] mb-[56px] w-[239px]"
+            size="large"
+            onClick={onAdoptNextGeneration}>
+            Adopt Next-Gen Cat
+          </Button>
+        )}
       </div>
     );
   };
@@ -114,15 +113,9 @@ export default function ItemInfo({
       <div className="w-full rounded-2xl border-solid border border-[#E1E1E1] p-4">
         <div className="flex flex-row justify-between items-center">
           <div className="text-neutralTitle font-medium	text-[20px] leading-[28px]">Info</div>
-          {rankInfo?.levelInfo?.describe && (
-            <HonourLabel text={rankInfo?.levelInfo?.describe} className="bg-white border-none" />
-          )}
+          {rankInfo?.levelInfo?.describe && <HonourLabel text={rankInfo?.levelInfo?.describe} className="bg-white" />}
         </div>
         <div className="flex flex-row justify-between items-center mt-3 text-lg font-normal">
-          <div className="text-neutralSecondary">Amount Owned</div>
-          <div className="text-neutralTitle font-medium">{amountStr}</div>
-        </div>
-        <div className="flex flex-row justify-between items-center mt-2 text-lg font-normal">
           <div className="text-neutralSecondary">Generation</div>
           <div className="text-neutralTitle font-medium">{detail.generation}</div>
         </div>
@@ -135,7 +128,7 @@ export default function ItemInfo({
         {!!rankInfo?.rank && (
           <div className="flex flex-row justify-between items-center mt-2 text-lg font-normal">
             <div className="text-neutralSecondary">Rank</div>
-            <div className="text-neutralTitle font-medium">{rankInfo.rank}</div>
+            <div className="text-neutralTitle font-medium">{formatTokenPrice(rankInfo.rank)}</div>
           </div>
         )}
         {(rankInfo?.levelInfo?.token || rankInfo?.levelInfo?.awakenPrice) && (

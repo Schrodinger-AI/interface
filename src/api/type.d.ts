@@ -61,6 +61,10 @@ interface IPointItem {
   amount: number;
   rate: number;
   updateTime: number;
+  inviteFollowersNumber: number;
+  inviteRate: number;
+  thirdFollowersNumber: number;
+  thirdRate: number;
 }
 
 interface IGetPointsData {
@@ -137,7 +141,8 @@ type TRankInfoAddLevelInfo = IRankInfo & {
 
 interface ICatsListParams {
   chainId: string;
-  address?: string;
+  address?: string; // wallet address
+  searchAddress?: string; // search address
   tick?: string;
   traits?: Array<{
     traitType: string;

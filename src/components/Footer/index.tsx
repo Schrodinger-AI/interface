@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useResponsive } from 'hooks/useResponsive';
 import { discordSvg, gitbookSvg, linktreeSvg, telegramSvg, twitterSvg } from 'assets/img/social';
 import { openExternalLink } from 'utils/openlink';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
 
 const MEDIA_LIST = [
   {
@@ -36,6 +37,7 @@ const MEDIA_LIST = [
 
 export default function Footer({ className }: { className?: string }) {
   const pathName = usePathname();
+  const customTheme = useGetCustomTheme();
 
   const { isLG } = useResponsive();
 
@@ -51,7 +53,8 @@ export default function Footer({ className }: { className?: string }) {
   }, []);
 
   return (
-    <section className={clsx('flex-shrink-0', showMargin ? 'mb-[80px]' : 'mb-0', className)}>
+    <section
+      className={clsx('flex-shrink-0', showMargin ? 'mb-[80px]' : 'mb-0', styles[customTheme.footer.theme], className)}>
       <div className={`${styles.footer}`}>
         <div className=" flex flex-row items-center gap-[24px] cursor-pointer">
           {MEDIA_LIST.map((item) => (
@@ -63,7 +66,7 @@ export default function Footer({ className }: { className?: string }) {
             </div>
           ))}
         </div>
-        <span>Schrödinger@2024</span>
+        <span className={styles['footer-text']}>Schrödinger@2024</span>
       </div>
     </section>
   );

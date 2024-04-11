@@ -9,7 +9,7 @@ import { store } from 'redux/store';
 import { ConfigProvider, message } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
 
-import { checkDomain, fetchCmsConfigInfo } from 'api/request';
+import { checkDomain } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import NotFoundPage from 'components/notFound';
@@ -18,17 +18,18 @@ import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
 import Loading from 'components/PageLoading/index';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { forbidScale } from 'utils/common';
 import dynamic from 'next/dynamic';
+import { useRequestCms } from 'redux/hooks';
 
 const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
 function Provider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isCorrectDomain, setIsCorrectDomain] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
+  const { getCmsInfo } = useRequestCms();
 
   const checkHost = useCallback(async () => {
     try {
@@ -47,14 +48,10 @@ function Provider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchGlobalConfig = useCallback(async () => {
-    try {
-      const res = await fetchCmsConfigInfo();
-      store.dispatch(setCmsInfo(res));
-    } catch (err) {
-      console.error('fetchGlobalConfig err', err);
-    }
+    const res = await getCmsInfo();
+    store.dispatch(setCmsInfo(res));
     setLoading(false);
-  }, []);
+  }, [getCmsInfo]);
 
   const isNoNeedLoadingPage = useMemo(() => {
     return ['/privacy-policy'].includes(pathname);

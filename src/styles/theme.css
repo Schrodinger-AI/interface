@@ -23,27 +23,29 @@
   --functional-error-pressed: #cf3737;
   --functional-success: #00b73e;
   --functional-success-bg: #e0f6e8;
-  --compass-normal: #1a1a1a;
-  --compass-active: #3888ff;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
   --fill-mask-3: rgb(67 67 67 / 30%);
   --fill-mask-4: rgb(0 0 0 / 50%);
-  --rarity-platinum: #BBD3D9;
-  --rarity-bronze: #CF9C6D;
-  --rarity-silver: #C2D1DD;
-  --rarity-gold: #F8DF84;
-  --rarity-halcyon: #BDE8D8;
-  --rarity-diamond: #C7BFEA;
+  --fill-mask-5: rgb(0 0 0 / 85%);
+  --rarity-platinum: #91C0CC;
+  --rarity-bronze: #D2965E;
+  --rarity-silver: #ADC4D5;
+  --rarity-gold: #E3CA69;
+  --rarity-halcyon: #7DC7AD;
+  --rarity-diamond: #AA98FF;
 }
 
 .dark-theme {
+  --neutral-title: #fff;
+
+  /* not adapted to night mode */
   --brand-default: #3888ff;
   --brand-hover: #5a9cff;
   --brand-pressed: #267af8;
   --brand-disable: #adceff;
+  --brand-enable: #8cbaff;
   --brand-bg: #ebf3ff;
-  --neutral-title: #1a1a1a;
   --neutral-primary: #434343;
   --neutral-secondary: #919191;
   --neutral-tertiary: #9f9f9f;
@@ -63,10 +65,13 @@
   --functional-success-bg: #e0f6e8;
   --fill-mask-1: rgb(0 0 0 / 60%);
   --fill-mask-2: rgb(0 0 0 / 80%);
-  --rarity-platinum: #BBD3D9;
-  --rarity-bronze: #CF9C6D;
-  --rarity-silver: #C2D1DD;
-  --rarity-gold: #F8DF84;
-  --rarity-halcyon: #BDE8D8;
-  --rarity-diamond: #C7BFEA;
+  --fill-mask-3: rgb(67 67 67 / 30%);
+  --fill-mask-4: rgb(0 0 0 / 50%);
+  --fill-mask-5: rgb(0 0 0 / 85%);
+  --rarity-platinum: #91C0CC;
+  --rarity-bronze: #D2965E;
+  --rarity-silver: #ADC4D5;
+  --rarity-gold: #E3CA69;
+  --rarity-halcyon: #7DC7AD;
+  --rarity-diamond: #AA98FF;
 }

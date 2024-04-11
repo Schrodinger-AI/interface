@@ -2,23 +2,15 @@
 import { Button, Dropdown } from 'aelf-design';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
-import { ReactComponent as WalletSVG } from 'assets/img/wallet.svg';
-import { ReactComponent as CopySVG } from 'assets/img/copy.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
-import { ReactComponent as PointsSVG } from 'assets/img/points.svg';
-import { ReactComponent as StrayCats } from 'assets/img/strayCats.svg';
-import { ReactComponent as AssetSVG } from 'assets/img/asset.svg';
-import { message, Modal } from 'antd';
+import { Modal } from 'antd';
 import styles from './style.module.css';
-import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
-import { useCopyToClipboard } from 'react-use';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setLoginTrigger } from 'redux/reducer/info';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
@@ -27,33 +19,55 @@ import { ENVIRONMENT } from 'constants/url';
 import { ICompassProps, RouterItemType } from './type';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
-import { CompassLink, CompassText } from './components/CompassLink';
+import { CompassLink } from './components/CompassLink';
 import { openExternalLink } from 'utils/openlink';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
+import clsx from 'clsx';
+import CopyAddressItem from './components/CopyAddressItem';
+import AssetItem from './components/AssetItem';
+import PointsItem from './components/PointsItem';
+import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';
+import { CustomThemeType } from 'redux/types/reducerTypes';
+import MenuDropdown from './components/MenuDropdown';
+import MenuCollapse from './components/MenuCollapse/MenuCollapse';
+import { NEED_LOGIN_PAGE } from 'constants/router';
+
+import { useCmsInfo } from 'redux/hooks';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, isLogin, walletType } = useWalletService();
-  const [, setCopied] = useCopyToClipboard();
   const { isLG } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
+  const customTheme = useGetCustomTheme();
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
-  const { routerItems } = useDeviceCmsConfig() || {};
+  const cmsInfo = useCmsInfo();
+
+  const routerItems = useMemo(() => {
+    return cmsInfo?.routerItems || [];
+  }, [cmsInfo?.routerItems]);
 
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
-    lists = routerItems?.items.filter((i) => i.show) || [];
+    lists = routerItems?.filter((i) => i.show) || [];
     if (!isLogin) {
       return (lists = lists.filter((i) => i.title !== 'Stray Cats'));
     }
     return lists;
-  }, [isLogin, routerItems?.items]);
+  }, [isLogin, routerItems]);
 
   const onPressCompassItems = useCallback(
     (item: ICompassProps) => {
       const { type, schema, title } = item;
+
+      if (schema && NEED_LOGIN_PAGE.includes(schema)) {
+        if (!isLogin) {
+          store.dispatch(setLoginTrigger('login'));
+          checkLogin();
+          return;
+        }
+      }
 
       if (type === RouterItemType.ExternalLink) {
         const newWindow = openExternalLink(schema, '_blank');
@@ -72,7 +86,7 @@ export default function Header() {
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
     },
-    [marketModal, router],
+    [checkLogin, isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -81,21 +95,6 @@ export default function Header() {
     setLogoutComplete(true);
     setMenuModalVisibleModel(ModalViewModel.NONE);
   });
-
-  const CopyAddressItem = useCallback(() => {
-    return (
-      <div className={styles.menuItem}>
-        <WalletSVG />
-        <span>{getOmittedStr(addPrefixSuffix(wallet.address), OmittedType.ADDRESS)}</span>
-        <CopySVG
-          onClick={() => {
-            setCopied(addPrefixSuffix(wallet.address));
-            message.success('Copied');
-          }}
-        />
-      </div>
-    );
-  }, [setCopied, wallet.address]);
 
   const LogoutItem = useCallback(() => {
     return (
@@ -112,65 +111,33 @@ export default function Header() {
     );
   }, [logout]);
 
-  const PointsItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          if (checkTokenValid()) {
-            router.push('/points');
-            setMenuModalVisibleModel(ModalViewModel.NONE);
-          } else {
-            checkLogin();
-          }
-        }}>
-        <PointsSVG />
-        <span>My Flux Points</span>
-      </div>
-    );
-  }, [checkLogin, checkTokenValid, router]);
+  const closeMenuModal = () => {
+    setMenuModalVisibleModel(ModalViewModel.NONE);
+  };
 
-  // const StrayCatsItem = useCallback(() => {
-  //   return (
-  //     <div
-  //       className={styles.menuItem}
-  //       onClick={() => {
-  //         if (checkTokenValid()) {
-  //           router.push('/stray-cats');
-  //           setMenuModalVisibleModel(ModalViewModel.NONE);
-  //         } else {
-  //           checkLogin();
-  //         }
-  //       }}>
-  //       <StrayCats />
-  //       <span>Stray Cats</span>
-  //     </div>
-  //   );
-  // }, [checkLogin, checkTokenValid, router]);
-
-  const AssetItem = useCallback(() => {
-    return (
-      <div
-        className={styles.menuItem}
-        onClick={() => {
-          router.push('/assets');
-          setMenuModalVisibleModel(ModalViewModel.NONE);
-        }}>
-        <AssetSVG />
-        <span>My Assets</span>
-      </div>
-    );
-  }, [router]);
+  const checkAndRedirect = useCallback(
+    (path: string) => {
+      if (checkTokenValid()) {
+        router.push(path);
+        setMenuModalVisibleModel(ModalViewModel.NONE);
+      } else {
+        checkLogin();
+      }
+    },
+    [checkLogin, checkTokenValid, router],
+  );
 
   const items = useMemo(() => {
     const menuItems = [
       {
         key: 'address',
-        label: <CopyAddressItem />,
+        label: <CopyAddressItem address={wallet.address} />,
       },
-      { key: 'asset', label: <AssetItem /> },
-      // { key: 'stray cats', label: <StrayCatsItem /> },
-      { key: 'points', label: <PointsItem /> },
+      {
+        key: 'asset',
+        label: <AssetItem closeMenuModal={closeMenuModal} />,
+      },
+      { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
       {
         key: 'logout',
         label: <LogoutItem />,
@@ -181,26 +148,43 @@ export default function Header() {
     }
 
     return menuItems;
-  }, [AssetItem, CopyAddressItem, LogoutItem, PointsItem, walletType]);
+  }, [wallet.address, checkAndRedirect, LogoutItem, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
     const _menuItems = [...menuItems];
 
     return _menuItems.map((item) => {
-      return {
-        key: item.title,
-        label: (
-          <div
-            className="flex flex-row items-center justify-between cursor-pointer w-[100%]"
-            onClick={(event) => {
-              event.preventDefault();
-              onPressCompassItems(item);
-            }}>
-            <div className="text-lg">{item.title}</div>
-            <ArrowIcon className="size-4" />
-          </div>
-        ),
-      };
+      if (item.items?.length) {
+        return {
+          key: item.title,
+          label: (
+            <MenuCollapse
+              title={
+                <div className="flex flex-row items-center justify-between cursor-pointer w-[100%]">
+                  <div className="text-lg">{item.title}</div>
+                </div>
+              }
+              item={item}
+              onPressCompassItems={onPressCompassItems}
+            />
+          ),
+        };
+      } else {
+        return {
+          key: item.title,
+          label: (
+            <div
+              className="flex flex-row items-center justify-between cursor-pointer w-[100%] px-[16px]"
+              onClick={(event) => {
+                event.preventDefault();
+                onPressCompassItems(item);
+              }}>
+              <div className="text-lg">{item.title}</div>
+              <ArrowIcon className="size-4" />
+            </div>
+          ),
+        };
+      }
     });
   }, [menuItems, onPressCompassItems]);
 
@@ -209,7 +193,7 @@ export default function Header() {
       <Button
         type="primary"
         size={!isLG ? 'large' : 'small'}
-        className="!rounded-lg md:!rounded-[12px]"
+        className="!rounded-lg lg:!rounded-[12px]"
         disabled={!logoutComplete}
         onClick={() => {
           store.dispatch(setLoginTrigger('login'));
@@ -222,33 +206,18 @@ export default function Header() {
     );
     if (!isLG) {
       return (
-        <span className="space-x-8 xl:space-x-16 flex flex-row items-center">
+        <span className="space-x-8 xl:space-x-12 flex flex-row items-center">
           {itemList.map((item) => {
-            const { title, items = [], schema, type } = item;
+            const { title, items = [], schema } = item;
             if (items?.length > 0) {
               return (
-                <Dropdown
+                <MenuDropdown
                   key={title}
-                  overlayClassName={styles.dropdown}
-                  placement="bottomCenter"
-                  menu={{
-                    items: items.map((sub) => {
-                      return {
-                        key: sub.title,
-                        type: 'group',
-                        label: (
-                          <CompassLink
-                            key={sub.title}
-                            item={sub}
-                            className="text-neutralPrimary rounded-[12px] hover:text-brandHover"
-                            onPressCompassItems={onPressCompassItems}
-                          />
-                        ),
-                      } as ItemType;
-                    }),
-                  }}>
-                  <CompassText title={title} schema={schema} />
-                </Dropdown>
+                  title={title}
+                  schema={schema}
+                  items={items}
+                  onPressCompassItems={onPressCompassItems}
+                />
               );
             } else {
               return (
@@ -268,7 +237,10 @@ export default function Header() {
       return (
         <span className="space-x-4 flex flex-row items-center">
           {myComponent}
-          <MenuIcon className="size-8" onClick={() => setMenuModalVisibleModel(ModalViewModel.MENU)} />
+          <MenuIcon
+            className={clsx('size-8', styles['mobile-menu-icon'])}
+            onClick={() => setMenuModalVisibleModel(ModalViewModel.MENU)}
+          />
         </span>
       );
     }
@@ -278,7 +250,7 @@ export default function Header() {
     if (!isLG) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button type="default" className="!rounded-[12px] text-brandDefault border-brandDefault" size="large">
+          <Button type="default" className={clsx('!rounded-[12px]', styles['button-my'])} size="large">
             <MenuMySVG className="mr-[8px]" />
             My
           </Button>
@@ -288,7 +260,7 @@ export default function Header() {
     return (
       <Button
         type="default"
-        className="!rounded-lg !border-brandDefault !text-brandDefault"
+        className={clsx('!rounded-lg', styles['button-my'])}
         size="small"
         onClick={() => {
           setMenuModalVisibleModel(ModalViewModel.MY);
@@ -302,7 +274,7 @@ export default function Header() {
   const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
   const handleRoute = () => {
-    const homeRoute = routerItems?.items.find((menu) => {
+    const homeRoute = routerItems?.find((menu) => {
       return menu.title === 'Inscriptions';
     });
     if (homeRoute && !homeRoute?.show) {
@@ -312,28 +284,37 @@ export default function Header() {
     router.replace('/');
   };
 
+  const logoImage = useMemo(() => {
+    return {
+      [CustomThemeType.light]: require('assets/img/logo.svg').default,
+      [CustomThemeType.dark]: require('assets/img/logoWhite.svg').default,
+    }[customTheme.header.theme];
+  }, [customTheme.header.theme]);
+
   return (
-    <section className="bg-white sticky top-0 left-0 z-[100] flex-shrink-0">
+    <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
-        <p className=" w-full bg-[#FEEFF1] p-[16px] text-sm text-[#F55D6E] font-medium text-center">
+        <p
+          className={clsx('w-full p-[16px] text-sm text-[#F55D6E] font-medium text-center', styles['testnet-warning'])}>
           Schrödinger is currently in the alpha stage and is primarily used for testing purposes. Please use it with
           caution, as user data may be subject to deletion.
         </p>
       )}
 
-      <div className="px-[16px] md:px-[40px] h-[60px] md:h-[80px] mx-auto flex justify-between items-center w-full">
+      <div className="px-[16px] lg:px-[40px] h-[60px] lg:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
           {
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={require('assets/img/logo.png').default.src}
+              src={logoImage}
               alt="logo"
-              className="w-[150px] h-[24px] md:w-[200px] md:h-[32px]"
+              className="w-[120px] h-[24px] lg:w-[160px] lg:h-[32px]"
+              onClick={() => router.replace('/')}
             />
           }
           <NavHostTag />
         </div>
-        {FunctionalArea(menuItems)}
+        {customTheme.header.hideMenu ? null : FunctionalArea(menuItems)}
       </div>
       <Modal
         mask={false}
@@ -349,9 +330,7 @@ export default function Header() {
         }}>
         {(menuModalVisibleModel === ModalViewModel.MY ? items : firstClassCompassItems).map((item, index) => {
           return (
-            <div
-              className="w-full h-[64px] flex items-center border-x-0 border-t-0 border-b-[1px] border-solid border-[#EDEDED] text-[16px] font-medium text-[#1A1A1A]"
-              key={index}>
+            <div className="w-full min-h-[64px] flex items-center text-base font-medium text-neutralTitle" key={index}>
               {item.label}
             </div>
           );

@@ -17,7 +17,6 @@ import useLoading from 'hooks/useLoading';
 import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
@@ -26,24 +25,30 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
+  const address = searchParams.get('address') || '';
+
   const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible } = useLoading();
   const marketModal = useModal(MarketModal);
-  const { tradeModal } = useDeviceCmsConfig() || {};
+
+  const tradeModal = useMemo(() => {
+    return cmsInfo?.tradeModal;
+  }, [cmsInfo?.tradeModal]);
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
+  const isMyself = address === wallet.address;
 
   const getDetail = useCallback(async () => {
     if (!wallet.address) return;
     showLoading();
     const result = await getSchrodingerDetail({
-      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
+      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
     });
 
     try {
@@ -161,7 +166,7 @@ export default function DetailPage() {
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
-            {adoptAndResetButton()}
+            {isMyself && <> {adoptAndResetButton()}</>}
             {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
@@ -174,9 +179,21 @@ export default function DetailPage() {
           </div>
         </div>
         <div className="w-full mt-[24px] flex flex-row justify-between items-start">
-          {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
           {schrodingerDetail && (
-            <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+            <ItemImage
+              detail={schrodingerDetail}
+              level={rankInfo?.levelInfo?.level}
+              rarity={rankInfo?.levelInfo?.describe}
+              rank={rankInfo?.rank}
+            />
+          )}
+          {schrodingerDetail && (
+            <ItemInfo
+              showAdopt={isMyself}
+              detail={schrodingerDetail}
+              rankInfo={rankInfo}
+              onAdoptNextGeneration={onAdoptNextGeneration}
+            />
           )}
         </div>
       </div>
@@ -188,7 +205,14 @@ export default function DetailPage() {
         </div>
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
-        {schrodingerDetail && <ItemImage detail={schrodingerDetail} />}
+        {schrodingerDetail && (
+          <ItemImage
+            detail={schrodingerDetail}
+            level={rankInfo?.levelInfo?.level}
+            rarity={rankInfo?.levelInfo?.describe}
+            rank={rankInfo?.rank}
+          />
+        )}
         {tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
@@ -202,7 +226,7 @@ export default function DetailPage() {
           <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
         )}
 
-        {adoptAndResetButtonSmall()}
+        {isMyself && <> {adoptAndResetButtonSmall()}</>}
       </div>
     </section>
   );

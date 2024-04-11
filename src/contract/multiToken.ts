@@ -1,9 +1,9 @@
 import { webLoginInstance } from './webLogin';
-import { sleep } from 'utils';
 import { formatErrorMsg } from 'utils/formattError';
 import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
-import { getTxResult } from 'utils/aelfUtils';
 import { store } from 'redux/store';
+import { getTxResultRetry } from 'utils/getTxResult';
+import { sleep } from '@portkey/utils';
 
 const multiTokenContractRequest = async <T, R>(
   method: string,
@@ -50,7 +50,10 @@ const multiTokenContractRequest = async <T, R>(
       const { transactionId, TransactionId } = result.result || result;
       const resTransactionId = TransactionId || transactionId;
       await sleep(1000);
-      const transaction = await getTxResult(resTransactionId!, info!.curChain);
+      const transaction = await getTxResultRetry({
+        TransactionId: resTransactionId!,
+        chainId: info!.curChain,
+      });
       return Promise.resolve({ TransactionId: transaction.TransactionId, TransactionResult: transaction.txResult });
     }
   } catch (error) {

@@ -33,3 +33,22 @@ interface IGetBalanceParams {
   symbol: string;
   owner: string;
 }
+
+interface IGetAllowanceParams {
+  symbol: string;
+  owner: string;
+  spender: string;
+}
+
+interface IGetAllowanceResponse {
+  symbol: string;
+  owner: string;
+  spender: string;
+  allowance: number;
+}
+
+interface IApproveParams {
+  spender: string;
+  symbol: string;
+  amount: number;
+}

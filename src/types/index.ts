@@ -98,3 +98,11 @@ export type WalletInfoType = {
   discoverInfo?: DiscoverInfo;
   portkeyInfo?: PortkeyInfo;
 };
+
+export enum DeviceTypeEnum {
+  iOS = 'ios',
+  Android = 'android',
+  Windows = 'windows',
+  Macos = 'macos',
+  Web = 'web',
+}

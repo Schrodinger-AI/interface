@@ -51,7 +51,7 @@ export default function HonourLabel({ text, className }: { text: string; classNa
   return (
     <div
       className={clsx(
-        'px-1 py-[1px] rounded-sm bg-black opacity-60 flex justify-center items-center text-xxs font-medium border-[1px] border-solid w-fit',
+        'px-1 py-[1px] rounded-sm bg-fillMask1 flex justify-center items-center text-xxs font-semibold border-[1px] border-solid w-fit',
         style,
         className,
       )}>
