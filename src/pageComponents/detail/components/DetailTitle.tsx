@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { TSGRToken } from 'types/tokens';
-import { divDecimals } from 'utils/calculate';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import TextEllipsis from 'components/TextEllipsis';
+import { useMemo } from 'react';
+import { divDecimals } from 'utils/calculate';
 
 export default function DetailTitle({ detail }: { detail: TSGRToken }) {
   const amountStr = useMemo(

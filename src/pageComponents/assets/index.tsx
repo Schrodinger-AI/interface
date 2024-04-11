@@ -7,6 +7,7 @@ import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
 import { useWalletService } from 'hooks/useWallet';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function MyAsset() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function MyAsset() {
   const { isLogin, logout } = useWalletService();
 
   const { PortkeyAssetProvider, Asset } = useComponentFlex();
+  const { isShowRampBuy = true, isShowRampSell = true } = useCmsInfo() || {};
 
   useEffect(() => {
     if (!isLogin) {
@@ -29,9 +31,9 @@ export default function MyAsset() {
     <div className={styles.asset}>
       <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
         <Asset
-          // isShowRamp={info.isShowRampBuy || info.isShowRampSell}
-          // isShowRampBuy={info.isShowRampBuy}
-          isShowRampSell={false}
+          isShowRamp={isShowRampBuy || isShowRampSell}
+          isShowRampBuy={isShowRampBuy}
+          isShowRampSell={isShowRampSell}
           // faucet={{
           //   faucetContractAddress: configInfo?.faucetContractAddress,
           // }}

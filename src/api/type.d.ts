@@ -93,9 +93,10 @@ interface ICatsRankProbabilityParams {
 }
 
 interface ICatsRankProbabilityData {
-  rankGenOne: IRankInfo;
-  rankTwoToNine: IRankInfo;
+  rankGenOne: IRankGenInfo;
+  rankTwoToNine: IRankGenInfo;
   rank: IRankInfo;
+  levelInfo: ILevelInfo;
 }
 
 interface IRankInfo {
@@ -103,5 +104,53 @@ interface IRankInfo {
   total: number;
   probability: string;
   percent: string;
+  type: string;
+  price: {
+    elf: string;
+    usd: string;
+    sgr: string;
+  };
+}
+
+interface IRankGenInfo {
+  rank: number;
+  total: number;
+  probability: string;
+  percent: string;
   traitsProbability: Record<string, number>;
+  probabilityTypes: string[];
+}
+
+interface ILevelInfo {
+  singleProbability: number | string;
+  items: number | string;
+  situation: number | string;
+  totalProbability: number | string;
+  token: string;
+  classify: number | string;
+  level: string;
+  grade: number | string;
+  star: number | string;
+  describe: string;
+  awakenPrice: string | number;
+}
+
+type TRankInfoAddLevelInfo = IRankInfo & {
+  levelInfo?: ILevelInfo;
+};
+
+interface ICatsListParams {
+  chainId: string;
+  address?: string; // wallet address
+  searchAddress?: string; // search address
+  tick?: string;
+  traits?: Array<{
+    traitType: string;
+    values: string[];
+  }>;
+  generations?: number[];
+  skipCount?: number;
+  maxResultCount?: number;
+  keyword?: string;
+  rarities?: string[];
 }

@@ -1,10 +1,8 @@
-import { ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
-import { Flex, List, ListProps } from 'antd';
+import { List, ListProps } from 'antd';
 import ItemCard from 'components/ItemCard';
-import { EmptyList } from 'components/EmptyList';
 import { TSGRItem } from 'types/tokens';
-import useLoading from 'hooks/useLoading';
 import { useDebounceFn } from 'ahooks';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import { CardType } from 'components/ItemCard';

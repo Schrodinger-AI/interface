@@ -132,7 +132,7 @@ export const useResetHandler = () => {
                 await intervalFetch.start(originSymbol);
                 intervalFetch.remove();
                 resultModal.hide();
-                router.replace(`/detail?symbol=${originSymbol}`);
+                router.replace(`/detail?symbol=${originSymbol}&address=${wallet.address}`);
               } else {
                 router.replace('/');
               }

@@ -1,3 +1,4 @@
+import { ICatsListData } from 'types/tokens';
 import { TCustomizationItemType, TGlobalConfigType } from 'redux/types/reducerTypes';
 import request, { cmsRequest, tokenRequest } from './axios';
 import qs from 'qs';
@@ -35,7 +36,11 @@ export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsDat
 export const checkAIService = () => request.get<boolean>('/app/schrodinger/IsOverloaded');
 
 export const catsRankProbability = async (data: ICatsRankProbabilityParams): Promise<ICatsRankProbabilityData[]> => {
-  return request.post('/probability/catsRank', data);
+  return request.post('/app/item/level', data);
+};
+
+export const catsList = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/list', data);
 };
 
 export const getGlobalConfig = async (): Promise<{ data: TGlobalConfigType }> => {

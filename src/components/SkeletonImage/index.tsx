@@ -5,6 +5,7 @@ import React from 'react';
 import { useState } from 'react';
 import styles from './index.module.css';
 import { CodeBlock } from 'components/ItemCard';
+import HonourLabel from 'components/ItemCard/components/HonourLabel';
 
 const imageType = {
   cover: 'object-cover',
@@ -14,11 +15,16 @@ const imageType = {
 interface ISkeletonImage {
   img?: string;
   tag?: string;
+  tagStyle?: string;
   className?: string;
   imageSizeType?: 'cover' | 'contain';
   width?: number;
   height?: number;
   rank?: string;
+  level?: string;
+  levelStyle?: string;
+  rarity?: string;
+  rarityStyle?: string;
   hideRankHover?: boolean;
   containsInscriptionCode?: {
     inscriptionDeploy: string;
@@ -34,6 +40,11 @@ function SkeletonImage(props: ISkeletonImage) {
     hideRankHover = false,
     imageSizeType = 'cover',
     tag,
+    tagStyle,
+    level,
+    levelStyle,
+    rarity,
+    rarityStyle,
     containsInscriptionCode,
     width = 108,
     height = 108,
@@ -64,7 +75,11 @@ function SkeletonImage(props: ISkeletonImage) {
             }}
           />
           {tag ? (
-            <div className="absolute top-[4px] text-white left-[4px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium">
+            <div
+              className={clsx(
+                'absolute top-[8px] text-white left-[8px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
+                tagStyle,
+              )}>
               {tag}
             </div>
           ) : null}
@@ -77,13 +92,27 @@ function SkeletonImage(props: ISkeletonImage) {
               />
             </div>
           ) : null}
-          {rank ? (
+          {rank && rank !== '0' ? (
             <div
               className={clsx(
                 'absolute bottom-0 left-0 w-full h-[24px] bg-fillMask1 flex justify-center items-center text-white text-[10px] leading-[16px] font-medium',
                 hideRankHover ? styles['hide-rank'] : '',
               )}>
               {rank}
+            </div>
+          ) : null}
+          {level ? (
+            <div
+              className={clsx(
+                'absolute top-[30px] text-white left-[8px] bg-fillMask1 px-[4px] rounded-sm text-[10px] leading-[16px] font-medium h-[18px] flex justify-center items-center',
+                levelStyle,
+              )}>
+              {level}
+            </div>
+          ) : null}
+          {rarity ? (
+            <div className={clsx('absolute top-[8px] right-[8px] flex justify-center items-center', rarityStyle)}>
+              <HonourLabel text={rarity} />
             </div>
           ) : null}
         </div>

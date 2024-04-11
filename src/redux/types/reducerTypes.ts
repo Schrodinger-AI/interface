@@ -56,6 +56,8 @@ export type TCustomThemeType = {
 };
 
 export type TCustomizationItemType = {
+  isShowRampBuy: boolean;
+  isShowRampSell: boolean;
   routerItems: Array<ICompassProps>;
   latestModal: {
     show: boolean;

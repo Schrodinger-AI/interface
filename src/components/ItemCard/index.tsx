@@ -1,14 +1,12 @@
 import { HashAddress } from 'aelf-design';
 import SkeletonImage from 'components/SkeletonImage';
 import React, { useCallback, useMemo } from 'react';
-import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { TSGRItem } from 'types/tokens';
-import { formatTimeByDayjs, formatTokenPrice } from 'utils/format';
+import { formatNumber, formatTimeByDayjs, formatTokenPrice } from 'utils/format';
 import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
-import { getRankInfoToShow } from 'utils/formatTraits';
-
+import { ReactComponent as XIcon } from 'assets/img/x.svg';
 export enum CardType {
   MY = 'my',
   LATEST = 'latest',
@@ -24,16 +22,31 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     inscriptionImageUri,
     generation = '1',
     tokenName,
-    amount,
     decimals,
     adoptTime,
     adopter,
+    amount,
+    rank,
+    level,
+    describe,
+    awakenPrice,
+    token,
     inscriptionDeploy,
-    rankInfo,
   } = item || {};
 
   const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
-  const rank = rankInfo && getRankInfoToShow(rankInfo, 'Rank');
+
+  const rankDisplay = useMemo(() => {
+    return rank && rank !== '0' ? `Rank: ${formatTokenPrice(rank)}` : '';
+  }, [rank]);
+
+  const awakenPriceDisplay = useMemo(() => {
+    return awakenPrice ? `${formatNumber(awakenPrice)} ELF` : '';
+  }, [awakenPrice]);
+
+  const tokenDisplay = useMemo(() => {
+    return token ? `${formatNumber(token)} SGR` : '';
+  }, [token]);
 
   const cmsInfo = useCmsInfo();
 
@@ -48,11 +61,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [inscriptionDeploy]);
 
   const onCardClick = useCallback(() => {
-    onPress &&
-      onPress({
-        ...item,
-        rank,
-      });
+    onPress && onPress(item);
   }, [item, onPress]);
 
   const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
@@ -63,13 +72,13 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
-          <div className="bg-black bg-opacity-60 px-1 py-[1px] flex flex-row justify-center items-center absolute top-2 left-2 rounded-sm z-10">
-            <div className="text-white text-xxs font-medium">{`GEN ${generation}`}</div>
-          </div>
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
-            rank={rank}
+            rank={rankDisplay}
+            tag={`GEN ${generation}`}
+            level={level && `Lv. ${level}`}
+            rarity={describe}
             hideRankHover={true}
             containsInscriptionCode={
               containsInscriptionCode
@@ -90,19 +99,36 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
               <div className="text-xs leading-[18px] text-neutralDisable">{adoptTimeStr || '--'}</div>
-              <div className="flex justify-between flex-col main:flex-row" onClick={(e) => e.stopPropagation()}>
+              <div onClick={(e) => e.stopPropagation()}>
                 <HashAddress size="small" preLen={8} endLen={9} address={adopter} chain={cmsInfo?.curChain} hasCopy />
                 <div className="flex flex-row items-center">
-                  <XIcon />
-                  <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
+                  <XIcon className="fill-neutralDisable" />
+                  <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
+                </div>
+                <div className="flex flex-row items-center">
+                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                    {tokenDisplay}
+                  </div>
+                </div>
+                <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                  {awakenPriceDisplay}
                 </div>
               </div>
             </div>
           )}
           {type === CardType.MY && (
-            <div className="flex flex-row items-center pt-1">
-              <XIcon />
-              <div className="ml-1 text-xs text-neutralSecondary">{transformedAmount}</div>
+            <div>
+              <div className="flex flex-row items-center pt-1">
+                <XIcon className="fill-neutralDisable" />
+                <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
+              </div>
+              <div className="flex flex-row items-center pt-1">
+                <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">{tokenDisplay}</div>
+              </div>
+
+              <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                {awakenPriceDisplay}
+              </div>
             </div>
           )}
         </div>
