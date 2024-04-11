@@ -18,10 +18,12 @@ export default function ItemInfo({
   detail,
   rankInfo,
   onAdoptNextGeneration,
+  showAdopt,
 }: {
   detail: TSGRToken;
   rankInfo?: TRankInfoAddLevelInfo;
   onAdoptNextGeneration: () => void;
+  showAdopt?: boolean;
 }) {
   const learnMoreModal = useModal(LearnMoreModal);
   const onLearnMoreClick = useCallback(() => {
@@ -77,13 +79,15 @@ export default function ItemInfo({
           Take this kitten to the next level by adopting a next-gen cat, <br />
           generating brand new and unpredictable traits.
         </div>
-        <Button
-          type="primary"
-          className="!rounded-lg mr-[12px] mt-[24px] mb-[56px] w-[239px]"
-          size="large"
-          onClick={onAdoptNextGeneration}>
-          Adopt Next-Gen Cat
-        </Button>
+        {showAdopt && (
+          <Button
+            type="primary"
+            className="!rounded-lg mr-[12px] mt-[24px] mb-[56px] w-[239px]"
+            size="large"
+            onClick={onAdoptNextGeneration}>
+            Adopt Next-Gen Cat
+          </Button>
+        )}
       </div>
     );
   };
