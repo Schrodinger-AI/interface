@@ -1,5 +1,0 @@
-.cardListWrapper {
-  :global(.aelfd-list-empty-text) {
-    @apply p-0;
-  }
-}

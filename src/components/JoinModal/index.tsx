@@ -7,6 +7,7 @@ import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import styles from './index.module.css';
 import clsx from 'clsx';
+import { joinContent, joinTitle } from 'constants/joinMessage';
 
 interface IProps {
   buttonInfo?: {
@@ -68,7 +69,7 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
     <CommonModal
       title={
         <p className="flex flex-nowrap">
-          <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">Welcome to Schrödinger</span>
+          <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">{joinTitle}</span>
         </p>
       }
       width={500}
@@ -78,10 +79,7 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       onCancel={onCancel || modal.hide}
       afterClose={modal.remove}
       footer={modalFooter}>
-      <div className="w-full h-full flex flex-col">
-        Schrödinger rewards users with Flux Points for their interactions with the platform. Click “Join” to calculate
-        your points.
-      </div>
+      <div className="w-full h-full flex flex-col">{joinContent}</div>
     </CommonModal>
   );
 }

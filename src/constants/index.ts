@@ -28,3 +28,5 @@ export const notFoundErrorTip = {
 export const ewellUrl = 'https://ewell.finance/';
 
 export const ADOPT_NEXT_RATE = ZERO.plus(0.95);
+
+export const mainChain = 'AELF';

@@ -41,11 +41,6 @@ export default function ItemInfo({
     [detail.amount, detail.decimals, detail.generation],
   );
 
-  const amountStr = useMemo(
-    () => divDecimals(detail.amount, detail.decimals).toFixed(),
-    [detail.amount, detail.decimals],
-  );
-
   const renderTraitsCard = useCallback(
     (item: ITrait) => {
       return (
@@ -133,7 +128,7 @@ export default function ItemInfo({
         {!!rankInfo?.rank && (
           <div className="flex flex-row justify-between items-center mt-2 text-lg font-normal">
             <div className="text-neutralSecondary">Rank</div>
-            <div className="text-neutralTitle font-medium">{rankInfo.rank}</div>
+            <div className="text-neutralTitle font-medium">{formatTokenPrice(rankInfo.rank)}</div>
           </div>
         )}
         {(rankInfo?.levelInfo?.token || rankInfo?.levelInfo?.awakenPrice) && (

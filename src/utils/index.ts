@@ -1,13 +1,6 @@
+import { sleep } from '@portkey/utils';
 import { ENVIRONMENT, EXPLORE_URL } from 'constants/url';
 import { SupportedELFChainId } from 'types';
-
-export const sleep = (time: number) => {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time);
-  });
-};
 
 export const handleLoopFetch = async <T>({
   fetch,

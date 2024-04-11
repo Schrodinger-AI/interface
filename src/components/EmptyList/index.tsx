@@ -4,7 +4,6 @@ import { ReactComponent as ArchiveSVG } from 'assets/img/archive.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useMemo } from 'react';
 import { ReactComponent as ArrowSVG } from 'assets/img/icons/arrow.svg';
-import { TEmptyChannelGroup } from 'types/misc';
 import { openExternalLink } from 'utils/openlink';
 
 export interface IEmptyListProps {
@@ -17,23 +16,12 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
   const cmsInfo = useCmsInfo();
 
   const emptyChannelGroupList = useMemo(() => {
-    try {
-      return JSON.parse(cmsInfo?.emptyChannelGroupList || '[]') as TEmptyChannelGroup[];
-    } catch (error) {
-      return [];
-    }
+    return cmsInfo?.emptyChannelGroupList || [];
   }, [cmsInfo?.emptyChannelGroupList]);
 
   const descriptionList = useMemo(() => {
     if (!isChannelShow) return [defaultDescription];
-    const descriptionStr = cmsInfo?.emptyChannelGroupDescription || '';
-    try {
-      const list = JSON.parse(descriptionStr);
-      if (Array.isArray(list)) return list;
-    } catch (error) {
-      console.log('error', error);
-    }
-    return [];
+    return cmsInfo?.emptyChannelGroupDescription || [];
   }, [cmsInfo?.emptyChannelGroupDescription, defaultDescription, isChannelShow]);
 
   const gitBookDescription = useMemo(() => cmsInfo?.gitBookDescription || '', [cmsInfo?.gitBookDescription]);

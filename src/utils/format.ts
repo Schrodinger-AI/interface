@@ -161,6 +161,12 @@ export default function uriToHttp(uri: string): string[] {
   }
 }
 
+export function convertDecimalToPercentage(percent: string | number, decimals = 2) {
+  let p = ZERO.plus(percent);
+  if (p.isNaN()) p = ZERO;
+  return Number(p.multipliedBy(100).toFixed(decimals));
+}
+
 export function formatPercent(percent: string | number, decimals = 2) {
   let p = ZERO.plus(percent);
   if (p.isNaN()) p = ZERO;

@@ -1,4 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin');
+
+const rotateY = plugin(function ({ addUtilities }) {
+  addUtilities({
+    '.rotate-y-180': {
+      transform: 'rotateY(180deg)',
+    },
+  });
+});
+
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
@@ -28,8 +38,6 @@ module.exports = {
         functionalErrorBg: 'var(--functional-error-bg)',
         functionalErrorHover: 'var(--functional-error-hover)',
         functionalErrorPressed: 'var(--functional-error-pressed)',
-        compassNormal: 'var(--compass-normal)',
-        compassActive: 'var(--compass-active)',
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
         fillMask3: 'var(--fill-mask-3)',
@@ -39,6 +47,7 @@ module.exports = {
         rarityGold: 'var(--rarity-gold)',
         rarityHalcyon: 'var(--rarity-halcyon)',
         rarityDiamond: 'var(--rarity-diamond)',
+        fillMask5: 'var(--fill-mask-5)',
       },
       fontSize: {
         xxs: ['10px', '16px'],
@@ -63,6 +72,9 @@ module.exports = {
           '100%': { transform: 'rotate(-360deg)' },
         },
       },
+      backgroundImage: {
+        inviteCardBg: 'linear-gradient(180deg, #DFECFE 0%, #FFFFFF 50.18%)',
+      },
       animation: {
         loading: 'loading 800ms linear infinite',
       },
@@ -73,6 +85,7 @@ module.exports = {
       },
     },
     screens: {
+      xs: '532px',
       sm: '641px',
       md: '769px',
       lg: '1025px',
@@ -82,7 +95,7 @@ module.exports = {
       main: '1441px',
     },
   },
-  plugins: [],
+  plugins: [rotateY],
   corePlugins: {
     preflight: false,
   },

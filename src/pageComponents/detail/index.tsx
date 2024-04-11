@@ -17,7 +17,6 @@ import useLoading from 'hooks/useLoading';
 import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
-import useDeviceCmsConfig from 'redux/hooks/useDeviceConfig';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
@@ -33,7 +32,10 @@ export default function DetailPage() {
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible } = useLoading();
   const marketModal = useModal(MarketModal);
-  const { tradeModal } = useDeviceCmsConfig() || {};
+
+  const tradeModal = useMemo(() => {
+    return cmsInfo?.tradeModal;
+  }, [cmsInfo?.tradeModal]);
 
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();

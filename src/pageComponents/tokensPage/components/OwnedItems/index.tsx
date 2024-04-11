@@ -22,7 +22,7 @@ import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import FilterMenuEmpty from '../FilterMenuEmpty';
-import ScrollContent from '../ScrollContent';
+// import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
 import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
@@ -36,6 +36,11 @@ import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
 import { catsList } from 'api/request';
+import ScrollContent from 'components/ScrollContent';
+import { CardType } from 'components/ItemCard';
+import useColumns from 'hooks/useColumns';
+import { EmptyList } from 'components/EmptyList';
+import { useRouter } from 'next/navigation';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -54,10 +59,11 @@ export default function OwnedItems() {
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
-  const isLoadMore = useRef<boolean>(false);
-  const [moreLoading, setMoreLoading] = useState<boolean>(false);
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
+  const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
+  const column = useColumns(collapsed);
+  const router = useRouter();
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const filterListRef = useRef<any>();
 
@@ -127,12 +133,7 @@ export default function OwnedItems() {
       if (!params.chainId) {
         return;
       }
-      if (loadMore) {
-        setMoreLoading(true);
-      } else {
-        isLoadMore.current = false;
-        showLoading();
-      }
+      showLoading();
       try {
         const res = await catsList(params);
 
@@ -149,7 +150,7 @@ export default function OwnedItems() {
           };
         });
 
-        if (isLoadMore.current) {
+        if (loadMore) {
           setDataSource((preData) => [...(preData || []), ...data]);
         } else {
           setDataSource(data);
@@ -158,7 +159,6 @@ export default function OwnedItems() {
         setDataSource((preData) => preData || []);
       } finally {
         closeLoading();
-        setMoreLoading(false);
       }
     },
     [closeLoading, showLoading],
@@ -390,8 +390,7 @@ export default function OwnedItems() {
   }, [filterSelect, searchParam]);
 
   const loadMoreData = useCallback(() => {
-    if (isLoading || !hasMore || moreLoading) return;
-    isLoadMore.current = true;
+    if (isLoading || !hasMore) return;
     SetCurrent(current + 1);
     fetchData({
       params: {
@@ -400,7 +399,23 @@ export default function OwnedItems() {
       },
       loadMore: true,
     });
-  }, [isLoading, hasMore, moreLoading, current, fetchData, requestParams]);
+  }, [isLoading, hasMore, current, fetchData, requestParams]);
+
+  const emptyText = useMemo(() => {
+    return (
+      dataSource && (
+        <Flex className="pt-0 lg:pt-6" justify="center" align="center">
+          <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" />
+        </Flex>
+      )
+    );
+  }, [dataSource, ownedTotal]);
+  const onPress = useCallback(
+    (item: TSGRItem) => {
+      router.push(`/detail?symbol=${item.symbol}&address=${item.address}`);
+    },
+    [router],
+  );
 
   return (
     <div>
@@ -475,15 +490,12 @@ export default function OwnedItems() {
             />
           </Flex>
           <ScrollContent
-            collapsed={collapsed}
-            ListProps={{
-              dataSource,
-            }}
-            InfiniteScrollProps={{
-              ownedTotal,
-              loading: moreLoading,
-              loadMore: loadMoreData,
-            }}
+            type={CardType.MY}
+            grid={{ gutter, column }}
+            emptyText={emptyText}
+            onPress={onPress}
+            loadMore={loadMoreData}
+            ListProps={{ dataSource }}
           />
         </Layout>
       </Layout>
