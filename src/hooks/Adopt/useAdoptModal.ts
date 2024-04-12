@@ -66,7 +66,7 @@ const useAdoptHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
-            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
+            rank: rankInfo?.rank,
           },
 
           inputProps: {
