@@ -30,7 +30,7 @@ export default function ItemInfo({
     learnMoreModal.show({
       item: {
         ...detail,
-        rank: rankInfo?.rank ? `${rankInfo?.rank}` : '',
+        rank: rankInfo?.rank,
       },
     });
   }, [detail, learnMoreModal, rankInfo?.rank]);

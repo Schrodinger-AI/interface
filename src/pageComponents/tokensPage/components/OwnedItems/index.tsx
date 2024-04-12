@@ -42,6 +42,11 @@ import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
 
+const options = [
+  { label: 'My cats', value: 1 },
+  { label: 'View all', value: 2 },
+];
+
 export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
@@ -80,11 +85,6 @@ export default function OwnedItems() {
       return 368;
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
-
-  const options = [
-    { label: 'My cats', value: 1 },
-    { label: 'View all', value: 2 },
-  ];
 
   const [pageState, setPageState] = useState(1);
   const [searchAddress, setSearchAddress] = useState<string | undefined>(undefined);

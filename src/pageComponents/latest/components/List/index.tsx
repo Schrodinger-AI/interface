@@ -112,7 +112,7 @@ export default function List() {
               ...data[item],
               level: curCatsRankProbability.levelInfo?.level,
               token: curCatsRankProbability.levelInfo?.token,
-              rank: `${curCatsRankProbability.rank}`,
+              rank: curCatsRankProbability.rank,
               describe: curCatsRankProbability.levelInfo?.describe,
               awakenPrice: `${curCatsRankProbability.levelInfo?.awakenPrice}`,
             };

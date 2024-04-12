@@ -37,7 +37,7 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
 
   const rankDisplay = useMemo(() => {
-    return rank && rank !== '0' ? `Rank: ${formatTokenPrice(rank)}` : '';
+    return rank ? `Rank: ${formatTokenPrice(rank)}` : '';
   }, [rank]);
 
   const awakenPriceDisplay = useMemo(() => {
