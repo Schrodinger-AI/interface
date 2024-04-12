@@ -28,7 +28,6 @@ import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { useGetTraits } from 'graphqlServer';
@@ -64,7 +63,6 @@ export default function OwnedItems() {
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, SetCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
-  const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
   const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
   const column = useColumns(collapsed);
@@ -88,6 +86,7 @@ export default function OwnedItems() {
 
   const [pageState, setPageState] = useState(1);
   const [searchAddress, setSearchAddress] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
   const handleRadioChange = ({ target: { value } }: RadioChangeEvent) => {
     setPageState(value);
@@ -133,7 +132,7 @@ export default function OwnedItems() {
       if (!params.chainId) {
         return;
       }
-      showLoading();
+      setLoading(true);
       try {
         const res = await catsList(params);
 
@@ -158,10 +157,10 @@ export default function OwnedItems() {
       } catch {
         setDataSource((preData) => preData || []);
       } finally {
-        closeLoading();
+        setLoading(false);
       }
     },
-    [closeLoading, showLoading],
+    [],
   );
 
   useEffect(() => {
@@ -390,7 +389,7 @@ export default function OwnedItems() {
   }, [filterSelect, searchParam]);
 
   const loadMoreData = useCallback(() => {
-    if (isLoading || !hasMore) return;
+    if (loading || !hasMore) return;
     SetCurrent(current + 1);
     fetchData({
       params: {
@@ -399,7 +398,7 @@ export default function OwnedItems() {
       },
       loadMore: true,
     });
-  }, [isLoading, hasMore, current, fetchData, requestParams]);
+  }, [loading, hasMore, current, fetchData, requestParams]);
 
   const emptyText = useMemo(() => {
     return (
@@ -496,6 +495,7 @@ export default function OwnedItems() {
             onPress={onPress}
             loadMore={loadMoreData}
             ListProps={{ dataSource }}
+            loading={loading}
           />
         </Layout>
       </Layout>

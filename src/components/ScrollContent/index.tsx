@@ -8,6 +8,7 @@ import { PAGE_CONTAINER_ID } from 'constants/index';
 import { CardType } from 'components/ItemCard';
 import styles from './style.module.css';
 import { ListGridType } from 'antd/es/list';
+import Loading from 'components/Loading';
 
 interface IContentProps {
   type: CardType;
@@ -17,10 +18,11 @@ interface IContentProps {
   loadMore?: () => void;
   onPress: (item: TSGRItem) => void;
   ListProps: ListProps<TSGRItem>;
+  loading?: boolean;
 }
 
 function ScrollContent(props: IContentProps) {
-  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress } = props;
+  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress, loading = false } = props;
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
@@ -55,6 +57,11 @@ function ScrollContent(props: IContentProps) {
         )}
         {...ListProps}
       />
+      {loading && (
+        <div className="flex justify-center py-4">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 }
