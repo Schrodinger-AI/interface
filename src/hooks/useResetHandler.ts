@@ -21,7 +21,6 @@ import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDe
 import { store } from 'redux/store';
 import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
-import { getRankInfoToShow } from 'utils/formatTraits';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -45,7 +44,7 @@ export const useResetHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
-            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
+            rank: rankInfo?.rank,
           },
           title: 'Pending Approval',
           content: {
@@ -102,7 +101,7 @@ export const useResetHandler = () => {
           logo: parentItemInfo.inscriptionImageUri,
           subName: parentItemInfo.symbol,
           tag: `GEN ${parentItemInfo.generation}`,
-          rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
+          rank: rankInfo?.rank,
         },
         id: 'sgr-reset-modal',
         status: status,
@@ -165,7 +164,7 @@ export const useResetHandler = () => {
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: parentItemInfo.symbol,
-            rank: rankInfo && getRankInfoToShow(rankInfo, 'Rank'),
+            rank: rankInfo?.rank,
           },
           inputProps: {
             max: symbolBalance,

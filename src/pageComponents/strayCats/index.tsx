@@ -149,7 +149,7 @@ export default function StrayCatsPage() {
             <div className="flex items-center">
               <SkeletonImage
                 className="w-[64px] h-[64px] mr-[12px]"
-                tag={`GEN ${record.gen}`}
+                generation={record.gen}
                 img={record.inscriptionImageUri}
               />
               <span className={textStyle}>{tokenName}</span>
