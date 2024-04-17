@@ -1,5 +1,5 @@
 import { ICompassProps } from 'components/Header/type';
-import { ListTypeEnum } from 'pageComponents/tokensPage/type';
+import { ListTypeEnum } from 'types';
 import { TEmptyChannelGroup } from 'types/misc';
 
 export enum ThemeType {
