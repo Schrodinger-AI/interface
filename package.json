@@ -36,6 +36,7 @@
     "aelf-web-login": "2.0.1-beta.7",
     "ahooks": "^3.7.10",
     "antd": "^5.x",
+    "antd-mobile": "^5.35.0",
     "antd-style": "^3.6.1",
     "axios": "^0.24.0",
     "bignumber": "^1.1.0",
