@@ -122,3 +122,8 @@ export interface ICreateTokenParams {
   onError?: <T>(error: T) => void;
   signInfo?: SignatureData;
 }
+
+export enum ListTypeEnum {
+  My = 1,
+  All = 2,
+}

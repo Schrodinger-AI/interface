@@ -12,8 +12,8 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
-  ListTypeEnum,
 } from '../../type';
+import { ListTypeEnum } from 'types';
 import clsx from 'clsx';
 import { Flex, Layout, MenuProps, Radio } from 'antd';
 import CommonSearch from 'components/CommonSearch';

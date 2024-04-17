@@ -12,7 +12,7 @@ import { getGraphQLClient } from '../client';
 import { useCallback, useMemo } from 'react';
 import { TGraphQLParamsType } from '../types';
 import { useCmsInfo } from 'redux/hooks';
-import { ListTypeEnum } from 'pageComponents/tokensPage/type';
+import { ListTypeEnum } from 'types';
 
 export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
