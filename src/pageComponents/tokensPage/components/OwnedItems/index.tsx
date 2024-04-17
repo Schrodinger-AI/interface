@@ -292,21 +292,18 @@ export default function OwnedItems() {
       let children: Required<MenuProps>['items'] = [];
       if (item.type === FilterType.Checkbox) {
         const Comp = getComponentByType(item.type);
-        children = [
-          {
-            key: item.key,
-            label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
-          },
-        ];
+        children = item.data.length
+          ? [
+              {
+                key: item.key,
+                label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
+              },
+            ]
+          : [];
       } else if (item.type === FilterType.MenuCheckbox) {
         const Comp = getComponentByType(item.type);
         if (item.data.length === 0) {
-          children = [
-            {
-              key: item.key,
-              label: <FilterMenuEmpty />,
-            },
-          ];
+          children = [];
         } else {
           children = item.data.map((subItem) => {
             return {
@@ -331,14 +328,16 @@ export default function OwnedItems() {
           });
         }
       }
-      return {
-        key: item.key,
-        label: renderCollapseItemsLabel({
-          title: item.title,
-          tips: item?.tips,
-        }),
-        children,
-      };
+      return children.length > 0
+        ? {
+            key: item.key,
+            label: renderCollapseItemsLabel({
+              title: item.title,
+              tips: item?.tips,
+            }),
+            children,
+          }
+        : null;
     });
   }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs]);
 
