@@ -25,9 +25,9 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
-import { setHasToken, setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
-import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import { setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
 import { mainChain } from 'constants/index';
+import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -63,7 +63,9 @@ export const useWalletInit = () => {
         if (walletType === WalletType.portkey) {
           walletInfo.portkeyInfo = wallet.portkeyInfo as PortkeyInfo;
         }
-        getToken();
+        getToken({
+          needLoading: true,
+        });
         dispatch(setWalletInfo(cloneDeep(walletInfo)));
         setLocalWalletInfo(cloneDeep(walletInfo));
       }
@@ -88,7 +90,7 @@ export const useWalletInit = () => {
       }),
     );
     dispatch(setItemsFromLocal([]));
-    dispatch(setHasToken(false));
+    dispatch(resetLoginStatus());
   }, [backToHomeByRoute]);
 
   useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, (error) => {
@@ -227,16 +229,22 @@ export const useCheckLoginAndToken = () => {
   const { loginState, login, logout } = useWebLogin();
   const isLogin = loginState === WebLoginState.logined;
   const { getToken, checkTokenValid } = useGetToken();
-  const { hasToken } = useGetStoreInfo();
 
   const checkLogin = async () => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isLogin) {
-      if (accountInfo.token) {
-        store.dispatch(setHasToken(true));
+      if (accountInfo.token && checkTokenValid()) {
+        store.dispatch(
+          setLoginStatus({
+            hasToken: true,
+            isLogin: true,
+          }),
+        );
         return;
       }
-      getToken();
+      getToken({
+        needLoading: true,
+      });
     }
     login();
   };
@@ -244,20 +252,18 @@ export const useCheckLoginAndToken = () => {
   useEffect(() => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (accountInfo.token) {
-      store.dispatch(setHasToken(true));
+      store.dispatch(
+        setLoginStatus({
+          hasToken: true,
+        }),
+      );
       return;
     }
   }, []);
 
-  const logoutAccount = useCallback(() => {
-    logout();
-    localStorage.removeItem(storages.accountInfo);
-  }, [logout]);
-
   return {
-    isOK: isLogin && !!hasToken,
     checkTokenValid,
-    logout: logoutAccount,
+    logout,
     checkLogin,
   };
 };
