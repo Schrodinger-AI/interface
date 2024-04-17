@@ -46,8 +46,8 @@ export type MenuCheckboxItemType = {
   tips?: string;
 };
 
-export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuCheckboxItemType> => {
-  const filterList = [
+export const getFilterList = (ChainId: string, pageState: 1 | 2): Array<CheckboxItemType | MenuCheckboxItemType> => {
+  const filterList: Array<CheckboxItemType | MenuCheckboxItemType> = [
     {
       key: FilterKeyEnum.Chain,
       title: FilterKeyEnum.Chain,
@@ -66,22 +66,28 @@ export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuChe
       type: FilterType.Checkbox,
       data: [],
     },
-    {
-      key: FilterKeyEnum.Rarity,
-      title: FilterKeyEnum.Rarity,
-      type: FilterType.Checkbox,
-      tips: 'Only Gen-9 Cats support Rarity filtering.',
-      data: [
-        { value: 'Diamond', label: 'Diamond' },
-        { value: 'Emerald', label: 'Emerald' },
-        { value: 'Platinum', label: 'Platinum' },
-        { value: 'Gold', label: 'Gold' },
-        { value: 'Silver', label: 'Silver' },
-        { value: 'Bronze', label: 'Bronze' },
-      ],
-    },
   ];
-  return filterList as Array<CheckboxItemType | MenuCheckboxItemType>;
+
+  const rarityFilter: CheckboxItemType = {
+    key: FilterKeyEnum.Rarity,
+    title: FilterKeyEnum.Rarity,
+    type: FilterType.Checkbox,
+    tips: 'Only Gen-9 Cats support Rarity filtering.',
+    data: [
+      { value: 'Diamond', label: 'Diamond' },
+      { value: 'Emerald', label: 'Emerald' },
+      { value: 'Platinum', label: 'Platinum' },
+      { value: 'Gold', label: 'Gold' },
+      { value: 'Silver', label: 'Silver' },
+      { value: 'Bronze', label: 'Bronze' },
+    ],
+  };
+
+  if (pageState === 1) {
+    filterList.push(rarityFilter);
+  }
+
+  return filterList;
 };
 
 export interface IFilterSelect {

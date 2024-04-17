@@ -29,7 +29,7 @@ import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
-import { useWalletService } from 'hooks/useWallet';
+import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
@@ -42,8 +42,18 @@ import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
 
+const options = [
+  { label: 'My cats', value: 1 },
+  { label: 'View all', value: 2 },
+];
+
+const getDefaultPageState: (isLogin: boolean) => 1 | 2 = (isLogin: boolean) => {
+  return isLogin ? 1 : 2;
+};
+
 export default function OwnedItems() {
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
+  const { checkLogin } = useCheckLoginAndToken();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
@@ -53,7 +63,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain));
+  const [filterList, setFilterList] = useState(getFilterList(curChain, getDefaultPageState(isLogin)));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -81,15 +91,9 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  const options = [
-    { label: 'My cats', value: 1 },
-    { label: 'View all', value: 2 },
-  ];
+  const [pageState, setPageState] = useState(getDefaultPageState(isLogin));
 
-  const [pageState, setPageState] = useState(1);
-  const [searchAddress, setSearchAddress] = useState<string | undefined>(undefined);
-
-  const handleRadioChange = ({ target: { value } }: RadioChangeEvent) => {
+  const radioChange = (value: 1 | 2) => {
     setPageState(value);
     // clear all status
     handleBaseClearAll();
@@ -100,22 +104,31 @@ export default function OwnedItems() {
       delete filterList[3];
     }
     setFilterList(filterList);
-    setSearchAddress(value === 1 ? undefined : walletAddress);
+  };
+
+  const handleRadioChange = ({ target: { value } }: RadioChangeEvent) => {
+    if (!isLogin) {
+      checkLogin({
+        onSuccess: () => {
+          radioChange(value);
+        },
+      });
+      return;
+    }
+    radioChange(value);
   };
 
   useEffect(() => {
     fetchData({ params: requestParams });
-  }, [searchAddress]);
+  }, [pageState]);
 
-  const defaultRequestParams = useMemo(() => {
-    const filter = getFilter(defaultFilter);
-    return {
-      ...filter,
-      address: walletAddress,
-      skipCount: 0,
-      maxResultCount: pageSize,
-    };
-  }, [defaultFilter, walletAddress]);
+  useEffect(() => {
+    if (!isLogin) {
+      setPageState(2);
+      handleBaseClearAll();
+    }
+  }, [isLogin]);
+
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
     return {
@@ -124,7 +137,7 @@ export default function OwnedItems() {
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
-      searchAddress,
+      searchAddress: pageState === 1 ? undefined : walletAddress,
     };
   }, [filterSelect, walletAddress, current, searchParam, pageState]);
 
@@ -164,12 +177,6 @@ export default function OwnedItems() {
     [closeLoading, showLoading],
   );
 
-  useEffect(() => {
-    fetchData({
-      params: defaultRequestParams,
-    });
-  }, [fetchData, defaultRequestParams]);
-
   const getTraits = useGetTraits();
 
   const getFilterListData = useCallback(async () => {
@@ -181,7 +188,7 @@ export default function OwnedItems() {
       } = await getTraits({
         input: {
           chainId: curChain,
-          address: walletAddress,
+          address: pageState === 1 ? walletAddress : '',
         },
       });
       const traitsList =
@@ -196,22 +203,21 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      setFilterList((preFilterList) => {
-        const newFilterList = preFilterList.map((item) => {
-          if (item.key === FilterKeyEnum.Traits) {
-            return { ...item, data: traitsList };
-          } else if (item.key === FilterKeyEnum.Generation) {
-            return { ...item, data: generationList } as CheckboxItemType;
-          }
-          return item;
-        });
-        filterListRef.current = newFilterList;
-        return newFilterList;
+      const sourceFilterList = getFilterList(curChain, pageState);
+      const newFilterList = sourceFilterList.map((item) => {
+        if (item.key === FilterKeyEnum.Traits) {
+          return { ...item, data: traitsList };
+        } else if (item.key === FilterKeyEnum.Generation) {
+          return { ...item, data: generationList } as CheckboxItemType;
+        }
+        return item;
       });
+      filterListRef.current = newFilterList;
+      setFilterList(newFilterList);
     } catch (error) {
       console.log('getTraitList error', error);
     }
-  }, [curChain, getTraits, walletAddress]);
+  }, [curChain, getTraits, pageState]);
 
   useEffect(() => {
     getFilterListData();
@@ -286,21 +292,18 @@ export default function OwnedItems() {
       let children: Required<MenuProps>['items'] = [];
       if (item.type === FilterType.Checkbox) {
         const Comp = getComponentByType(item.type);
-        children = [
-          {
-            key: item.key,
-            label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
-          },
-        ];
+        children = item.data.length
+          ? [
+              {
+                key: item.key,
+                label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
+              },
+            ]
+          : [];
       } else if (item.type === FilterType.MenuCheckbox) {
         const Comp = getComponentByType(item.type);
         if (item.data.length === 0) {
-          children = [
-            {
-              key: item.key,
-              label: <FilterMenuEmpty />,
-            },
-          ];
+          children = [];
         } else {
           children = item.data.map((subItem) => {
             return {
@@ -325,14 +328,16 @@ export default function OwnedItems() {
           });
         }
       }
-      return {
-        key: item.key,
-        label: renderCollapseItemsLabel({
-          title: item.title,
-          tips: item?.tips,
-        }),
-        children,
-      };
+      return children.length > 0
+        ? {
+            key: item.key,
+            label: renderCollapseItemsLabel({
+              title: item.title,
+              tips: item?.tips,
+            }),
+            children,
+          }
+        : null;
     });
   }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs]);
 

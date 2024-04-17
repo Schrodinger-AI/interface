@@ -14,7 +14,6 @@ import { TSGRToken } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
-import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
@@ -28,7 +27,7 @@ export default function DetailPage() {
   const address = searchParams.get('address') || '';
 
   const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet, isLogin } = useWalletService();
+  const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading, visible } = useLoading();
   const marketModal = useModal(MarketModal);
@@ -45,7 +44,6 @@ export default function DetailPage() {
   const isMyself = address === wallet.address;
 
   const getDetail = useCallback(async () => {
-    if (!wallet.address) return;
     showLoading();
     const result = await getSchrodingerDetail({
       input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
@@ -70,7 +68,7 @@ export default function DetailPage() {
       setSchrodingerDetail(result.data.getSchrodingerDetail);
       closeLoading();
     }
-  }, [closeLoading, cmsInfo?.curChain, getSchrodingerDetail, showLoading, symbol, wallet.address]);
+  }, [address, closeLoading, cmsInfo?.curChain, getSchrodingerDetail, showLoading, symbol, wallet.address]);
 
   useEffect(() => {
     getDetail();
@@ -139,12 +137,6 @@ export default function DetailPage() {
     if (!schrodingerDetail) return;
     marketModal.show({ isTrade: true, detail: schrodingerDetail });
   }, [marketModal, schrodingerDetail]);
-
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      route.push('/');
-    }
-  }, 3000);
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">

@@ -25,22 +25,12 @@ export function NavHostTag() {
                 <p className="w-full truncate">{hostStr}</p>
               </Tooltip>
             ) : (
-              <p className="w-full truncate max-w-max">{hostStr}</p>
+              // <p className="w-full truncate max-w-max">{hostStr}</p>
+              <Tooltip color="black" trigger="click" title={hostName} overlayInnerStyle={{ color: 'white' }}>
+                <p className="w-full truncate max-w-max">{hostStr}</p>
+              </Tooltip>
             )}
           </div>
-          {!isLG ? null : (
-            <Modal
-              centered
-              open={open}
-              footer={
-                <Button type="primary" className={styles.modalBtn} onClick={() => setOpen(false)}>
-                  OK
-                </Button>
-              }
-              onCancel={() => setOpen(false)}>
-              {hostName}
-            </Modal>
-          )}
         </>
       )}
     </>
