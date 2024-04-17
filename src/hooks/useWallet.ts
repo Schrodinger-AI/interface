@@ -11,7 +11,7 @@ import {
   PortkeyInfo,
 } from 'aelf-web-login';
 import { message } from 'antd';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useGetToken } from './useGetToken';
 import { getOriginalAddress } from 'utils/addressFormatting';
 import { dispatch, store } from 'redux/store';
@@ -28,6 +28,7 @@ import { MethodsWallet } from '@portkey/provider-types';
 import { setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
 import { mainChain } from 'constants/index';
 import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -122,9 +123,8 @@ export const useWalletSyncCompleted = (contractChainId = mainChain) => {
   const loading = useRef<boolean>(false);
   const { did } = useComponentFlex();
   const getAccountByChainId = useGetAccount(mainChain);
-  const { wallet, walletType, version } = useWebLogin();
+  const { wallet, walletType } = useWebLogin();
   const { walletInfo } = cloneDeep(useSelector((store: any) => store.userInfo));
-  const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
   const { discoverProvider } = useDiscoverProvider();
 
   const errorFunc = () => {
@@ -227,12 +227,15 @@ export const useWalletSyncCompleted = (contractChainId = mainChain) => {
 
 export const useCheckLoginAndToken = () => {
   const { loginState, login, logout } = useWebLogin();
-  const isLogin = loginState === WebLoginState.logined;
+  const isConnectWallet = useMemo(() => loginState === WebLoginState.logined, [loginState]);
   const { getToken, checkTokenValid } = useGetToken();
+  const { isLogin } = useGetLoginStatus();
+  const success = useRef<<T = any>() => T | void>();
 
-  const checkLogin = async () => {
+  const checkLogin = async (params?: { onSuccess?: <T = any>() => T | void }) => {
+    const { onSuccess } = params || {};
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
-    if (isLogin) {
+    if (isConnectWallet) {
       if (accountInfo.token && checkTokenValid()) {
         store.dispatch(
           setLoginStatus({
@@ -242,12 +245,22 @@ export const useCheckLoginAndToken = () => {
         );
         return;
       }
-      getToken({
+      await getToken({
         needLoading: true,
       });
+      onSuccess && onSuccess();
+      return;
     }
+    success.current = onSuccess;
     login();
   };
+
+  useEffect(() => {
+    if (isLogin) {
+      success.current && success.current();
+      success.current = undefined;
+    }
+  }, [isLogin]);
 
   useEffect(() => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
@@ -269,24 +282,3 @@ export const useCheckLoginAndToken = () => {
 };
 
 type CallBackType = () => void;
-
-export const useElfWebLoginLifeCircleHookService = () => {
-  const { login } = useWebLogin();
-
-  const [hooksMap, setHooksMap] = useState<{
-    [key in WebLoginEvents]?: CallBackType[];
-  }>({});
-
-  const registerHook = (name: WebLoginEvents, callBack: CallBackType) => {
-    const hooks = (hooksMap[name] || []).concat(callBack);
-    setHooksMap({
-      ...hooksMap,
-      [name]: hooks,
-    });
-  };
-
-  return {
-    login,
-    registerHook,
-  };
-};
