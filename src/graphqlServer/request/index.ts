@@ -5,6 +5,8 @@ import {
   GET_STRAY_CATS_QUERY,
   GET_SUB_TRAITS_QUERY,
   GET_TRAITS_QUERY,
+  GET_TRAITS_ALL_QUERY,
+  GET_SUB_TRAITS_ALL_QUERY,
 } from '../queries';
 import {
   TGetLatestSchrodingerList,
@@ -36,9 +38,23 @@ export const getTraits: TGetTraits = (client, params) => {
   });
 };
 
+export const getAllTraits: TGetTraits = (client, params) => {
+  return client.query({
+    query: GET_TRAITS_ALL_QUERY,
+    variables: params,
+  });
+};
+
 export const getSubTraits: TGetSubTraits = (client, params) => {
   return client.query({
     query: GET_SUB_TRAITS_QUERY,
+    variables: params,
+  });
+};
+
+export const getAllSubTraits: TGetSubTraits = (client, params) => {
+  return client.query({
+    query: GET_SUB_TRAITS_ALL_QUERY,
     variables: params,
   });
 };

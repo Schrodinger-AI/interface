@@ -20,7 +20,7 @@ export const useGetToken = () => {
   const { getSignatureAndPublicKey } = useDiscoverProvider();
   const { checkJoined } = useCheckJoined();
 
-  const isLogin = useMemo(() => {
+  const isConnectWallet = useMemo(() => {
     return loginState === WebLoginState.logined;
   }, [loginState]);
 
@@ -35,7 +35,7 @@ export const useGetToken = () => {
       try {
         const res = await fetchToken(params);
         needLoading && closeLoading();
-        if (isLogin) {
+        if (isConnectWallet) {
           store.dispatch(
             setLoginStatus({
               hasToken: true,
@@ -66,13 +66,13 @@ export const useGetToken = () => {
           });
         } else {
           message.error(LoginFailed);
-          isLogin && logout({ noModal: true });
+          isConnectWallet && logout({ noModal: true });
           needLoading && closeLoading();
           return '';
         }
       }
     },
-    [closeLoading, isLogin, logout, showLoading, wallet.address],
+    [closeLoading, isConnectWallet, logout, showLoading, wallet.address],
   );
 
   const checkTokenValid = useCallback(() => {
@@ -115,7 +115,7 @@ export const useGetToken = () => {
           const resError = error as IContractError;
           const errorMessage = formatErrorMsg(resError).errorMessage.message;
           message.error(errorMessage);
-          isLogin && logout({ noModal: true });
+          isConnectWallet && logout({ noModal: true });
           return;
         }
       } else {
@@ -129,7 +129,7 @@ export const useGetToken = () => {
         });
         if (sign?.errorMessage) {
           message.error(sign.errorMessage);
-          isLogin && logout({ noModal: true });
+          isConnectWallet && logout({ noModal: true });
           return;
         }
 
@@ -166,7 +166,7 @@ export const useGetToken = () => {
       walletType,
       getTokenFromServer,
       getSignatureAndPublicKey,
-      isLogin,
+      isConnectWallet,
       logout,
       getSignature,
     ],

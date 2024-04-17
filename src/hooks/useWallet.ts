@@ -114,8 +114,8 @@ export const useWalletInit = () => {
 export const useWalletService = () => {
   const { login, logout, loginState, walletType, wallet } = useWebLogin();
   const { lock } = usePortkeyLock();
-  const isLogin = loginState === WebLoginState.logined;
-  return { login, logout, isLogin, walletType, lock, wallet };
+  const isConnectWallet = loginState === WebLoginState.logined;
+  return { login, logout, isConnectWallet, walletType, lock, wallet };
 };
 
 // Example Query whether the synchronization of the main sidechain is successful

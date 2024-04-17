@@ -5,11 +5,14 @@ import {
   getStrayCats,
   getSubTraits,
   getTraits,
+  getAllTraits,
+  getAllSubTraits,
 } from '../request';
 import { getGraphQLClient } from '../client';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { TGraphQLParamsType } from '../types';
 import { useCmsInfo } from 'redux/hooks';
+import { ListTypeEnum } from 'pageComponents/tokensPage/type';
 
 export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
@@ -32,14 +35,26 @@ export const useGetSchrodingerDetail = () => {
   );
 };
 
-export const useGetTraits = () => {
+export const useGetTraits = (type: ListTypeEnum) => {
   const client = useGraphQLClient();
-  return useCallback((params: TGraphQLParamsType<typeof getTraits>) => getTraits(client, params), [client]);
+  const requestApi = useMemo(() => {
+    return type === ListTypeEnum.My ? getTraits : getAllTraits;
+  }, [type]);
+  return useCallback(
+    (params: TGraphQLParamsType<typeof requestApi>) => requestApi(client, params),
+    [client, requestApi],
+  );
 };
 
-export const useGetSubTraits = () => {
+export const useGetSubTraits = (type: ListTypeEnum) => {
   const client = useGraphQLClient();
-  return useCallback((params: TGraphQLParamsType<typeof getSubTraits>) => getSubTraits(client, params), [client]);
+  const requestApi = useMemo(() => {
+    return type === ListTypeEnum.My ? getSubTraits : getAllSubTraits;
+  }, [type]);
+  return useCallback(
+    (params: TGraphQLParamsType<typeof requestApi>) => requestApi(client, params),
+    [client, requestApi],
+  );
 };
 
 export const useGetStrayCats = () => {

@@ -56,8 +56,38 @@ export const GET_TRAITS_QUERY = gql`
   }
 `;
 
+export const GET_TRAITS_ALL_QUERY = gql`
+  query getAllTraits($input: GetTraitsInput) {
+    getTraits(input: $input) {
+      traitsFilter {
+        traitType
+        amount
+      }
+      generationFilter {
+        generationName
+        generationAmount
+      }
+    }
+  }
+`;
+
 export const GET_SUB_TRAITS_QUERY = gql`
   query getTraits($input: GetTraitsInput) {
+    getTraits(input: $input) {
+      traitsFilter {
+        traitType
+        amount
+        values {
+          value
+          amount
+        }
+      }
+    }
+  }
+`;
+
+export const GET_SUB_TRAITS_ALL_QUERY = gql`
+  query getAllTraits($input: GetTraitsInput) {
     getTraits(input: $input) {
       traitsFilter {
         traitType

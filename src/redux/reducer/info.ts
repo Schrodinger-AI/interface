@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
 import { InfoStateType, ThemeType } from 'redux/types/reducerTypes';
+import { ListTypeEnum } from 'pageComponents/tokensPage/type';
 
 const initialState: InfoStateType = {
   isMobile: false,
@@ -12,6 +13,7 @@ const initialState: InfoStateType = {
   theme: ThemeType.light,
   itemsFromLocal: [],
   isJoin: false,
+  curViewListType: ListTypeEnum.All,
 };
 
 // Actual Slice
@@ -41,6 +43,9 @@ export const infoSlice = createSlice({
         document.documentElement.classList.remove('dark-theme');
       }
     },
+    setCurViewListType(state, action) {
+      state.curViewListType = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -54,7 +59,8 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin } = infoSlice.actions;
+export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin, setCurViewListType } =
+  infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;
 
