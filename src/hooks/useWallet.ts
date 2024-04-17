@@ -228,8 +228,10 @@ export const useCheckLoginAndToken = () => {
   const isLogin = loginState === WebLoginState.logined;
   const { getToken, checkTokenValid } = useGetToken();
   const { hasToken } = useGetStoreInfo();
+  const success = useRef<(<T = any>() => T | void) | null>();
 
-  const checkLogin = async () => {
+  const checkLogin = async (params?: { onSuccess?: <T = any>() => T | void }) => {
+    const { onSuccess } = params || {};
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isLogin) {
       if (accountInfo.token) {
@@ -237,7 +239,10 @@ export const useCheckLoginAndToken = () => {
         return;
       }
       getToken();
+      onSuccess && onSuccess();
+      return;
     }
+    success.current = onSuccess;
     login();
   };
 
@@ -248,6 +253,13 @@ export const useCheckLoginAndToken = () => {
       return;
     }
   }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      success.current && success.current();
+      success.current = null;
+    }
+  }, [isLogin]);
 
   const logoutAccount = useCallback(() => {
     logout();
