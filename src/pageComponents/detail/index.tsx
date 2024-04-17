@@ -10,7 +10,7 @@ import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
-import { TSGRToken } from 'types/tokens';
+import { ITrait, TSGRTokenInfo } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
@@ -20,43 +20,121 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { usePageForm } from './hooks';
+import { getCatDetail } from 'api/request';
+import { useEffectOnce } from 'react-use';
+
+// const mockData: TSGRTokenInfo = {
+//   symbol: 'SGRTEST-4522',
+//   tokenName: 'SGRTEST-4522GEN9',
+//   inscriptionImageUri: 'ipfs://QmQL44L3cGzSE5MamZiZnFQUj9KC7857yiU2KbP5PMP8gu',
+//   amount: '100006500',
+//   address: 'dsdsdsdsdsdsdsdsdsdsssds',
+//   holderAmount: 1123232300,
+//   generation: 9,
+//   decimals: 8,
+//   traits: [
+//     {
+//       traitType: 'Background',
+//       value: 'Surreal Dreamstate Metropolis',
+//       percent: 0.83487940630797773654916512,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Clothes',
+//       value: 'Velvet Camisole',
+//       percent: 0.7884972170686456400742115,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Breed',
+//       value: 'Kanaani',
+//       percent: 0.60296846011131725417439703,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Necklace',
+//       value: 'Enamel Art Deco Necklace',
+//       percent: 2.43902439024390243902439024,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Wing',
+//       value: 'Imp Wings',
+//       percent: 1.67597765363128491620111732,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Belt',
+//       value: 'Vintage Belt',
+//       percent: 1.95530726256983240223463687,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Ride (cars alike)',
+//       value: 'Cloud Somersault',
+//       percent: 1.21212121212121212121212121,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Eyes',
+//       value: 'Sunglasses',
+//       percent: 1.08108108108108108108108108,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Mouth',
+//       value: 'Murmuring',
+//       percent: 2.4691358024691358024691358,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Shoes',
+//       value: 'Pastel Puddle Jumpers',
+//       percent: 0.86206896551724137931034483,
+//       __typename: 'TraitDto',
+//     },
+//     {
+//       traitType: 'Accessory(Right Hand)',
+//       value: 'Spyglass',
+//       percent: 2.93255131964809384164222874,
+//       __typename: 'TraitDto',
+//     },
+//   ],
+//   __typename: 'SchrodingerDetailDto',
+// };
 
 export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
-  const symbol = searchParams.get('symbol');
+  const symbol = searchParams.get('symbol') || '';
   const address = searchParams.get('address') || '';
+  const [fromListAll] = usePageForm();
 
   const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet, isLogin } = useWalletService();
   const cmsInfo = useCmsInfo();
-  const { showLoading, closeLoading, visible } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
 
   const tradeModal = useMemo(() => {
     return cmsInfo?.tradeModal;
   }, [cmsInfo?.tradeModal]);
 
-  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
+  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
   const isMyself = address === wallet.address;
 
-  const getDetail = useCallback(async () => {
-    if (!wallet.address) return;
-    showLoading();
-    const result = await getSchrodingerDetail({
-      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
-    });
-
-    try {
-      if (result?.data?.getSchrodingerDetail?.generation !== 9) {
+  const generateCatsRankInfo = useCallback(
+    async (generation: number, traits: ITrait[]) => {
+      if (generation !== 9) {
         setRankInfo(undefined);
         throw '';
       }
-      const paramsTraits = formatTraits(result.data.getSchrodingerDetail.traits);
+      const paramsTraits = formatTraits(traits);
       if (!paramsTraits) {
         setRankInfo(undefined);
         throw '';
@@ -66,15 +144,64 @@ export default function DetailPage() {
         address: addPrefixSuffix(wallet.address),
       });
       setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
+    },
+    [wallet.address],
+  );
+
+  const getDetail = useCallback(async () => {
+    if (!wallet.address) return;
+    showLoading();
+    const result = await getSchrodingerDetail({
+      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
+    });
+
+    try {
+      const generation = result?.data?.getSchrodingerDetail?.generation;
+      const traits = result.data.getSchrodingerDetail.traits;
+      await generateCatsRankInfo(generation, traits);
+    } catch (error) {
+      console.log('getDetail--error', error);
     } finally {
       setSchrodingerDetail(result.data.getSchrodingerDetail);
       closeLoading();
     }
-  }, [closeLoading, cmsInfo?.curChain, getSchrodingerDetail, showLoading, symbol, wallet.address]);
+  }, [
+    address,
+    closeLoading,
+    cmsInfo?.curChain,
+    generateCatsRankInfo,
+    getSchrodingerDetail,
+    showLoading,
+    symbol,
+    wallet.address,
+  ]);
 
-  useEffect(() => {
-    getDetail();
-  }, [getDetail]);
+  const getDetailInGuestMode = useCallback(async () => {
+    console.log('getDetailInGuestMode');
+    try {
+      showLoading();
+      const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
+      setSchrodingerDetail(result);
+
+      const generation = result?.generation;
+      const traits = result.traits;
+      await generateCatsRankInfo(generation, traits);
+    } catch (error) {
+      console.log('getDetailInGuestMode--error', error);
+    } finally {
+      closeLoading();
+    }
+  }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
+
+  const init = useCallback(() => {
+    console.log('init-callback', fromListAll);
+    fromListAll ? getDetailInGuestMode() : getDetail();
+  }, [fromListAll, getDetail, getDetailInGuestMode]);
+
+  useEffectOnce(() => {
+    console.log('init--once');
+    init();
+  });
 
   const onAdoptNextGeneration = () => {
     if (!schrodingerDetail) return;
@@ -90,8 +217,21 @@ export default function DetailPage() {
     route.back();
   };
 
-  const showAdopt = useMemo(() => schrodingerDetail && (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail]);
-  const showReset = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
+  const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
+  const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
+  const holderNumberGtZero = useMemo(
+    () => (schrodingerDetail?.holderAmount || 0) > 0,
+    [schrodingerDetail?.holderAmount],
+  );
+  const showAdopt = useMemo(
+    () => (fromListAll ? holderNumberGtZero && genLtNine : genLtNine),
+    [fromListAll, genLtNine, holderNumberGtZero],
+  );
+
+  const showReset = useMemo(
+    () => (fromListAll ? holderNumberGtZero && genGtZero : genGtZero),
+    [fromListAll, genGtZero, holderNumberGtZero],
+  );
 
   const adoptAndResetButton = () => {
     return (
@@ -141,10 +281,17 @@ export default function DetailPage() {
   }, [marketModal, schrodingerDetail]);
 
   useTimeoutFn(() => {
-    if (!isLogin) {
+    if (!fromListAll && !isLogin) {
       route.push('/');
     }
   }, 3000);
+
+  useEffect(() => {
+    console.log('isLogin--init', isLogin);
+    if (isLogin) {
+      init();
+    }
+  }, [init, isLogin]);
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
@@ -164,7 +311,7 @@ export default function DetailPage() {
           ]}
         />
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
-          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
+          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {isMyself && <> {adoptAndResetButton()}</>}
             {tradeModal?.show && schrodingerDetail && (
@@ -204,7 +351,7 @@ export default function DetailPage() {
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
         <div className="mt-[16px]" />
-        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
+        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
         {schrodingerDetail && (
           <ItemImage
             detail={schrodingerDetail}

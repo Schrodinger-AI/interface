@@ -42,6 +42,7 @@ export const useWalletInit = () => {
   const callBack = useCallback(
     (state: WebLoginState) => {
       if (state === WebLoginState.lock) {
+        console.log('WebLoginState.lock');
         backToHomeByRoute();
       }
       if (state === WebLoginState.logined) {
@@ -68,7 +69,6 @@ export const useWalletInit = () => {
         setLocalWalletInfo(cloneDeep(walletInfo));
       }
       if (state === WebLoginState.logouting) {
-        console.info('----store---setIsJoin--false');
         store.dispatch(setIsJoin(false));
       }
     },
