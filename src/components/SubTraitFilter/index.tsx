@@ -9,6 +9,7 @@ import Loading from 'components/Loading';
 import { ZERO } from 'constants/misc';
 import CommonSearch from 'components/CommonSearch';
 import styles from './style.module.css';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -29,7 +30,8 @@ export const SubTraitFilter = forwardRef(
   ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps, ref) => {
     const cmsInfo = useCmsInfo();
     const [isLoading, setIsLoading] = useState(false);
-    const getSubTraits = useGetSubTraits();
+    const { curViewListType } = useGetStoreInfo();
+    const getSubTraits = useGetSubTraits(curViewListType);
     const { wallet } = useWalletService();
     const [list, setList] = useState<TSubTraitItem[]>([]);
 

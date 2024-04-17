@@ -12,17 +12,15 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
-  MenuCheckboxItemType,
+  ListTypeEnum,
 } from '../../type';
 import clsx from 'clsx';
 import { Flex, Layout, MenuProps, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
 import CommonSearch from 'components/CommonSearch';
 import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
 import FilterMenuEmpty from '../FilterMenuEmpty';
-// import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
 import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
@@ -35,16 +33,20 @@ import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
-import { catsList } from 'api/request';
+import { catsList, catsListAll } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
+import { setCurViewListType } from 'redux/reducer/info';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import qs from 'qs';
 
 const options = [
-  { label: 'My cats', value: 1 },
-  { label: 'View all', value: 2 },
+  { label: 'My cats', value: ListTypeEnum.My },
+  { label: 'View all', value: ListTypeEnum.All },
 ];
 
 export default function OwnedItems() {
@@ -71,6 +73,8 @@ export default function OwnedItems() {
   const router = useRouter();
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const filterListRef = useRef<any>();
+  const { checkLogin } = useCheckLoginAndToken();
+  const { isLogin } = useGetLoginStatus();
 
   const siderWidth = useMemo(() => {
     if (is2XL) {
@@ -86,62 +90,50 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  const [pageState, setPageState] = useState(1);
-  const [searchAddress, setSearchAddress] = useState<string | undefined>(undefined);
-
-  const handleRadioChange = ({ target: { value } }: RadioChangeEvent) => {
-    setPageState(value);
-    // clear all status
-    handleBaseClearAll();
-    const filterList: any[] = [];
-    Object.assign(filterList, filterListRef.current);
-
-    if (value === 2) {
-      delete filterList[3];
-    }
-    setFilterList(filterList);
-    setSearchAddress(value === 1 ? undefined : walletAddress);
-  };
-
-  useEffect(() => {
-    fetchData({ params: requestParams });
-  }, [searchAddress]);
+  const [pageState, setPageState] = useState(ListTypeEnum.All);
 
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
     return {
       ...filter,
-      address: walletAddress,
       skipCount: 0,
       maxResultCount: pageSize,
     };
-  }, [defaultFilter, walletAddress]);
+  }, [defaultFilter]);
+
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
     return {
       ...filter,
-      address: pageState === 1 ? walletAddress : undefined,
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
-      searchAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam, pageState]);
+  }, [filterSelect, current, searchParam]);
 
   const fetchData = useCallback(
-    async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
+    async ({
+      params,
+      loadMore = false,
+      requestType,
+    }: {
+      params: ICatsListParams;
+      loadMore?: boolean;
+      requestType: ListTypeEnum;
+    }) => {
       if (!params.chainId) {
         return;
       }
       showLoading();
+      const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
       try {
-        const res = await catsList(params);
-
-        setTotal(res.totalCount ?? 0);
+        const res = await requestCatApi(params);
+        const total = res.totalCount ?? 0;
+        setTotal(total);
         const hasSearch =
           params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
         if (!hasSearch) {
-          setOwnedTotal(res.totalCount ?? 0);
+          setOwnedTotal(total);
         }
         const data = (res.data || []).map((item) => {
           return {
@@ -167,10 +159,11 @@ export default function OwnedItems() {
   useEffect(() => {
     fetchData({
       params: defaultRequestParams,
+      requestType: pageState,
     });
-  }, [fetchData, defaultRequestParams]);
+  }, [defaultRequestParams, fetchData, pageState]);
 
-  const getTraits = useGetTraits();
+  const getTraits = useGetTraits(pageState);
 
   const getFilterListData = useCallback(async () => {
     try {
@@ -181,7 +174,7 @@ export default function OwnedItems() {
       } = await getTraits({
         input: {
           chainId: curChain,
-          address: walletAddress,
+          address: pageState === ListTypeEnum.My ? walletAddress : '',
         },
       });
       const traitsList =
@@ -211,20 +204,23 @@ export default function OwnedItems() {
     } catch (error) {
       console.log('getTraitList error', error);
     }
-  }, [curChain, getTraits, walletAddress]);
+  }, [curChain, getTraits, pageState, walletAddress]);
 
   useEffect(() => {
     getFilterListData();
-  }, [getFilterListData]);
+  }, [getFilterListData, pageState]);
 
   const applyFilter = useCallback(
     (newFilterSelect: IFilterSelect = tempFilterSelect) => {
       setFilterSelect(newFilterSelect);
       const filter = getFilter(newFilterSelect);
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+      fetchData({
+        params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
+        requestType: pageState,
+      });
     },
-    [tempFilterSelect, fetchData, requestParams],
+    [tempFilterSelect, fetchData, requestParams, pageState],
   );
 
   const filterChange = useCallback(
@@ -235,7 +231,7 @@ export default function OwnedItems() {
         applyFilter(newFilterSelect);
       }
     },
-    [filterSelect, isMobile, collapsed, applyFilter, pageState],
+    [filterSelect, isMobile, collapsed, applyFilter],
   );
 
   const compChildRefs = useMemo(() => {
@@ -343,7 +339,10 @@ export default function OwnedItems() {
   const { run } = useDebounceFn(
     (value) => {
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) } });
+      fetchData({
+        params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) },
+        requestType: pageState,
+      });
     },
     {
       wait: 500,
@@ -359,16 +358,22 @@ export default function OwnedItems() {
   const handleFilterClearAll = useCallback(() => {
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+    fetchData({
+      params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
+      requestType: pageState,
+    });
     setCollapsed(false);
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+  }, [defaultFilter, fetchData, handleBaseClearAll, pageState, requestParams]);
 
   const handleTagsClearAll = useCallback(() => {
     setSearchParam('');
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+    fetchData({
+      params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' },
+      requestType: pageState,
+    });
+  }, [defaultFilter, fetchData, handleBaseClearAll, pageState, requestParams]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -378,7 +383,10 @@ export default function OwnedItems() {
   const clearSearchChange = () => {
     setSearchParam('');
     SetCurrent(1);
-    fetchData({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
+    fetchData({
+      params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) },
+      requestType: pageState,
+    });
   };
 
   const hasMore = useMemo(() => {
@@ -398,8 +406,9 @@ export default function OwnedItems() {
         skipCount: getPageNumber(current + 1, pageSize),
       },
       loadMore: true,
+      requestType: pageState,
     });
-  }, [isLoading, hasMore, current, fetchData, requestParams]);
+  }, [isLoading, hasMore, current, fetchData, requestParams, pageState]);
 
   const emptyText = useMemo(() => {
     return (
@@ -410,12 +419,55 @@ export default function OwnedItems() {
       )
     );
   }, [dataSource, ownedTotal]);
+
   const onPress = useCallback(
     (item: TSGRItem) => {
-      router.push(`/detail?symbol=${item.symbol}&address=${item.address}`);
+      const params = qs.stringify({
+        symbol: item.symbol,
+        address: item.address,
+        source: pageState === ListTypeEnum.All ? 'all' : 'my',
+      });
+
+      router.push(`/detail?${params}`);
     },
-    [router],
+    [pageState, router],
   );
+
+  const setCurrentViewList = useCallback(
+    (value: number) => {
+      setPageState(value);
+      store.dispatch(setCurViewListType(value));
+      // clear all status
+      handleBaseClearAll();
+    },
+    [handleBaseClearAll],
+  );
+
+  const handleRadioChange = useCallback(
+    (value: number) => {
+      if (value === ListTypeEnum.My && !isLogin) {
+        checkLogin({
+          onSuccess: () => {
+            setCurrentViewList(value);
+          },
+        });
+        return;
+      }
+      setCurrentViewList(value);
+    },
+    [checkLogin, isLogin, setCurrentViewList],
+  );
+
+  const atViewAll = useMemo(() => {
+    return pageState === ListTypeEnum.All;
+  }, [pageState]);
+
+  useEffect(() => {
+    if (!isLogin) {
+      handleRadioChange(ListTypeEnum.All);
+      store.dispatch(setCurViewListType(ListTypeEnum.All));
+    }
+  }, [handleRadioChange, isLogin]);
 
   return (
     <div>
@@ -423,14 +475,20 @@ export default function OwnedItems() {
         className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
         align="center"
         justify="space-between">
-        <div>
-          <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
-          <span className="text-base font-semibold">({total})</span>
-        </div>
+        {atViewAll ? (
+          <span className="text-2xl font-semibold">{`${total} Cats`}</span>
+        ) : (
+          <div>
+            <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
+            <span className="text-base font-semibold">({total})</span>
+          </div>
+        )}
         <Radio.Group
           className="min-w-[179px]"
           options={options}
-          onChange={handleRadioChange}
+          onChange={(e) => {
+            handleRadioChange(e.target.value);
+          }}
           value={pageState}
           optionType="button"
         />

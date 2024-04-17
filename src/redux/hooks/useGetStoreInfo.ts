@@ -5,6 +5,8 @@ const useGetStoreInfo = () => {
   const info = useSelector(selectInfo);
   return {
     cmsInfo: info.cmsInfo,
+    isJoin: info.isJoin,
+    curViewListType: info.curViewListType,
   };
 };
 
