@@ -90,9 +90,9 @@ export const useGetToken = () => {
     async (params?: { needLoading?: boolean }) => {
       const { needLoading } = params || {};
       if (loginState !== WebLoginState.logined) return;
-      await checkJoined(wallet.address);
 
       if (checkTokenValid()) {
+        checkJoined(wallet.address);
         return;
       } else {
         localStorage.removeItem(storages.accountInfo);
@@ -141,7 +141,7 @@ export const useGetToken = () => {
           source = 'portkey';
         }
       }
-      const res = getTokenFromServer({
+      const res = await getTokenFromServer({
         params: {
           grant_type: 'signature',
           scope: 'SchrodingerServer',
@@ -155,6 +155,7 @@ export const useGetToken = () => {
         needLoading,
       });
 
+      checkJoined(wallet.address);
       return res;
     },
     [
