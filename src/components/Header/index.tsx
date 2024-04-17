@@ -121,7 +121,12 @@ export default function Header() {
         router.push(path);
         setMenuModalVisibleModel(ModalViewModel.NONE);
       } else {
-        checkLogin();
+        checkLogin({
+          onSuccess: () => {
+            router.push(path);
+            setMenuModalVisibleModel(ModalViewModel.NONE);
+          },
+        });
       }
     },
     [checkLogin, checkTokenValid, router],
