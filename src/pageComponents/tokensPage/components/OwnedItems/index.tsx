@@ -47,6 +47,10 @@ const options = [
   { label: 'View all', value: 2 },
 ];
 
+const getDefaultPageState: (isLogin: boolean) => 1 | 2 = (isLogin: boolean) => {
+  return isLogin ? 1 : 2;
+};
+
 export default function OwnedItems() {
   const { wallet, isLogin } = useWalletService();
   const { checkLogin } = useCheckLoginAndToken();
@@ -59,7 +63,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain));
+  const [filterList, setFilterList] = useState(getFilterList(curChain, getDefaultPageState(isLogin)));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -87,7 +91,7 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  const [pageState, setPageState] = useState(isLogin ? 1 : 2);
+  const [pageState, setPageState] = useState(getDefaultPageState(isLogin));
 
   const radioChange = (value: 1 | 2) => {
     setPageState(value);
@@ -121,6 +125,7 @@ export default function OwnedItems() {
   useEffect(() => {
     if (!isLogin) {
       setPageState(2);
+      handleBaseClearAll();
     }
   }, [isLogin]);
 
@@ -198,18 +203,17 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      setFilterList((preFilterList) => {
-        const newFilterList = preFilterList.map((item) => {
-          if (item.key === FilterKeyEnum.Traits) {
-            return { ...item, data: traitsList };
-          } else if (item.key === FilterKeyEnum.Generation) {
-            return { ...item, data: generationList } as CheckboxItemType;
-          }
-          return item;
-        });
-        filterListRef.current = newFilterList;
-        return newFilterList;
+      const sourceFilterList = getFilterList(curChain, pageState);
+      const newFilterList = sourceFilterList.map((item) => {
+        if (item.key === FilterKeyEnum.Traits) {
+          return { ...item, data: traitsList };
+        } else if (item.key === FilterKeyEnum.Generation) {
+          return { ...item, data: generationList } as CheckboxItemType;
+        }
+        return item;
       });
+      filterListRef.current = newFilterList;
+      setFilterList(newFilterList);
     } catch (error) {
       console.log('getTraitList error', error);
     }
