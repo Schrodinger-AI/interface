@@ -23,86 +23,77 @@ import { addPrefixSuffix } from 'utils/addressFormatting';
 import { usePageForm } from './hooks';
 import { getCatDetail } from 'api/request';
 import { useEffectOnce } from 'react-use';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
-// const mockData: TSGRTokenInfo = {
-//   symbol: 'SGRTEST-4522',
-//   tokenName: 'SGRTEST-4522GEN9',
-//   inscriptionImageUri: 'ipfs://QmQL44L3cGzSE5MamZiZnFQUj9KC7857yiU2KbP5PMP8gu',
-//   amount: '100006500',
-//   address: 'dsdsdsdsdsdsdsdsdsdsssds',
-//   holderAmount: 1123232300,
-//   generation: 9,
-//   decimals: 8,
-//   traits: [
-//     {
-//       traitType: 'Background',
-//       value: 'Surreal Dreamstate Metropolis',
-//       percent: 0.83487940630797773654916512,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Clothes',
-//       value: 'Velvet Camisole',
-//       percent: 0.7884972170686456400742115,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Breed',
-//       value: 'Kanaani',
-//       percent: 0.60296846011131725417439703,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Necklace',
-//       value: 'Enamel Art Deco Necklace',
-//       percent: 2.43902439024390243902439024,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Wing',
-//       value: 'Imp Wings',
-//       percent: 1.67597765363128491620111732,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Belt',
-//       value: 'Vintage Belt',
-//       percent: 1.95530726256983240223463687,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Ride (cars alike)',
-//       value: 'Cloud Somersault',
-//       percent: 1.21212121212121212121212121,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Eyes',
-//       value: 'Sunglasses',
-//       percent: 1.08108108108108108108108108,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Mouth',
-//       value: 'Murmuring',
-//       percent: 2.4691358024691358024691358,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Shoes',
-//       value: 'Pastel Puddle Jumpers',
-//       percent: 0.86206896551724137931034483,
-//       __typename: 'TraitDto',
-//     },
-//     {
-//       traitType: 'Accessory(Right Hand)',
-//       value: 'Spyglass',
-//       percent: 2.93255131964809384164222874,
-//       __typename: 'TraitDto',
-//     },
-//   ],
-//   __typename: 'SchrodingerDetailDto',
-// };
+const mockData: TSGRTokenInfo = {
+  tick: 'tick',
+  blockTime: 12121212544,
+  symbol: 'SGRTEST-4522',
+  tokenName: 'SGRTEST-4522GEN9',
+  inscriptionImageUri: 'ipfs://QmQL44L3cGzSE5MamZiZnFQUj9KC7857yiU2KbP5PMP8gu',
+  amount: '100006500',
+  address: 'dsdsdsdsdsdsdsdsdsdsssds',
+  holderAmount: 1123232300,
+  generation: 9,
+  decimals: 8,
+  traits: [
+    {
+      traitType: 'Background',
+      value: 'Surreal Dreamstate Metropolis',
+      percent: 0.121277888,
+    },
+    {
+      traitType: 'Clothes',
+      value: 'Velvet Camisole',
+      percent: 0.78849721,
+    },
+    {
+      traitType: 'Breed',
+      value: 'Kanaani',
+      percent: 0.6029684601113172,
+    },
+    {
+      traitType: 'Necklace',
+      value: 'Enamel Art Deco Necklace',
+      percent: 2.4390243902439024,
+    },
+    {
+      traitType: 'Wing',
+      value: 'Imp Wings',
+      percent: 1.6759776536312849,
+    },
+    {
+      traitType: 'Belt',
+      value: 'Vintage Belt',
+      percent: 1.95530726256983,
+    },
+    {
+      traitType: 'Ride (cars alike)',
+      value: 'Cloud Somersault',
+      percent: 1.212121212121212,
+    },
+    {
+      traitType: 'Eyes',
+      value: 'Sunglasses',
+      percent: 1.081081081081081,
+    },
+    {
+      traitType: 'Mouth',
+      value: 'Murmuring',
+      percent: 2.46913580246913,
+    },
+    {
+      traitType: 'Shoes',
+      value: 'Pastel Puddle Jumpers',
+      percent: 0.862068965517241,
+    },
+    {
+      traitType: 'Accessory(Right Hand)',
+      value: 'Spyglass',
+      percent: 2.932551319648,
+    },
+  ],
+};
 
 export default function DetailPage() {
   const route = useRouter();
@@ -110,9 +101,10 @@ export default function DetailPage() {
   const symbol = searchParams.get('symbol') || '';
   const address = searchParams.get('address') || '';
   const [fromListAll] = usePageForm();
+  const { isLogin } = useGetLoginStatus();
 
   const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet, isLogin } = useWalletService();
+  const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
@@ -180,7 +172,8 @@ export default function DetailPage() {
     console.log('getDetailInGuestMode');
     try {
       showLoading();
-      const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
+      // const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
+      const result = mockData;
       setSchrodingerDetail(result);
 
       const generation = result?.generation;
@@ -194,7 +187,7 @@ export default function DetailPage() {
   }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
 
   const init = useCallback(() => {
-    console.log('init-callback', fromListAll);
+    console.log('init-callback-fromall', fromListAll);
     fromListAll ? getDetailInGuestMode() : getDetail();
   }, [fromListAll, getDetail, getDetailInGuestMode]);
 
@@ -287,7 +280,7 @@ export default function DetailPage() {
   }, 3000);
 
   useEffect(() => {
-    console.log('isLogin--init', isLogin);
+    console.log('isLogin--init--isLogin', isLogin);
     if (isLogin) {
       init();
     }
