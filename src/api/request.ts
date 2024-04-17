@@ -43,6 +43,10 @@ export const catsList = async (data: ICatsListParams): Promise<ICatsListData> =>
   return request.post('/app/cat/list', data);
 };
 
+export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/all ', data);
+};
+
 export const getGlobalConfig = async (): Promise<{ data: TGlobalConfigType }> => {
   return cmsRequest.get('/items/schrodingerDefaultConfig');
 };

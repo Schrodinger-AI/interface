@@ -1,4 +1,5 @@
 import { ICompassProps } from 'components/Header/type';
+import { ListTypeEnum } from 'pageComponents/tokensPage/type';
 import { TEmptyChannelGroup } from 'types/misc';
 
 export enum ThemeType {
@@ -18,6 +19,7 @@ export type InfoStateType = {
   cmsInfo?: TCustomizationItemType & TGlobalConfigType;
   itemsFromLocal?: string[];
   isJoin: boolean;
+  curViewListType: ListTypeEnum;
 };
 
 export type TTradeItem = {
@@ -103,6 +105,10 @@ export type TGlobalConfigType = {
   forestUrl: string;
   s3ImagePrefix: string;
   ifpsPrefix: string;
+  rarityFilterItems: Array<{
+    label: string;
+    value: string;
+  }>;
   [key: string]: any;
 };
 
