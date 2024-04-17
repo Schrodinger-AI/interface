@@ -425,7 +425,7 @@ export default function OwnedItems() {
       const params = qs.stringify({
         symbol: item.symbol,
         address: item.address,
-        source: pageState === ListTypeEnum.All ? 'all' : 'my',
+        from: pageState === ListTypeEnum.All ? 'all' : 'my',
       });
 
       router.push(`/detail?${params}`);
