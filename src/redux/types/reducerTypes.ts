@@ -15,10 +15,8 @@ export type InfoStateType = {
     identityPoolID?: string;
     // some config
   };
-  loginTrigger?: 'join' | 'login';
   cmsInfo?: TCustomizationItemType & TGlobalConfigType;
   itemsFromLocal?: string[];
-  hasToken?: boolean;
   isJoin: boolean;
 };
 
@@ -106,4 +104,22 @@ export type TGlobalConfigType = {
   s3ImagePrefix: string;
   ifpsPrefix: string;
   [key: string]: any;
+};
+
+export enum LoginState {
+  initial = 'initial',
+  lock = 'lock',
+  eagerly = 'eagerly',
+  logining = 'logining',
+  logined = 'logined',
+  logouting = 'logouting',
+}
+
+export type TLoginStatusType = {
+  loginStatus: {
+    walletStatus: LoginState;
+    isConnectWallet: boolean;
+    hasToken: boolean;
+    isLogin: boolean;
+  };
 };

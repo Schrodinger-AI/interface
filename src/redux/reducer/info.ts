@@ -32,12 +32,6 @@ export const infoSlice = createSlice({
     setIsJoin(state, action) {
       state.isJoin = action.payload;
     },
-    setLoginTrigger(state, action) {
-      state.loginTrigger = action.payload;
-    },
-    setHasToken(state, action) {
-      state.hasToken = action.payload;
-    },
     setTheme(state, action) {
       state.theme = action.payload;
       localStorage?.setItem('theme', action.payload);
@@ -60,8 +54,7 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin, setLoginTrigger, setHasToken } =
-  infoSlice.actions;
+export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin } = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;
 
