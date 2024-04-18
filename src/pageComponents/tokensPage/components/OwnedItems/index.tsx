@@ -12,8 +12,8 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
-  ListTypeEnum,
 } from '../../type';
+import { ListTypeEnum } from 'types';
 import clsx from 'clsx';
 import { Flex, Layout, MenuProps, Radio } from 'antd';
 import CommonSearch from 'components/CommonSearch';
@@ -29,7 +29,7 @@ import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { useGetTraits } from 'graphqlServer';
+import { useGetAllTraits, useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
@@ -75,6 +75,11 @@ export default function OwnedItems() {
   const filterListRef = useRef<any>();
   const { checkLogin } = useCheckLoginAndToken();
   const { isLogin } = useGetLoginStatus();
+  const walletAddressRef = useRef(walletAddress);
+
+  useEffect(() => {
+    walletAddressRef.current = walletAddress;
+  }, [walletAddress]);
 
   const siderWidth = useMemo(() => {
     if (is2XL) {
@@ -163,51 +168,57 @@ export default function OwnedItems() {
     });
   }, [defaultRequestParams, fetchData, pageState]);
 
-  const getTraits = useGetTraits(pageState);
+  const getTraits = useGetTraits();
+  const getAllTraits = useGetAllTraits();
 
-  const getFilterListData = useCallback(async () => {
-    try {
-      const {
-        data: {
-          getTraits: { traitsFilter, generationFilter },
-        },
-      } = await getTraits({
-        input: {
-          chainId: curChain,
-          address: pageState === ListTypeEnum.My ? walletAddress : '',
-        },
-      });
-      const traitsList =
-        traitsFilter?.map((item) => ({
-          label: item.traitType,
-          value: item.traitType,
-          count: ZERO.plus(item.amount).toFormat(),
-        })) || [];
-      const generationList =
-        generationFilter?.map((item) => ({
-          label: String(item.generationName),
-          value: item.generationName,
-          count: ZERO.plus(item.generationAmount).toFormat(),
-        })) || [];
-      setFilterList((preFilterList) => {
-        const newFilterList = preFilterList.map((item) => {
-          if (item.key === FilterKeyEnum.Traits) {
-            return { ...item, data: traitsList };
-          } else if (item.key === FilterKeyEnum.Generation) {
-            return { ...item, data: generationList } as CheckboxItemType;
-          }
-          return item;
+  const getFilterListData = useCallback(
+    async ({ type }: { type: ListTypeEnum }) => {
+      const currentWalletAddress = walletAddressRef.current;
+      const requestApi = type === ListTypeEnum.All ? getAllTraits : getTraits;
+      try {
+        const {
+          data: {
+            getTraits: { traitsFilter, generationFilter },
+          },
+        } = await requestApi({
+          input: {
+            chainId: curChain,
+            address: type === ListTypeEnum.All ? '' : currentWalletAddress,
+          },
         });
-        filterListRef.current = newFilterList;
-        return newFilterList;
-      });
-    } catch (error) {
-      console.log('getTraitList error', error);
-    }
-  }, [curChain, getTraits, pageState, walletAddress]);
+        const traitsList =
+          traitsFilter?.map((item) => ({
+            label: item.traitType,
+            value: item.traitType,
+            count: ZERO.plus(item.amount).toFormat(),
+          })) || [];
+        const generationList =
+          generationFilter?.map((item) => ({
+            label: String(item.generationName),
+            value: item.generationName,
+            count: ZERO.plus(item.generationAmount).toFormat(),
+          })) || [];
+        setFilterList((preFilterList) => {
+          const newFilterList = preFilterList.map((item) => {
+            if (item.key === FilterKeyEnum.Traits) {
+              return { ...item, data: traitsList };
+            } else if (item.key === FilterKeyEnum.Generation) {
+              return { ...item, data: generationList } as CheckboxItemType;
+            }
+            return item;
+          });
+          filterListRef.current = newFilterList;
+          return newFilterList;
+        });
+      } catch (error) {
+        console.log('getTraitList error', error);
+      }
+    },
+    [curChain, getAllTraits, getTraits],
+  );
 
   useEffect(() => {
-    getFilterListData();
+    getFilterListData({ type: pageState });
   }, [getFilterListData, pageState]);
 
   const applyFilter = useCallback(
@@ -433,15 +444,15 @@ export default function OwnedItems() {
     [pageState, router],
   );
 
-  const setCurrentViewList = useCallback(
-    (value: number) => {
-      setPageState(value);
-      store.dispatch(setCurViewListType(value));
-      // clear all status
-      handleBaseClearAll();
-    },
-    [handleBaseClearAll],
-  );
+  const setCurrentViewList = useCallback((value: number) => {
+    setPageState(value);
+    store.dispatch(setCurViewListType(value));
+  }, []);
+
+  useEffect(() => {
+    // clear all status
+    handleBaseClearAll();
+  }, [handleBaseClearAll, pageState]);
 
   const handleRadioChange = useCallback(
     (value: number) => {

@@ -12,7 +12,7 @@ import { getGraphQLClient } from '../client';
 import { useCallback, useMemo } from 'react';
 import { TGraphQLParamsType } from '../types';
 import { useCmsInfo } from 'redux/hooks';
-import { ListTypeEnum } from 'pageComponents/tokensPage/type';
+import { ListTypeEnum } from 'types';
 
 export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
@@ -35,15 +35,14 @@ export const useGetSchrodingerDetail = () => {
   );
 };
 
-export const useGetTraits = (type: ListTypeEnum) => {
+export const useGetTraits = () => {
   const client = useGraphQLClient();
-  const requestApi = useMemo(() => {
-    return type === ListTypeEnum.My ? getTraits : getAllTraits;
-  }, [type]);
-  return useCallback(
-    (params: TGraphQLParamsType<typeof requestApi>) => requestApi(client, params),
-    [client, requestApi],
-  );
+  return useCallback((params: TGraphQLParamsType<typeof getTraits>) => getTraits(client, params), [client]);
+};
+
+export const useGetAllTraits = () => {
+  const client = useGraphQLClient();
+  return useCallback((params: TGraphQLParamsType<typeof getAllTraits>) => getAllTraits(client, params), [client]);
 };
 
 export const useGetSubTraits = (type: ListTypeEnum) => {

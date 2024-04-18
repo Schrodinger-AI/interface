@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
 import { InfoStateType, ThemeType } from 'redux/types/reducerTypes';
-import { ListTypeEnum } from 'pageComponents/tokensPage/type';
+import { ListTypeEnum } from 'types';
 
 const initialState: InfoStateType = {
   isMobile: false,

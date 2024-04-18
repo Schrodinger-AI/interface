@@ -213,8 +213,3 @@ export const getTagList = (filterSelect: IFilterSelect, search: string) => {
 
   return result;
 };
-
-export enum ListTypeEnum {
-  My = 1,
-  All = 2,
-}
