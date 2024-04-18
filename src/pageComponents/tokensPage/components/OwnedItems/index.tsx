@@ -72,7 +72,7 @@ export default function OwnedItems() {
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
-  const [current, SetCurrent] = useState(1);
+  const [current, setCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
   const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
@@ -161,7 +161,7 @@ export default function OwnedItems() {
         } else {
           setDataSource(data);
         }
-        SetCurrent((count) => {
+        setCurrent((count) => {
           return ++count;
         });
       } catch {
@@ -247,7 +247,7 @@ export default function OwnedItems() {
     (newFilterSelect: IFilterSelect = tempFilterSelect) => {
       setFilterSelect(newFilterSelect);
       const filter = getFilter(newFilterSelect);
-      SetCurrent(1);
+      setCurrent(1);
       fetchData({
         params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
@@ -370,7 +370,7 @@ export default function OwnedItems() {
 
   const { run } = useDebounceFn(
     (value) => {
-      SetCurrent(1);
+      setCurrent(1);
       fetchData({
         params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
@@ -382,7 +382,7 @@ export default function OwnedItems() {
   );
 
   const handleBaseClearAll = useCallback(() => {
-    SetCurrent(1);
+    setCurrent(1);
     setFilterSelect(defaultFilter);
     setTempFilterSelect(defaultFilter);
   }, [defaultFilter]);
@@ -414,7 +414,7 @@ export default function OwnedItems() {
 
   const clearSearchChange = () => {
     setSearchParam('');
-    SetCurrent(1);
+    setCurrent(1);
     fetchData({
       params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) },
       requestType: pageState,
