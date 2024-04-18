@@ -16,10 +16,14 @@ export class AdTracker {
   }
 
   sendAdTrack(event: AdEvent, payload: any) {
-    const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+    try {
+      const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
-    if (env === 'production' && this.isValid) {
-      this.gtm.push({ event, ...this.adInfo, ...payload });
+      if (env === 'production' && this.isValid) {
+        this.gtm.push({ event, ...this.adInfo, ...payload });
+      }
+    } catch (error) {
+      console.error('track error:', error);
     }
   }
 
