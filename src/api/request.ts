@@ -64,5 +64,5 @@ export const getIOSCustomization = async (): Promise<{ data: TCustomizationItemT
 };
 
 export const getCatDetail = async (params: ICatDetailParams): Promise<TSGRTokenInfo> => {
-  return request.post('/api/app/cat/detail', params);
+  return request.post('/app/cat/detail', params);
 };

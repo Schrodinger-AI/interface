@@ -6,7 +6,6 @@ import ItemInfo from './components/ItemInfo';
 import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
@@ -22,78 +21,7 @@ import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { usePageForm } from './hooks';
 import { getCatDetail } from 'api/request';
-import { useEffectOnce } from 'react-use';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-
-const mockData: TSGRTokenInfo = {
-  tick: 'tick',
-  blockTime: 12121212544,
-  symbol: 'SGRTEST-4522',
-  tokenName: 'SGRTEST-4522GEN9',
-  inscriptionImageUri: 'ipfs://QmQL44L3cGzSE5MamZiZnFQUj9KC7857yiU2KbP5PMP8gu',
-  amount: '100006500',
-  address: 'dsdsdsdsdsdsdsdsdsdsssds',
-  holderAmount: 1123232300,
-  generation: 9,
-  decimals: 8,
-  traits: [
-    {
-      traitType: 'Background',
-      value: 'Surreal Dreamstate Metropolis',
-      percent: 0.121277888,
-    },
-    {
-      traitType: 'Clothes',
-      value: 'Velvet Camisole',
-      percent: 0.78849721,
-    },
-    {
-      traitType: 'Breed',
-      value: 'Kanaani',
-      percent: 0.6029684601113172,
-    },
-    {
-      traitType: 'Necklace',
-      value: 'Enamel Art Deco Necklace',
-      percent: 2.4390243902439024,
-    },
-    {
-      traitType: 'Wing',
-      value: 'Imp Wings',
-      percent: 1.6759776536312849,
-    },
-    {
-      traitType: 'Belt',
-      value: 'Vintage Belt',
-      percent: 1.95530726256983,
-    },
-    {
-      traitType: 'Ride (cars alike)',
-      value: 'Cloud Somersault',
-      percent: 1.212121212121212,
-    },
-    {
-      traitType: 'Eyes',
-      value: 'Sunglasses',
-      percent: 1.081081081081081,
-    },
-    {
-      traitType: 'Mouth',
-      value: 'Murmuring',
-      percent: 2.46913580246913,
-    },
-    {
-      traitType: 'Shoes',
-      value: 'Pastel Puddle Jumpers',
-      percent: 0.862068965517241,
-    },
-    {
-      traitType: 'Accessory(Right Hand)',
-      value: 'Spyglass',
-      percent: 2.932551319648,
-    },
-  ],
-};
 
 export default function DetailPage() {
   const route = useRouter();
@@ -103,7 +31,6 @@ export default function DetailPage() {
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
-  const getSchrodingerDetail = useGetSchrodingerDetail();
   const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading } = useLoading();
@@ -141,39 +68,10 @@ export default function DetailPage() {
   );
 
   const getDetail = useCallback(async () => {
-    if (!wallet.address) return;
-    showLoading();
-    const result = await getSchrodingerDetail({
-      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
-    });
-
-    try {
-      const generation = result?.data?.getSchrodingerDetail?.generation;
-      const traits = result.data.getSchrodingerDetail.traits;
-      await generateCatsRankInfo(generation, traits);
-    } catch (error) {
-      console.log('getDetail--error', error);
-    } finally {
-      setSchrodingerDetail(result.data.getSchrodingerDetail);
-      closeLoading();
-    }
-  }, [
-    address,
-    closeLoading,
-    cmsInfo?.curChain,
-    generateCatsRankInfo,
-    getSchrodingerDetail,
-    showLoading,
-    symbol,
-    wallet.address,
-  ]);
-
-  const getDetailInGuestMode = useCallback(async () => {
     console.log('getDetailInGuestMode');
     try {
       showLoading();
-      // const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
-      const result = mockData;
+      const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
       setSchrodingerDetail(result);
 
       const generation = result?.generation;
@@ -185,16 +83,6 @@ export default function DetailPage() {
       closeLoading();
     }
   }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
-
-  const init = useCallback(() => {
-    console.log('init-callback-fromall', fromListAll);
-    fromListAll ? getDetailInGuestMode() : getDetail();
-  }, [fromListAll, getDetail, getDetailInGuestMode]);
-
-  useEffectOnce(() => {
-    console.log('init--once');
-    init();
-  });
 
   const onAdoptNextGeneration = () => {
     if (!schrodingerDetail) return;
@@ -275,16 +163,14 @@ export default function DetailPage() {
 
   useTimeoutFn(() => {
     if (!fromListAll && !isLogin) {
-      route.push('/');
+      route.replace('/');
     }
   }, 3000);
 
   useEffect(() => {
     console.log('isLogin--init--isLogin', isLogin);
-    if (isLogin) {
-      init();
-    }
-  }, [init, isLogin]);
+    getDetail();
+  }, [getDetail, isLogin]);
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
@@ -293,7 +179,7 @@ export default function DetailPage() {
           items={[
             {
               title: (
-                <span className=" cursor-pointer" onClick={() => route.push('/')}>
+                <span className=" cursor-pointer" onClick={() => route.replace('/')}>
                   Schrodinger
                 </span>
               ),
@@ -356,7 +242,7 @@ export default function DetailPage() {
         {tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
-            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
+            className="!rounded-lg !border-brandDefault !text-brandDefault h-[48px] w-full mt-[16px]"
             size="medium"
             onClick={onTrade}>
             Trade

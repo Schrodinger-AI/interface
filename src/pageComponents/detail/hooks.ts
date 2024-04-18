@@ -6,12 +6,7 @@ export function usePageForm() {
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || PageFrom.ALL;
 
-  const fromListAll = useMemo(() => {
-    if (from !== PageFrom.ALL && from !== PageFrom.MY) {
-      return true;
-    }
-    return from === PageFrom.ALL;
-  }, [from]);
+  const fromListAll = useMemo(() => from !== PageFrom.MY, [from]);
 
   return [fromListAll];
 }
