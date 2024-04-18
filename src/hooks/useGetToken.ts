@@ -128,7 +128,8 @@ export const useGetToken = () => {
               : signInfo,
         });
         if (sign?.errorMessage) {
-          message.error(sign.errorMessage);
+          const errorMessage = formatErrorMsg(sign?.errorMessage as unknown as IContractError).errorMessage.message;
+          message.error(errorMessage);
           isConnectWallet && logout({ noModal: true });
           return;
         }

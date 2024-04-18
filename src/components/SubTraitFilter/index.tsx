@@ -1,5 +1,12 @@
 import { Checkbox } from 'antd';
-import { useGetSubTraits } from 'graphqlServer';
+import {
+  useGetSubAllTraits,
+  useGetSubTraits,
+  TGetSubAllTraitsResult,
+  TGetSubTraitsResult,
+  TGetSubTraitsParams,
+  TGetSubAllTraitsParams,
+} from 'graphqlServer';
 import { useWalletService } from 'hooks/useWallet';
 import { ChangeEvent, useCallback, useMemo, useState, forwardRef, useImperativeHandle } from 'react';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
@@ -10,6 +17,7 @@ import { ZERO } from 'constants/misc';
 import CommonSearch from 'components/CommonSearch';
 import styles from './style.module.css';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import { ListTypeEnum } from 'types';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -31,24 +39,35 @@ export const SubTraitFilter = forwardRef(
     const cmsInfo = useCmsInfo();
     const [isLoading, setIsLoading] = useState(false);
     const { curViewListType } = useGetStoreInfo();
-    const getSubTraits = useGetSubTraits(curViewListType);
+    const getSubTraits = useGetSubTraits();
+    const getSubAllTraits = useGetSubAllTraits();
     const { wallet } = useWalletService();
     const [list, setList] = useState<TSubTraitItem[]>([]);
 
     const getSubTraitList = useCallback(async () => {
       setIsLoading(true);
+      const requestApi = curViewListType === ListTypeEnum.All ? getSubAllTraits : getSubTraits;
+      const reqParams: {
+        chainId: string;
+        traitType: string;
+        address?: string;
+      } = {
+        chainId: cmsInfo?.curChain || '',
+        address: wallet.address || '',
+        traitType,
+      };
+      if (curViewListType === ListTypeEnum.All) {
+        delete reqParams.address;
+      }
       try {
-        const {
-          data: {
-            getTraits: { traitsFilter: traitsList },
-          },
-        } = await getSubTraits({
-          input: {
-            chainId: cmsInfo?.curChain || '',
-            address: wallet.address || '',
-            traitType,
-          },
-        });
+        const { data } = await requestApi({
+          input: reqParams,
+        } as TGetSubAllTraitsParams & TGetSubTraitsParams);
+
+        const { traitsFilter: traitsList } =
+          curViewListType === ListTypeEnum.All
+            ? (data as TGetSubAllTraitsResult).getAllTraits
+            : (data as TGetSubTraitsResult).getTraits;
 
         const trait = traitsList[0];
         const list: TSubTraitItem[] = trait.values.map((item) => ({
@@ -62,7 +81,7 @@ export const SubTraitFilter = forwardRef(
       }
 
       setIsLoading(false);
-    }, [cmsInfo?.curChain, getSubTraits, traitType, wallet.address]);
+    }, [cmsInfo?.curChain, curViewListType, getSubAllTraits, getSubTraits, traitType, wallet.address]);
 
     useEffectOnce(() => {
       console.log('traitType', traitType, selectValues);
