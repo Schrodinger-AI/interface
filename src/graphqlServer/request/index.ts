@@ -9,10 +9,12 @@ import {
   GET_SUB_TRAITS_ALL_QUERY,
 } from '../queries';
 import {
+  TGetAllTraits,
   TGetLatestSchrodingerList,
   TGetSchrodingerDetail,
   TGetSchrodingerList,
   TGetStrayCats,
+  TGetSubAllTraits,
   TGetSubTraits,
   TGetTraits,
 } from '../types';
@@ -38,7 +40,7 @@ export const getTraits: TGetTraits = (client, params) => {
   });
 };
 
-export const getAllTraits: TGetTraits = (client, params) => {
+export const getAllTraits: TGetAllTraits = (client, params) => {
   return client.query({
     query: GET_TRAITS_ALL_QUERY,
     variables: params,
@@ -52,7 +54,7 @@ export const getSubTraits: TGetSubTraits = (client, params) => {
   });
 };
 
-export const getAllSubTraits: TGetSubTraits = (client, params) => {
+export const getAllSubTraits: TGetSubAllTraits = (client, params) => {
   return client.query({
     query: GET_SUB_TRAITS_ALL_QUERY,
     variables: params,
