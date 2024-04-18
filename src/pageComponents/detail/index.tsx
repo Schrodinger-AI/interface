@@ -22,6 +22,7 @@ import { addPrefixSuffix } from 'utils/addressFormatting';
 import { usePageForm } from './hooks';
 import { getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -74,7 +75,7 @@ export default function DetailPage() {
       showLoading();
       result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
       const generation = result?.generation;
-      const traits = result.traits;
+      const traits = result?.traits;
       await generateCatsRankInfo(generation, traits);
     } finally {
       closeLoading();
@@ -169,6 +170,10 @@ export default function DetailPage() {
     console.log('isLogin--init--isLogin', isLogin);
     getDetail();
   }, [getDetail, isLogin]);
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
+    route.replace('/');
+  });
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
