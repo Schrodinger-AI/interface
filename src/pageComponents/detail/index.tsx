@@ -69,18 +69,16 @@ export default function DetailPage() {
 
   const getDetail = useCallback(async () => {
     console.log('getDetailInGuestMode');
+    let result;
     try {
       showLoading();
-      const result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
-      setSchrodingerDetail(result);
-
+      result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
       const generation = result?.generation;
       const traits = result.traits;
       await generateCatsRankInfo(generation, traits);
-    } catch (error) {
-      console.log('getDetailInGuestMode--error', error);
     } finally {
       closeLoading();
+      setSchrodingerDetail(result);
     }
   }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
 
@@ -196,7 +194,7 @@ export default function DetailPage() {
             {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
-                className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+                className="!rounded-lg !border-brandDefault !text-brandDefault"
                 size="large"
                 onClick={onTrade}>
                 Trade
