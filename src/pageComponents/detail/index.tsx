@@ -20,6 +20,7 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { AdTracker } from 'utils/ad';
 
 export default function DetailPage() {
   const route = useRouter();

@@ -10,6 +10,7 @@ export type InfoStateType = {
   isMobile?: boolean;
   isSmallScreen?: boolean;
   theme: ThemeType;
+  adInfo?: any;
   baseInfo: {
     rpcUrl?: string;
     identityPoolID?: string;

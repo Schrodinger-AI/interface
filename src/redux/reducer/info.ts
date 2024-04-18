@@ -19,6 +19,22 @@ export const infoSlice = createSlice({
   name: 'info',
   initialState,
   reducers: {
+    setAdInfo(state, action) {
+      try {
+        const payload = action.payload;
+        const keys =
+          Object.keys(payload).filter((key) => {
+            return ['utm_campaign', 'utm_content', 'utm_medium', 'utm_source'].includes(key);
+          }) || [];
+        const adInfo = {} as unknown as any;
+        keys.forEach((k: string) => {
+          adInfo[k] = payload[k];
+        });
+        state.adInfo = adInfo;
+      } catch (error) {
+        console.error(error);
+      }
+    },
     setIsMobile(state, action) {
       state.isMobile = action.payload;
     },
@@ -60,8 +76,16 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin, setLoginTrigger, setHasToken } =
-  infoSlice.actions;
+export const {
+  setIsMobile,
+  setItemsFromLocal,
+  setTheme,
+  setCmsInfo,
+  setIsJoin,
+  setLoginTrigger,
+  setHasToken,
+  setAdInfo,
+} = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;
 
