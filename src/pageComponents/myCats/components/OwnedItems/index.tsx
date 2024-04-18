@@ -12,16 +12,13 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
-  MenuCheckboxItemType,
 } from '../../type';
 import clsx from 'clsx';
-import { Flex, Layout, MenuProps, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import { Flex, Layout, MenuProps } from 'antd';
 import CommonSearch from 'components/CommonSearch';
 import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
-import FilterMenuEmpty from '../FilterMenuEmpty';
 // import ScrollContent from '../ScrollContent';
 import { divDecimals, getPageNumber } from 'utils/calculate';
 import { useDebounceFn } from 'ahooks';
@@ -29,7 +26,7 @@ import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
@@ -41,10 +38,9 @@ import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
-import useEffectOnce from 'react-use/lib/useEffectOnce';
 
 export default function OwnedItems() {
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
@@ -54,7 +50,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain, 2));
+  const [filterList, setFilterList] = useState(getFilterList(curChain, 1));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -82,20 +78,30 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  useEffectOnce(() => {
+  const [pageState, setPageState] = useState<1 | 2>(1);
+
+  useEffect(() => {
     fetchData({ params: requestParams });
-  });
+  }, [pageState]);
+
+  useEffect(() => {
+    if (!isLogin) {
+      setPageState(2);
+      handleBaseClearAll();
+    }
+  }, [isLogin]);
 
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
     return {
       ...filter,
+      address: pageState === 1 ? walletAddress : undefined,
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
-      searchAddress: walletAddress,
+      searchAddress: pageState === 1 ? undefined : walletAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam]);
+  }, [filterSelect, walletAddress, current, searchParam, pageState]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
@@ -144,7 +150,7 @@ export default function OwnedItems() {
       } = await getTraits({
         input: {
           chainId: curChain,
-          address: '',
+          address: pageState === 1 ? walletAddress : '',
         },
       });
       const traitsList =
@@ -159,7 +165,7 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      const sourceFilterList = getFilterList(curChain, 2);
+      const sourceFilterList = getFilterList(curChain, pageState);
       const newFilterList = sourceFilterList.map((item) => {
         if (item.key === FilterKeyEnum.Traits) {
           return { ...item, data: traitsList };
@@ -173,7 +179,7 @@ export default function OwnedItems() {
     } catch (error) {
       console.log('getTraitList error', error);
     }
-  }, [curChain, getTraits]);
+  }, [curChain, getTraits, pageState]);
 
   useEffect(() => {
     getFilterListData();
@@ -197,7 +203,7 @@ export default function OwnedItems() {
         applyFilter(newFilterSelect);
       }
     },
-    [filterSelect, isMobile, collapsed, applyFilter],
+    [filterSelect, isMobile, collapsed, applyFilter, pageState],
   );
 
   const compChildRefs = useMemo(() => {
@@ -378,6 +384,8 @@ export default function OwnedItems() {
     [router],
   );
 
+  if (!isLogin) return null;
+
   return (
     <div>
       <Flex
@@ -385,8 +393,8 @@ export default function OwnedItems() {
         align="center"
         justify="space-between">
         <div>
-          <span className="text-2xl font-semibold pr-[8px]">{total}</span>
-          <span className="text-base font-semibold">Cats</span>
+          <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
+          <span className="text-base font-semibold">({total})</span>
         </div>
       </Flex>
       <Layout>
