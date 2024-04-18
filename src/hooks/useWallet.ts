@@ -28,6 +28,7 @@ import { MethodsWallet } from '@portkey/provider-types';
 import { setHasToken, setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { mainChain } from 'constants/index';
+import { AdTracker } from 'utils/ad';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -45,6 +46,10 @@ export const useWalletInit = () => {
         backToHomeByRoute();
       }
       if (state === WebLoginState.logined) {
+        AdTracker.trackEvent('connect_wallet', {
+          address: wallet?.address,
+        });
+
         const walletInfo: WalletInfoType = {
           address: wallet?.address || '',
           publicKey: wallet?.publicKey,
