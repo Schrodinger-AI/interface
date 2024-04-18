@@ -57,8 +57,8 @@ export const GET_TRAITS_QUERY = gql`
 `;
 
 export const GET_TRAITS_ALL_QUERY = gql`
-  query getAllTraits($input: GetTraitsInput) {
-    getTraits(input: $input) {
+  query getAllTraits($input: GetAllTraitsInput) {
+    getAllTraits(input: $input) {
       traitsFilter {
         traitType
         amount
@@ -87,8 +87,8 @@ export const GET_SUB_TRAITS_QUERY = gql`
 `;
 
 export const GET_SUB_TRAITS_ALL_QUERY = gql`
-  query getAllTraits($input: GetTraitsInput) {
-    getTraits(input: $input) {
+  query getAllTraits($input: GetAllTraitsInput) {
+    getAllTraits(input: $input) {
       traitsFilter {
         traitType
         amount

@@ -20,7 +20,6 @@ import CommonSearch from 'components/CommonSearch';
 import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
 import { CollapseForPC, CollapseForPhone } from '../FilterContainer';
-import FilterMenuEmpty from '../FilterMenuEmpty';
 import { divDecimals, getPageNumber } from 'utils/calculate';
 import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
@@ -29,7 +28,14 @@ import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
-import { useGetAllTraits, useGetTraits } from 'graphqlServer';
+import {
+  TGetAllTraitsParams,
+  TGetAllTraitsResult,
+  TGetTraitsParams,
+  TGetTraitsResult,
+  useGetAllTraits,
+  useGetTraits,
+} from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
@@ -43,6 +49,8 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { setCurViewListType } from 'redux/reducer/info';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import qs from 'qs';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
 
 const options = [
   { label: 'My cats', value: ListTypeEnum.My },
@@ -76,6 +84,7 @@ export default function OwnedItems() {
   const { checkLogin } = useCheckLoginAndToken();
   const { isLogin } = useGetLoginStatus();
   const walletAddressRef = useRef(walletAddress);
+  const { curViewListType } = useGetStoreInfo();
 
   useEffect(() => {
     walletAddressRef.current = walletAddress;
@@ -95,7 +104,7 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  const [pageState, setPageState] = useState(ListTypeEnum.All);
+  const [pageState, setPageState] = useState<ListTypeEnum>(curViewListType);
 
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
@@ -152,6 +161,9 @@ export default function OwnedItems() {
         } else {
           setDataSource(data);
         }
+        SetCurrent((count) => {
+          return ++count;
+        });
       } catch {
         setDataSource((preData) => preData || []);
       } finally {
@@ -160,6 +172,11 @@ export default function OwnedItems() {
     },
     [closeLoading, showLoading],
   );
+
+  useEffect(() => {
+    setDataSource([]);
+    setTotal(0);
+  }, [pageState]);
 
   useEffect(() => {
     fetchData({
@@ -175,17 +192,22 @@ export default function OwnedItems() {
     async ({ type }: { type: ListTypeEnum }) => {
       const currentWalletAddress = walletAddressRef.current;
       const requestApi = type === ListTypeEnum.All ? getAllTraits : getTraits;
+      const reqParams: {
+        chainId: string;
+        address?: string;
+      } = {
+        chainId: curChain,
+        address: currentWalletAddress,
+      };
+      if (type === ListTypeEnum.All) {
+        delete reqParams.address;
+      }
       try {
-        const {
-          data: {
-            getTraits: { traitsFilter, generationFilter },
-          },
-        } = await requestApi({
-          input: {
-            chainId: curChain,
-            address: type === ListTypeEnum.All ? '' : currentWalletAddress,
-          },
-        });
+        const { data } = await requestApi({
+          input: reqParams,
+        } as TGetTraitsParams & TGetAllTraitsParams);
+        const { traitsFilter, generationFilter } =
+          type === ListTypeEnum.All ? (data as TGetAllTraitsResult).getAllTraits : (data as TGetTraitsResult).getTraits;
         const traitsList =
           traitsFilter?.map((item) => ({
             label: item.traitType,
@@ -288,59 +310,58 @@ export default function OwnedItems() {
   );
 
   const collapseItems = useMemo(() => {
-    return filterList?.map((item) => {
-      const value = tempFilterSelect[item.key]?.data;
-      let children: Required<MenuProps>['items'] = [];
-      if (item.type === FilterType.Checkbox) {
-        const Comp = getComponentByType(item.type);
-        children = [
-          {
-            key: item.key,
-            label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
-          },
-        ];
-      } else if (item.type === FilterType.MenuCheckbox) {
-        const Comp = getComponentByType(item.type);
-        if (item.data.length === 0) {
-          children = [
-            {
-              key: item.key,
-              label: <FilterMenuEmpty />,
-            },
-          ];
-        } else {
-          children = item.data.map((subItem) => {
-            return {
-              key: subItem.value,
-              label: <Comp label={subItem.label} count={subItem.count} />,
-              children: [
-                {
-                  key: subItem.value,
-                  label: (
-                    <Comp.child
-                      ref={compChildRefs[subItem.value]}
-                      itemKey={item.key}
-                      parentLabel={subItem.label}
-                      parentValue={subItem.value}
-                      value={value as MenuCheckboxItemDataType[]}
-                      onChange={filterChange}
-                    />
-                  ),
-                },
-              ],
-            };
-          });
+    return filterList
+      ?.map((item) => {
+        const value = tempFilterSelect[item.key]?.data;
+        let children: Required<MenuProps>['items'] = [];
+        if (item.type === FilterType.Checkbox) {
+          const Comp = getComponentByType(item.type);
+          if (item.data.length) {
+            children = [
+              {
+                key: item.key,
+                label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
+              },
+            ];
+          }
+        } else if (item.type === FilterType.MenuCheckbox) {
+          const Comp = getComponentByType(item.type);
+          if (item.data.length) {
+            children = item.data.map((subItem) => {
+              return {
+                key: subItem.value,
+                label: <Comp label={subItem.label} count={subItem.count} />,
+                children: [
+                  {
+                    key: subItem.value,
+                    label: (
+                      <Comp.child
+                        ref={compChildRefs[subItem.value]}
+                        itemKey={item.key}
+                        parentLabel={subItem.label}
+                        parentValue={subItem.value}
+                        value={value as MenuCheckboxItemDataType[]}
+                        onChange={filterChange}
+                      />
+                    ),
+                  },
+                ],
+              };
+            });
+          }
         }
-      }
-      return {
-        key: item.key,
-        label: renderCollapseItemsLabel({
-          title: item.title,
-          tips: item?.tips,
-        }),
-        children,
-      };
-    });
+        return children.length
+          ? {
+              key: item.key,
+              label: renderCollapseItemsLabel({
+                title: item.title,
+                tips: item?.tips,
+              }),
+              children,
+            }
+          : undefined;
+      })
+      .filter((i) => i) as ItemType[];
   }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs]);
 
   const collapsedChange = () => {
@@ -410,11 +431,10 @@ export default function OwnedItems() {
 
   const loadMoreData = useCallback(() => {
     if (isLoading || !hasMore) return;
-    SetCurrent(current + 1);
     fetchData({
       params: {
         ...requestParams,
-        skipCount: getPageNumber(current + 1, pageSize),
+        skipCount: getPageNumber(current, pageSize),
       },
       loadMore: true,
       requestType: pageState,
@@ -469,9 +489,17 @@ export default function OwnedItems() {
     [checkLogin, isLogin, setCurrentViewList],
   );
 
-  const atViewAll = useMemo(() => {
-    return pageState === ListTypeEnum.All;
-  }, [pageState]);
+  const renderTotalAmount = useMemo(() => {
+    if (pageState === ListTypeEnum.All) {
+      return <span className="text-2xl font-semibold">{`${total} ${total > 1 ? 'Cats' : 'Cat'}`}</span>;
+    }
+    return (
+      <div>
+        <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
+        <span className="text-base font-semibold">({total})</span>
+      </div>
+    );
+  }, [pageState, total]);
 
   useEffect(() => {
     if (!isLogin) {
@@ -486,14 +514,7 @@ export default function OwnedItems() {
         className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
         align="center"
         justify="space-between">
-        {atViewAll ? (
-          <span className="text-2xl font-semibold">{`${total} Cats`}</span>
-        ) : (
-          <div>
-            <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
-            <span className="text-base font-semibold">({total})</span>
-          </div>
-        )}
+        {renderTotalAmount}
         <Radio.Group
           className="min-w-[179px]"
           options={options}
