@@ -83,7 +83,7 @@ export default function OwnedItems() {
   }, [is2XL, is3XL, is4XL, is5XL]);
 
   useEffectOnce(() => {
-    fetchData({ params: requestParams });
+    fetchDataDispatch({ params: requestParams });
   });
 
   const requestParams = useMemo(() => {
@@ -118,7 +118,6 @@ export default function OwnedItems() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
-
         if (data.length < pageSize) {
           setHasMore(false);
         } else {
@@ -129,6 +128,9 @@ export default function OwnedItems() {
         } else {
           setDataSource(data);
         }
+        SetCurrent((count) => {
+          return ++count;
+        });
       } catch {
         setDataSource((preData) => preData || []);
       } finally {
@@ -136,6 +138,19 @@ export default function OwnedItems() {
       }
     },
     [closeLoading, showLoading],
+  );
+
+  const fetchDataDispatch = useCallback(
+    async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
+      const hasSearch =
+        params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
+      if (hasSearch) {
+        fetchData({ params, loadMore });
+      } else {
+        fetchData({ params, loadMore });
+      }
+    },
+    [fetchData],
   );
 
   const getTraits = useGetTraits();
@@ -189,9 +204,9 @@ export default function OwnedItems() {
       setFilterSelect(newFilterSelect);
       const filter = getFilter(newFilterSelect);
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+      fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
     },
-    [tempFilterSelect, fetchData, requestParams],
+    [tempFilterSelect, fetchDataDispatch, requestParams],
   );
 
   const filterChange = useCallback(
@@ -309,7 +324,7 @@ export default function OwnedItems() {
   const { run } = useDebounceFn(
     (value) => {
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) } });
+      fetchDataDispatch({ params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) } });
     },
     {
       wait: 500,
@@ -325,16 +340,16 @@ export default function OwnedItems() {
   const handleFilterClearAll = useCallback(() => {
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+    fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
     setCollapsed(false);
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+  }, [defaultFilter, fetchDataDispatch, handleBaseClearAll, requestParams]);
 
   const handleTagsClearAll = useCallback(() => {
     setSearchParam('');
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+    fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
+  }, [defaultFilter, fetchDataDispatch, handleBaseClearAll, requestParams]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -344,7 +359,7 @@ export default function OwnedItems() {
   const clearSearchChange = () => {
     setSearchParam('');
     SetCurrent(1);
-    fetchData({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
+    fetchDataDispatch({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
   };
 
   const [hasMore, setHasMore] = useState(true);
@@ -355,15 +370,14 @@ export default function OwnedItems() {
 
   const loadMoreData = useCallback(() => {
     if (isLoading || !hasMore) return;
-    SetCurrent(current + 1);
-    fetchData({
+    fetchDataDispatch({
       params: {
         ...requestParams,
-        skipCount: getPageNumber(current + 1, pageSize),
+        skipCount: getPageNumber(current, pageSize),
       },
       loadMore: true,
     });
-  }, [isLoading, hasMore, current, fetchData, requestParams]);
+  }, [isLoading, hasMore, fetchDataDispatch, requestParams, current]);
 
   const emptyText = useMemo(() => {
     return (

@@ -28,7 +28,7 @@ export enum FilterKeyEnum {
   Rarity = 'Rarity',
 }
 
-export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Traits, FilterKeyEnum.Rarity];
+export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Rarity];
 
 export type CheckboxItemType = {
   key: FilterKeyEnum;
