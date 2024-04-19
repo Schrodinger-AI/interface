@@ -54,7 +54,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain, 2));
+  const [filterList, setFilterList] = useState(getFilterList(curChain));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -93,15 +93,15 @@ export default function OwnedItems() {
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
-      searchAddress: walletAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam]);
+  }, [filterSelect, current, searchParam]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
       if (!params.chainId) {
         return;
       }
+      setHasMore(true);
       showLoading();
       try {
         const res = await catsList(params);
@@ -119,6 +119,11 @@ export default function OwnedItems() {
           };
         });
 
+        if (data.length < 32) {
+          setHasMore(false);
+        } else {
+          setHasMore(true);
+        }
         if (loadMore) {
           setDataSource((preData) => [...(preData || []), ...data]);
         } else {
@@ -159,7 +164,7 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      const sourceFilterList = getFilterList(curChain, 2);
+      const sourceFilterList = getFilterList(curChain);
       const newFilterList = sourceFilterList.map((item) => {
         if (item.key === FilterKeyEnum.Traits) {
           return { ...item, data: traitsList };
@@ -342,9 +347,7 @@ export default function OwnedItems() {
     fetchData({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
   };
 
-  const hasMore = useMemo(() => {
-    return !!(dataSource && total > dataSource.length);
-  }, [total, dataSource]);
+  const [hasMore, setHasMore] = useState(true);
 
   const tagList = useMemo(() => {
     return getTagList(filterSelect, searchParam);
@@ -380,15 +383,7 @@ export default function OwnedItems() {
 
   return (
     <div>
-      <Flex
-        className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
-        align="center"
-        justify="space-between">
-        <div>
-          <span className="text-2xl font-semibold pr-[8px]">{total}</span>
-          <span className="text-base font-semibold">Cats</span>
-        </div>
-      </Flex>
+      <div className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"></div>
       <Layout>
         {isMobile ? (
           <CollapseForPhone
