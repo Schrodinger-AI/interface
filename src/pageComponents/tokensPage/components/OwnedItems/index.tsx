@@ -33,7 +33,7 @@ import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
-import { TSGRItem } from 'types/tokens';
+import { ICatsListData, TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
 import { catsList } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
@@ -42,6 +42,7 @@ import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
+import { resolve } from 'path';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -140,17 +141,72 @@ export default function OwnedItems() {
     [closeLoading, showLoading],
   );
 
+  const fetchDataOnce = useCallback(async (params: ICatsListParams) => {
+    if (!params.chainId) {
+      return;
+    }
+    const res = await catsList(params);
+    return res;
+  }, []);
+
+  const fetchDataAll = useCallback(
+    async (params: ICatsListParams) => {
+      const skipCounts = [0, 10000, 20000, 30000, 40000, 50000, 60000];
+      const fetchList = skipCounts.map(
+        (skipCount) => () => fetchDataOnce({ ...params, skipCount, maxResultCount: 10000 }),
+      );
+
+      showLoading();
+      setHasMore(false);
+      try {
+        const result = await Promise.all(fetchList.map((fetch) => fetch()));
+        let res: ICatsListData = {
+          data: [],
+          totalCount: 0,
+        };
+        result.map((item) => {
+          if (item) {
+            res = {
+              data: [...res.data, ...item.data],
+              totalCount: res.totalCount + item.totalCount,
+            };
+          }
+        });
+
+        setTotal(res.totalCount ?? 0);
+        const hasSearch =
+          params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
+        if (!hasSearch) {
+          setOwnedTotal(res.totalCount ?? 0);
+        }
+
+        const data = (res.data || []).map((item) => {
+          return {
+            ...item,
+            amount: divDecimals(item.amount, item.decimals).toFixed(),
+          };
+        });
+        setDataSource(data);
+      } catch {
+        setDataSource((preData) => preData || []);
+      } finally {
+        closeLoading();
+      }
+    },
+    [closeLoading, fetchDataOnce, showLoading],
+  );
+
   const fetchDataDispatch = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
       const hasSearch =
         params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
       if (hasSearch) {
-        fetchData({ params, loadMore });
+        fetchDataAll(params);
       } else {
         fetchData({ params, loadMore });
       }
     },
-    [fetchData],
+    [fetchData, fetchDataAll],
   );
 
   const getTraits = useGetTraits();
