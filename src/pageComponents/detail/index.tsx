@@ -28,7 +28,6 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
-  const address = searchParams.get('address') || '';
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
@@ -46,7 +45,6 @@ export default function DetailPage() {
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
-  const isMyself = address === wallet.address;
 
   const generateCatsRankInfo = useCallback(
     async (generation: number, traits: ITrait[]) => {
@@ -77,6 +75,8 @@ export default function DetailPage() {
       const generation = result?.generation;
       const traits = result?.traits;
       await generateCatsRankInfo(generation, traits);
+    } catch (error) {
+      console.log('getDetailInGuestMode-error', error);
     } finally {
       closeLoading();
       setSchrodingerDetail(result);
@@ -93,9 +93,10 @@ export default function DetailPage() {
     resetHandler(schrodingerDetail, wallet.address, rankInfo);
   };
 
-  const onBack = () => {
-    route.back();
-  };
+  const onBack = useCallback(() => {
+    const path = fromListAll ? '/' : '/my-cats';
+    route.replace(path);
+  }, [fromListAll, route]);
 
   const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
   const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
@@ -103,17 +104,11 @@ export default function DetailPage() {
     () => (schrodingerDetail?.holderAmount || 0) > 0,
     [schrodingerDetail?.holderAmount],
   );
-  const showAdopt = useMemo(
-    () => (fromListAll ? holderNumberGtZero && genLtNine : genLtNine),
-    [fromListAll, genLtNine, holderNumberGtZero],
-  );
+  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
 
-  const showReset = useMemo(
-    () => (fromListAll ? holderNumberGtZero && genGtZero : genGtZero),
-    [fromListAll, genGtZero, holderNumberGtZero],
-  );
+  const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
 
-  const adoptAndResetButton = () => {
+  function adoptAndResetButton() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
@@ -132,7 +127,7 @@ export default function DetailPage() {
         )}
       </div>
     );
-  };
+  }
 
   const adoptAndResetButtonSmall = () => {
     return (
@@ -162,7 +157,7 @@ export default function DetailPage() {
 
   useTimeoutFn(() => {
     if (!fromListAll && !isLogin) {
-      route.replace('/');
+      onBack();
     }
   }, 3000);
 
@@ -171,9 +166,7 @@ export default function DetailPage() {
     getDetail();
   }, [getDetail, isLogin]);
 
-  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
-    route.replace('/');
-  });
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
@@ -182,7 +175,7 @@ export default function DetailPage() {
           items={[
             {
               title: (
-                <span className=" cursor-pointer" onClick={() => route.replace('/')}>
+                <span className=" cursor-pointer" onClick={onBack}>
                   Schrodinger
                 </span>
               ),
@@ -195,7 +188,7 @@ export default function DetailPage() {
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
-            {isMyself && <> {adoptAndResetButton()}</>}
+            {adoptAndResetButton()}
             {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
@@ -218,7 +211,7 @@ export default function DetailPage() {
           )}
           {schrodingerDetail && (
             <ItemInfo
-              showAdopt={isMyself}
+              showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
               onAdoptNextGeneration={onAdoptNextGeneration}
@@ -254,8 +247,7 @@ export default function DetailPage() {
         {schrodingerDetail && (
           <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
         )}
-
-        {isMyself && <> {adoptAndResetButtonSmall()}</>}
+        {adoptAndResetButtonSmall()}
       </div>
     </section>
   );

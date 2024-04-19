@@ -6,10 +6,10 @@ import { useMemo } from 'react';
 import { divDecimals } from 'utils/calculate';
 
 export default function DetailTitle({ detail, fromListAll }: { detail: TSGRTokenInfo; fromListAll: boolean }) {
-  const amountStr = useMemo(() => {
-    const amount = fromListAll ? detail.holderAmount : detail.amount;
-    return divDecimals(amount, detail.decimals).toFixed();
-  }, [detail.amount, detail.decimals, detail.holderAmount, fromListAll]);
+  const amountStr = useMemo(
+    () => divDecimals(detail.amount, detail.decimals).toFixed(),
+    [detail?.amount, detail.decimals],
+  );
 
   const amountText = useMemo(() => (fromListAll ? 'Amount' : 'Amount Owned'), [fromListAll]);
 
