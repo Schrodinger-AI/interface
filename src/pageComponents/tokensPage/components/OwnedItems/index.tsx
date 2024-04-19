@@ -119,7 +119,7 @@ export default function OwnedItems() {
           };
         });
 
-        if (data.length < 32) {
+        if (data.length < pageSize) {
           setHasMore(false);
         } else {
           setHasMore(true);
