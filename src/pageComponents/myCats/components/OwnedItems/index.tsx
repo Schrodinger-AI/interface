@@ -50,7 +50,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain, 1));
+  const [filterList, setFilterList] = useState(getFilterList(curChain));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -95,13 +95,12 @@ export default function OwnedItems() {
     const filter = getFilter(filterSelect);
     return {
       ...filter,
-      address: pageState === 1 ? walletAddress : undefined,
+      address: walletAddress,
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
-      searchAddress: pageState === 1 ? undefined : walletAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam, pageState]);
+  }, [filterSelect, walletAddress, current, searchParam]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
@@ -165,7 +164,7 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      const sourceFilterList = getFilterList(curChain, pageState);
+      const sourceFilterList = getFilterList(curChain);
       const newFilterList = sourceFilterList.map((item) => {
         if (item.key === FilterKeyEnum.Traits) {
           return { ...item, data: traitsList };

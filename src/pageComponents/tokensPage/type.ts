@@ -28,7 +28,7 @@ export enum FilterKeyEnum {
   Rarity = 'Rarity',
 }
 
-export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Traits];
+export const DEFAULT_FILTER_OPEN_KEYS = [FilterKeyEnum.Chain, FilterKeyEnum.Rarity];
 
 export type CheckboxItemType = {
   key: FilterKeyEnum;
@@ -46,8 +46,23 @@ export type MenuCheckboxItemType = {
   tips?: string;
 };
 
-export const getFilterList = (ChainId: string, pageState: 1 | 2): Array<CheckboxItemType | MenuCheckboxItemType> => {
+export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuCheckboxItemType> => {
+  const rarityFilter: CheckboxItemType = {
+    key: FilterKeyEnum.Rarity,
+    title: FilterKeyEnum.Rarity,
+    type: FilterType.Checkbox,
+    tips: 'Only Gen-9 Cats support Rarity filtering.',
+    data: [
+      { value: 'Diamond', label: 'Diamond' },
+      { value: 'Emerald', label: 'Emerald' },
+      { value: 'Platinum', label: 'Platinum' },
+      { value: 'Gold', label: 'Gold' },
+      { value: 'Silver', label: 'Silver' },
+      { value: 'Bronze', label: 'Bronze' },
+    ],
+  };
   const filterList: Array<CheckboxItemType | MenuCheckboxItemType> = [
+    rarityFilter,
     {
       key: FilterKeyEnum.Chain,
       title: FilterKeyEnum.Chain,
@@ -67,26 +82,6 @@ export const getFilterList = (ChainId: string, pageState: 1 | 2): Array<Checkbox
       data: [],
     },
   ];
-
-  const rarityFilter: CheckboxItemType = {
-    key: FilterKeyEnum.Rarity,
-    title: FilterKeyEnum.Rarity,
-    type: FilterType.Checkbox,
-    tips: 'Only Gen-9 Cats support Rarity filtering.',
-    data: [
-      { value: 'Diamond', label: 'Diamond' },
-      { value: 'Emerald', label: 'Emerald' },
-      { value: 'Platinum', label: 'Platinum' },
-      { value: 'Gold', label: 'Gold' },
-      { value: 'Silver', label: 'Silver' },
-      { value: 'Bronze', label: 'Bronze' },
-    ],
-  };
-
-  if (pageState === 1) {
-    filterList.push(rarityFilter);
-  }
-
   return filterList;
 };
 
@@ -111,6 +106,10 @@ export interface IFilterSelect {
 
 export const getDefaultFilter = (ChainId: string): IFilterSelect => {
   return {
+    [FilterKeyEnum.Rarity]: {
+      type: FilterType.Checkbox,
+      data: [],
+    },
     [FilterKeyEnum.Chain]: {
       type: FilterType.Checkbox,
       data: [{ value: ChainId, label: `SideChain ${ChainId}`, disabled: true }],
@@ -120,10 +119,6 @@ export const getDefaultFilter = (ChainId: string): IFilterSelect => {
       data: [],
     },
     [FilterKeyEnum.Generation]: {
-      type: FilterType.Checkbox,
-      data: [],
-    },
-    [FilterKeyEnum.Rarity]: {
       type: FilterType.Checkbox,
       data: [],
     },

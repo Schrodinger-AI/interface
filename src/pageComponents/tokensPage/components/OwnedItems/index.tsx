@@ -33,7 +33,7 @@ import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import { useGetTraits } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
-import { TSGRItem } from 'types/tokens';
+import { ICatsListData, TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
 import { catsList } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
@@ -44,7 +44,7 @@ import { useRouter } from 'next/navigation';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
 
 export default function OwnedItems() {
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
@@ -54,7 +54,7 @@ export default function OwnedItems() {
   const [searchParam, setSearchParam] = useState('');
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
-  const [filterList, setFilterList] = useState(getFilterList(curChain, 2));
+  const [filterList, setFilterList] = useState(getFilterList(curChain));
   const defaultFilter = useMemo(() => getDefaultFilter(curChain), [curChain]);
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -82,9 +82,9 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  useEffectOnce(() => {
-    fetchData({ params: requestParams });
-  });
+  // useEffectOnce(() => {
+  //   fetchDataDispatch({ params: requestParams });
+  // });
 
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
@@ -95,13 +95,14 @@ export default function OwnedItems() {
       keyword: searchParam,
       searchAddress: walletAddress,
     };
-  }, [filterSelect, walletAddress, current, searchParam]);
+  }, [filterSelect, current, searchParam, walletAddress]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
       if (!params.chainId) {
         return;
       }
+      setHasMore(true);
       showLoading();
       try {
         const res = await catsList(params);
@@ -118,12 +119,19 @@ export default function OwnedItems() {
             amount: divDecimals(item.amount, item.decimals).toFixed(),
           };
         });
-
+        if (data.length < pageSize) {
+          setHasMore(false);
+        } else {
+          setHasMore(true);
+        }
         if (loadMore) {
           setDataSource((preData) => [...(preData || []), ...data]);
         } else {
           setDataSource(data);
         }
+        SetCurrent((count) => {
+          return ++count;
+        });
       } catch {
         setDataSource((preData) => preData || []);
       } finally {
@@ -132,6 +140,78 @@ export default function OwnedItems() {
     },
     [closeLoading, showLoading],
   );
+
+  const fetchDataOnce = useCallback(async (params: ICatsListParams) => {
+    if (!params.chainId) {
+      return;
+    }
+    const res = await catsList(params);
+    return res;
+  }, []);
+
+  const fetchDataAll = useCallback(
+    async (params: ICatsListParams) => {
+      const skipCounts = [0, 10000, 20000, 30000, 40000, 50000, 60000];
+      const fetchList = skipCounts.map(
+        (skipCount) => () => fetchDataOnce({ ...params, skipCount, maxResultCount: 10000 }),
+      );
+
+      showLoading();
+      setHasMore(false);
+      try {
+        const result = await Promise.all(fetchList.map((fetch) => fetch()));
+        let res: ICatsListData = {
+          data: [],
+          totalCount: 0,
+        };
+        result.map((item) => {
+          if (item) {
+            res = {
+              data: [...res.data, ...item.data],
+              totalCount: res.totalCount + item.totalCount,
+            };
+          }
+        });
+
+        setTotal(res.totalCount ?? 0);
+        const hasSearch =
+          params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
+        if (!hasSearch) {
+          setOwnedTotal(res.totalCount ?? 0);
+        }
+
+        const data = (res.data || []).map((item) => {
+          return {
+            ...item,
+            amount: divDecimals(item.amount, item.decimals).toFixed(),
+          };
+        });
+        setDataSource(data);
+      } catch {
+        setDataSource((preData) => preData || []);
+      } finally {
+        closeLoading();
+      }
+    },
+    [closeLoading, fetchDataOnce, showLoading],
+  );
+
+  const fetchDataDispatch = useCallback(
+    async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
+      const hasSearch =
+        params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
+      if (hasSearch) {
+        fetchDataAll(params);
+      } else {
+        fetchData({ params, loadMore });
+      }
+    },
+    [fetchData, fetchDataAll],
+  );
+
+  useEffect(() => {
+    fetchDataDispatch({ params: requestParams });
+  }, [isLogin]);
 
   const getTraits = useGetTraits();
 
@@ -159,7 +239,7 @@ export default function OwnedItems() {
           value: item.generationName,
           count: ZERO.plus(item.generationAmount).toFormat(),
         })) || [];
-      const sourceFilterList = getFilterList(curChain, 2);
+      const sourceFilterList = getFilterList(curChain);
       const newFilterList = sourceFilterList.map((item) => {
         if (item.key === FilterKeyEnum.Traits) {
           return { ...item, data: traitsList };
@@ -184,9 +264,9 @@ export default function OwnedItems() {
       setFilterSelect(newFilterSelect);
       const filter = getFilter(newFilterSelect);
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+      fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
     },
-    [tempFilterSelect, fetchData, requestParams],
+    [tempFilterSelect, fetchDataDispatch, requestParams],
   );
 
   const filterChange = useCallback(
@@ -304,7 +384,7 @@ export default function OwnedItems() {
   const { run } = useDebounceFn(
     (value) => {
       SetCurrent(1);
-      fetchData({ params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) } });
+      fetchDataDispatch({ params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) } });
     },
     {
       wait: 500,
@@ -320,16 +400,16 @@ export default function OwnedItems() {
   const handleFilterClearAll = useCallback(() => {
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
+    fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) } });
     setCollapsed(false);
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+  }, [defaultFilter, fetchDataDispatch, handleBaseClearAll, requestParams]);
 
   const handleTagsClearAll = useCallback(() => {
     setSearchParam('');
     handleBaseClearAll();
     const filter = getFilter(defaultFilter);
-    fetchData({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
-  }, [defaultFilter, fetchData, handleBaseClearAll, requestParams]);
+    fetchDataDispatch({ params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' } });
+  }, [defaultFilter, fetchDataDispatch, handleBaseClearAll, requestParams]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -339,12 +419,10 @@ export default function OwnedItems() {
   const clearSearchChange = () => {
     setSearchParam('');
     SetCurrent(1);
-    fetchData({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
+    fetchDataDispatch({ params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) } });
   };
 
-  const hasMore = useMemo(() => {
-    return !!(dataSource && total > dataSource.length);
-  }, [total, dataSource]);
+  const [hasMore, setHasMore] = useState(true);
 
   const tagList = useMemo(() => {
     return getTagList(filterSelect, searchParam);
@@ -352,15 +430,14 @@ export default function OwnedItems() {
 
   const loadMoreData = useCallback(() => {
     if (isLoading || !hasMore) return;
-    SetCurrent(current + 1);
-    fetchData({
+    fetchDataDispatch({
       params: {
         ...requestParams,
-        skipCount: getPageNumber(current + 1, pageSize),
+        skipCount: getPageNumber(current, pageSize),
       },
       loadMore: true,
     });
-  }, [isLoading, hasMore, current, fetchData, requestParams]);
+  }, [isLoading, hasMore, fetchDataDispatch, requestParams, current]);
 
   const emptyText = useMemo(() => {
     return (
@@ -380,15 +457,7 @@ export default function OwnedItems() {
 
   return (
     <div>
-      <Flex
-        className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
-        align="center"
-        justify="space-between">
-        <div>
-          <span className="text-2xl font-semibold pr-[8px]">{total}</span>
-          <span className="text-base font-semibold">Cats</span>
-        </div>
-      </Flex>
+      <div className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"></div>
       <Layout>
         {isMobile ? (
           <CollapseForPhone
