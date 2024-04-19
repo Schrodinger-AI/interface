@@ -1,6 +1,6 @@
 import { ChainId } from '@portkey/types';
-import CheckBoxGroups from './components/CheckBoxGroups';
-import MenuFilter from './components/MenuFilter';
+import CheckBoxGroups from 'components/CheckBoxGroups';
+import MenuFilter from 'components/MenuFilter';
 import { store } from 'redux/store';
 
 export enum FilterType {

@@ -12,10 +12,10 @@ import {
   MenuCheckboxItemDataType,
   FilterKeyEnum,
   CheckboxItemType,
-} from '../../type';
+} from 'types/tokensPage';
 import { ListTypeEnum } from 'types';
 import clsx from 'clsx';
-import { Flex, Layout, MenuProps, Radio } from 'antd';
+import { Flex, Layout, MenuProps } from 'antd';
 import CommonSearch from 'components/CommonSearch';
 import { ISubTraitFilterInstance } from 'components/SubTraitFilter';
 import FilterTags from '../FilterTags';
@@ -45,19 +45,10 @@ import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
-import { useCheckLoginAndToken } from 'hooks/useWallet';
-import { setCurViewListType } from 'redux/reducer/info';
-import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import qs from 'qs';
-import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 
-const options = [
-  { label: 'My cats', value: ListTypeEnum.My },
-  { label: 'View all', value: ListTypeEnum.All },
-];
-
-export default function OwnedItems() {
+export default function OwnedItems({ pageState = ListTypeEnum.All }: { pageState?: ListTypeEnum }) {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
@@ -81,10 +72,7 @@ export default function OwnedItems() {
   const router = useRouter();
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const filterListRef = useRef<any>();
-  const { checkLogin } = useCheckLoginAndToken();
-  const { isLogin } = useGetLoginStatus();
   const walletAddressRef = useRef(walletAddress);
-  const { curViewListType } = useGetStoreInfo();
 
   useEffect(() => {
     walletAddressRef.current = walletAddress;
@@ -103,8 +91,6 @@ export default function OwnedItems() {
       return 368;
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
-
-  const [pageState, setPageState] = useState<ListTypeEnum>(curViewListType);
 
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
@@ -455,7 +441,6 @@ export default function OwnedItems() {
     (item: TSGRItem) => {
       const params = qs.stringify({
         symbol: item.symbol,
-        address: item.address,
         from: pageState === ListTypeEnum.All ? 'all' : 'my',
       });
 
@@ -464,30 +449,10 @@ export default function OwnedItems() {
     [pageState, router],
   );
 
-  const setCurrentViewList = useCallback((value: number) => {
-    setPageState(value);
-    store.dispatch(setCurViewListType(value));
-  }, []);
-
   useEffect(() => {
     // clear all status
     handleBaseClearAll();
   }, [handleBaseClearAll, pageState]);
-
-  const handleRadioChange = useCallback(
-    (value: number) => {
-      if (value === ListTypeEnum.My && !isLogin) {
-        checkLogin({
-          onSuccess: () => {
-            setCurrentViewList(value);
-          },
-        });
-        return;
-      }
-      setCurrentViewList(value);
-    },
-    [checkLogin, isLogin, setCurrentViewList],
-  );
 
   const renderTotalAmount = useMemo(() => {
     if (pageState === ListTypeEnum.All) {
@@ -501,13 +466,6 @@ export default function OwnedItems() {
     );
   }, [pageState, total]);
 
-  useEffect(() => {
-    if (!isLogin) {
-      handleRadioChange(ListTypeEnum.All);
-      store.dispatch(setCurViewListType(ListTypeEnum.All));
-    }
-  }, [handleRadioChange, isLogin]);
-
   return (
     <div>
       <Flex
@@ -515,15 +473,6 @@ export default function OwnedItems() {
         align="center"
         justify="space-between">
         {renderTotalAmount}
-        <Radio.Group
-          className="min-w-[179px]"
-          options={options}
-          onChange={(e) => {
-            handleRadioChange(e.target.value);
-          }}
-          value={pageState}
-          optionType="button"
-        />
       </Flex>
       <Layout>
         {isMobile ? (

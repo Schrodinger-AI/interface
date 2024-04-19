@@ -31,6 +31,9 @@ import { NEED_LOGIN_PAGE } from 'constants/router';
 
 import { useCmsInfo } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { store } from 'redux/store';
+import { setCurViewListType } from 'redux/reducer/info';
+import { ListTypeEnum } from 'types';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -64,7 +67,14 @@ export default function Header() {
 
       if (schema && NEED_LOGIN_PAGE.includes(schema)) {
         if (!isLogin) {
-          checkLogin();
+          checkLogin({
+            onSuccess: () => {
+              router.push(schema || '/');
+              if (schema === '/my-cats') {
+                store.dispatch(setCurViewListType(ListTypeEnum.My));
+              }
+            },
+          });
           return;
         }
       }
@@ -85,6 +95,9 @@ export default function Header() {
 
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
+      if (schema === '/') {
+        store.dispatch(setCurViewListType(ListTypeEnum.All));
+      }
     },
     [checkLogin, isLogin, marketModal, router],
   );
