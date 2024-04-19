@@ -42,10 +42,9 @@ import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
-import { resolve } from 'path';
 
 export default function OwnedItems() {
-  const { wallet } = useWalletService();
+  const { wallet, isLogin } = useWalletService();
   // 1024 below is the mobile display
   const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
@@ -83,9 +82,9 @@ export default function OwnedItems() {
     }
   }, [is2XL, is3XL, is4XL, is5XL]);
 
-  useEffectOnce(() => {
-    fetchDataDispatch({ params: requestParams });
-  });
+  // useEffectOnce(() => {
+  //   fetchDataDispatch({ params: requestParams });
+  // });
 
   const requestParams = useMemo(() => {
     const filter = getFilter(filterSelect);
@@ -94,8 +93,9 @@ export default function OwnedItems() {
       skipCount: getPageNumber(current, pageSize),
       maxResultCount: pageSize,
       keyword: searchParam,
+      searchAddress: walletAddress,
     };
-  }, [filterSelect, current, searchParam]);
+  }, [filterSelect, current, searchParam, walletAddress]);
 
   const fetchData = useCallback(
     async ({ params, loadMore = false }: { params: ICatsListParams; loadMore?: boolean }) => {
@@ -208,6 +208,10 @@ export default function OwnedItems() {
     },
     [fetchData, fetchDataAll],
   );
+
+  useEffect(() => {
+    fetchDataDispatch({ params: requestParams });
+  }, [isLogin]);
 
   const getTraits = useGetTraits();
 
