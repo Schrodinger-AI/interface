@@ -19,6 +19,7 @@ import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formattError';
+import { AdTracker } from 'utils/ad';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -91,7 +92,11 @@ const useAdoptHandler = () => {
             reject(AdoptActionErrorCode.cancel);
           },
           onConfirm: (amount: string) => {
+            AdTracker.trackEvent('adopt', {
+              generation: parentItemInfo?.generation,
+            });
             adoptActionModal.hide();
+
             resolve(amount as string);
           },
         });

@@ -21,6 +21,7 @@ import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDe
 import { store } from 'redux/store';
 import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
+import { AdTracker } from 'utils/ad';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -183,8 +184,11 @@ export const useResetHandler = () => {
             },
           ],
           onConfirm: async (amount: string) => {
-            console.log('amount', amount);
+            console.log('amount', amount, parentItemInfo.generation);
             resetModal.hide();
+            AdTracker.trackEvent('reroll', {
+              generation: parentItemInfo.generation,
+            });
             try {
               await approveReset(parentItemInfo, amount, rankInfo);
               promptModal.hide();
