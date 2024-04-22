@@ -70,10 +70,14 @@ export const SubTraitFilter = forwardRef(
             : (data as TGetSubTraitsResult).getTraits;
 
         const trait = traitsList[0];
-        const list: TSubTraitItem[] = trait.values.map((item) => ({
-          ...item,
-          amount: ZERO.plus(item.amount).toFormat(),
-        }));
+        const list: TSubTraitItem[] = trait.values
+          .filter((item) => {
+            return ZERO.plus(item.amount).gt(0);
+          })
+          .map((item) => ({
+            ...item,
+            amount: ZERO.plus(item.amount).toFormat(),
+          }));
 
         setList(list);
       } catch (error) {
