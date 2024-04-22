@@ -6,11 +6,10 @@ import ItemInfo from './components/ItemInfo';
 import { Breadcrumb } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useGetSchrodingerDetail } from 'graphqlServer/hooks';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
-import { TSGRToken } from 'types/tokens';
+import { ITrait, TSGRTokenInfo } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
@@ -20,43 +19,40 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { usePageForm } from './hooks';
+import { getCatDetail } from 'api/request';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 
 export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
-  const symbol = searchParams.get('symbol');
-  const address = searchParams.get('address') || '';
+  const symbol = searchParams.get('symbol') || '';
+  const [fromListAll] = usePageForm();
+  const { isLogin } = useGetLoginStatus();
 
-  const getSchrodingerDetail = useGetSchrodingerDetail();
-  const { wallet, isLogin } = useWalletService();
+  const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
-  const { showLoading, closeLoading, visible } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
 
   const tradeModal = useMemo(() => {
     return cmsInfo?.tradeModal;
   }, [cmsInfo?.tradeModal]);
 
-  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRToken>();
+  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
-  const isMyself = address === wallet.address;
 
-  const getDetail = useCallback(async () => {
-    if (!wallet.address) return;
-    showLoading();
-    const result = await getSchrodingerDetail({
-      input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address },
-    });
-
-    try {
-      if (result?.data?.getSchrodingerDetail?.generation !== 9) {
+  const generateCatsRankInfo = useCallback(
+    async (generation: number, traits: ITrait[]) => {
+      if (generation !== 9) {
         setRankInfo(undefined);
         throw '';
       }
-      const paramsTraits = formatTraits(result.data.getSchrodingerDetail.traits);
+      const paramsTraits = formatTraits(traits);
       if (!paramsTraits) {
         setRankInfo(undefined);
         throw '';
@@ -66,15 +62,26 @@ export default function DetailPage() {
         address: addPrefixSuffix(wallet.address),
       });
       setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
-    } finally {
-      setSchrodingerDetail(result.data.getSchrodingerDetail);
-      closeLoading();
-    }
-  }, [closeLoading, cmsInfo?.curChain, getSchrodingerDetail, showLoading, symbol, wallet.address]);
+    },
+    [wallet.address],
+  );
 
-  useEffect(() => {
-    getDetail();
-  }, [getDetail]);
+  const getDetail = useCallback(async () => {
+    console.log('getDetailInGuestMode');
+    let result;
+    try {
+      showLoading();
+      result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
+      const generation = result?.generation;
+      const traits = result?.traits;
+      await generateCatsRankInfo(generation, traits);
+    } catch (error) {
+      console.log('getDetailInGuestMode-error', error);
+    } finally {
+      closeLoading();
+      setSchrodingerDetail(result);
+    }
+  }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
 
   const onAdoptNextGeneration = () => {
     if (!schrodingerDetail) return;
@@ -86,14 +93,22 @@ export default function DetailPage() {
     resetHandler(schrodingerDetail, wallet.address, rankInfo);
   };
 
-  const onBack = () => {
-    route.back();
-  };
+  const onBack = useCallback(() => {
+    const path = fromListAll ? '/' : '/my-cats';
+    route.replace(path);
+  }, [fromListAll, route]);
 
-  const showAdopt = useMemo(() => schrodingerDetail && (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail]);
-  const showReset = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
+  const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
+  const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
+  const holderNumberGtZero = useMemo(
+    () => (schrodingerDetail?.holderAmount || 0) > 0,
+    [schrodingerDetail?.holderAmount],
+  );
+  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
 
-  const adoptAndResetButton = () => {
+  const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
+
+  function adoptAndResetButton() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
@@ -112,7 +127,7 @@ export default function DetailPage() {
         )}
       </div>
     );
-  };
+  }
 
   const adoptAndResetButtonSmall = () => {
     return (
@@ -141,10 +156,17 @@ export default function DetailPage() {
   }, [marketModal, schrodingerDetail]);
 
   useTimeoutFn(() => {
-    if (!isLogin) {
-      route.push('/');
+    if (!fromListAll && !isLogin) {
+      onBack();
     }
   }, 3000);
+
+  useEffect(() => {
+    console.log('isLogin--init--isLogin', isLogin);
+    getDetail();
+  }, [getDetail, isLogin]);
+
+  useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
   return (
     <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
@@ -153,7 +175,7 @@ export default function DetailPage() {
           items={[
             {
               title: (
-                <span className=" cursor-pointer" onClick={() => route.push('/')}>
+                <span className=" cursor-pointer" onClick={onBack}>
                   Schrodinger
                 </span>
               ),
@@ -164,13 +186,13 @@ export default function DetailPage() {
           ]}
         />
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
-          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
+          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
-            {isMyself && <> {adoptAndResetButton()}</>}
+            {adoptAndResetButton()}
             {tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
-                className="!rounded-lg !border-[#3888FF] !text-[#3888FF]"
+                className="!rounded-lg !border-brandDefault !text-brandDefault"
                 size="large"
                 onClick={onTrade}>
                 Trade
@@ -189,7 +211,7 @@ export default function DetailPage() {
           )}
           {schrodingerDetail && (
             <ItemInfo
-              showAdopt={isMyself}
+              showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
               onAdoptNextGeneration={onAdoptNextGeneration}
@@ -204,7 +226,7 @@ export default function DetailPage() {
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
         <div className="mt-[16px]" />
-        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} />}
+        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
         {schrodingerDetail && (
           <ItemImage
             detail={schrodingerDetail}
@@ -216,7 +238,7 @@ export default function DetailPage() {
         {tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
-            className="!rounded-lg !border-[#3888FF] !text-[#3888FF] h-[48px] w-full mt-[16px]"
+            className="!rounded-lg !border-brandDefault !text-brandDefault h-[48px] w-full mt-[16px]"
             size="medium"
             onClick={onTrade}>
             Trade
@@ -225,8 +247,7 @@ export default function DetailPage() {
         {schrodingerDetail && (
           <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
         )}
-
-        {isMyself && <> {adoptAndResetButtonSmall()}</>}
+        {adoptAndResetButtonSmall()}
       </div>
     </section>
   );
