@@ -47,6 +47,7 @@ import { EmptyList } from 'components/EmptyList';
 import { useRouter } from 'next/navigation';
 import qs from 'qs';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 export default function OwnedItems({ pageState = ListTypeEnum.All }: { pageState?: ListTypeEnum }) {
   const { wallet } = useWalletService();
@@ -73,6 +74,7 @@ export default function OwnedItems({ pageState = ListTypeEnum.All }: { pageState
   const walletAddress = useMemo(() => wallet.address, [wallet.address]);
   const filterListRef = useRef<any>();
   const walletAddressRef = useRef(walletAddress);
+  const { isLogin } = useGetLoginStatus();
 
   useEffect(() => {
     walletAddressRef.current = walletAddress;
@@ -169,7 +171,7 @@ export default function OwnedItems({ pageState = ListTypeEnum.All }: { pageState
       params: defaultRequestParams,
       requestType: pageState,
     });
-  }, [defaultRequestParams, fetchData, pageState]);
+  }, [defaultRequestParams, fetchData, pageState, isLogin]);
 
   const getTraits = useGetTraits();
   const getAllTraits = useGetAllTraits();
