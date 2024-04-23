@@ -77,7 +77,7 @@ export default function PointsPage() {
         },
       },
       {
-        title: renderTitle('-11 XPSGR'),
+        title: renderTitle('LP Scores'),
         dataIndex: 'scores',
         key: 'scores',
         width: 200,
