@@ -7,10 +7,10 @@ import { addPrefixSuffix } from 'utils/addressFormatting';
 import { Table } from 'aelf-design';
 import TableEmpty from 'components/TableEmpty';
 import { TableColumnsType } from 'antd';
-import { rankListTitle } from 'constants/rankListMessage';
 import RulesList from './components/RulesList';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter } from 'next/navigation';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function PointsPage() {
   const { showLoading, closeLoading, visible } = useLoading();
@@ -32,6 +32,7 @@ export default function PointsPage() {
     setRulesTitle(data.lp.rules?.title);
     setRulesList(data.lp.rules?.rulesList);
   }, [closeLoading, showLoading]);
+  const cmsInfo = useCmsInfo();
 
   const renderCell = (value: string) => {
     return <span className="text-neutralTitle font-medium">{value}</span>;
@@ -82,7 +83,7 @@ export default function PointsPage() {
               router.back();
             }}
           />
-          {rankListTitle}
+          {cmsInfo?.rankListEntrance?.title}
         </h1>
         {rulesTitle || rulesList?.length ? (
           <div className="flex flex-col mt-[24px]">

@@ -35,7 +35,6 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { store } from 'redux/store';
 import { setCurViewListType } from 'redux/reducer/info';
 import { ListTypeEnum } from 'types';
-import { rankListTitle } from 'constants/rankListMessage';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -320,7 +319,7 @@ export default function Header() {
           caution, as user data may be subject to deletion.
         </p>
       )}
-      {SHOW_RANKING_ENTRY.includes(pathname) && cmsInfo?.showRankListEntrance ? (
+      {SHOW_RANKING_ENTRY.includes(pathname) && cmsInfo?.rankListEntrance?.open && cmsInfo?.rankListEntrance?.title ? (
         <p
           className={clsx(
             'w-full p-[16px] text-sm flex items-center justify-center text-white font-medium text-center bg-brandDisable',
@@ -328,7 +327,7 @@ export default function Header() {
           onClick={() => {
             router.push('/rank-list');
           }}>
-          {rankListTitle}
+          {cmsInfo.rankListEntrance.title}
           <LeftArrow className="fill-white scale-50" />
         </p>
       ) : null}

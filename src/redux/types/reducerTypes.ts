@@ -106,7 +106,10 @@ export type TGlobalConfigType = {
   forestUrl: string;
   s3ImagePrefix: string;
   ifpsPrefix: string;
-  showRankListEntrance?: boolean;
+  rankListEntrance?: {
+    open?: boolean;
+    title?: string;
+  };
   rarityFilterItems: Array<{
     label: string;
     value: string;
