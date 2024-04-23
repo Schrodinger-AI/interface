@@ -25,11 +25,12 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
-import { setIsJoin, setItemsFromLocal } from 'redux/reducer/info';
+import { setIsJoin } from 'redux/reducer/info';
 import { mainChain } from 'constants/index';
-import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
+import { setLoginStatus } from 'redux/reducer/loginStatus';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { AdTracker } from 'utils/ad';
+import { resetAccount } from 'utils/resetAccount';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -85,18 +86,9 @@ export const useWalletInit = () => {
 
   useLoginState(callBack);
 
-  const resetAccount = useCallback(() => {
+  const reset = useCallback(() => {
     backToHomeByRoute();
-    localStorage.removeItem(storages.accountInfo);
-    localStorage.removeItem(storages.walletInfo);
-    dispatch(
-      setWalletInfo({
-        address: '',
-        aelfChainAddress: '',
-      }),
-    );
-    dispatch(setItemsFromLocal([]));
-    dispatch(resetLoginStatus());
+    resetAccount();
   }, [backToHomeByRoute]);
 
   useWebLoginEvent(WebLoginEvents.LOGIN_ERROR, (error) => {
@@ -105,7 +97,7 @@ export const useWalletInit = () => {
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
     // message.info('log out');
-    resetAccount();
+    reset();
   });
   useWebLoginEvent(WebLoginEvents.USER_CANCEL, () => {
     console.log('user cancel');

@@ -5,6 +5,7 @@ import { setLoginStatus } from 'redux/reducer/loginStatus';
 import { dispatch } from 'redux/store';
 import { storages } from 'storages';
 import { useGetToken } from './useGetToken';
+import { resetAccount } from 'utils/resetAccount';
 
 const useUpdateLoginStatus = () => {
   const { loginState } = useWebLogin();
@@ -13,8 +14,13 @@ const useUpdateLoginStatus = () => {
 
   useEffect(() => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
-    const hasLocalToken = !!accountInfo.token && checkTokenValid();
+    let hasLocalToken = !!accountInfo.token && checkTokenValid();
     const isConnectWallet = loginState === WebLoginState.logined;
+    if (!isConnectWallet) {
+      resetAccount();
+      hasLocalToken = false;
+      return;
+    }
     dispatch(
       setLoginStatus({
         walletStatus: loginState,
