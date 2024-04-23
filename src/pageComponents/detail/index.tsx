@@ -46,42 +46,40 @@ export default function DetailPage() {
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
 
-  const generateCatsRankInfo = useCallback(
-    async (generation: number, traits: ITrait[]) => {
-      if (generation !== 9) {
-        setRankInfo(undefined);
-        throw '';
-      }
-      const paramsTraits = formatTraits(traits);
-      if (!paramsTraits) {
-        setRankInfo(undefined);
-        throw '';
-      }
-      const catsRankProbability = await getCatsRankProbability({
-        catsTraits: [paramsTraits],
-        address: addPrefixSuffix(wallet.address),
-      });
-      setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
-    },
-    [wallet.address],
-  );
+  const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
+    if (generation !== 9) {
+      setRankInfo(undefined);
+      throw '';
+    }
+    const paramsTraits = formatTraits(traits);
+    if (!paramsTraits) {
+      setRankInfo(undefined);
+      throw '';
+    }
+    const catsRankProbability = await getCatsRankProbability({
+      catsTraits: [paramsTraits],
+      address: addPrefixSuffix(address),
+    });
+    setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
+  };
 
   const getDetail = useCallback(async () => {
     console.log('getDetailInGuestMode');
+    if (wallet.address && !isLogin) return;
     let result;
     try {
       showLoading();
       result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
       const generation = result?.generation;
       const traits = result?.traits;
-      await generateCatsRankInfo(generation, traits);
+      await generateCatsRankInfo(generation, traits, wallet.address);
     } catch (error) {
       console.log('getDetailInGuestMode-error', error);
     } finally {
       closeLoading();
       setSchrodingerDetail(result);
     }
-  }, [closeLoading, cmsInfo?.curChain, generateCatsRankInfo, showLoading, symbol]);
+  }, [closeLoading, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
 
   const onAdoptNextGeneration = () => {
     if (!schrodingerDetail) return;
@@ -162,9 +160,8 @@ export default function DetailPage() {
   }, 3000);
 
   useEffect(() => {
-    console.log('isLogin--init--isLogin', isLogin);
     getDetail();
-  }, [getDetail, isLogin]);
+  }, [getDetail]);
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
