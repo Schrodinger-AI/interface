@@ -52,6 +52,7 @@ export default function PointsPage() {
         title: renderTitle('TOP 40'),
         dataIndex: 'index',
         key: 'index',
+        width: 100,
         render: (_, _record, index) => {
           return renderCell(`${index + 1}`);
         },
@@ -60,6 +61,7 @@ export default function PointsPage() {
         title: renderTitle('Address'),
         dataIndex: 'address',
         key: 'address',
+        width: 200,
         render: (address) => {
           return (
             <CommonCopy toCopy={addPrefixSuffix(address)}>
@@ -78,6 +80,7 @@ export default function PointsPage() {
         title: renderTitle('-11 XPSGR'),
         dataIndex: 'scores',
         key: 'scores',
+        width: 200,
         render: (scores) => {
           return renderCell(formatTokenPrice(scores));
         },
@@ -128,18 +131,20 @@ export default function PointsPage() {
               </span>
             ) : null}
           </div>
-          <Table
-            dataSource={list}
-            columns={columns}
-            loading={visible}
-            pagination={null}
-            locale={{
-              emptyText: <TableEmpty description="No data yet." />,
-            }}
-            scroll={{
-              x: 'max-content',
-            }}
-          />
+          <div className="max-w-[1000px]">
+            <Table
+              dataSource={list}
+              columns={columns}
+              loading={visible}
+              pagination={null}
+              locale={{
+                emptyText: <TableEmpty description="No data yet." />,
+              }}
+              scroll={{
+                x: 'max-content',
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
