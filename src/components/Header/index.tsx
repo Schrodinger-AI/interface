@@ -327,7 +327,8 @@ export default function Header() {
           onClick={() => {
             router.push('/rank-list');
           }}>
-          {cmsInfo.rankListEntrance.title}
+          <span className="flex-1 max-w-max">{cmsInfo.rankListEntrance.title}</span>
+
           <LeftArrow className="fill-white scale-50" />
         </p>
       ) : null}
