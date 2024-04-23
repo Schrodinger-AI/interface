@@ -11,6 +11,7 @@ import RulesList from './components/RulesList';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
+import { formatTokenPrice } from 'utils/format';
 
 export default function PointsPage() {
   const { showLoading, closeLoading, visible } = useLoading();
@@ -61,7 +62,7 @@ export default function PointsPage() {
         dataIndex: 'scores',
         key: 'scores',
         render: (scores) => {
-          return renderCell(scores);
+          return renderCell(formatTokenPrice(scores));
         },
       },
     ];
@@ -78,7 +79,7 @@ export default function PointsPage() {
       <div className="w-full max-w-[1360px]">
         <h1 className="pt-[24px] flex items-center pb-[8px] font-semibold text-2xl">
           <ArrowSVG
-            className="w-[24px] mr-[8px] rotate-90"
+            className="w-[24px] mr-[8px] rotate-90  cursor-pointer"
             onClick={() => {
               router.back();
             }}
