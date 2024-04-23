@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import { IRankList } from 'redux/types/reducerTypes';
-import { addPrefixSuffix } from 'utils/addressFormatting';
-import { Table } from 'aelf-design';
+import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
+import { Table, ToolTip } from 'aelf-design';
 import TableEmpty from 'components/TableEmpty';
 import { TableColumnsType } from 'antd';
 import RulesList from './components/RulesList';
@@ -12,6 +12,8 @@ import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
+import { useResponsive } from 'hooks/useResponsive';
+import CommonCopy from 'components/CommonCopy';
 
 export default function PointsPage() {
   const { showLoading, closeLoading, visible } = useLoading();
@@ -22,6 +24,7 @@ export default function PointsPage() {
   const [rulesTitle, setRulesTitle] = useState<string>();
   const [rulesList, setRulesList] = useState<string[]>();
   const router = useRouter();
+  const { isLG } = useResponsive();
 
   const rankList = useCallback(async () => {
     showLoading();
@@ -36,13 +39,17 @@ export default function PointsPage() {
   const cmsInfo = useCmsInfo();
 
   const renderCell = (value: string) => {
-    return <span className="text-neutralTitle font-medium">{value}</span>;
+    return <span className="text-neutralTitle font-medium text-base">{value}</span>;
+  };
+
+  const renderTitle = (value: string) => {
+    return <span className="text-neutralSecondary font-medium text-base">{value}</span>;
   };
 
   const columns: TableColumnsType<IRankList> = useMemo(() => {
     return [
       {
-        title: 'Top 40',
+        title: renderTitle('Top 40'),
         dataIndex: 'index',
         key: 'index',
         render: (_, _record, index) => {
@@ -50,15 +57,21 @@ export default function PointsPage() {
         },
       },
       {
-        title: 'address',
+        title: renderTitle('address'),
         dataIndex: 'address',
         key: 'address',
         render: (address) => {
-          return renderCell(addPrefixSuffix(address));
+          return (
+            <CommonCopy toCopy={addPrefixSuffix(address)}>
+              <ToolTip trigger={isLG ? 'click' : 'hover'} title={addPrefixSuffix(address)}>
+                {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+              </ToolTip>
+            </CommonCopy>
+          );
         },
       },
       {
-        title: 'scores',
+        title: renderTitle('scores'),
         dataIndex: 'scores',
         key: 'scores',
         render: (scores) => {
@@ -66,7 +79,7 @@ export default function PointsPage() {
         },
       },
     ];
-  }, []);
+  }, [isLG]);
 
   useEffectOnce(() => {
     rankList();
