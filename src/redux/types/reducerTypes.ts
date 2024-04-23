@@ -143,6 +143,7 @@ export interface IRankList {
 export interface IRankListData {
   lp: {
     title?: string;
+    pageTitle?: string;
     description?: string[];
     rules?: {
       title?: string;

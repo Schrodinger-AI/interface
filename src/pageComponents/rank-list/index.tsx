@@ -10,7 +10,6 @@ import { TableColumnsType } from 'antd';
 import RulesList from './components/RulesList';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter } from 'next/navigation';
-import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
 import { useResponsive } from 'hooks/useResponsive';
 import CommonCopy from 'components/CommonCopy';
@@ -20,6 +19,7 @@ export default function PointsPage() {
 
   const [list, setList] = useState<IRankList[]>([]);
   const [title, setTitle] = useState<string>();
+  const [pageTitle, setPageTitle] = useState<string>();
   const [description, setDescription] = useState<string[]>();
   const [rulesTitle, setRulesTitle] = useState<string>();
   const [rulesList, setRulesList] = useState<string[]>();
@@ -35,8 +35,8 @@ export default function PointsPage() {
     setTitle(data.lp.title);
     setRulesTitle(data.lp.rules?.title);
     setRulesList(data.lp.rules?.rulesList);
+    setPageTitle(data.lp.pageTitle);
   }, [closeLoading, showLoading]);
-  const cmsInfo = useCmsInfo();
 
   const renderCell = (value: string) => {
     return <span className="text-neutralTitle font-medium text-base">{value}</span>;
@@ -49,7 +49,7 @@ export default function PointsPage() {
   const columns: TableColumnsType<IRankList> = useMemo(() => {
     return [
       {
-        title: renderTitle('Top 40'),
+        title: renderTitle('TOP 40'),
         dataIndex: 'index',
         key: 'index',
         render: (_, _record, index) => {
@@ -57,21 +57,25 @@ export default function PointsPage() {
         },
       },
       {
-        title: renderTitle('address'),
+        title: renderTitle('Address'),
         dataIndex: 'address',
         key: 'address',
         render: (address) => {
           return (
             <CommonCopy toCopy={addPrefixSuffix(address)}>
-              <ToolTip trigger={isLG ? 'click' : 'hover'} title={addPrefixSuffix(address)}>
-                {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
-              </ToolTip>
+              {isLG ? (
+                renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))
+              ) : (
+                <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
+                  {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+                </ToolTip>
+              )}
             </CommonCopy>
           );
         },
       },
       {
-        title: renderTitle('scores'),
+        title: renderTitle('-11 XPSGR'),
         dataIndex: 'scores',
         key: 'scores',
         render: (scores) => {
@@ -97,7 +101,7 @@ export default function PointsPage() {
               router.back();
             }}
           />
-          {cmsInfo?.rankListEntrance?.title}
+          {pageTitle}
         </h1>
         {rulesTitle || rulesList?.length ? (
           <div className="flex flex-col mt-[24px]">
