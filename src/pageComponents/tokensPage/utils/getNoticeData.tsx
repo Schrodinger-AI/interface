@@ -14,19 +14,39 @@ export const getNoticeData: (cmsInfo?: TCustomizationItemType & TGlobalConfigTyp
   try {
     return [
       {
-        text: 'ELF_rA2p...NHXF_tDVW 100 SGRTEST-8425GEN9 with 300ELF',
+        text: (
+          <span>
+            ELF_rA2p...NHXF_tDVW <span className="text-warning600">100</span> SGRTEST-8425GEN9 with{' '}
+            <span className="text-warning600">300ELF</span>
+          </span>
+        ),
         handle: () => onJump('SGRTEST-7536', cmsInfo),
       },
       {
-        text: 'ELF_rA2p...NHXF_tDVW 200 SGRTEST-8425GEN9 with 300ELF',
+        text: (
+          <span>
+            ELF_rA2p...NHXF_tDVW <span className="text-warning600">200</span> SGRTEST-8425GEN9 with{' '}
+            <span className="text-warning600">300ELF</span>
+          </span>
+        ),
         handle: () => onJump('SGRTEST-7536', cmsInfo),
       },
       {
-        text: 'ELF_rA2p...NHXF_tDVW 300 SGRTEST-8425GEN9 with 300ELF',
+        text: (
+          <span>
+            ELF_rA2p...NHXF_tDVW <span className="text-warning600">300</span> SGRTEST-8425GEN9 with{' '}
+            <span className="text-warning600">300ELF</span>
+          </span>
+        ),
         handle: () => onJump('SGRTEST-7536', cmsInfo),
       },
       {
-        text: 'ELF_rA2p...NHXF_tDVW 400 SGRTEST-8425GEN9 with 300ELF',
+        text: (
+          <span>
+            ELF_rA2p...NHXF_tDVW <span className="text-warning600">400</span> SGRTEST-8425GEN9 with{' '}
+            <span className="text-warning600">300ELF</span>
+          </span>
+        ),
         handle: () => onJump('SGRTEST-7536', cmsInfo),
       },
     ];

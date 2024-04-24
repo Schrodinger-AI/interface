@@ -7,7 +7,6 @@ import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
-import { usePathname } from 'next/navigation';
 export enum CardType {
   MY = 'my',
   LATEST = 'latest',
@@ -46,7 +45,6 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [token]);
 
   const cmsInfo = useCmsInfo();
-  const pathname = usePathname();
 
   const containsInscriptionCode = useMemo(() => {
     if (inscriptionDeploy === '{}') return false;
@@ -63,10 +61,6 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [item, onPress]);
 
   const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
-
-  const isAllList = useMemo(() => {
-    return pathname === '/';
-  }, [pathname]);
 
   return (
     <div
@@ -131,13 +125,6 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
                 {awakenPriceDisplay}
               </div>
-              {/* TODO */}
-              {isAllList ? (
-                <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px] flex justify-between items-center">
-                  <span>Last Sale</span>
-                  <span>{awakenPriceDisplay || '--'}</span>
-                </div>
-              ) : null}
             </div>
           )}
         </div>
