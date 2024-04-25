@@ -2,7 +2,7 @@ import { getRankList } from 'api/request';
 import { useCallback, useMemo, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import useLoading from 'hooks/useLoading';
-import { IRankList, IRulesSection } from 'redux/types/reducerTypes';
+import { IKOLRulesSection, IRankList, IRulesSection } from 'redux/types/reducerTypes';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { Table, ToolTip } from 'aelf-design';
 import TableEmpty from 'components/TableEmpty';
@@ -24,10 +24,13 @@ export default function PointsPage() {
   const [rulesTitle, setRulesTitle] = useState<string>();
   const [rulesList, setRulesList] = useState<string[]>();
   const [rulesSection, setRulesSection] = useState<IRulesSection>();
+  const [kolRulesSection, setKolRulesSection] = useState<IKOLRulesSection>();
   const [subdomain, setSubdomain] = useState<{
     title?: string;
     description?: string[];
-    list?: IRankList[];
+    list?: (IRankList & {
+      link: string;
+    })[];
   }>();
   const router = useRouter();
   const { isLG } = useResponsive();
@@ -43,6 +46,7 @@ export default function PointsPage() {
     setRulesList(data.lp.rules?.rulesList);
     setPageTitle(data.lp.pageTitle);
     setRulesSection(data.lp.rules?.rulesSection);
+    setKolRulesSection(data.lp.rules?.kolRulesSection);
     setSubdomain(data?.subdomain);
   }, [closeLoading, showLoading]);
 
@@ -113,6 +117,61 @@ export default function PointsPage() {
     ];
   }, [isLG]);
 
+  const kolColumns: TableColumnsType<
+    IRankList & {
+      link: string;
+    }
+  > = useMemo(() => {
+    return [
+      {
+        title: renderTitle('TOP 20'),
+        dataIndex: 'index',
+        key: 'index',
+        width: 100,
+        render: (_, _record, index) => {
+          return renderCell(`${index + 1}`);
+        },
+      },
+      {
+        title: renderTitle('Link'),
+        dataIndex: 'link',
+        key: 'link',
+        width: 200,
+        render: (link) => {
+          return renderCell(`https://${link}`);
+        },
+      },
+      {
+        title: renderTitle('KOL Scores'),
+        dataIndex: 'scores',
+        key: 'scores',
+        width: 200,
+        render: (scores) => {
+          return renderCell(formatTokenPrice(scores));
+        },
+      },
+      {
+        title: renderTitle('Address'),
+        dataIndex: 'address',
+        key: 'address',
+        width: 200,
+        render: (address) => {
+          return (
+            <CommonCopy toCopy={addPrefixSuffix(address)}>
+              {isLG ? (
+                renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))
+              ) : (
+                <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
+                  {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+                </ToolTip>
+              )}
+            </CommonCopy>
+          );
+        },
+      },
+    ];
+  }, [isLG]);
+
   useEffectOnce(() => {
     rankList();
   });
@@ -137,7 +196,7 @@ export default function PointsPage() {
         {rulesTitle || rulesList?.length ? (
           <div className="flex flex-col mt-[24px]">
             {rulesTitle ? <span className="text-xl font-semibold">{rulesTitle}</span> : null}
-            <RulesList rulesSection={rulesSection} />
+            <RulesList rulesSection={rulesSection} kolRulesSection={kolRulesSection} />
           </div>
         ) : null}
 
@@ -172,7 +231,7 @@ export default function PointsPage() {
             <div className="max-w-[1000px]">
               <Table
                 dataSource={subdomain?.list}
-                columns={columns}
+                columns={kolColumns}
                 loading={visible}
                 pagination={null}
                 locale={{

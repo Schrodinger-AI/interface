@@ -14,14 +14,14 @@ export default function useGetNoticeData() {
 
   const getNftActivityListByCondition = useNftActivityListByCondition();
 
-  const onJump = (nftId: string, cmsInfo?: TCustomizationItemType & TGlobalConfigType) => {
-    const forestUrl = cmsInfo?.forestUrl || '';
+  const onJump = (cmsInfo?: TCustomizationItemType & TGlobalConfigType) => {
+    const forestActivity = cmsInfo?.forestActivity || '';
 
-    openExternalLink(`${forestUrl}/detail/buy/${nftId}/${cmsInfo?.curChain}`, '_blank');
+    openExternalLink(forestActivity, '_blank');
   };
 
   const getNoticeData: () => Promise<IScrollAlertItem[]> = useCallback(async () => {
-    const { nftActivityListFilter } = cmsInfo || {};
+    const { nftActivityListFilter, showNftQuantity } = cmsInfo || {};
     const timestampMax = nftActivityListFilter?.timestampMax || new Date().getTime();
     try {
       const { data } = await getNftActivityListByCondition({
@@ -37,16 +37,24 @@ export default function useGetNoticeData() {
         },
       });
 
-      return data?.nftActivityListByCondition.data?.map((item: TNftActivityListByConditionData) => {
+      let result = [];
+
+      if (data?.nftActivityListByCondition.data) {
+        result = data?.nftActivityListByCondition.data.slice(0, showNftQuantity || 5);
+      } else {
+        return [];
+      }
+
+      return result?.map((item: TNftActivityListByConditionData) => {
         const symbol = item?.nftInfoId?.replace(`${cmsInfo?.curChain}-`, '');
         return {
           text: (
             <span>
               {symbol} purchased for <span className="text-warning600">{formatTokenPrice(item.price)} ELF</span> by{' '}
-              {getOmittedStr(addPrefixSuffix(item.from), OmittedType.ADDRESS)}
+              {getOmittedStr(addPrefixSuffix(item.to), OmittedType.ADDRESS)}
             </span>
           ),
-          handle: () => onJump(item.nftInfoId, cmsInfo),
+          handle: () => onJump(cmsInfo),
         };
       });
     } catch (error) {

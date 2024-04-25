@@ -2,7 +2,7 @@
 import { Table } from 'aelf-design';
 import { TableColumnsType } from 'antd';
 import React, { useMemo } from 'react';
-import { IRulesSection, IRulesSectionData } from 'redux/types/reducerTypes';
+import { IKOLRulesSection, IKOLRulesSectionData, IRulesSection, IRulesSectionData } from 'redux/types/reducerTypes';
 
 const textStyle = 'text-base font-medium text-neutralSecondary mt-[8px] mb-[16px]';
 
@@ -10,7 +10,13 @@ const renderCell = (value: string) => {
   return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
 };
 
-function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
+function RulesList({
+  rulesSection,
+  kolRulesSection,
+}: {
+  rulesSection?: IRulesSection;
+  kolRulesSection?: IKOLRulesSection;
+}) {
   const rewardDetailsColum: TableColumnsType<IRulesSectionData> = useMemo(() => {
     if (rulesSection?.header?.length) {
       return rulesSection.header.map((item) => {
@@ -29,6 +35,24 @@ function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
     }
   }, [rulesSection?.header]);
 
+  const kolRewardDetailsColum: TableColumnsType<IKOLRulesSectionData> = useMemo(() => {
+    if (kolRulesSection?.header?.length) {
+      return kolRulesSection.header.map((item) => {
+        return {
+          title: item.title,
+          dataIndex: item.key,
+          key: item.key,
+          width: item.width || 100,
+          render: (value, _record, index) => {
+            return renderCell(item.key === 'index' ? `${index + 1}` : value);
+          },
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [kolRulesSection?.header]);
+
   const rewardDetails: IRulesSectionData[] = useMemo(() => {
     if (rulesSection?.data?.length) {
       return rulesSection.data;
@@ -36,6 +60,14 @@ function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
       return [];
     }
   }, [rulesSection?.data]);
+
+  const kolRewardDetails: IKOLRulesSectionData[] = useMemo(() => {
+    if (kolRulesSection?.data?.length) {
+      return kolRulesSection.data;
+    } else {
+      return [];
+    }
+  }, [kolRulesSection?.data]);
 
   return (
     <>
@@ -53,8 +85,15 @@ function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
         , and click "Add Liquidity" to contribute to our $SGR/ELF liquidity pool.
       </span>
       {rewardDetailsColum?.length && rewardDetails.length ? (
-        <div className="mt-[8px] mb-[16px]">
-          <Table dataSource={rewardDetails} columns={rewardDetailsColum} pagination={null} />
+        <div className="mt-[8px] mb-[16px] w-max">
+          <Table
+            dataSource={rewardDetails}
+            columns={rewardDetailsColum}
+            pagination={null}
+            scroll={{
+              x: 'max-content',
+            }}
+          />
         </div>
       ) : null}
       <span className={textStyle}>
@@ -63,6 +102,18 @@ function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
         campaign ends on 29 April 2024, the top 40 participants, ranked by total points accumulated during the campaign
         duration, will share the pool of 16,000 $SGR tokens.
       </span>
+      {kolRewardDetailsColum?.length && kolRewardDetails.length ? (
+        <div className="mt-[8px] mb-[16px] w-max">
+          <Table
+            dataSource={kolRewardDetails}
+            columns={kolRewardDetailsColum}
+            pagination={null}
+            scroll={{
+              x: 'max-content',
+            }}
+          />
+        </div>
+      ) : null}
       <span className={textStyle}>
         An additional 2,000 $SGR tokens will be distributed among participants who use their personalised Project
         Schrodinger link to invite friends and community members to contribute to the $SGR/ELF liquidity pool on
