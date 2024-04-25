@@ -2,7 +2,7 @@ import { getRankList } from 'api/request';
 import { useCallback, useMemo, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import useLoading from 'hooks/useLoading';
-import { IRankList } from 'redux/types/reducerTypes';
+import { IRankList, IRulesSection } from 'redux/types/reducerTypes';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { Table, ToolTip } from 'aelf-design';
 import TableEmpty from 'components/TableEmpty';
@@ -23,6 +23,12 @@ export default function PointsPage() {
   const [description, setDescription] = useState<string[]>();
   const [rulesTitle, setRulesTitle] = useState<string>();
   const [rulesList, setRulesList] = useState<string[]>();
+  const [rulesSection, setRulesSection] = useState<IRulesSection>();
+  const [subdomain, setSubdomain] = useState<{
+    title?: string;
+    description?: string[];
+    list?: IRankList[];
+  }>();
   const router = useRouter();
   const { isLG } = useResponsive();
 
@@ -36,6 +42,8 @@ export default function PointsPage() {
     setRulesTitle(data.lp.rules?.title);
     setRulesList(data.lp.rules?.rulesList);
     setPageTitle(data.lp.pageTitle);
+    setRulesSection(data.lp.rules?.rulesSection);
+    setSubdomain(data?.subdomain);
   }, [closeLoading, showLoading]);
 
   const renderCell = (value: string) => {
@@ -44,6 +52,23 @@ export default function PointsPage() {
 
   const renderTitle = (value: string) => {
     return <span className="text-neutralSecondary font-medium text-base">{value}</span>;
+  };
+
+  const renderDescription = (description?: string[]) => {
+    if (description?.length) {
+      return (
+        <span className="flex flex-col">
+          {description.map((item, index) => {
+            return (
+              <span key={index} className="text-base font-medium text-neutralSecondary mt-[8px]">
+                {item}
+              </span>
+            );
+          })}
+        </span>
+      );
+    }
+    return null;
   };
 
   const columns: TableColumnsType<IRankList> = useMemo(() => {
@@ -112,24 +137,14 @@ export default function PointsPage() {
         {rulesTitle || rulesList?.length ? (
           <div className="flex flex-col mt-[24px]">
             {rulesTitle ? <span className="text-xl font-semibold">{rulesTitle}</span> : null}
-            <RulesList />
+            <RulesList rulesSection={rulesSection} />
           </div>
         ) : null}
 
         <div className="mt-[32px]">
           <div className="flex flex-col mt-[24px] mb-[24px]">
             {title ? <span className="text-xl font-semibold">{title}</span> : null}
-            {description?.length ? (
-              <span className="flex flex-col">
-                {description.map((item, index) => {
-                  return (
-                    <span key={index} className="text-base font-medium text-neutralSecondary mt-[8px]">
-                      {item}
-                    </span>
-                  );
-                })}
-              </span>
-            ) : null}
+            {renderDescription(description)}
           </div>
           <div className="max-w-[1000px]">
             <Table
@@ -146,6 +161,30 @@ export default function PointsPage() {
             />
           </div>
         </div>
+
+        {subdomain ? (
+          <div className="mt-[32px]">
+            <div className="flex flex-col mt-[24px] mb-[24px]">
+              {subdomain?.title ? <span className="text-xl font-semibold">{subdomain?.title}</span> : null}
+              {renderDescription(subdomain?.description)}
+            </div>
+
+            <div className="max-w-[1000px]">
+              <Table
+                dataSource={subdomain?.list}
+                columns={columns}
+                loading={visible}
+                pagination={null}
+                locale={{
+                  emptyText: <TableEmpty description="No data yet." />,
+                }}
+                scroll={{
+                  x: 'max-content',
+                }}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

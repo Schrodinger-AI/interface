@@ -1,9 +1,42 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react';
+import { Table } from 'aelf-design';
+import { TableColumnsType } from 'antd';
+import React, { useMemo } from 'react';
+import { IRulesSection, IRulesSectionData } from 'redux/types/reducerTypes';
 
 const textStyle = 'text-base font-medium text-neutralSecondary mt-[8px] mb-[16px]';
 
-function RulesList() {
+const renderCell = (value: string) => {
+  return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
+};
+
+function RulesList({ rulesSection }: { rulesSection?: IRulesSection }) {
+  const rewardDetailsColum: TableColumnsType<IRulesSectionData> = useMemo(() => {
+    if (rulesSection?.header?.length) {
+      return rulesSection.header.map((item) => {
+        return {
+          title: item.title,
+          dataIndex: item.key,
+          key: item.key,
+          width: item.width || 100,
+          render: (value, _record, index) => {
+            return renderCell(item.key === 'index' ? `${index + 1}` : value);
+          },
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [rulesSection?.header]);
+
+  const rewardDetails: IRulesSectionData[] = useMemo(() => {
+    if (rulesSection?.data?.length) {
+      return rulesSection.data;
+    } else {
+      return [];
+    }
+  }, [rulesSection?.data]);
+
   return (
     <>
       <span className={textStyle}>
@@ -19,6 +52,11 @@ function RulesList() {
         </a>
         , and click "Add Liquidity" to contribute to our $SGR/ELF liquidity pool.
       </span>
+      {rewardDetailsColum?.length && rewardDetails.length ? (
+        <div className="mt-[8px] mb-[16px]">
+          <Table dataSource={rewardDetails} columns={rewardDetailsColum} pagination={null} />
+        </div>
+      ) : null}
       <span className={textStyle}>
         Every $1 of provided liquidity during the campaign duration earns you 99 points per day, and daily snapshots
         will be taken to track your contributions. These daily points accumulated will count your total points. When the

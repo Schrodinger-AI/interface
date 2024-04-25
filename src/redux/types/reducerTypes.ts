@@ -1,4 +1,5 @@
 import { ICompassProps } from 'components/Header/type';
+import { TNftActivityListByConditionInput } from 'graphqlServer';
 import { ListTypeEnum } from 'types';
 import { TEmptyChannelGroup } from 'types/misc';
 
@@ -103,6 +104,8 @@ export type TGlobalConfigType = {
   tokenMainAddress: string;
   tokenSideAddress: string;
   graphqlSchrodinger: string;
+  graphqlForest: string;
+  nftActivityListFilter: TNftActivityListByConditionInput;
   forestUrl: string;
   s3ImagePrefix: string;
   ifpsPrefix: string;
@@ -140,6 +143,24 @@ export interface IRankList {
   address: string;
 }
 
+export interface IRulesSectionData {
+  size: string;
+  ranking: string;
+  rewards: string;
+  inviter: string;
+}
+
+export interface IRulesSectionHeader {
+  title: string;
+  width: number;
+  key: string;
+}
+
+export interface IRulesSection {
+  header: IRulesSectionHeader[];
+  data: IRulesSectionData[];
+}
+
 export interface IRankListData {
   lp: {
     title?: string;
@@ -148,7 +169,13 @@ export interface IRankListData {
     rules?: {
       title?: string;
       rulesList?: string[];
+      rulesSection?: IRulesSection;
     };
     list: IRankList[];
+  };
+  subdomain?: {
+    title?: string;
+    description?: string[];
+    list?: IRankList[];
   };
 }
