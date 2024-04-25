@@ -185,6 +185,7 @@ export default function OwnedItems({
   }, [pageState]);
 
   useEffect(() => {
+    setSearchParam('');
     fetchData({
       params: defaultRequestParams,
       requestType: pageState,

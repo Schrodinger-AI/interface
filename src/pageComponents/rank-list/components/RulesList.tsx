@@ -85,7 +85,7 @@ function RulesList({
         , and click "Add Liquidity" to contribute to our $SGR/ELF liquidity pool.
       </span>
       {rewardDetailsColum?.length && rewardDetails.length ? (
-        <div className="mt-[8px] mb-[16px] w-max">
+        <div className="mt-[8px] mb-[16px] w-max max-w-full overflow-x-auto">
           <Table
             dataSource={rewardDetails}
             columns={rewardDetailsColum}
@@ -103,7 +103,7 @@ function RulesList({
         duration, will share the pool of 16,000 $SGR tokens.
       </span>
       {kolRewardDetailsColum?.length && kolRewardDetails.length ? (
-        <div className="mt-[8px] mb-[16px] w-max">
+        <div className="mt-[8px] mb-[16px] w-max max-w-full overflow-x-auto">
           <Table
             dataSource={kolRewardDetails}
             columns={kolRewardDetailsColum}

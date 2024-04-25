@@ -205,7 +205,7 @@ export default function PointsPage() {
             {title ? <span className="text-xl font-semibold">{title}</span> : null}
             {renderDescription(description)}
           </div>
-          <div className="max-w-[1000px]">
+          <div className="max-w-full lg:max-w-[1000px] overflow-x-auto">
             <Table
               dataSource={list}
               columns={columns}
@@ -228,7 +228,7 @@ export default function PointsPage() {
               {renderDescription(subdomain?.description)}
             </div>
 
-            <div className="max-w-[1000px]">
+            <div className="max-w-full lg:max-w-[1000px] overflow-x-auto">
               <Table
                 dataSource={subdomain?.list}
                 columns={kolColumns}
