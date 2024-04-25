@@ -133,7 +133,7 @@ export default function PointsPage() {
         },
       },
       {
-        title: renderTitle('Link'),
+        title: renderTitle('Personalised Links'),
         dataIndex: 'link',
         key: 'link',
         width: 200,
@@ -142,7 +142,7 @@ export default function PointsPage() {
         },
       },
       {
-        title: renderTitle('KOL Scores'),
+        title: renderTitle('LP Scores'),
         dataIndex: 'scores',
         key: 'scores',
         width: 200,
