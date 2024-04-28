@@ -24,6 +24,10 @@ interface ISkeletonImage {
   level?: string | number | ReactNode;
   rarity?: string;
   hideRankHover?: boolean;
+  badge?: {
+    visible: boolean;
+    dot?: boolean;
+  };
   containsInscriptionCode?: {
     inscriptionDeploy: string;
     decimals?: number;
@@ -47,6 +51,10 @@ function SkeletonImage(props: ISkeletonImage) {
     containsInscriptionCode,
     width = 108,
     height = 108,
+    badge = {
+      visible: false,
+      dot: true,
+    },
   } = props;
 
   const [skeletonActive, setSkeletonActive] = useState<boolean>(true);
@@ -123,6 +131,13 @@ function SkeletonImage(props: ISkeletonImage) {
               )}>
               {tag}
             </div>
+          ) : null}
+          {badge && badge.visible ? (
+            <div
+              className={clsx(
+                'absolute top-0 left-0 rounded-full w-[16px] h-[16px] border-[2px] border-white border-solid bg-functionalError',
+              )}
+            />
           ) : null}
           {renderTag(generation || generation === 0 ? `${generation}` : null, 'generation')}
           {containsInscriptionCode ? (

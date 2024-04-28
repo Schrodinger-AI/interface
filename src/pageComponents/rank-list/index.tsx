@@ -212,7 +212,7 @@ export default function PointsPage() {
               loading={visible}
               pagination={null}
               locale={{
-                emptyText: <TableEmpty description="No data yet." />,
+                emptyText: <TableEmpty title="No data yet." />,
               }}
               scroll={{
                 x: 'max-content',
@@ -235,7 +235,7 @@ export default function PointsPage() {
                 loading={visible}
                 pagination={null}
                 locale={{
-                  emptyText: <TableEmpty description="No data yet." />,
+                  emptyText: <TableEmpty title="No data yet." />,
                 }}
                 scroll={{
                   x: 'max-content',
