@@ -3,13 +3,10 @@ import { useCallback, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import { IKOLRulesSection, IRankList, IRankListPageConfig, IRulesSection } from 'redux/types/reducerTypes';
-import RankList from './components/RankList';
-import AwardAnnouncement from './components/AwardAnnouncement';
+import RankList from 'pageComponents/rank-list/components/RankList';
 
-export default function PointsPage() {
+export default function AirdropsDetail() {
   const { showLoading, closeLoading, visible } = useLoading();
-
-  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(false);
 
   const [list, setList] = useState<IRankList[]>([]);
   const [title, setTitle] = useState<string>();
@@ -31,7 +28,6 @@ export default function PointsPage() {
     showLoading();
     const { data } = await getRankList();
     closeLoading();
-    setShowAnnouncement(!!data?.pageConfig?.showAnnouncement);
     setList(data.lp.list);
     setDescription(data.lp.description);
     setTitle(data.lp.title);
@@ -49,20 +45,7 @@ export default function PointsPage() {
 
   if (visible) return null;
 
-  return showAnnouncement ? (
-    <AwardAnnouncement
-      pageConfig={pageConfig}
-      rulesList={rulesList}
-      rulesTitle={rulesTitle}
-      rulesSection={rulesSection}
-      kolRulesSection={kolRulesSection}
-      title={title}
-      description={description}
-      list={list}
-      loadingVisible={visible}
-      subdomain={subdomain}
-    />
-  ) : (
+  return (
     <RankList
       pageConfig={pageConfig}
       rulesList={rulesList}

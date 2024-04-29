@@ -173,10 +173,26 @@ export interface IKOLRulesSection {
   data: IKOLRulesSectionData[];
 }
 
+export interface IRankListPageConfigLink {
+  type: 'img-link' | 'img-externalLink' | 'link' | 'externalLink';
+  imgUrl?: string;
+  text?: string;
+  link?: string;
+  style?: string;
+}
+
+export interface IRankListPageConfig {
+  pageTitle?: string;
+  title?: string;
+  description?: string[];
+  showAnnouncement?: boolean;
+  link?: IRankListPageConfigLink[];
+  content?: string[];
+}
+
 export interface IRankListData {
   lp: {
     title?: string;
-    pageTitle?: string;
     description?: string[];
     rules?: {
       title?: string;
@@ -193,4 +209,5 @@ export interface IRankListData {
       link: string;
     })[];
   };
+  pageConfig?: IRankListPageConfig;
 }
