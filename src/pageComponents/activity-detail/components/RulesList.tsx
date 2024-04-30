@@ -6,9 +6,15 @@ import RulesTable from './RulesTable';
 import SkeletonImage from 'components/SkeletonImage';
 import { ReactComponent as LinkSVG } from 'assets/img/icons/link.svg';
 import clsx from 'clsx';
+import { openExternalLink } from 'utils/openlink';
+import { NEED_LOGIN_PAGE } from 'constants/router';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
+import { useRouter } from 'next/navigation';
 
 function RulesList({ title, description, rulesTable, bottomDescription, link }: IActivityDetailRules) {
   const { isLG } = useResponsive();
+  const { checkLogin } = useCheckLoginAndToken();
+  const router = useRouter();
 
   const renderDescription = (description?: string[]) => {
     if (description?.length) {
@@ -27,52 +33,52 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
     return null;
   };
 
-  const renderLinkText = (value?: string) => {
-    return (
-      <span className={clsx('w-full flex items-center mt-[8px] text-brandDefault font-medium text-sm cursor-pointer')}>
-        <LinkSVG />
-        <span className="ml-[8px]">{value}</span>
-      </span>
-    );
-  };
+  const jumpTo = useCallback(
+    (link: IActivityDetailRulesLink) => {
+      if (!link.link) return;
+      if (link.type === 'externalLink' || link.type === 'img-externalLink') {
+        openExternalLink(link.link, '_blank');
+      } else {
+        if (NEED_LOGIN_PAGE.includes(link.link)) {
+          checkLogin({
+            onSuccess: () => {
+              if (!link.link) return;
+              router.push(link.link);
+            },
+          });
+        } else {
+          router.push(link.link);
+        }
+      }
+    },
+    [checkLogin, router],
+  );
 
   const renderLink = useCallback(
     (link: IActivityDetailRulesLink) => {
       switch (link.type) {
         case 'img-link':
-          return (
-            <a
-              href={link.link}
-              rel="noreferrer"
-              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
-              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
-            </a>
-          );
         case 'img-externalLink':
           return (
-            <a
-              href={link.link}
-              target="_blank"
-              rel="noreferrer"
-              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
+            <span
+              className={clsx('flex w-full h-auto mt-[8px] cursor-pointer overflow-hidden')}
+              onClick={() => jumpTo(link)}>
               <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
-            </a>
+            </span>
           );
         case 'link':
-          return (
-            <a href={link.link} rel="noreferrer">
-              {renderLinkText(link.text)}
-            </a>
-          );
         case 'externalLink':
           return (
-            <a href={link.link} target="_blank" rel="noreferrer">
-              {renderLinkText(link.text)}
-            </a>
+            <span
+              className={clsx('w-full flex items-center mt-[8px] text-brandDefault font-medium text-sm cursor-pointer')}
+              onClick={() => jumpTo(link)}>
+              <LinkSVG />
+              <span className="ml-[8px]">{link.text}</span>
+            </span>
           );
       }
     },
-    [isLG],
+    [isLG, jumpTo],
   );
 
   return (

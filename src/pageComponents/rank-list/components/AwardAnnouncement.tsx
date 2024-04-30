@@ -18,6 +18,10 @@ import { useResponsive } from 'hooks/useResponsive';
 import CommonCopy from 'components/CommonCopy';
 import SkeletonImage from 'components/SkeletonImage';
 import clsx from 'clsx';
+import { ReactComponent as LinkSVG } from 'assets/img/icons/link.svg';
+import { openExternalLink } from 'utils/openlink';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
+import { NEED_LOGIN_PAGE } from 'constants/router';
 
 interface IProps {
   rulesList?: string[];
@@ -54,6 +58,8 @@ function AwardAnnouncement({
   const { isLG } = useResponsive();
   const { pageTitle, title: configTitle, description: configDescription, link, content } = pageConfig || {};
 
+  const { checkLogin } = useCheckLoginAndToken();
+
   const renderCell = (value: string) => {
     return <span className="text-neutralTitle font-medium text-base">{value}</span>;
   };
@@ -62,50 +68,51 @@ function AwardAnnouncement({
     return <span className="text-neutralSecondary font-medium text-base">{value}</span>;
   };
 
+  const jumpTo = useCallback(
+    (link: IRankListPageConfigLink) => {
+      if (!link.link) return;
+      if (link.type === 'externalLink' || link.type === 'img-externalLink') {
+        openExternalLink(link.link, '_blank');
+      } else {
+        if (NEED_LOGIN_PAGE.includes(link.link)) {
+          checkLogin({
+            onSuccess: () => {
+              if (!link.link) return;
+              router.push(link.link);
+            },
+          });
+        } else {
+          router.push(link.link);
+        }
+      }
+    },
+    [checkLogin, router],
+  );
+
   const renderLink = useCallback(
     (link: IRankListPageConfigLink) => {
       switch (link.type) {
         case 'img-link':
-          return (
-            <a
-              href={link.link}
-              rel="noreferrer"
-              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
-              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
-            </a>
-          );
         case 'img-externalLink':
           return (
-            <a
-              href={link.link}
-              target="_blank"
-              rel="noreferrer"
-              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
+            <span
+              className={clsx('flex w-full h-auto mt-[8px] cursor-pointer overflow-hidden')}
+              onClick={() => jumpTo(link)}>
               <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
-            </a>
+            </span>
           );
         case 'link':
-          return (
-            <a
-              href={link.link}
-              rel="noreferrer"
-              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
-              {link.text}
-            </a>
-          );
         case 'externalLink':
           return (
-            <a
-              href={link.link}
-              target="_blank"
-              rel="noreferrer"
-              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
+            <span
+              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}
+              onClick={() => jumpTo(link)}>
               {link.text}
-            </a>
+            </span>
           );
       }
     },
-    [isLG],
+    [isLG, jumpTo],
   );
 
   const renderDescription = (description?: string[]) => {
