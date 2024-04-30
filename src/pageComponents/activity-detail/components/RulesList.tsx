@@ -10,11 +10,13 @@ import { openExternalLink } from 'utils/openlink';
 import { NEED_LOGIN_PAGE } from 'constants/router';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 function RulesList({ title, description, rulesTable, bottomDescription, link }: IActivityDetailRules) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
+  const { isLogin } = useGetLoginStatus();
 
   const renderDescription = (description?: string[]) => {
     if (description?.length) {
@@ -40,18 +42,22 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         openExternalLink(link.link, '_blank');
       } else {
         if (NEED_LOGIN_PAGE.includes(link.link)) {
-          checkLogin({
-            onSuccess: () => {
-              if (!link.link) return;
-              router.push(link.link);
-            },
-          });
+          if (isLogin) {
+            router.push(link.link);
+          } else {
+            checkLogin({
+              onSuccess: () => {
+                if (!link.link) return;
+                router.push(link.link);
+              },
+            });
+          }
         } else {
           router.push(link.link);
         }
       }
     },
-    [checkLogin, router],
+    [checkLogin, isLogin, router],
   );
 
   const renderLink = useCallback(
@@ -70,7 +76,7 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         case 'externalLink':
           return (
             <span
-              className={clsx('w-full flex items-center mt-[8px] text-brandDefault font-medium text-sm cursor-pointer')}
+              className={clsx('w-max flex items-center mt-[8px] text-brandDefault font-medium text-sm cursor-pointer')}
               onClick={() => jumpTo(link)}>
               <LinkSVG />
               <span className="ml-[8px]">{link.text}</span>

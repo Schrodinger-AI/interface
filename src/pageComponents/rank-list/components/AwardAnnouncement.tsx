@@ -18,10 +18,10 @@ import { useResponsive } from 'hooks/useResponsive';
 import CommonCopy from 'components/CommonCopy';
 import SkeletonImage from 'components/SkeletonImage';
 import clsx from 'clsx';
-import { ReactComponent as LinkSVG } from 'assets/img/icons/link.svg';
 import { openExternalLink } from 'utils/openlink';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { NEED_LOGIN_PAGE } from 'constants/router';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 interface IProps {
   rulesList?: string[];
@@ -57,7 +57,7 @@ function AwardAnnouncement({
   const router = useRouter();
   const { isLG } = useResponsive();
   const { pageTitle, title: configTitle, description: configDescription, link, content } = pageConfig || {};
-
+  const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
 
   const renderCell = (value: string) => {
@@ -75,18 +75,26 @@ function AwardAnnouncement({
         openExternalLink(link.link, '_blank');
       } else {
         if (NEED_LOGIN_PAGE.includes(link.link)) {
-          checkLogin({
-            onSuccess: () => {
-              if (!link.link) return;
+          if (NEED_LOGIN_PAGE.includes(link.link)) {
+            if (isLogin) {
               router.push(link.link);
-            },
-          });
+            } else {
+              checkLogin({
+                onSuccess: () => {
+                  if (!link.link) return;
+                  router.push(link.link);
+                },
+              });
+            }
+          } else {
+            router.push(link.link);
+          }
         } else {
           router.push(link.link);
         }
       }
     },
-    [checkLogin, router],
+    [checkLogin, isLogin, router],
   );
 
   const renderLink = useCallback(
@@ -105,7 +113,7 @@ function AwardAnnouncement({
         case 'externalLink':
           return (
             <span
-              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}
+              className={clsx('w-max mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}
               onClick={() => jumpTo(link)}>
               {link.text}
             </span>
