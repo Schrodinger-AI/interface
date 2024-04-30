@@ -31,7 +31,7 @@ export default function ActivityDetail() {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="w-full max-w-[1360px]">
-        <h1 className="pt-[24px] flex items-start pb-[8px] font-semibold text-2xl">
+        <h1 className="pt-[24px] flex items-start pb-[8px] font-semibold text-neutralTitle text-2xl">
           <div className="h-[32px] flex items-center justify-center">
             <ArrowSVG
               className="w-[24px] mr-[8px] rotate-90  cursor-pointer"

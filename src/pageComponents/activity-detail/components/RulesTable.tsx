@@ -3,6 +3,8 @@ import { Table } from 'aelf-design';
 import { TableColumnsType } from 'antd';
 import React, { useMemo } from 'react';
 import { IActivityDetailRulesTable } from 'redux/types/reducerTypes';
+import styles from './style.module.css';
+import clsx from 'clsx';
 
 const renderCell = (value: string) => {
   return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
@@ -16,7 +18,7 @@ function RulesTable({ header, data }: IActivityDetailRulesTable) {
           title: item.title,
           dataIndex: item.key,
           key: item.key,
-          width: item.width || 100,
+          width: item.width,
           render: (value, _record, index) => {
             return renderCell(item.key === 'index' ? `${index + 1}` : value);
           },
@@ -30,7 +32,7 @@ function RulesTable({ header, data }: IActivityDetailRulesTable) {
   if (!columns || !columns.length) return null;
 
   return (
-    <div className="mt-[8px] mb-[16px] w-max max-w-full overflow-x-auto">
+    <div className={clsx('mt-[8px] mb-[16px] w-full overflow-x-auto', styles['rules-table'])}>
       <Table
         dataSource={data || []}
         columns={columns}
