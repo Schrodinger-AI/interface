@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { DynamicLoading } from 'components/DynamicLoading';
 
-export default dynamic(() => import('pageComponents/airdrops-detail'), {
+export default dynamic(() => import('pageComponents/activity-detail'), {
   ssr: false,
   loading: () => <DynamicLoading />,
 });

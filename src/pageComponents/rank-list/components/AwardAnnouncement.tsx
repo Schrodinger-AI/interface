@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Table, ToolTip } from 'aelf-design';
 import TableEmpty from 'components/TableEmpty';
 import RulesList from './RulesList';
@@ -62,48 +62,51 @@ function AwardAnnouncement({
     return <span className="text-neutralSecondary font-medium text-base">{value}</span>;
   };
 
-  const renderLink = (link: IRankListPageConfigLink) => {
-    switch (link.type) {
-      case 'img-link':
-        return (
-          <a
-            href={link.link}
-            rel="noreferrer"
-            className={clsx('flex w-full h-[100px] mt-[8px] cursor-pointer overflow-hidden', link.style)}>
-            <SkeletonImage img={link.imgUrl || ''} className="w-full h-full" />
-          </a>
-        );
-      case 'img-externalLink':
-        return (
-          <a
-            href={link.link}
-            target="_blank"
-            rel="noreferrer"
-            className={clsx('flex w-full h-[100px] mt-[8px] cursor-pointer overflow-hidden', link.style)}>
-            <SkeletonImage img={link.imgUrl || ''} className="w-full h-full" />
-          </a>
-        );
-      case 'link':
-        return (
-          <a
-            href={link.link}
-            rel="noreferrer"
-            className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
-            {link.text}
-          </a>
-        );
-      case 'externalLink':
-        return (
-          <a
-            href={link.link}
-            target="_blank"
-            rel="noreferrer"
-            className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
-            {link.text}
-          </a>
-        );
-    }
-  };
+  const renderLink = useCallback(
+    (link: IRankListPageConfigLink) => {
+      switch (link.type) {
+        case 'img-link':
+          return (
+            <a
+              href={link.link}
+              rel="noreferrer"
+              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
+              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
+            </a>
+          );
+        case 'img-externalLink':
+          return (
+            <a
+              href={link.link}
+              target="_blank"
+              rel="noreferrer"
+              className={clsx('flex w-full mt-[8px] cursor-pointer overflow-hidden')}>
+              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
+            </a>
+          );
+        case 'link':
+          return (
+            <a
+              href={link.link}
+              rel="noreferrer"
+              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
+              {link.text}
+            </a>
+          );
+        case 'externalLink':
+          return (
+            <a
+              href={link.link}
+              target="_blank"
+              rel="noreferrer"
+              className={clsx('w-full mt-[8px] text-brandDefault font-medium text-base cursor-pointer', link.style)}>
+              {link.text}
+            </a>
+          );
+      }
+    },
+    [isLG],
+  );
 
   const renderDescription = (description?: string[]) => {
     if (description?.length) {
@@ -168,6 +171,26 @@ function AwardAnnouncement({
         width: 200,
         render: (reward) => {
           return renderCell(reward ? formatTokenPrice(reward) : '--');
+        },
+      },
+      {
+        title: renderTitle('Referral Address'),
+        dataIndex: 'referralAddress',
+        key: 'referralAddress',
+        width: 200,
+        render: (address) => {
+          if (!address || address === '-') return renderCell('--');
+          return (
+            <CommonCopy toCopy={addPrefixSuffix(address)}>
+              {isLG ? (
+                renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))
+              ) : (
+                <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
+                  {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+                </ToolTip>
+              )}
+            </CommonCopy>
+          );
         },
       },
       {
@@ -278,7 +301,7 @@ function AwardAnnouncement({
             {title ? <span className="text-xl font-semibold">{title}</span> : null}
             {renderDescription(description)}
           </div>
-          <div className="max-w-full lg:max-w-[1000px] overflow-x-auto">
+          <div className="max-w-full lg:max-w-[1200px] overflow-x-auto">
             <Table
               dataSource={list}
               columns={columns}

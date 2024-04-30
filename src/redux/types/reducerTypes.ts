@@ -175,7 +175,10 @@ export interface IKOLRulesSection {
 
 export interface IRankListPageConfigLink {
   type: 'img-link' | 'img-externalLink' | 'link' | 'externalLink';
-  imgUrl?: string;
+  imgUrl?: {
+    pc: string;
+    mobile: string;
+  };
   text?: string;
   link?: string;
   style?: string;
@@ -210,4 +213,36 @@ export interface IRankListData {
     })[];
   };
   pageConfig?: IRankListPageConfig;
+}
+
+export interface IActivityDetailRulesLink {
+  type: 'img-link' | 'img-externalLink' | 'link' | 'externalLink';
+  imgUrl?: {
+    pc: string;
+    mobile: string;
+  };
+  text?: string;
+  link?: string;
+  style?: Record<string, any>;
+}
+
+export interface IActivityDetailRulesTable {
+  data: Record<string, string | number>[];
+  header: {
+    key: string;
+    title: string;
+    width: number;
+  }[];
+}
+export interface IActivityDetailRules {
+  title?: string;
+  description?: string[];
+  rulesTable?: IActivityDetailRulesTable;
+  link?: IActivityDetailRulesLink[];
+  bottomDescription?: string[];
+}
+
+export interface IActivityDetailData {
+  pageTitle?: string;
+  rules?: IActivityDetailRules[];
 }
