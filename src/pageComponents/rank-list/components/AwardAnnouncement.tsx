@@ -180,7 +180,7 @@ function AwardAnnouncement({
         },
       },
       {
-        title: renderTitle('Reward(SGR)'),
+        title: renderTitle('Reward ($SGR)'),
         dataIndex: 'reward',
         key: 'reward',
         width: 200,
@@ -209,7 +209,7 @@ function AwardAnnouncement({
         },
       },
       {
-        title: renderTitle('Referral Reward(SGR)'),
+        title: renderTitle('Referral Reward ($SGR)'),
         dataIndex: 'referralReward',
         key: 'referralReward',
         width: 200,
@@ -273,7 +273,7 @@ function AwardAnnouncement({
         },
       },
       {
-        title: renderTitle('Rewards'),
+        title: renderTitle('Reward ($SGR)'),
         dataIndex: 'reward',
         key: 'reward',
         width: 200,

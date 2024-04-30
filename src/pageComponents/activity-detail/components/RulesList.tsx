@@ -88,7 +88,7 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
   );
 
   return (
-    <div>
+    <div className="mt-[24px]">
       {title ? <p className="text-base font-medium text-neutralPrimary">{title}</p> : null}
       {description && description.length ? renderDescription(description) : null}
       {link && link.length ? (

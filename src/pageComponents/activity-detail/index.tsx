@@ -42,7 +42,7 @@ export default function ActivityDetail() {
           </div>
           <span className="flex-1">{pageTitle}</span>
         </h1>
-        <div className="mt-[24px]">
+        <div>
           {rulesList.map((item, index) => {
             return <RulesList key={index} {...item} />;
           })}

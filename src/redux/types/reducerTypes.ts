@@ -112,6 +112,7 @@ export type TGlobalConfigType = {
   rankListEntrance?: {
     open?: boolean;
     title?: string;
+    link?: string;
   };
   rarityFilterItems: Array<{
     label: string;
