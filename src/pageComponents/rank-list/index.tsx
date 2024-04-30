@@ -46,9 +46,6 @@ export default function PointsPage() {
   useEffectOnce(() => {
     rankList();
   });
-
-  if (visible) return null;
-
   return showAnnouncement ? (
     <AwardAnnouncement
       pageConfig={pageConfig}

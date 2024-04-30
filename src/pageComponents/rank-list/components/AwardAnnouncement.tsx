@@ -212,7 +212,7 @@ function AwardAnnouncement({
         title: renderTitle('Referral Reward ($SGR)'),
         dataIndex: 'referralReward',
         key: 'referralReward',
-        width: 200,
+        width: 220,
         render: (referralReward) => {
           return renderCell(referralReward ? formatTokenPrice(referralReward) : '--');
         },
@@ -316,20 +316,21 @@ function AwardAnnouncement({
             {title ? <span className="text-xl font-semibold">{title}</span> : null}
             {renderDescription(description)}
           </div>
-          <div className="max-w-full lg:max-w-[1200px] overflow-x-auto">
-            <Table
-              dataSource={list}
-              columns={columns}
-              loading={loadingVisible}
-              pagination={null}
-              locale={{
-                emptyText: <TableEmpty description="No data yet." />,
-              }}
-              scroll={{
-                x: 'max-content',
-              }}
-            />
-          </div>
+          {list?.length ? (
+            <div className="max-w-full lg:max-w-[1220px] overflow-x-auto">
+              <Table
+                dataSource={list}
+                columns={columns}
+                pagination={null}
+                locale={{
+                  emptyText: <TableEmpty description="No data yet." />,
+                }}
+                scroll={{
+                  x: 'max-content',
+                }}
+              />
+            </div>
+          ) : null}
         </div>
 
         {subdomain ? (

@@ -195,20 +195,22 @@ function RankList({
             {title ? <span className="text-xl font-semibold">{title}</span> : null}
             {renderDescription(description)}
           </div>
-          <div className="max-w-full lg:max-w-[1000px] overflow-x-auto">
-            <Table
-              dataSource={list}
-              columns={columns}
-              loading={loadingVisible}
-              pagination={null}
-              locale={{
-                emptyText: <TableEmpty description="No data yet." />,
-              }}
-              scroll={{
-                x: 'max-content',
-              }}
-            />
-          </div>
+          {list?.length ? (
+            <div className="max-w-full lg:max-w-[1000px] overflow-x-auto">
+              <Table
+                dataSource={list}
+                columns={columns}
+                loading={loadingVisible}
+                pagination={null}
+                locale={{
+                  emptyText: <TableEmpty description="No data yet." />,
+                }}
+                scroll={{
+                  x: 'max-content',
+                }}
+              />
+            </div>
+          ) : null}
         </div>
 
         {subdomain ? (

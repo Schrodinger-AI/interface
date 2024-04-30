@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import RulesList from './components/RulesList';
 
 export default function ActivityDetail() {
-  const { showLoading, closeLoading, visible } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
 
   const [rulesList, setRulesList] = useState<IActivityDetailRules[]>([]);
@@ -25,8 +25,6 @@ export default function ActivityDetail() {
   useEffectOnce(() => {
     rankList();
   });
-
-  if (visible) return null;
 
   return (
     <div className="w-full flex flex-col items-center">
