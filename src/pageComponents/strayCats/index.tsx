@@ -223,7 +223,7 @@ export default function StrayCatsPage() {
             loading={loading}
             pagination={null}
             locale={{
-              emptyText: <TableEmpty description="Phew! There aren't any stray cats in your account." />,
+              emptyText: <TableEmpty title="Phew! There aren't any stray cats in your account." />,
             }}
             scroll={{
               x: 'max-content',
