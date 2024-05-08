@@ -4,7 +4,7 @@ import styles from './style.module.css';
 import { ReactComponent as CloseIcon } from 'assets/img/close.svg';
 import { Ellipsis } from 'antd-mobile';
 import clsx from 'clsx';
-import { OmittedType, getOmittedStr } from 'utils';
+import { OmittedType, getOmittedStr } from 'utils/addressFormatting';
 
 function FilterTags({
   filterSelect,
