@@ -1,16 +1,39 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Table } from 'aelf-design';
+import { Table, ToolTip } from 'aelf-design';
 import { TableColumnsType } from 'antd';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { IActivityDetailRulesTable } from 'redux/types/reducerTypes';
 import styles from './style.module.css';
 import clsx from 'clsx';
+import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
+import CommonCopy from 'components/CommonCopy';
+import { useResponsive } from 'hooks/useResponsive';
+import { formatTokenPrice } from 'utils/format';
 
 const renderCell = (value: string) => {
   return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
 };
 
 function RulesTable({ header, data }: IActivityDetailRulesTable) {
+  const { isLG } = useResponsive();
+
+  const renderAddress = useCallback(
+    (address: string) => {
+      return (
+        <CommonCopy toCopy={addPrefixSuffix(address)}>
+          {isLG ? (
+            renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))
+          ) : (
+            <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
+              {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+            </ToolTip>
+          )}
+        </CommonCopy>
+      );
+    },
+    [isLG],
+  );
+
   const columns: TableColumnsType<any> = useMemo(() => {
     if (header?.length) {
       return header.map((item) => {
@@ -20,14 +43,21 @@ function RulesTable({ header, data }: IActivityDetailRulesTable) {
           key: item.key,
           width: item.width,
           render: (value, _record, index) => {
-            return renderCell(item.key === 'index' ? `${index + 1}` : value);
+            switch (item.type) {
+              case 'address':
+                return renderAddress(value);
+              case 'number':
+                return renderCell(formatTokenPrice(value));
+              default:
+                return renderCell(item.key === 'index' ? `${index + 1}` : value);
+            }
           },
         };
       });
     } else {
       return [];
     }
-  }, [header]);
+  }, [header, renderAddress]);
 
   if (!columns || !columns.length) return null;
 

@@ -57,6 +57,22 @@ export type TCustomThemeType = {
   };
 };
 
+export type TBannerConfigButton = {
+  text: string;
+  buttonType?: 'default' | 'primary';
+  link?: string;
+  linkType?: 'externalLink' | 'link';
+};
+
+export type TBannerConfigItem = {
+  backgroundImage?: {
+    pc: string;
+    mobile: string;
+  };
+  show?: boolean;
+  button?: TBannerConfigButton[];
+};
+
 export type TCustomizationItemType = {
   isShowRampBuy: boolean;
   isShowRampSell: boolean;
@@ -86,6 +102,7 @@ export type TCustomizationItemType = {
   blackList: Array<string>;
   emptyChannelGroupList: Array<TEmptyChannelGroup>;
   emptyChannelGroupDescription: Array<string>;
+  bannerConfig?: Record<string, TBannerConfigItem>;
   [key: string]: any;
 };
 
@@ -233,6 +250,7 @@ export interface IActivityDetailRulesTable {
     key: string;
     title: string;
     width: number;
+    type?: 'address' | 'number' | 'text';
   }[];
 }
 export interface IActivityDetailRules {

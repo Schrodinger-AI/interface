@@ -25,7 +25,6 @@ import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import useLoading from 'hooks/useLoading';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import {
@@ -50,6 +49,7 @@ import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import { setCurViewListType } from 'redux/reducer/info';
+import SearchInput from './SearchInput';
 
 export default function OwnedItems({
   pageState = ListTypeEnum.All,
@@ -83,7 +83,6 @@ export default function OwnedItems({
   const [tempFilterSelect, setTempFilterSelect] = useState<IFilterSelect>(defaultFilter);
   const [current, setCurrent] = useState(1);
   const [dataSource, setDataSource] = useState<TSGRItem[]>();
-  const { showLoading, closeLoading, visible: isLoading } = useLoading();
   const pageSize = 32;
   const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
   const column = useColumns(collapsed);
@@ -93,6 +92,8 @@ export default function OwnedItems({
   const walletAddressRef = useRef(walletAddress);
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   useEffect(() => {
     walletAddressRef.current = walletAddress;
@@ -131,53 +132,50 @@ export default function OwnedItems({
     };
   }, [filterSelect, current, searchParam]);
 
-  const fetchData = useCallback(
-    async ({
-      params,
-      loadMore = false,
-      requestType,
-    }: {
-      params: ICatsListParams;
-      loadMore?: boolean;
-      requestType: ListTypeEnum;
-    }) => {
-      if (!params.chainId) {
-        return;
+  const fetchData = async ({
+    params,
+    loadMore = false,
+    requestType,
+  }: {
+    params: ICatsListParams;
+    loadMore?: boolean;
+    requestType: ListTypeEnum;
+  }) => {
+    if (!params.chainId) {
+      return;
+    }
+    const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
+    try {
+      const res = await requestCatApi(params);
+      const total = res.totalCount ?? 0;
+      setTotal(total);
+      const hasSearch =
+        params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
+      if (!hasSearch) {
+        setOwnedTotal(total);
       }
-      showLoading();
-      const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
-      try {
-        const res = await requestCatApi(params);
-        const total = res.totalCount ?? 0;
-        setTotal(total);
-        const hasSearch =
-          params.traits?.length || params.generations?.length || !!params.keyword || params.rarities?.length;
-        if (!hasSearch) {
-          setOwnedTotal(total);
-        }
-        const data = (res.data || []).map((item) => {
-          return {
-            ...item,
-            amount: divDecimals(item.amount, item.decimals).toFixed(),
-          };
-        });
+      const data = (res.data || []).map((item) => {
+        return {
+          ...item,
+          amount: divDecimals(item.amount, item.decimals).toFixed(),
+        };
+      });
 
-        if (loadMore) {
-          setDataSource((preData) => [...(preData || []), ...data]);
-        } else {
-          setDataSource(data);
-        }
-        setCurrent((count) => {
-          return ++count;
-        });
-      } catch {
-        setDataSource((preData) => preData || []);
-      } finally {
-        closeLoading();
+      if (loadMore) {
+        setDataSource((preData) => [...(preData || []), ...data]);
+      } else {
+        setDataSource(data);
       }
-    },
-    [closeLoading, showLoading],
-  );
+      setCurrent((count) => {
+        return ++count;
+      });
+    } catch {
+      setDataSource((preData) => preData || []);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
     setDataSource([]);
@@ -186,11 +184,12 @@ export default function OwnedItems({
 
   useEffect(() => {
     setSearchParam('');
+    setLoading(true);
     fetchData({
       params: defaultRequestParams,
       requestType: pageState,
     });
-  }, [defaultRequestParams, fetchData, pageState, isLogin]);
+  }, [defaultRequestParams, pageState, isLogin]);
 
   const getTraits = useGetTraits();
   const getAllTraits = useGetAllTraits();
@@ -255,12 +254,13 @@ export default function OwnedItems({
       setFilterSelect(newFilterSelect);
       const filter = getFilter(newFilterSelect);
       setCurrent(1);
+      setLoading(true);
       fetchData({
         params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
       });
     },
-    [tempFilterSelect, fetchData, requestParams, pageState],
+    [tempFilterSelect, requestParams, pageState],
   );
 
   const filterChange = useCallback(
@@ -378,6 +378,7 @@ export default function OwnedItems({
   const { run } = useDebounceFn(
     (value) => {
       setCurrent(1);
+      setLoading(true);
       fetchData({
         params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
@@ -401,23 +402,25 @@ export default function OwnedItems({
     const filterData = getDefaultFilter(curChain);
     handleBaseClearAll(filterData);
     const filter = getFilter(filterData);
+    setLoading(true);
     fetchData({
       params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
       requestType: pageState,
     });
     setCollapsed(false);
-  }, [curChain, fetchData, handleBaseClearAll, pageState, requestParams]);
+  }, [curChain, handleBaseClearAll, pageState, requestParams]);
 
   const handleTagsClearAll = useCallback(() => {
     const filterData = getDefaultFilter(curChain);
     setSearchParam('');
     handleBaseClearAll(filterData);
     const filter = getFilter(filterData);
+    setLoading(true);
     fetchData({
       params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' },
       requestType: pageState,
     });
-  }, [curChain, fetchData, handleBaseClearAll, pageState, requestParams]);
+  }, [curChain, handleBaseClearAll, pageState, requestParams]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -427,6 +430,7 @@ export default function OwnedItems({
   const clearSearchChange = () => {
     setSearchParam('');
     setCurrent(1);
+    setLoading(true);
     fetchData({
       params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) },
       requestType: pageState,
@@ -442,7 +446,8 @@ export default function OwnedItems({
   }, [filterSelect, searchParam]);
 
   const loadMoreData = useCallback(() => {
-    if (isLoading || !hasMore) return;
+    if (loading || loadingMore || !hasMore) return;
+    setLoadingMore(true);
     fetchData({
       params: {
         ...requestParams,
@@ -451,7 +456,7 @@ export default function OwnedItems({
       loadMore: true,
       requestType: pageState,
     });
-  }, [isLoading, hasMore, current, fetchData, requestParams, pageState]);
+  }, [loading, loadingMore, hasMore, current, requestParams, pageState]);
 
   const emptyText = useMemo(() => {
     return (
@@ -493,6 +498,8 @@ export default function OwnedItems({
     handleBaseClearAll();
   }, [handleBaseClearAll, pageState]);
 
+  const [showTotalAmount, setShowTotalAmount] = useState<boolean>(true);
+
   const renderTotalAmount = useMemo(() => {
     if (pageState === ListTypeEnum.All) {
       return (
@@ -505,7 +512,7 @@ export default function OwnedItems({
     }
     return (
       <div>
-        <span className="text-2xl font-semibold pr-[8px]">Amount Owned</span>
+        <span className="text-2xl font-semibold pr-[8px]">Owned</span>
         <span className="text-base font-semibold">({total})</span>
       </div>
     );
@@ -513,37 +520,38 @@ export default function OwnedItems({
 
   return (
     <div>
-      {isLG && noticeData?.length ? (
-        <div className="flex-1 mb-[24px] overflow-hidden">
-          <ScrollAlert data={noticeData} type="notice" />
-        </div>
-      ) : null}
       <Flex
         className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
         align="center"
         justify="space-between">
-        {renderTotalAmount}
-        {pageState === ListTypeEnum.All ? (
-          <div
-            className={clsx(
-              'flex-1 flex items-center overflow-hidden',
-              noticeData?.length ? 'justify-end lg:justify-between' : 'justify-end',
-            )}>
-            {!isLG && noticeData?.length ? (
-              <div className="flex-1 mr-[40px] overflow-hidden h-[48px]">
-                <ScrollAlert data={noticeData} type="notice" />
-              </div>
-            ) : null}
-
-            {!isLG ? (
-              <Button type="primary" size="large" onClick={toMyCats}>
-                Get Your Own Cat
-              </Button>
-            ) : null}
+        {showTotalAmount ? renderTotalAmount : null}
+        {isLG ? (
+          <Flex flex={1} justify="end" gap={16} className="ml-[8px]">
+            <Flex
+              className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
+              justify="center"
+              align="center"
+              onClick={collapsedChange}>
+              <CollapsedSVG />
+            </Flex>
+            <SearchInput
+              placeholder="Search for an inscription symbol or name"
+              value={searchParam}
+              onChange={symbolChange}
+              onPressEnter={symbolChange}
+              showTotalAmount={(value) => {
+                setShowTotalAmount(value);
+              }}
+            />
+          </Flex>
+        ) : null}
+        {!isLG && noticeData?.length ? (
+          <div className="flex-1 overflow-hidden h-[48px]">
+            <ScrollAlert data={noticeData} type="notice" />
           </div>
         ) : null}
       </Flex>
-      <Layout>
+      <Layout className="relative">
         {isMobile ? (
           <CollapseForPhone
             items={collapseItems}
@@ -574,21 +582,24 @@ export default function OwnedItems({
             className={clsx('bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5', !isLG && 'sticky top-0')}
             vertical
             gap={12}>
-            <Flex gap={16}>
-              <Flex
-                className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
-                justify="center"
-                align="center"
-                onClick={collapsedChange}>
-                <CollapsedSVG />
+            {isLG ? null : (
+              <Flex gap={16}>
+                <Flex
+                  className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
+                  justify="center"
+                  align="center"
+                  onClick={collapsedChange}>
+                  <CollapsedSVG />
+                </Flex>
+                <CommonSearch
+                  placeholder="Search for an inscription symbol or name"
+                  value={searchParam}
+                  onChange={symbolChange}
+                  onPressEnter={symbolChange}
+                />
               </Flex>
-              <CommonSearch
-                placeholder="Search for an inscription symbol or name"
-                value={searchParam}
-                onChange={symbolChange}
-                onPressEnter={symbolChange}
-              />
-            </Flex>
+            )}
+
             <FilterTags
               tagList={tagList}
               filterSelect={filterSelect}
@@ -599,8 +610,11 @@ export default function OwnedItems({
           </Flex>
           <ScrollContent
             type={CardType.MY}
+            loadingMore={loadingMore}
+            loading={loading}
+            className={isLG && !tagList.length ? 'mt-[12px]' : ''}
             grid={{ gutter, column }}
-            emptyText={emptyText}
+            emptyText={loading ? <></> : emptyText}
             onPress={onPress}
             loadMore={loadMoreData}
             ListProps={{ dataSource }}
@@ -608,13 +622,13 @@ export default function OwnedItems({
         </Layout>
       </Layout>
 
-      {isLG && pageState === ListTypeEnum.All ? (
+      {/* {isLG && pageState === ListTypeEnum.All ? (
         <div className="flex z-[60] fixed bottom-0 left-0 flex-row w-full p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
           <Button className="w-full" type="primary" size="large" onClick={toMyCats}>
             Get Your Own Cat
           </Button>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

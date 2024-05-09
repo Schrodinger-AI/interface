@@ -58,6 +58,8 @@ export default function Header() {
     return cmsInfo?.routerItems || [];
   }, [cmsInfo?.routerItems]);
 
+  const [rankListEntranceOpen, setRankListEntranceOpen] = useState<boolean>(!!cmsInfo?.rankListEntrance?.open);
+
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
     lists = routerItems?.filter((i) => i.show) || [];
@@ -338,6 +340,11 @@ export default function Header() {
     }[customTheme.header.theme];
   }, [customTheme.header.theme]);
 
+  const closeRankListEntrance = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setRankListEntranceOpen(false);
+  };
+
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
@@ -347,10 +354,13 @@ export default function Header() {
           caution, as user data may be subject to deletion.
         </p>
       )}
-      {SHOW_RANKING_ENTRY.includes(pathname) && cmsInfo?.rankListEntrance?.open && cmsInfo?.rankListEntrance?.title ? (
+      {SHOW_RANKING_ENTRY.includes(pathname) &&
+      cmsInfo?.rankListEntrance?.open &&
+      cmsInfo?.rankListEntrance?.title &&
+      rankListEntranceOpen ? (
         <p
           className={clsx(
-            'w-full p-[16px] text-sm flex items-center justify-center text-white font-medium text-center bg-brandDefault cursor-pointer',
+            'w-full p-[16px] relative text-sm flex items-center justify-center text-white font-medium text-center bg-brandDefault cursor-pointer',
           )}
           onClick={() => {
             router.push(cmsInfo.rankListEntrance?.link || '/rank-list');
@@ -358,6 +368,11 @@ export default function Header() {
           <span className="flex-1 max-w-max">{cmsInfo.rankListEntrance.title}</span>
 
           <LeftArrow className="fill-white scale-50" />
+          <div
+            className="absolute px-[16px] h-full flex items-center justify-center right-0 top-0"
+            onClick={closeRankListEntrance}>
+            <CloseSVG className="fill-white w-[16px] h-[16px]" />
+          </div>
         </p>
       ) : null}
 

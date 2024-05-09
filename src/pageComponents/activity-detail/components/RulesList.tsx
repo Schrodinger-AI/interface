@@ -67,7 +67,7 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         case 'img-externalLink':
           return (
             <span
-              className={clsx('flex w-full h-auto mt-[8px] cursor-pointer overflow-hidden')}
+              className={clsx('flex w-full h-auto mt-[8px] overflow-hidden', link.link ? 'cursor-pointer' : '')}
               onClick={() => jumpTo(link)}>
               <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
             </span>
@@ -76,9 +76,14 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         case 'externalLink':
           return (
             <span
-              className={clsx('w-max flex items-center mt-[8px] text-brandDefault font-medium text-sm cursor-pointer')}
+              className={clsx(
+                'w-max max-w-full flex items-start mt-[8px] text-brandDefault font-medium text-sm',
+                link.link ? 'cursor-pointer' : '',
+              )}
               onClick={() => jumpTo(link)}>
-              <LinkSVG />
+              <div className="h-[22px] flex items-center">
+                <LinkSVG />
+              </div>
               <span className="ml-[8px]">{link.text}</span>
             </span>
           );
