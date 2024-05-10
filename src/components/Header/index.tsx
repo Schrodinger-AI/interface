@@ -83,6 +83,7 @@ export default function Header() {
               if (schema === '/my-cats') {
                 store.dispatch(setCurViewListType(ListTypeEnum.My));
               }
+              setMenuModalVisibleModel(ModalViewModel.NONE);
             },
           });
           return;

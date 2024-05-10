@@ -33,7 +33,7 @@ type TProps = Omit<AlertProps, 'type'> & {
 
 function ScrollAlert(props: TProps) {
   const { data, type = 'warning' } = props;
-  const { isLG } = useResponsive();
+  const { isLG, isMD } = useResponsive();
 
   const [contentWidth, setContentWidth] = useState<number>(0);
 
@@ -57,18 +57,18 @@ function ScrollAlert(props: TProps) {
     <Alert
       className={clsx(styles['scroll-alert'], customizeAlertStyle?.[type] && customizeAlertStyle[type].styles)}
       message={
-        <Marquee pauseOnHover gradient={false} speed={isLG ? 40 : 50}>
+        <Marquee pauseOnHover={isLG ? false : true} gradient={false} speed={isLG ? 40 : 50}>
           {data.map((item, index) => {
             return (
               <p
                 key={index}
                 onClick={() => item?.handle && item.handle()}
                 className={clsx(
-                  'text-sm lg:text-base text-neutralPrimary font-semibold min-w-max mr-[80px]',
+                  'text-sm lg:text-base text-neutralPrimary font-semibold min-w-max mr-[80px] whitespace-nowrap',
                   item.handle ? 'cursor-pointer' : 'cursor-default',
                 )}
                 style={{
-                  width: `${contentWidth}px`,
+                  width: isMD ? 'max-content' : `${contentWidth}px`,
                 }}>
                 {item.text}
               </p>

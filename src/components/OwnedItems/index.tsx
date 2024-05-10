@@ -526,7 +526,7 @@ export default function OwnedItems({
         justify="space-between">
         {showTotalAmount ? renderTotalAmount : null}
         {isLG ? (
-          <Flex flex={1} justify="end" gap={16} className="ml-[8px]">
+          <Flex flex={1} gap={16} className="ml-[8px] flex justify-end">
             <Flex
               className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
               justify="center"
