@@ -22,6 +22,7 @@ export type InfoStateType = {
   itemsFromLocal?: string[];
   isJoin: boolean;
   curViewListType: ListTypeEnum;
+  unreadMessagesCount: number;
 };
 
 export type TTradeItem = {

@@ -38,11 +38,13 @@ import { setCurViewListType } from 'redux/reducer/info';
 import { ListTypeEnum } from 'types';
 import StrayCatsItem from './components/StrayCatsItem';
 import NoticeDrawer from './components/NoticeDrawer';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, walletType } = useWalletService();
   const { isLogin } = useGetLoginStatus();
+  const { unreadMessagesCount } = useGetStoreInfo();
 
   const { isLG } = useResponsive();
   const router = useRouter();
@@ -238,7 +240,7 @@ export default function Header() {
     ) : (
       <div className="flex items-center">
         <MyDropDown />
-        <Badge count={20} showZero size={isLG ? 'small' : 'default'}>
+        <Badge count={unreadMessagesCount} showZero={false} size={isLG ? 'small' : 'default'}>
           <Button
             type="default"
             className={clsx(

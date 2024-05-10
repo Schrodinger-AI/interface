@@ -134,9 +134,7 @@ function SkeletonImage(props: ISkeletonImage) {
           ) : null}
           {badge && badge.visible ? (
             <div
-              className={clsx(
-                'absolute top-0 left-0 rounded-full w-[16px] h-[16px] border-[2px] border-white border-solid bg-functionalError',
-              )}
+              className={clsx('absolute -top-[4px] -left-[4px] rounded-full w-[12px] h-[12px]  bg-functionalError')}
             />
           ) : null}
           {renderTag(generation || generation === 0 ? `${generation}` : null, 'generation')}
