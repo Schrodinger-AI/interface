@@ -10,6 +10,8 @@ import { useWalletService } from 'hooks/useWallet';
 import { getMessageUnreadCount } from 'utils/getMessageUnreadCount';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { messageList } from 'api/request';
+import { dispatch } from 'redux/store';
+import { setUnreadMessagesCount } from 'redux/reducer/info';
 
 const endMessage = (
   <div className="text-textSecondary text-base font-medium pt-[28px] pb-[28px] text-center">No more yet~</div>
@@ -65,7 +67,7 @@ function NoticeScrollList(props?: { useInfiniteScroll?: boolean }) {
 
   const loadMoreData = async () => {
     try {
-      if (!hasMore) return;
+      if (loadingMore || !hasMore) return;
       setPageSize((prev) => ++prev);
     } catch (error) {
       /* empty */
@@ -114,6 +116,11 @@ function NoticeScrollList(props?: { useInfiniteScroll?: boolean }) {
   useEffect(() => {
     if (!wallet.address) return;
     init(wallet.address);
+
+    return () => {
+      dispatch(setUnreadMessagesCount(0));
+      getMessageUnreadCount(wallet.address);
+    };
   }, [wallet.address]);
 
   if (useInfiniteScroll) {

@@ -4,7 +4,7 @@ import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { openExternalLink } from 'utils/openlink';
 import HonourLabel from 'components/ItemCard/components/HonourLabel';
-import { formatTokenPrice } from 'utils/format';
+import { formatNumber, formatTokenPrice } from 'utils/format';
 import clsx from 'clsx';
 import moment from 'moment';
 
@@ -69,7 +69,6 @@ function NoticeList({
   };
 
   const formatTime = useMemo(() => {
-    console.log('=====createtime', createtime);
     return moment(createtime).format('YYYY/MM/DD HH:mm:ss');
   }, [createtime]);
 
@@ -102,7 +101,11 @@ function NoticeList({
           {renderTag(`GEN ${generation}`)}
           {level ? renderTag(`Lv. ${level}`) : null}
           {rank ? renderTag(`Rank ${formatTokenPrice(rank)}`) : null}
-          {describe ? <HonourLabel text={describe} className="bg-white" /> : null}
+          {describe ? (
+            <div className="h-[24px] mt-[8px] flex justify-center items-center rounded-[4px] text-[10px] leading-[18px] font-medium text-neutralPrimary ml-[8px] first:ml-0">
+              <HonourLabel text={describe} className="bg-white" />
+            </div>
+          ) : null}
         </div>
         <div className="mt-[4px]">
           <span className="text-xs text-neutralSecondary">{formatTime}</span>
@@ -114,10 +117,12 @@ function NoticeList({
           </div>
           <div className="flex items-center">
             {awakenPrice ? (
-              <span className="text-sm font-medium text-neutralSecondary mr-[8px]">(RSP {awakenPrice} ELF)</span>
+              <span className="text-sm font-medium text-neutralSecondary mr-[8px]">
+                ({formatNumber(awakenPrice)} ELF)
+              </span>
             ) : null}
             <span className={clsx('text-sm font-medium', transactionPrice[TransactionType[type || 0]]?.className)}>
-              {transactionPrice[TransactionType[type || 0]]?.prefix} {price} ELF
+              {transactionPrice[TransactionType[type || 0]]?.prefix} {formatTokenPrice(price)} ELF
             </span>
           </div>
         </div>
