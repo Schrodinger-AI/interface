@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { IActivityDetailRules, IActivityDetailRulesLink } from 'redux/types/reducerTypes';
 import RulesTable from './RulesTable';
 import SkeletonImage from 'components/SkeletonImage';
-import { ReactComponent as LinkSVG } from 'assets/img/icons/link.svg';
+import { ReactComponent as RightArrow } from 'assets/img/right_arrow.svg';
 import clsx from 'clsx';
 import { openExternalLink } from 'utils/openlink';
 import { NEED_LOGIN_PAGE } from 'constants/router';
@@ -76,15 +76,12 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         case 'externalLink':
           return (
             <span
-              className={clsx(
-                'w-max max-w-full flex items-start mt-[8px] text-brandDefault font-medium text-sm',
-                link.link ? 'cursor-pointer' : '',
-              )}
+              className={clsx('w-max max-w-full flex items-center mt-[8px]', link.link ? 'cursor-pointer' : '')}
               onClick={() => jumpTo(link)}>
-              <div className="h-[22px] flex items-center">
-                <LinkSVG />
-              </div>
-              <span className="ml-[8px]">{link.text}</span>
+              <span className="flex items-center text-brandDefault font-medium text-sm">
+                {link.text}
+                <RightArrow className="fill-brandDefault ml-[2px]" />
+              </span>
             </span>
           );
       }
