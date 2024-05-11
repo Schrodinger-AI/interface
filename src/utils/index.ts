@@ -70,35 +70,6 @@ export function getExploreLink(
   }
 }
 
-export enum OmittedType {
-  ADDRESS = 'address',
-  NAME = 'name',
-  CUSTOM = 'custom',
-}
-
-export const getOmittedStr = (
-  str: string,
-  type: OmittedType,
-  params?: {
-    prevLen: number;
-    endLen: number;
-    limitLen: number;
-  },
-) => {
-  const defaults: Record<OmittedType, { prevLen: number; endLen: number; limitLen: number }> = {
-    [OmittedType.ADDRESS]: { prevLen: 10, endLen: 9, limitLen: 19 },
-    [OmittedType.NAME]: { prevLen: 6, endLen: 4, limitLen: 10 },
-    [OmittedType.CUSTOM]: { prevLen: 6, endLen: 4, limitLen: 10 },
-  };
-
-  const { prevLen, endLen, limitLen } = type === OmittedType.CUSTOM ? params || defaults[type] : defaults[type];
-
-  if (str?.length > limitLen) {
-    return `${str.slice(0, prevLen)}...${str.slice(-endLen)}`;
-  }
-  return str;
-};
-
 const testnetDefaultDomain = 'schrodingerai.com';
 const mainnetDefaultDomain = 'schrodingernft.ai';
 

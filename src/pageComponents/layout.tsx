@@ -24,6 +24,7 @@ import { backgroundStyle } from 'provider/useNavigationGuard';
 import WalletAndTokenInfo from 'utils/walletAndTokenInfo';
 import { useGetToken } from 'hooks/useGetToken';
 import queryString from 'query-string';
+import { HIDE_MAIN_PADDING } from 'constants/router';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -126,7 +127,9 @@ const Layout = dynamic(async () => {
               <AntdLayout.Content
                 className={`${
                   isLG ? styles['schrodinger-mobile-content'] : styles['schrodinger-content']
-                } flex-shrink-0 pb-4 px-4 lg:px-10 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''}`}>
+                } flex-shrink-0 pb-4 w-full ${isGrayBackground ? 'bg-neutralHoverBg' : ''} ${
+                  HIDE_MAIN_PADDING.includes(pathname) ? 'px-0' : 'px-4 lg:px-10'
+                }`}>
                 {children}
               </AntdLayout.Content>
               <Footer className={isGrayBackground ? 'bg-neutralHoverBg' : ''} />

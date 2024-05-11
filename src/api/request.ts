@@ -79,3 +79,15 @@ export const getRankList = async (): Promise<{ data: IRankListData }> => {
 export const getActivityDetail = async (): Promise<{ data: IActivityDetailData }> => {
   return cmsRequest.get('/items/activity_detail');
 };
+
+export const messageUnreadCount = async (data: {
+  address: string;
+}): Promise<{
+  count: number;
+}> => {
+  return request.post('/app/message/unread-count', data);
+};
+
+export const messageList = async (data: ITransactionMessageListParams): Promise<ITransactionMessageListData> => {
+  return request.post('/app/message/list ', data);
+};

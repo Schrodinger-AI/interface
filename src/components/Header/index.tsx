@@ -2,10 +2,11 @@
 import { Button, Dropdown } from 'aelf-design';
 import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
+import { ReactComponent as NoticeSVG } from 'assets/img/notice.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
 import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as LeftArrow } from 'assets/img/icons/left-arrow.svg';
-import { Modal } from 'antd';
+import { Badge, Modal } from 'antd';
 import styles from './style.module.css';
 import React, { useCallback, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -36,17 +37,21 @@ import { store } from 'redux/store';
 import { setCurViewListType } from 'redux/reducer/info';
 import { ListTypeEnum } from 'types';
 import StrayCatsItem from './components/StrayCatsItem';
+import NoticeDrawer from './components/NoticeDrawer';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, walletType } = useWalletService();
   const { isLogin } = useGetLoginStatus();
+  const { unreadMessagesCount } = useGetStoreInfo();
 
   const { isLG } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
   const customTheme = useGetCustomTheme();
   const pathname = usePathname();
+  const [noticeOpen, setNoticeOpen] = useState<boolean>(false);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const cmsInfo = useCmsInfo();
@@ -54,6 +59,8 @@ export default function Header() {
   const routerItems = useMemo(() => {
     return cmsInfo?.routerItems || [];
   }, [cmsInfo?.routerItems]);
+
+  const [rankListEntranceOpen, setRankListEntranceOpen] = useState<boolean>(!!cmsInfo?.rankListEntrance?.open);
 
   const menuItems = useMemo(() => {
     let lists: Array<ICompassProps> = [];
@@ -76,6 +83,7 @@ export default function Header() {
               if (schema === '/my-cats') {
                 store.dispatch(setCurViewListType(ListTypeEnum.My));
               }
+              setMenuModalVisibleModel(ModalViewModel.NONE);
             },
           });
           return;
@@ -210,6 +218,14 @@ export default function Header() {
     });
   }, [menuItems, onPressCompassItems]);
 
+  const onOpenNotice = () => {
+    if (isLG) {
+      router.push('/notification');
+    } else {
+      setNoticeOpen(true);
+    }
+  };
+
   const FunctionalArea = (itemList: Array<ICompassProps>) => {
     const myComponent = !isLogin ? (
       <Button
@@ -223,7 +239,21 @@ export default function Header() {
         Log in
       </Button>
     ) : (
-      <MyDropDown />
+      <div className="flex items-center">
+        <MyDropDown />
+        <Badge count={unreadMessagesCount} showZero={false} size={isLG ? 'small' : 'default'}>
+          <Button
+            type="default"
+            className={clsx(
+              '!rounded-[8px] lg:!rounded-[12px] !w-[32px] !min-w-[32px] !h-[32px] lg:!w-[48px] lg:!min-w-[48px] lg:!h-[48px] !p-0 ml-[8px] lg:ml-[12px]',
+              styles['button-my'],
+            )}
+            size="large"
+            onClick={onOpenNotice}>
+            <NoticeSVG className="scale-[0.7] lg:scale-100" />
+          </Button>
+        </Badge>
+      </div>
     );
     if (!isLG) {
       return (
@@ -271,9 +301,11 @@ export default function Header() {
     if (!isLG) {
       return (
         <Dropdown menu={{ items }} overlayClassName={styles.dropdown} placement="bottomRight">
-          <Button type="default" className={clsx('!rounded-[12px]', styles['button-my'])} size="large">
-            <MenuMySVG className="mr-[8px]" />
-            My
+          <Button
+            type="default"
+            className={clsx('!rounded-[12px] !w-[48px] !min-w-[48px] !h-[48px] !p-0', styles['button-my'])}
+            size="large">
+            <MenuMySVG />
           </Button>
         </Dropdown>
       );
@@ -281,13 +313,12 @@ export default function Header() {
     return (
       <Button
         type="default"
-        className={clsx('!rounded-lg', styles['button-my'])}
+        className={clsx('!rounded-[8px] !w-[32px] !min-w-[32px] !h-[32px] !p-0', styles['button-my'])}
         size="small"
         onClick={() => {
           setMenuModalVisibleModel(ModalViewModel.MY);
         }}>
-        <MenuMySVG className="mr-[8px]" />
-        My
+        <MenuMySVG className="scale-[0.7]" />
       </Button>
     );
   };
@@ -312,6 +343,11 @@ export default function Header() {
     }[customTheme.header.theme];
   }, [customTheme.header.theme]);
 
+  const closeRankListEntrance = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setRankListEntranceOpen(false);
+  };
+
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
@@ -321,10 +357,13 @@ export default function Header() {
           caution, as user data may be subject to deletion.
         </p>
       )}
-      {SHOW_RANKING_ENTRY.includes(pathname) && cmsInfo?.rankListEntrance?.open && cmsInfo?.rankListEntrance?.title ? (
+      {SHOW_RANKING_ENTRY.includes(pathname) &&
+      cmsInfo?.rankListEntrance?.open &&
+      cmsInfo?.rankListEntrance?.title &&
+      rankListEntranceOpen ? (
         <p
           className={clsx(
-            'w-full p-[16px] text-sm flex items-center justify-center text-white font-medium text-center bg-brandDefault cursor-pointer',
+            'w-full p-[16px] relative text-sm flex items-center justify-center text-white font-medium text-center bg-brandDefault cursor-pointer',
           )}
           onClick={() => {
             router.push(cmsInfo.rankListEntrance?.link || '/rank-list');
@@ -332,6 +371,11 @@ export default function Header() {
           <span className="flex-1 max-w-max">{cmsInfo.rankListEntrance.title}</span>
 
           <LeftArrow className="fill-white scale-50" />
+          <div
+            className="absolute px-[16px] h-full flex items-center justify-center right-0 top-0"
+            onClick={closeRankListEntrance}>
+            <CloseSVG className="fill-white w-[16px] h-[16px]" />
+          </div>
         </p>
       ) : null}
 
@@ -370,6 +414,7 @@ export default function Header() {
           );
         })}
       </Modal>
+      <NoticeDrawer open={noticeOpen} onClose={() => setNoticeOpen(false)} />
     </section>
   );
 }

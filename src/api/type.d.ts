@@ -159,3 +159,34 @@ interface ICatDetailParams {
   chainId: string;
   symbol: string;
 }
+
+interface ITransactionMessageListParams {
+  skipCount: number;
+  maxResultCount: number;
+  address: string;
+}
+
+interface ITransactionMessageListItem {
+  nftInfoId: string;
+  tokenName: string;
+  previewImage: string;
+  price: number;
+  amount: number;
+  from: string;
+  to: string;
+  type: number;
+  rank: number;
+  rarity: string;
+  awakenPrice: string;
+  createtime: number;
+  star: string;
+  grade: string;
+  generation: number;
+  level: string;
+  describe: string;
+}
+
+interface ITransactionMessageListData {
+  totalCount: number;
+  data: ITransactionMessageListItem[];
+}

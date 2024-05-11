@@ -6,6 +6,7 @@ const useGetStoreInfo = () => {
   return {
     cmsInfo: info.cmsInfo,
     curViewListType: info.curViewListType,
+    unreadMessagesCount: info.unreadMessagesCount,
   };
 };
 

@@ -2,6 +2,6 @@
     @apply w-full h-full;
 
     &.alert-notice {
-        @apply bg-warning100 border-warning500;
+        @apply bg-functionalWarningBg border-warning100 rounded-none lg:rounded-md;
     }
 }

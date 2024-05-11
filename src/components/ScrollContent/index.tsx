@@ -8,9 +8,12 @@ import { PAGE_CONTAINER_ID } from 'constants/index';
 import { CardType } from 'components/ItemCard';
 import styles from './style.module.css';
 import { ListGridType } from 'antd/es/list';
+import Loading from 'components/Loading';
 
 interface IContentProps {
   type: CardType;
+  loadingMore?: boolean;
+  loading?: boolean;
   className?: string;
   grid: ListGridType;
   emptyText?: ReactNode;
@@ -20,7 +23,7 @@ interface IContentProps {
 }
 
 function ScrollContent(props: IContentProps) {
-  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress } = props;
+  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress, loading, loadingMore } = props;
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
@@ -48,6 +51,7 @@ function ScrollContent(props: IContentProps) {
         locale={{
           emptyText,
         }}
+        loading={loading}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
             <ItemCard type={type} item={item} onPress={onPress} />
@@ -55,6 +59,11 @@ function ScrollContent(props: IContentProps) {
         )}
         {...ListProps}
       />
+      {loadingMore ? (
+        <div className="w-full flex justify-center items-center">
+          <Loading size="small" />
+        </div>
+      ) : null}
     </div>
   );
 }
