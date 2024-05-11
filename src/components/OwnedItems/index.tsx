@@ -533,7 +533,7 @@ export default function OwnedItems({
           </Flex>
         ) : null}
         {!isLG && noticeData?.length ? (
-          <div className="flex-1 overflow-hidden h-[48px]">
+          <div className="flex-1 overflow-hidden h-[48px] ml-5">
             <ScrollAlert data={noticeData} type="notice" />
           </div>
         ) : null}

@@ -72,12 +72,6 @@ function NoticeList({
     return moment(createtime).format('YYYY/MM/DD HH:mm:ss');
   }, [createtime]);
 
-  useEffect(() => {
-    const res1 = TransactionType[type || 0];
-    const res = transactionPrice[TransactionType[type || 0]];
-    console.log('=====type', res, res1);
-  }, [type]);
-
   return (
     <div
       className="w-full flex py-[16px] px-0 lg:px-[24px] lg:py-[24px] items-start cursor-pointer hover:bg-neutralHoverBg"

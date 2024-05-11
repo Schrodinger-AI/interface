@@ -16,7 +16,7 @@ const bannerInfo: Record<string, string> = {
 };
 
 const buttonStyle = {
-  default: 'border-neutralWhiteBg text-neutralWhiteBg bg-transparent text-neutralWhiteBg',
+  default: 'border-neutralWhiteBg text-neutralWhiteBg bg-[var(--bg-white-8)] text-neutralWhiteBg',
   primary: 'border-neutralWhiteBg bg-neutralWhiteBg text-brandDefault',
 };
 
