@@ -57,7 +57,7 @@ function NoticeList({
   const jumpToForest = useCallback(() => {
     const forestUrl = cmsInfo?.forestUrl || '';
     if (!forestUrl) return;
-    openExternalLink(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${nftInfoId}/${cmsInfo?.curChain}`, '_blank');
+    openExternalLink(`${forestUrl}/detail/buy/${nftInfoId}/${cmsInfo?.curChain}`, '_blank');
   }, [cmsInfo?.curChain, cmsInfo?.forestUrl, nftInfoId]);
 
   const renderTag = (value: string) => {
