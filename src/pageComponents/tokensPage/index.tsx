@@ -1,13 +1,18 @@
 'use client';
-import TokensInfo from 'components/TokensInfo';
 import OwnedItems from 'components/OwnedItems';
 import { ListTypeEnum } from 'types';
 import { useCallback, useEffect, useState } from 'react';
-import { IScrollAlertItem } from 'components/ScrollAlert';
+import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from './hooks/useGetNoticeData';
+import { useCmsInfo } from 'redux/hooks';
+import TopBanner from 'components/TopBanner';
+import { useResponsive } from 'hooks/useResponsive';
 
 export default function TokensPage() {
   const { getNoticeData } = useGetNoticeData();
+  const { isLG } = useResponsive();
+
+  const cmsInfo = useCmsInfo();
 
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
 
@@ -26,8 +31,15 @@ export default function TokensPage() {
 
   return (
     <div className="flex flex-col max-w-[2560px] w-full">
-      <TokensInfo />
-      <OwnedItems noticeData={noticeData} pageState={ListTypeEnum.All} />
+      {cmsInfo?.bannerConfig ? <TopBanner /> : null}
+      {isLG && noticeData?.length ? (
+        <div className="w-full overflow-hidden">
+          <ScrollAlert data={noticeData} type="notice" />
+        </div>
+      ) : null}
+      <div className="px-4 lg:px-10 mt-[24px]">
+        <OwnedItems noticeData={noticeData} pageState={ListTypeEnum.All} />
+      </div>
     </div>
   );
 }

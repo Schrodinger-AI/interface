@@ -64,7 +64,6 @@ export default function DetailPage() {
   };
 
   const getDetail = useCallback(async () => {
-    console.log('getDetailInGuestMode');
     if (wallet.address && !isLogin) return;
     let result;
     try {

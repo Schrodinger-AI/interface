@@ -116,12 +116,11 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
             <div>
               <div className="flex flex-row items-center pt-1">
                 <XIcon className="fill-neutralDisable" />
-                <div className="ml-1 text-xs text-neutralTitle font-medium">{transformedAmount}</div>
+                <div className="ml-1 text-xs text-neutralPrimary font-medium">{transformedAmount}</div>
               </div>
-              <div className="flex flex-row items-center pt-1">
+              <div className="flex flex-row items-center">
                 <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">{tokenDisplay}</div>
               </div>
-
               <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
                 {awakenPriceDisplay}
               </div>
