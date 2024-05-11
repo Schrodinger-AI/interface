@@ -37,6 +37,7 @@
   --warning-100: #FFF7F2;
   --warning-600: #F90;
   --warning-500: #FFB272;
+  --bg-white-8: rgb(255 255 255 / 8%);
 }
 
 .dark-theme {

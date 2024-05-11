@@ -9,11 +9,17 @@ const loadingImg = {
   blue: LoadingAnimationBlue,
 };
 
+const sizeStyle = {
+  default: 'w-[40px] h-[40px]',
+  small: 'w-[24px] h-[24px]',
+};
+
 interface IProps {
   color?: 'white' | 'blue';
+  size?: 'default' | 'small';
 }
 
-function Loading({ color = 'blue' }: IProps) {
+function Loading({ color = 'blue', size = 'default' }: IProps) {
   const options = useMemo(() => {
     return {
       animationData: loadingImg[color],
@@ -22,7 +28,7 @@ function Loading({ color = 'blue' }: IProps) {
     };
   }, [color]);
 
-  return <Lottie {...options} className="w-[40px] h-[40px]" />;
+  return <Lottie {...options} className={sizeStyle[size] || 'w-[40px] h-[40px]'} />;
 }
 
 export default React.memo(Loading);

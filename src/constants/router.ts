@@ -5,3 +5,5 @@ export const NEED_LOGIN_PAGE = ['/detail', '/points', '/stray-cats', '/assets', 
 export const NOT_NEED_AUTO_JOIN_PAGE = ['/invitee'];
 
 export const SHOW_RANKING_ENTRY = ['/'];
+
+export const HIDE_MAIN_PADDING = ['/', '/rare-cats', '/my-cats'];

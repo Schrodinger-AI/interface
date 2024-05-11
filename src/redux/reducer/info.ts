@@ -14,6 +14,7 @@ const initialState: InfoStateType = {
   itemsFromLocal: [],
   isJoin: false,
   curViewListType: ListTypeEnum.All,
+  unreadMessagesCount: 0,
 };
 
 // Actual Slice
@@ -62,6 +63,9 @@ export const infoSlice = createSlice({
     setCurViewListType(state, action) {
       state.curViewListType = action.payload;
     },
+    setUnreadMessagesCount(state, action) {
+      state.unreadMessagesCount = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -75,8 +79,16 @@ export const infoSlice = createSlice({
   },
 });
 
-export const { setIsMobile, setItemsFromLocal, setTheme, setCmsInfo, setIsJoin, setCurViewListType, setAdInfo } =
-  infoSlice.actions;
+export const {
+  setIsMobile,
+  setItemsFromLocal,
+  setTheme,
+  setCmsInfo,
+  setIsJoin,
+  setCurViewListType,
+  setAdInfo,
+  setUnreadMessagesCount,
+} = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;
 
