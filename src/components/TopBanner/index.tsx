@@ -23,7 +23,7 @@ const buttonStyle = {
 function TopBanner() {
   const cmsInfo = useCmsInfo();
   const pathname = usePathname();
-  const { isLG } = useResponsive();
+  const { isLG, isXL } = useResponsive();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -62,14 +62,21 @@ function TopBanner() {
     }
   };
 
-  if (!cmsInfo?.bannerConfig || !currentConfig?.show) return null;
+  const backgroundImage = useMemo(() => {
+    if (!currentConfig?.backgroundImage) return null;
+    if (isLG) {
+      return currentConfig.backgroundImage?.mobile;
+    } else if (isXL) {
+      return currentConfig.backgroundImage?.mid || currentConfig.backgroundImage?.pc;
+    } else {
+      return currentConfig.backgroundImage.pc;
+    }
+  }, [currentConfig?.backgroundImage, isLG, isXL]);
+
+  if (!cmsInfo?.bannerConfig || !currentConfig?.show || !backgroundImage) return null;
   return (
     <div className="relative w-full">
-      <img
-        src={isLG ? currentConfig.backgroundImage?.mobile : currentConfig.backgroundImage?.pc}
-        alt=""
-        className="w-full h-auto"
-      />
+      <img src={backgroundImage} alt="banner" className="w-full h-auto" />
       {currentConfig?.button?.length ? (
         <div className="absolute bottom-[16px] lg:bottom-0 left-0 w-full h-auto lg:h-full z-10 flex justify-center lg:justify-end items-center px-[16px] lg:px-[40px]">
           {currentConfig.button.map((item, index) => {

@@ -10,7 +10,7 @@ function NoticeDrawer(props: DrawerProps) {
       {...props}
       rootClassName={styles['notice-drawer']}
       width={438}
-      title="Notifictions"
+      title="Notifications"
       destroyOnClose
       closeIcon={false}
       extra={

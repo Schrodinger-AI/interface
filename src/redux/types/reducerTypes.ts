@@ -69,6 +69,7 @@ export type TBannerConfigItem = {
   backgroundImage?: {
     pc: string;
     mobile: string;
+    mid?: string;
   };
   show?: boolean;
   button?: TBannerConfigButton[];
