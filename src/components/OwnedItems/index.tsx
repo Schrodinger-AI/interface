@@ -25,7 +25,7 @@ import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import {
   TGetAllTraitsParams,
@@ -37,7 +37,7 @@ import {
 } from 'graphqlServer';
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
-import { Button, ToolTip } from 'aelf-design';
+import { ToolTip } from 'aelf-design';
 import { catsList, catsListAll } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
@@ -48,7 +48,6 @@ import qs from 'qs';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
-import { setCurViewListType } from 'redux/reducer/info';
 import SearchInput from './SearchInput';
 
 export default function OwnedItems({
@@ -91,7 +90,6 @@ export default function OwnedItems({
   const filterListRef = useRef<any>();
   const walletAddressRef = useRef(walletAddress);
   const { isLogin } = useGetLoginStatus();
-  const { checkLogin } = useCheckLoginAndToken();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
@@ -184,12 +182,14 @@ export default function OwnedItems({
 
   useEffect(() => {
     setSearchParam('');
+    setFilterSelect(defaultFilter);
+    setTempFilterSelect(defaultFilter);
     setLoading(true);
     fetchData({
       params: defaultRequestParams,
       requestType: pageState,
     });
-  }, [defaultRequestParams, pageState, isLogin]);
+  }, [defaultRequestParams, pageState, isLogin, defaultFilter]);
 
   const getTraits = useGetTraits();
   const getAllTraits = useGetAllTraits();
@@ -479,19 +479,6 @@ export default function OwnedItems({
     },
     [pageState, router],
   );
-
-  const toMyCats = useCallback(() => {
-    if (isLogin) {
-      router.push('/my-cats');
-    } else {
-      checkLogin({
-        onSuccess: () => {
-          router.push('/my-cats');
-          store.dispatch(setCurViewListType(ListTypeEnum.My));
-        },
-      });
-    }
-  }, [checkLogin, isLogin, router]);
 
   useEffect(() => {
     // clear all status
