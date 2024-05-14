@@ -20,7 +20,7 @@
     "@portkey-v1/did-ui-react": "^1.5.4-alpha.22",
     "@portkey/contracts": "2.2.0",
     "@portkey/detect-provider": "^2.1.0",
-    "@portkey/did-ui-react": "2.6.2",
+    "@portkey/did-ui-react": "2.6.3-alpha.1",
     "@portkey/onboarding": "^2.2.0",
     "@portkey/provider-types": "^2.2.0",
     "@portkey/request": "2.2.0",
