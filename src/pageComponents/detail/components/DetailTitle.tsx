@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import TextEllipsis from 'components/TextEllipsis';
 import { useMemo } from 'react';
 import { divDecimals } from 'utils/calculate';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export default function DetailTitle({ detail, fromListAll }: { detail: TSGRTokenInfo; fromListAll: boolean }) {
   const amountStr = useMemo(
@@ -21,7 +22,7 @@ export default function DetailTitle({ detail, fromListAll }: { detail: TSGRToken
       </div>
       <div className={clsx(styles.card, 'ml-[16px]')}>
         <div className={styles.title}>Symbol</div>
-        <TextEllipsis value={detail.symbol} className={styles.value} />
+        <TextEllipsis value={renameSymbol(detail.symbol) || ''} className={styles.value} />
       </div>
       <div className={clsx(styles.card, 'ml-[16px]')}>
         <div className={clsx(styles.title, 'min-w-[102px] whitespace-nowrap text-right')}>{amountText}</div>

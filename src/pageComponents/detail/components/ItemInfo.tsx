@@ -13,6 +13,7 @@ import { Col, Row } from 'antd';
 import { useResponsive } from 'hooks/useResponsive';
 import TextEllipsis from 'components/TextEllipsis';
 import HonourLabel from 'components/ItemCard/components/HonourLabel';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export default function ItemInfo({
   detail,
@@ -30,6 +31,7 @@ export default function ItemInfo({
     learnMoreModal.show({
       item: {
         ...detail,
+        symbol: renameSymbol(detail.symbol) || '',
         rank: rankInfo?.rank,
       },
     });
