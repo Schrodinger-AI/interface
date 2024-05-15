@@ -67,13 +67,12 @@ const openBatchApprovalEntrance = async () => {
       });
     }
   } catch (error) {
-    console.log('=====openBatchApprovalEntrance error', error);
+    /* empty */
   }
 };
 
 export const approve = async (spender: string, symbol: string, amount: string, chainId?: Chain) => {
   try {
-    console.log('=====openBatchApprovalEntrance approve');
     const approveResult = await Approve(
       {
         spender: spender,
@@ -85,8 +84,6 @@ export const approve = async (spender: string, symbol: string, amount: string, c
         chain: chainId,
       },
     );
-    console.log('=====openBatchApprovalEntrance approveResult', approveResult);
-
     if (approveResult.error) {
       message.error(approveResult?.errorMessage?.message || DEFAULT_ERROR);
       captureMessage({
@@ -113,8 +110,6 @@ export const approve = async (spender: string, symbol: string, amount: string, c
 
     return true;
   } catch (error) {
-    console.log('=====openBatchApprovalEntrance approve error', error);
-
     const resError = error as unknown as IContractError;
     if (resError) {
       message.error(resError?.errorMessage?.message || DEFAULT_ERROR);
