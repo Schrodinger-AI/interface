@@ -51,4 +51,5 @@ interface IApproveParams {
   spender: string;
   symbol: string;
   amount: number;
+  showBatchApproveToken: boolean;
 }

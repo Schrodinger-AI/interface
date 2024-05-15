@@ -18,6 +18,7 @@ import { AIServerError } from 'utils/formattError';
 import { AdoptActionErrorCode } from 'hooks/Adopt/adopt';
 import useLoading from 'hooks/useLoading';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { renameSymbol } from 'utils/renameSymbol';
 
 const textStyle =
   'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
@@ -164,7 +165,7 @@ export default function StrayCatsPage() {
         dataIndex: 'symbol',
         key: 'symbol',
         render: (symbol) => {
-          return <span className={textStyle}>{symbol}</span>;
+          return <span className={textStyle}>{renameSymbol(symbol)}</span>;
         },
       },
       {

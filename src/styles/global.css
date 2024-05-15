@@ -56,3 +56,7 @@ code {
 .aelfd-menu .aelfd-menu-submenu-expand-icon {
   width: 16px;
 }
+
+.set-allowance-dapp-info-inner {
+  @apply flex items-center;
+}
