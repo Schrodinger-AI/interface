@@ -22,6 +22,7 @@ import { store } from 'redux/store';
 import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import { AdTracker } from 'utils/ad';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -92,7 +93,7 @@ export const useResetHandler = () => {
   const showResultModal = useCallback(
     (status: Status, parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
-      const successBtnText = originSymbol ? `View ${originSymbol.split('-')[0]}(${originSymbol})` : 'View';
+      const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
       console.log('----rankInfo', rankInfo);
 
       resultModal.show({
@@ -100,7 +101,7 @@ export const useResetHandler = () => {
         info: {
           name: parentItemInfo.tokenName,
           logo: parentItemInfo.inscriptionImageUri,
-          subName: parentItemInfo.symbol,
+          subName: renameSymbol(parentItemInfo.symbol),
           tag: `GEN ${parentItemInfo.generation}`,
           rank: rankInfo?.rank,
         },
@@ -164,7 +165,7 @@ export const useResetHandler = () => {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
-            subName: parentItemInfo.symbol,
+            subName: renameSymbol(parentItemInfo.symbol),
             rank: rankInfo?.rank,
           },
           inputProps: {
@@ -174,7 +175,7 @@ export const useResetHandler = () => {
           balanceList: [
             {
               amount: symbolBalance,
-              suffix: parentItemInfo.symbol,
+              suffix: renameSymbol(parentItemInfo.symbol) || '',
               usd: `${symbolBalance && parentPrice ? ZERO.plus(symbolBalance).times(parentPrice).toFixed(2) : '--'}`,
             },
             {

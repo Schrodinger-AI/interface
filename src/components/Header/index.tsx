@@ -363,18 +363,32 @@ export default function Header() {
       rankListEntranceOpen ? (
         <p
           className={clsx(
-            'w-full p-[16px] relative text-sm flex items-center justify-center text-white font-medium text-center bg-brandDefault cursor-pointer',
+            'w-full p-[16px] relative text-sm flex items-center justify-center text-brandDefault font-medium text-center cursor-pointer',
           )}
+          style={{
+            backgroundColor: cmsInfo.rankListEntrance.style?.backgroundColor || 'var(--brand-bg)',
+            color: cmsInfo.rankListEntrance.style?.color || 'var(--brand-default)',
+          }}
           onClick={() => {
             router.push(cmsInfo.rankListEntrance?.link || '/rank-list');
           }}>
           <span className="flex-1 max-w-max">{cmsInfo.rankListEntrance.title}</span>
 
-          <LeftArrow className="fill-white scale-50" />
+          <LeftArrow
+            className="scale-50"
+            style={{
+              fill: cmsInfo.rankListEntrance.style?.color || 'var(--brand-default)',
+            }}
+          />
           <div
             className="absolute px-[16px] h-full flex items-center justify-center right-0 top-0"
             onClick={closeRankListEntrance}>
-            <CloseSVG className="fill-white w-[16px] h-[16px]" />
+            <CloseSVG
+              className="w-[16px] h-[16px]"
+              style={{
+                fill: cmsInfo.rankListEntrance.style?.color || 'var(--brand-default)',
+              }}
+            />
           </div>
         </p>
       ) : null}

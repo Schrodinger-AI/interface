@@ -32,6 +32,7 @@ import { formatTraits, getRankInfoToShow } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { useWalletService } from 'hooks/useWallet';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -250,7 +251,7 @@ export const useAdoptConfirm = () => {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
-            subName: parentItemInfo.symbol,
+            subName: renameSymbol(parentItemInfo.symbol),
           },
           title: 'Pending Approval',
           content: {
