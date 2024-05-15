@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
 import { ADOPT_NEXT_RATE } from 'constants/index';
 import { getOriginSymbol } from 'utils';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export type TBalanceItem = {
   amount: string;
@@ -93,7 +94,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [tokenPrice, txFee]);
 
   const rateValue = useMemo(() => {
-    if (isReset) return `Reroll 1 ${info.name} receive 1 ${getOriginSymbol(info.name)}`;
+    if (isReset) return `Reroll 1 ${info.name} receive 1 ${renameSymbol(getOriginSymbol(info.name))}`;
     return `Consume 1.0527 ${info.name} to adopt 1 next-gen cat `;
   }, [info.name, isReset]);
 
@@ -104,8 +105,8 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const inputDescription = useMemo(() => {
     if (isReset)
-      return `By rerolling, your cat will be reverted back to its original status (Gen0) and you will receive ${getOriginSymbol(
-        info.name,
+      return `By rerolling, your cat will be reverted back to its original status (Gen0) and you will receive ${renameSymbol(
+        getOriginSymbol(info.name),
       )}.`;
     return '';
   }, [info.name, isReset]);

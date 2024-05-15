@@ -132,6 +132,10 @@ export type TGlobalConfigType = {
     open?: boolean;
     title?: string;
     link?: string;
+    style?: {
+      backgroundColor?: string;
+      color?: string;
+    };
   };
   rarityFilterItems: Array<{
     label: string;

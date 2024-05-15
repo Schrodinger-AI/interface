@@ -23,6 +23,7 @@ import { usePageForm } from './hooks';
 import { getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
+import { renameSymbol } from 'utils/renameSymbol';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -177,7 +178,7 @@ export default function DetailPage() {
               ),
             },
             {
-              title: <div>{schrodingerDetail?.symbol}</div>,
+              title: <div>{renameSymbol(schrodingerDetail?.symbol)}</div>,
             },
           ]}
         />

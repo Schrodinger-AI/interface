@@ -20,6 +20,7 @@ import { useAdoptConfirm } from './useAdoptConfirm';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formattError';
 import { AdTracker } from 'utils/ad';
+import { renameSymbol } from 'utils/renameSymbol';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -65,7 +66,7 @@ const useAdoptHandler = () => {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
-            subName: parentItemInfo.symbol,
+            subName: renameSymbol(parentItemInfo.symbol),
             rank: rankInfo?.rank,
           },
 
@@ -77,7 +78,7 @@ const useAdoptHandler = () => {
           balanceList: [
             {
               amount: symbolBalance,
-              suffix: parentItemInfo.symbol,
+              suffix: renameSymbol(parentItemInfo.symbol) || '',
               usd: `${symbolBalance && parentPrice ? ZERO.plus(symbolBalance).times(parentPrice).toFixed(2) : '--'}`,
             },
             {
@@ -121,7 +122,7 @@ const useAdoptHandler = () => {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
-            subName: parentItemInfo.symbol,
+            subName: renameSymbol(parentItemInfo.symbol),
           },
           title: adopt1Message.prompt.title,
           content: {
