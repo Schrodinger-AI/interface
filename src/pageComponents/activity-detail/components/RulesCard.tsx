@@ -10,12 +10,11 @@ import { NEED_LOGIN_PAGE } from 'constants/router';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
-import { Row } from 'antd';
-import { Col } from 'antd/lib';
+import { Row, Col } from 'antd';
+import { ReactComponent as NextArrow } from 'assets/img/icons/next-arrow.svg';
 
 function RulesCard({ cardList }: { cardList: IActivityDetailCard[] }) {
-  // TODO
-  const { isLG } = useResponsive();
+  const { isXL } = useResponsive();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -48,12 +47,12 @@ function RulesCard({ cardList }: { cardList: IActivityDetailCard[] }) {
   const renderDescription = (description?: string[]) => {
     if (description && description?.length) {
       return (
-        <span className={clsx(styles['rules-card-description'])}>
+        <span className={clsx(styles['rules-card-description'], 'flex flex-col')}>
           {description?.map((item, index) => {
             return (
               <span
                 key={index}
-                className="text-sm font-medium text-neutralSecondary mt-[8px] flex"
+                className="text-sm font-medium text-neutralSecondary mt-[4px]"
                 dangerouslySetInnerHTML={{
                   __html: item,
                 }}
@@ -69,24 +68,39 @@ function RulesCard({ cardList }: { cardList: IActivityDetailCard[] }) {
   if (!cardList || !cardList.length) return null;
 
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[24, isXL ? 24 : 16]} className="mt-[12px]">
       {cardList.map((item, index) => {
         return (
-          <Col key={index} className={clsx('')}>
-            {item?.image?.url ? (
-              <div
-                className={clsx('w-max', item?.image.link ? 'cursor-pointer' : '')}
-                onClick={() => jumpTo(item?.image)}>
-                <SkeletonImage
-                  img={item?.image?.url}
-                  width={200}
-                  height={200}
-                  className={clsx('w-[200px] h-[200px] rounded-md', item?.image.className)}
-                />
+          <Col span={isXL ? 24 : 8} key={index} className={clsx('flex items-center', isXL ? 'flex-col' : 'flex-row')}>
+            <div
+              className={clsx(
+                'shadow-cardShadow py-[8px] flex-1 px-[24px] rounded-lg flex items-center h-[120px] bg-[auto_100%] bg-right bg-no-repeat',
+                isXL ? 'flex-none' : 'flex-1',
+                isXL ? 'w-full' : 'w-auto',
+              )}
+              style={{
+                backgroundImage: `url(${item.backgroundImage})`,
+              }}>
+              {item?.image?.url ? (
+                <div
+                  className={clsx('w-max mr-[24px]', item?.image.link ? 'cursor-pointer' : '')}
+                  onClick={() => jumpTo(item?.image)}>
+                  <SkeletonImage
+                    img={item?.image?.url}
+                    width={48}
+                    height={48}
+                    className={clsx('w-[48px] h-[48px] rounded-md', item?.image.className)}
+                  />
+                </div>
+              ) : null}
+              <div className="flex flex-col">
+                {item?.title && <span className="text-base text-neutralTitle font-medium">{item?.title}</span>}
+                {renderDescription(item?.description)}
               </div>
-            ) : null}
-            {item?.title && <span className="text-base text-neutralTitle font-semibold">{item?.title}</span>}
-            {renderDescription(item?.description)}
+            </div>
+            <div className={clsx(isXL ? 'mt-[24px] rotate-90' : 'ml-[24px]')}>
+              {index < cardList.length - 1 ? <NextArrow /> : <div className="w-[25px]" />}
+            </div>
           </Col>
         );
       })}

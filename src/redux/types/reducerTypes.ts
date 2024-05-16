@@ -278,6 +278,8 @@ export interface IActivityDetailCard {
 
 export interface IActivityDetailRules {
   title?: string;
+  titleIcon?: string;
+  subTitle?: string[];
   description?: string[];
   rulesTable?: IActivityDetailRulesTable;
   link?: IActivityDetailRulesLink[];

@@ -13,7 +13,16 @@ import { useRouter } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import RulesCard from './RulesCard';
 
-function RulesList({ title, description, rulesTable, bottomDescription, link, cardList }: IActivityDetailRules) {
+function RulesList({
+  title,
+  description,
+  rulesTable,
+  bottomDescription,
+  link,
+  cardList,
+  subTitle,
+  titleIcon,
+}: IActivityDetailRules) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -27,7 +36,28 @@ function RulesList({ title, description, rulesTable, bottomDescription, link, ca
             return (
               <span
                 key={index}
-                className="text-sm font-medium text-neutralSecondary mt-[8px] flex"
+                className="text-sm text-neutralSecondary mt-[8px] flex"
+                dangerouslySetInnerHTML={{
+                  __html: item,
+                }}
+              />
+            );
+          })}
+        </span>
+      );
+    }
+    return null;
+  };
+
+  const renderSubTitle = (subTitle?: string[]) => {
+    if (subTitle?.length) {
+      return (
+        <span className="flex flex-col">
+          {subTitle.map((item, index) => {
+            return (
+              <span
+                key={index}
+                className="text-base text-neutralPrimary mt-[8px] flex"
                 dangerouslySetInnerHTML={{
                   __html: item,
                 }}
@@ -96,7 +126,13 @@ function RulesList({ title, description, rulesTable, bottomDescription, link, ca
 
   return (
     <div className="mt-[24px]">
-      {title ? <p className="text-base font-medium text-neutralPrimary">{title}</p> : null}
+      {title ? (
+        <p className="text-xl font-semibold text-neutralPrimary flex items-center">
+          {titleIcon ? <SkeletonImage className={'w-[24px] h-[24px] mr-[12px]'} img={titleIcon} /> : null}
+          {title}
+        </p>
+      ) : null}
+      {subTitle && subTitle.length ? renderSubTitle(subTitle) : null}
       {description && description.length ? renderDescription(description) : null}
       {link && link.length ? (
         <div className="flex flex-col">
