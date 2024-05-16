@@ -11,8 +11,9 @@ import { NEED_LOGIN_PAGE } from 'constants/router';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import RulesCard from './RulesCard';
 
-function RulesList({ title, description, rulesTable, bottomDescription, link }: IActivityDetailRules) {
+function RulesList({ title, description, rulesTable, bottomDescription, link, cardList }: IActivityDetailRules) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -24,9 +25,13 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         <span className="flex flex-col">
           {description.map((item, index) => {
             return (
-              <span key={index} className="text-sm font-medium text-neutralSecondary mt-[8px]">
-                {item}
-              </span>
+              <span
+                key={index}
+                className="text-sm font-medium text-neutralSecondary mt-[8px] flex"
+                dangerouslySetInnerHTML={{
+                  __html: item,
+                }}
+              />
             );
           })}
         </span>
@@ -100,6 +105,7 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
           })}
         </div>
       ) : null}
+      <RulesCard cardList={cardList || []} />
       {rulesTable?.header.length ? <RulesTable {...rulesTable} /> : null}
       {bottomDescription && bottomDescription.length ? renderDescription(bottomDescription) : null}
     </div>

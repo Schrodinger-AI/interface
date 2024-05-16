@@ -80,6 +80,10 @@ export const getActivityDetail = async (): Promise<{ data: IActivityDetailData }
   return cmsRequest.get('/items/activity_detail');
 };
 
+export const getActivityDetailPortkey = async (): Promise<{ data: IActivityDetailData }> => {
+  return cmsRequest.get('/items/activity_detail_portkey');
+};
+
 export const messageUnreadCount = async (data: {
   address: string;
 }): Promise<{

@@ -58,11 +58,13 @@ export type TCustomThemeType = {
   };
 };
 
+export type TLinkType = 'externalLink' | 'link';
+
 export type TBannerConfigButton = {
   text: string;
   buttonType?: 'default' | 'primary';
   link?: string;
-  linkType?: 'externalLink' | 'link';
+  linkType?: TLinkType;
 };
 
 export type TBannerConfigItem = {
@@ -259,12 +261,28 @@ export interface IActivityDetailRulesTable {
     type?: 'address' | 'number' | 'text';
   }[];
 }
+
+export interface IActivityDetailCardImage {
+  link?: string;
+  linkType?: TLinkType;
+  url: string;
+  className?: string;
+}
+
+export interface IActivityDetailCard {
+  title?: string;
+  backgroundImage?: string;
+  image?: IActivityDetailCardImage;
+  description?: string[];
+}
+
 export interface IActivityDetailRules {
   title?: string;
   description?: string[];
   rulesTable?: IActivityDetailRulesTable;
   link?: IActivityDetailRulesLink[];
   bottomDescription?: string[];
+  cardList?: IActivityDetailCard[];
 }
 
 export interface IActivityDetailData {
