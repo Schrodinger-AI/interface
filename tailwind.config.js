@@ -67,6 +67,7 @@ module.exports = {
       },
       boxShadow: {
         selectShadow: '0px 0px 8px 0px var(--fill-mask-4)',
+        cardShadow: '0px 0px 12px 0px rgb(27 63 116 / 8%)',
       },
       keyframes: {
         loading: {

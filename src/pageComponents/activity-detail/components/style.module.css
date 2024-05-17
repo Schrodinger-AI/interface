@@ -12,3 +12,9 @@
     }
   }
 }
+
+.rules-card-description {
+  a {
+    @apply cursor-pointer text-brandDefault;
+  }
+}
