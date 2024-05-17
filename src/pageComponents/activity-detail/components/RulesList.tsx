@@ -11,8 +11,18 @@ import { NEED_LOGIN_PAGE } from 'constants/router';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import RulesCard from './RulesCard';
 
-function RulesList({ title, description, rulesTable, bottomDescription, link }: IActivityDetailRules) {
+function RulesList({
+  title,
+  description,
+  rulesTable,
+  bottomDescription,
+  link,
+  cardList,
+  subTitle,
+  titleIcon,
+}: IActivityDetailRules) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -24,9 +34,34 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
         <span className="flex flex-col">
           {description.map((item, index) => {
             return (
-              <span key={index} className="text-sm font-medium text-neutralSecondary mt-[8px]">
-                {item}
-              </span>
+              <span
+                key={index}
+                className="text-sm text-neutralSecondary mt-[8px] flex"
+                dangerouslySetInnerHTML={{
+                  __html: item,
+                }}
+              />
+            );
+          })}
+        </span>
+      );
+    }
+    return null;
+  };
+
+  const renderSubTitle = (subTitle?: string[]) => {
+    if (subTitle?.length) {
+      return (
+        <span className="flex flex-col">
+          {subTitle.map((item, index) => {
+            return (
+              <span
+                key={index}
+                className="text-base text-neutralPrimary mt-[8px] flex"
+                dangerouslySetInnerHTML={{
+                  __html: item,
+                }}
+              />
             );
           })}
         </span>
@@ -69,7 +104,11 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
             <span
               className={clsx('flex w-full h-auto mt-[8px] overflow-hidden', link.link ? 'cursor-pointer' : '')}
               onClick={() => jumpTo(link)}>
-              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
+              <SkeletonImage
+                img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''}
+                className="w-full h-full"
+                imageClassName="!rounded-none"
+              />
             </span>
           );
         case 'link':
@@ -91,7 +130,21 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
 
   return (
     <div className="mt-[24px]">
-      {title ? <p className="text-base font-medium text-neutralPrimary">{title}</p> : null}
+      {title ? (
+        <p className="flex">
+          {titleIcon ? (
+            <div className="h-[28px] flex items-center mr-[12px]">
+              <SkeletonImage
+                className={'w-[24px] h-[24px] !rounded-none'}
+                img={titleIcon}
+                imageClassName="!rounded-none"
+              />
+            </div>
+          ) : null}
+          <span className="text-xl font-semibold text-neutralPrimary">{title}</span>
+        </p>
+      ) : null}
+      {subTitle && subTitle.length ? renderSubTitle(subTitle) : null}
       {description && description.length ? renderDescription(description) : null}
       {link && link.length ? (
         <div className="flex flex-col">
@@ -100,6 +153,7 @@ function RulesList({ title, description, rulesTable, bottomDescription, link }: 
           })}
         </div>
       ) : null}
+      <RulesCard cardList={cardList || []} />
       {rulesTable?.header.length ? <RulesTable {...rulesTable} /> : null}
       {bottomDescription && bottomDescription.length ? renderDescription(bottomDescription) : null}
     </div>

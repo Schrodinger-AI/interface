@@ -144,7 +144,7 @@ export default function OwnedItems({
     }
     const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
     try {
-      const res = await requestCatApi(params);
+      const res = await requestCatApi({ ...params, address: wallet.address });
       const total = res.totalCount ?? 0;
       setTotal(total);
       const hasSearch =
