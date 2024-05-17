@@ -2,7 +2,7 @@ import { getPoints } from 'api/request';
 import { TokenEarnList } from 'components/EarnList';
 import { useWalletService } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useRequest } from 'ahooks';
 import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
@@ -13,6 +13,7 @@ export default function PointsPage() {
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
   const { showLoading, closeLoading } = useLoading();
+  const [hasBoundAddress, setHasBoundAddress] = useState<boolean>(false);
 
   const getPointsData = useCallback(
     async (address: string) => {
@@ -22,6 +23,7 @@ export default function PointsPage() {
         domain: document.location.host,
         address: address,
       });
+      setHasBoundAddress(response.hasBoundAddress);
       closeLoading();
       return response;
     },
@@ -36,6 +38,11 @@ export default function PointsPage() {
     },
   });
 
+  const toBindAddress = async () => {
+    setHasBoundAddress(true);
+    getPointsData(wallet.address);
+  };
+
   useTimeoutFn(() => {
     if (!isLogin) {
       router.push('/');
@@ -49,7 +56,11 @@ export default function PointsPage() {
       <div className="w-full max-w-[1360px]">
         <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Details of credits token earned for this domain</h1>
         {data?.pointDetails.length ? (
-          <TokenEarnList dataSource={data?.pointDetails || []} />
+          <TokenEarnList
+            dataSource={data?.pointDetails || []}
+            hasBoundAddress={hasBoundAddress}
+            bindAddress={toBindAddress}
+          />
         ) : (
           <p className="pt-[24px] pb-[8px] text-[#919191] text-lg text-center">No flux points yet.</p>
         )}
