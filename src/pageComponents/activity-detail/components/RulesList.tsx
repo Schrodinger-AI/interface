@@ -104,7 +104,11 @@ function RulesList({
             <span
               className={clsx('flex w-full h-auto mt-[8px] overflow-hidden', link.link ? 'cursor-pointer' : '')}
               onClick={() => jumpTo(link)}>
-              <SkeletonImage img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''} className="w-full h-full" />
+              <SkeletonImage
+                img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''}
+                className="w-full h-full"
+                imageClassName="!rounded-none"
+              />
             </span>
           );
         case 'link':
@@ -127,9 +131,17 @@ function RulesList({
   return (
     <div className="mt-[24px]">
       {title ? (
-        <p className="text-xl font-semibold text-neutralPrimary flex items-center">
-          {titleIcon ? <SkeletonImage className={'w-[24px] h-[24px] mr-[12px]'} img={titleIcon} /> : null}
-          {title}
+        <p className="flex">
+          {titleIcon ? (
+            <div className="h-[28px] flex items-center mr-[12px]">
+              <SkeletonImage
+                className={'w-[24px] h-[24px] !rounded-none'}
+                img={titleIcon}
+                imageClassName="!rounded-none"
+              />
+            </div>
+          ) : null}
+          <span className="text-xl font-semibold text-neutralPrimary">{title}</span>
         </p>
       ) : null}
       {subTitle && subTitle.length ? renderSubTitle(subTitle) : null}

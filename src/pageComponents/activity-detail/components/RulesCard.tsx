@@ -68,7 +68,7 @@ function RulesCard({ cardList }: { cardList: IActivityDetailCard[] }) {
   if (!cardList || !cardList.length) return null;
 
   return (
-    <Row gutter={[24, isXL ? 24 : 16]} className="mt-[12px]">
+    <Row gutter={[24, isXL ? 12 : 16]} className="mt-[12px]">
       {cardList.map((item, index) => {
         return (
           <Col span={isXL ? 24 : 8} key={index} className={clsx('flex items-center', isXL ? 'flex-col' : 'flex-row')}>
@@ -98,7 +98,7 @@ function RulesCard({ cardList }: { cardList: IActivityDetailCard[] }) {
                 {renderDescription(item?.description)}
               </div>
             </div>
-            <div className={clsx(isXL ? 'mt-[24px] rotate-90' : 'ml-[24px]')}>
+            <div className={clsx(isXL ? 'mt-[12px] rotate-90' : 'ml-[24px]')}>
               {index < cardList.length - 1 ? <NextArrow /> : <div className="w-[25px]" />}
             </div>
           </Col>

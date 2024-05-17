@@ -9,9 +9,32 @@ import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormat
 import CommonCopy from 'components/CommonCopy';
 import { useResponsive } from 'hooks/useResponsive';
 import { formatTokenPrice } from 'utils/format';
+import { ReactComponent as Question } from 'assets/img/icons/question.svg';
 
 const renderCell = (value: string) => {
   return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
+};
+
+const renderTitle = (value: string, tooltip?: string[]) => {
+  return (
+    <div className="flex items-center">
+      {tooltip && tooltip.length ? (
+        <ToolTip
+          title={
+            <div>
+              {tooltip.map((item, index) => {
+                return <p key={index}>{item}</p>;
+              })}
+            </div>
+          }
+          className="mr-[4px]">
+          <Question className="fill-neutralDisable" />
+        </ToolTip>
+      ) : null}
+
+      <span className="text-sm text-neutralDisable font-medium">{value}</span>
+    </div>
+  );
 };
 
 function RulesTable({ header, data }: IActivityDetailRulesTable) {
@@ -38,7 +61,7 @@ function RulesTable({ header, data }: IActivityDetailRulesTable) {
     if (header?.length) {
       return header.map((item) => {
         return {
-          title: item.title,
+          title: renderTitle(item.title, item.tooltip),
           dataIndex: item.key,
           key: item.key,
           width: item.width,

@@ -259,6 +259,7 @@ export interface IActivityDetailRulesTable {
     key: string;
     title: string;
     width: number;
+    tooltip?: string[];
     type?: 'address' | 'number' | 'text';
   }[];
 }
