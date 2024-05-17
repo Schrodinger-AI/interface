@@ -51,12 +51,14 @@ function PointItem({
 
   const sign = useCallback(async () => {
     try {
+      if (bindLoading) return;
+      setBindLoading(true);
       console.log('=====account sign');
       const info = `${wallet.address}-${evmAddress}`;
       const res = await getSignInfo(info);
       if (res?.publicKey && res.signature && evmAddress) {
         console.log('=====account SignInfo', res, evmAddress, wallet.address);
-        setBindLoading(true);
+
         await bindEvmAddress({
           aelfAddress: wallet.address,
           evmAddress,
@@ -70,7 +72,7 @@ function PointItem({
       console.log('=====account error', error);
     }
     setBindLoading(false);
-  }, [bindAddress, evmAddress, getSignInfo, wallet.address]);
+  }, [bindAddress, bindLoading, evmAddress, getSignInfo, wallet.address]);
 
   if (cmsInfo?.needBindEvm && cmsInfo.needBindEvm.includes(symbol)) {
     if (!hasBoundAddress) {
