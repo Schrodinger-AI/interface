@@ -49,7 +49,7 @@ export const catsList = async (data: ICatsListParams): Promise<ICatsListData> =>
 };
 
 export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
-  return request.post('/app/cat/all ', data);
+  return request.post('/app/cat/all', data);
 };
 
 export const getGlobalConfig = async (): Promise<{ data: TGlobalConfigType }> => {
@@ -94,4 +94,13 @@ export const messageUnreadCount = async (data: {
 
 export const messageList = async (data: ITransactionMessageListParams): Promise<ITransactionMessageListData> => {
   return request.post('/app/message/list ', data);
+};
+
+export const bindAddress = async (data: {
+  aelfAddress: string;
+  evmAddress: string;
+  signature: string;
+  publicKey: string;
+}): Promise<void> => {
+  return request.post('/app/bind-address', data);
 };
