@@ -69,6 +69,7 @@ interface IPointItem {
 
 interface IGetPointsData {
   pointDetails: Array<IPointItem>;
+  hasBoundAddress: boolean;
 }
 
 interface ICatItemModel {

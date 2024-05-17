@@ -17,6 +17,7 @@ interface ISkeletonImage {
   tagPosition?: TPositionDistance;
   className?: string;
   imageSizeType?: 'cover' | 'contain';
+  imageClassName?: string;
   width?: number;
   height?: number;
   rank?: string | number | ReactNode;
@@ -41,6 +42,7 @@ function SkeletonImage(props: ISkeletonImage) {
     rank,
     hideRankHover = false,
     imageSizeType = 'cover',
+    imageClassName = '',
     tag,
     tagStyle,
     tagSize,
@@ -114,7 +116,7 @@ function SkeletonImage(props: ISkeletonImage) {
             height={height}
             src={imageUrl}
             alt="image"
-            className={clsx('w-full h-full rounded-lg', imageType[imageSizeType])}
+            className={clsx('w-full h-full rounded-lg', imageType[imageSizeType], imageClassName)}
             onLoad={() => {
               setLoading(false);
               setSkeletonActive(false);
