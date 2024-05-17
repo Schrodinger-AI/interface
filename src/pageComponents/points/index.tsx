@@ -7,6 +7,7 @@ import { useRequest } from 'ahooks';
 import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { useDisconnect } from 'wagmi';
 
 export default function PointsPage() {
   const { wallet } = useWalletService();
@@ -14,6 +15,7 @@ export default function PointsPage() {
   const router = useRouter();
   const { showLoading, closeLoading } = useLoading();
   const [hasBoundAddress, setHasBoundAddress] = useState<boolean>(false);
+  const { disconnect } = useDisconnect();
 
   const getPointsData = useCallback(
     async (address: string) => {
@@ -45,6 +47,7 @@ export default function PointsPage() {
 
   useTimeoutFn(() => {
     if (!isLogin) {
+      disconnect();
       router.push('/');
     }
   }, 3000);

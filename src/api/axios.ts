@@ -54,6 +54,7 @@ class Request {
           case '20001':
             return {};
           case '50000':
+            message.error(errorMessage);
             return null;
           default:
             message.error(errorMessage);

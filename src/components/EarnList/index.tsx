@@ -11,6 +11,9 @@ import { useResponsive } from 'hooks/useResponsive';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useCmsInfo } from 'redux/hooks';
+import { ReactComponent as WalletIcon } from 'assets/img/icons/wallet.svg';
+import { ReactComponent as LinkIcon } from 'assets/img/icons/link-white.svg';
+import clsx from 'clsx';
 
 interface ITokenEarnListProps {
   dataSource: Array<IPointItem>;
@@ -30,7 +33,6 @@ function PointItem({
   const { symbol, amount } = data;
   const { getSignInfo } = useGetSignature();
   const { wallet } = useWalletService();
-  const { isLG } = useResponsive();
   const [connected, setConnected] = useState<boolean>(false);
   const [evmAddress, setEvmAddress] = useState<string>('');
   const [bindLoading, setBindLoading] = useState<boolean>(false);
@@ -75,40 +77,38 @@ function PointItem({
       return (
         <div>
           {connected ? (
-            <div className="flex items-center">
-              <div onClick={openAccountModal}>
-                <HashAddress address={evmAddress} preLen={8} endLen={8} hasCopy={false} ignorePrefixSuffix={true} />
+            <div className="flex flex-col items-center">
+              <div onClick={openAccountModal} className="mb-[16px]">
+                <HashAddress
+                  address={evmAddress}
+                  preLen={8}
+                  endLen={8}
+                  hasCopy={false}
+                  ignorePrefixSuffix={true}
+                  size="large"
+                />
               </div>
 
-              <Button onClick={sign} type="primary" size="medium" className="ml-[12px]" loading={bindLoading}>
-                bind
+              <Button
+                onClick={sign}
+                type="primary"
+                size="medium"
+                className="!rounded-lg"
+                loading={bindLoading}
+                icon={<LinkIcon className="fill-white" />}>
+                Bind address
               </Button>
             </div>
           ) : (
             <div className="flex items-center">
-              <Button onClick={openConnectModal} type="primary" size="medium" className="mr-[12px]">
-                connect
+              <Button
+                onClick={openConnectModal}
+                type="primary"
+                size="medium"
+                className="!rounded-lg w-full lg:w-auto"
+                icon={<WalletIcon />}>
+                Connect EVM wallet
               </Button>
-              <ToolTip
-                title={
-                  <div>
-                    <p>
-                      1. Link to SGR/USDT in Uniswap V3, the transaction rate is 1%. In the trading pair, the EVM
-                      address of the LP is provided, and the daily rewards are settled based on the provided LP;
-                    </p>
-                    <p>
-                      2. An Aelf address can only be bound to one EVM address, and an EVM can also only be bound to one
-                      Aelf address;
-                    </p>
-                    <p>
-                      3. After the address is bound, the bound address cannot be changed. Please confirm that the EVM
-                      address is correct.
-                    </p>
-                  </div>
-                }
-                trigger={isLG ? 'click' : 'hover'}>
-                <Question />
-              </ToolTip>
             </div>
           )}
         </div>
@@ -138,9 +138,37 @@ function PointListItem({
   bindAddress?: () => void;
 }) {
   const { displayName, symbol, action, amount, ...props } = data;
+  const cmsInfo = useCmsInfo();
+  const { isLG } = useResponsive();
+
   return (
-    <div className="flex items-center justify-between py-4 md:py-7 gap-x-8 text-[16px] leading-[24px] font-normal border-0 border-b border-solid border-[#EDEDED]">
-      <span className="flex-1 text-[#919191] break-all">{displayName}</span>
+    <div
+      className={clsx(
+        'flex justify-between py-4 md:py-7 gap-x-8 text-[16px] leading-[24px] font-normal border-0 border-b border-solid border-[#EDEDED]',
+        'flex-col items-start lg:flex-row',
+      )}>
+      <div className="flex items-center flex-1 break-all mb-[12px] lg:mb-0">
+        <span className="text-[#919191] mr-[12px]">{displayName}</span>
+        {cmsInfo?.needBindEvm && cmsInfo.needBindEvm.includes(symbol) ? (
+          <ToolTip
+            title={
+              <div>
+                <p>
+                  1. Receive point rewards by contributing LP to the SGR/USDT trading pair on Uniswap V3, with a fee
+                  rate of 1%. Provide the EVM address of the LP and start accumulating daily rewards.
+                </p>
+                <p>2. An aelf address can only be bound to one EVM address, and vice versa.</p>
+                <p>
+                  3. Do note that after an address is bound, it cannot be changed. Therefore, please confirm that the
+                  EVM address is correct.
+                </p>
+              </div>
+            }
+            trigger={isLG ? 'click' : 'hover'}>
+            <Question />
+          </ToolTip>
+        ) : null}
+      </div>
       <span className="font-medium text-[#434343]">
         {action === 'SelfIncrease' ? (
           <>
