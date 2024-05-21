@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { message } from 'antd';
 import useDiscoverProvider from './useDiscoverProvider';
 import { IContractError } from 'types';
-import { formatErrorMsg } from 'utils/formattError';
+import { formatErrorMsg } from 'utils/formatError';
 
 const AElf = require('aelf-sdk');
 

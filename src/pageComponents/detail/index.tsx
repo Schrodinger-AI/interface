@@ -24,6 +24,7 @@ import { getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
+import { useJumpToPage } from 'hooks/useJumpToPage';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -36,6 +37,7 @@ export default function DetailPage() {
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
+  const { jumpToPage } = useJumpToPage();
 
   const tradeModal = useMemo(() => {
     return cmsInfo?.tradeModal;
@@ -150,8 +152,12 @@ export default function DetailPage() {
 
   const onTrade = useCallback(() => {
     if (!schrodingerDetail) return;
-    marketModal.show({ isTrade: true, detail: schrodingerDetail });
-  }, [marketModal, schrodingerDetail]);
+    if (!tradeModal?.type || tradeModal?.type === 'modal') {
+      marketModal.show({ isTrade: true, detail: schrodingerDetail });
+    } else {
+      jumpToPage({ link: tradeModal.link, linkType: tradeModal.type });
+    }
+  }, [jumpToPage, marketModal, schrodingerDetail, tradeModal?.link, tradeModal?.type]);
 
   useTimeoutFn(() => {
     if (!fromListAll && !isLogin) {

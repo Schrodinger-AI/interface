@@ -1,5 +1,5 @@
 import SkeletonImage from 'components/SkeletonImage';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import { useCmsInfo } from 'redux/hooks';
 import { openExternalLink } from 'utils/openlink';

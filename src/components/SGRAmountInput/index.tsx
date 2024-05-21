@@ -59,7 +59,6 @@ export const SGRAmountInput = forwardRef(
       }
 
       if (valueNumber.lte(min)) return;
-      // if (max && valueNumber.gt(max)) return;
       setAmount(value);
     };
 
@@ -74,7 +73,6 @@ export const SGRAmountInput = forwardRef(
         return;
       }
       const valueNumber = ZERO.plus(amount);
-      // if (valueNumber.lte(min) || (max && valueNumber.gt(max))) {
       if (valueNumber.lte(min)) {
         onInvalidChange(true);
         return;
@@ -139,5 +137,4 @@ export const SGRAmountInput = forwardRef(
   },
 );
 
-// export default React.memo(SGRAmountInput);
 export default SGRAmountInput;

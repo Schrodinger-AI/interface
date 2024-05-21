@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { TSGRItem } from 'types/tokens';
 import ScrollContent from 'components/ScrollContent';
 import useLoading from 'hooks/useLoading';
-import { divDecimals, getPageNumber, timesDecimals } from 'utils/calculate';
+import { divDecimals, timesDecimals } from 'utils/calculate';
 
 import { useCmsInfo } from 'redux/hooks';
 import { CardType } from 'components/ItemCard';
@@ -18,9 +18,9 @@ import { useWalletService } from 'hooks/useWallet';
 
 const pageSize = 32;
 export default function List() {
-  const [total, setTotal] = useState(0);
+  const [, setTotal] = useState(0);
   const [dataSource, setDataSource] = useState<TSGRItem[]>([]);
-  const { showLoading, closeLoading, visible: isLoading } = useLoading();
+  const { showLoading, closeLoading } = useLoading();
   const cmsInfo = useCmsInfo();
   const gutter = useLatestGutter();
   const column = useLatestColumns();
@@ -30,10 +30,6 @@ export default function List() {
   const latestModal = useMemo(() => {
     return cmsInfo?.latestModal;
   }, [cmsInfo?.latestModal]);
-
-  const hasMore = useMemo(() => {
-    return total > dataSource.length;
-  }, [total, dataSource]);
 
   const getLatestSchrodingerList = useGetLatestSchrodingerList();
 
@@ -125,10 +121,6 @@ export default function List() {
     },
     [closeLoading, getLatestSchrodingerList, getRankInfo, showLoading],
   );
-
-  const loadMoreData = useCallback(() => {
-    // TODO
-  }, []);
 
   const defaultRequestParams = useMemo(() => {
     let blackList = undefined;

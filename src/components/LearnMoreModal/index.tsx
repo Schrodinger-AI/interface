@@ -38,8 +38,6 @@ function LearnMoreModal({ item }: ILearnMoreModalProps) {
     }
     const forestUrl = cmsInfo?.forestUrl || '';
     if (!forestUrl) return;
-    // const collection = getCollection(item.symbol);
-    // openExternalLink(`${forestUrl}/explore-items/${cmsInfo?.curChain}-${collection}-0`, '_blank');
     openExternalLink(`${forestUrl}/detail/buy/${cmsInfo?.curChain}-${item.symbol}/${cmsInfo?.curChain}`, '_blank');
     modal.hide();
   }, [cmsInfo?.curChain, cmsInfo?.forestUrl, item.symbol, latestModal?.btnUrl, modal]);

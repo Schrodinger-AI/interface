@@ -1,13 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from 'clsx';
-import { NEED_LOGIN_PAGE } from 'constants/router';
+import { useJumpToPage } from 'hooks/useJumpToPage';
 import useResponsive from 'hooks/useResponsive';
-import { useCheckLoginAndToken } from 'hooks/useWallet';
-import { usePathname, useRouter } from 'next/navigation';
-import React, { useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import React, { useMemo } from 'react';
 import { useCmsInfo } from 'redux/hooks';
-import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { openExternalLink } from 'utils/openlink';
 
 const bannerInfo: Record<string, string> = {
   '/': 'allCats',
@@ -24,9 +21,7 @@ function TopBanner() {
   const cmsInfo = useCmsInfo();
   const pathname = usePathname();
   const { isLG, isXL } = useResponsive();
-  const { isLogin } = useGetLoginStatus();
-  const { checkLogin } = useCheckLoginAndToken();
-  const router = useRouter();
+  const { jumpToPage } = useJumpToPage();
 
   const currentConfig = useMemo(() => {
     const bannerInfoKey = bannerInfo?.[pathname];
@@ -36,31 +31,6 @@ function TopBanner() {
     }
     return undefined;
   }, [cmsInfo?.bannerConfig, pathname]);
-
-  const jumoToPage = ({ link, linkType }: { link?: string; linkType?: 'link' | 'externalLink' }) => {
-    if (!link) return;
-    switch (linkType) {
-      case 'externalLink':
-        openExternalLink(link, '_blank');
-        break;
-      case 'link':
-        if (NEED_LOGIN_PAGE.includes(link)) {
-          if (isLogin) {
-            router.push(link);
-          } else {
-            checkLogin({
-              onSuccess: () => {
-                if (!link) return;
-                router.push(link);
-              },
-            });
-          }
-        } else {
-          router.push(link);
-        }
-        break;
-    }
-  };
 
   const backgroundImage = useMemo(() => {
     if (!currentConfig?.backgroundImage) return null;
@@ -84,7 +54,7 @@ function TopBanner() {
               <div
                 key={index}
                 onClick={() => {
-                  jumoToPage({
+                  jumpToPage({
                     link: item.link,
                     linkType: item.linkType,
                   });

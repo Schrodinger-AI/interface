@@ -29,6 +29,7 @@ function SyncAdoptModal({
         {showLoading && (
           <div className="flex justify-center items-center gap-2">
             <div className="text-base text-center text-neutralSecondary">Generate your NFT image using AI</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="mt-1 animate-spin"
               src={require('assets/img/icons/loadingCircle.png').default.src}

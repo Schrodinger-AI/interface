@@ -52,6 +52,7 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
             {group.list &&
               group.list.map((channel, channelIdx) => (
                 <div key={channelIdx} className={styles.channelWrap} onClick={() => onChannelClick(channel.link)}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className={styles.channelImg} src={channel.imgUrl || ''} alt="" />
                   <div className={styles.channelContent}>
                     <div className={styles.channelTitle}>{channel.title || ''}</div>

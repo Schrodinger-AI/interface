@@ -1,7 +1,7 @@
 import { Checkbox, Col, Flex, Row } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxItemType, FilterType, ItemsSelectSourceType, SourceItemType } from 'types/tokensPage';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import FilterMenuEmpty from '../FilterMenuEmpty';
 import styles from './style.module.css';
 import { CheckboxChangeEvent, CheckboxProps } from 'antd/es/checkbox';

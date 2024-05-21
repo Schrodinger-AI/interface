@@ -1,3 +1,4 @@
+import { SendOptions } from '@portkey/types';
 import { CallContractParams } from 'aelf-web-login';
 import { WebLoginInterface } from 'aelf-web-login/dist/types/context';
 import { SupportedELFChainId } from 'types';
@@ -7,7 +8,7 @@ export interface IWebLoginArgs {
   chainId: string;
 }
 
-type MethodType = <T, R>(params: CallContractParams<T>) => Promise<R>;
+type MethodType = <T, R>(params: CallContractParams<T>, sendOptions?: SendOptions | SendOptions) => Promise<R>;
 
 export default class WebLoginInstance {
   public contract: any;

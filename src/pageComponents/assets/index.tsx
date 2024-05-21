@@ -36,18 +36,12 @@ export default function MyAsset() {
           isShowRamp={isShowRampBuy || isShowRampSell}
           isShowRampBuy={isShowRampBuy}
           isShowRampSell={isShowRampSell}
-          // faucet={{
-          //   faucetContractAddress: configInfo?.faucetContractAddress,
-          // }}
           backIcon={<LeftOutlined rev={undefined} />}
           onOverviewBack={() => {
             router.back();
           }}
           onDeleteAccount={() => {
             logout();
-          }}
-          onLifeCycleChange={(lifeCycle: any) => {
-            console.log(lifeCycle, 'onLifeCycleChange');
           }}
         />
       </PortkeyAssetProvider>
