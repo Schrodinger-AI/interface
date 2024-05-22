@@ -94,7 +94,6 @@ export const useResetHandler = () => {
     (status: Status, parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
       const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
-      console.log('----rankInfo', rankInfo);
 
       resultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
@@ -185,7 +184,6 @@ export const useResetHandler = () => {
             },
           ],
           onConfirm: async (amount: string) => {
-            console.log('amount', amount, parentItemInfo.generation);
             resetModal.hide();
             AdTracker.trackEvent('reroll', {
               generation: parentItemInfo.generation,

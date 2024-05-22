@@ -11,15 +11,20 @@ import { ONE } from 'constants/misc';
 
 export interface IMarketModalProps {
   isTrade?: boolean;
+  isGenZero?: boolean;
   detail?: TSGRToken;
 }
-function MarketModal({ isTrade = false, detail }: IMarketModalProps) {
+function MarketModal({ isTrade = false, isGenZero = false, detail }: IMarketModalProps) {
   const modal = useModal();
-  const { forestUrl, curChain, tradeModal, tradeModalOnMarketPlace } = useCmsInfo() || {};
+  const { forestUrl, curChain, tradeModal, tradeModalOnMarketPlace, gen0TradeModal } = useCmsInfo() || {};
 
   const tradeModalData = useMemo(() => {
-    return isTrade ? tradeModal : tradeModalOnMarketPlace;
-  }, [isTrade, tradeModal, tradeModalOnMarketPlace]);
+    if (isTrade) {
+      return isGenZero ? gen0TradeModal || tradeModal : tradeModal;
+    } else {
+      return tradeModalOnMarketPlace;
+    }
+  }, [gen0TradeModal, isGenZero, isTrade, tradeModal, tradeModalOnMarketPlace]);
 
   const list = useMemo<TTradeItem[]>(() => {
     const _list: TTradeItem[] = tradeModalData?.items.filter((i) => i.show) || [];

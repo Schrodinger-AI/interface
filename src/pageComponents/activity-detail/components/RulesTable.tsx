@@ -68,6 +68,7 @@ function RulesTable({ header, data }: IActivityDetailRulesTable) {
           render: (value, _record, index) => {
             switch (item.type) {
               case 'address':
+                if (!value || value === '-') return '-';
                 return renderAddress(value);
               case 'number':
                 return renderCell(formatTokenPrice(value));

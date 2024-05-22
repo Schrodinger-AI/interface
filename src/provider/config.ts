@@ -1,3 +1,4 @@
+import { IAelfdCustomToken } from 'aelf-design/dist/es/provider';
 import { ThemeConfig } from 'antd';
 
 export const AELFDProviderTheme: ThemeConfig = {
@@ -31,5 +32,14 @@ export const AELFDProviderTheme: ThemeConfig = {
       colorBgContainerDisabled: 'var(--neutral-hover-bg)',
       borderRadius: 12,
     },
+  },
+};
+
+export const AELFDProviderCustomToken: IAelfdCustomToken = {
+  customAddress: {
+    primaryLinkColor: '#3888FF',
+    primaryIconColor: '#3888FF',
+    addressHoverColor: '#5A9CFF',
+    addressActiveColor: '#267AF8',
   },
 };

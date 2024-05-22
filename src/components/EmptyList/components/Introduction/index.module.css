@@ -1,0 +1,16 @@
+/* stylelint-disable no-descending-specificity */
+.empty-introduction {
+  @apply mt-[16px];
+  :global {
+    .aelfd-collapse-header {
+      @apply !p-0 !rounded-none flex items-start hover:bg-transparent;
+
+      .aelfd-collapse-expand-icon {
+        @apply !hidden;
+      }
+    }
+    .aelfd-collapse-content-box {
+      @apply !px-0 !pb-0 !pt-[16px] !rounded-none;
+    }
+  }
+}
