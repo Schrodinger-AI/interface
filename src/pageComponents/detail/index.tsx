@@ -24,6 +24,7 @@ import { getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
+import { useJumpToPage } from 'hooks/useJumpToPage';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -36,12 +37,15 @@ export default function DetailPage() {
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
+  const { jumpToPage } = useJumpToPage();
+  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
+
+  const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
   const tradeModal = useMemo(() => {
-    return cmsInfo?.tradeModal;
-  }, [cmsInfo?.tradeModal]);
+    return isGenZero ? cmsInfo?.gen0TradeModal || cmsInfo?.tradeModal : cmsInfo?.tradeModal;
+  }, [cmsInfo?.gen0TradeModal, cmsInfo?.tradeModal, isGenZero]);
 
-  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
@@ -150,8 +154,25 @@ export default function DetailPage() {
 
   const onTrade = useCallback(() => {
     if (!schrodingerDetail) return;
-    marketModal.show({ isTrade: true, detail: schrodingerDetail });
-  }, [marketModal, schrodingerDetail]);
+    if (!tradeModal?.type || tradeModal?.type === 'modal') {
+      marketModal.show({ isTrade: true, detail: schrodingerDetail, isGenZero });
+    } else {
+      const link = tradeModal.link?.includes('/detail/buy')
+        ? `${tradeModal.link}/${cmsInfo?.curChain}-${symbol}/${cmsInfo?.curChain}`
+        : tradeModal.link;
+
+      jumpToPage({ link, linkType: tradeModal.type });
+    }
+  }, [
+    schrodingerDetail,
+    tradeModal?.type,
+    tradeModal?.link,
+    marketModal,
+    isGenZero,
+    cmsInfo?.curChain,
+    symbol,
+    jumpToPage,
+  ]);
 
   useTimeoutFn(() => {
     if (!fromListAll && !isLogin) {

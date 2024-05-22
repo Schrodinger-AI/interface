@@ -608,14 +608,6 @@ export default function OwnedItems({
           />
         </Layout>
       </Layout>
-
-      {/* {isLG && pageState === ListTypeEnum.All ? (
-        <div className="flex z-[60] fixed bottom-0 left-0 flex-row w-full p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
-          <Button className="w-full" type="primary" size="large" onClick={toMyCats}>
-            Get Your Own Cat
-          </Button>
-        </div>
-      ) : null} */}
     </div>
   );
 }

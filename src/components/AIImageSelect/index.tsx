@@ -43,7 +43,6 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   }, [index, onSelect]);
 
   const onError = useCallback(() => {
-    console.log('image-load-error');
     const _index = srcIndex + 1;
     const defaultImgIndex = srcList.length - 1;
 
@@ -58,7 +57,6 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   }, [srcIndex, srcList]);
 
   const onReload = useCallback(() => {
-    console.log('onReload');
     const urlFirst = srcList[0];
 
     if (!urlFirst.startsWith('http')) return;
@@ -69,7 +67,6 @@ function AIImage({ src, active, index, onSelect }: IAIImageProps) {
   }, [srcList]);
 
   const onLoad = useCallback(() => {
-    console.log('onLoad');
     setError(srcIndex === srcList.length - 1);
   }, [srcIndex, srcList.length]);
 

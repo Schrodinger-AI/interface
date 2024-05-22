@@ -131,5 +131,6 @@ const tokenRequest = new Request({
 
 const cmsRequest = new Request({ baseURL: '/cms' });
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default new Request({});
 export { tokenRequest, cmsRequest };

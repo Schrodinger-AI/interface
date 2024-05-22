@@ -10,7 +10,6 @@ import qs from 'qs';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
-  // return 'Success';
 };
 
 export const fetchToken = async (data: ITokenParams) => {
@@ -28,7 +27,6 @@ export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: st
 };
 
 export const fetchWaterImageRequest = async (data: IWaterImageRequest): Promise<IWaterImage> => {
-  // const params = qs.stringify(data, { encode: false });
   return request.post(`/app/schrodinger/waterMarkImageInfo`, data, {
     headers: { Accept: 'text/plain;v=1.0', 'Content-Type': 'application/json' },
   });

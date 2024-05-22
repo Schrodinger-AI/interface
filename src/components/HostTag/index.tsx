@@ -1,7 +1,7 @@
 'use client';
-import { Modal, Button, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import { getSecondHostName, dotString } from 'utils/common';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import styles from './style.module.css';
 import useResponsive from 'hooks/useResponsive';
 import useGetCustomTheme from 'redux/hooks/useGetCustomTheme';

@@ -4,7 +4,7 @@ import NewIcon from 'components/NewIcon';
 import { ITrait } from 'types/tokens';
 import useResponsive from 'hooks/useResponsive';
 import { useMemo } from 'react';
-import { convertDecimalToPercentage, formatPercent } from 'utils/format';
+import { formatPercent } from 'utils/format';
 import TextEllipsis from 'components/TextEllipsis';
 
 interface ITraitItem {

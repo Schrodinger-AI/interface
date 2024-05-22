@@ -18,7 +18,7 @@ import { getDomain } from 'utils';
 import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
 import SyncAdoptModal from 'components/SyncAdoptModal';
-import { AIServerError } from 'utils/formattError';
+import { AIServerError } from 'utils/formatError';
 import { AdTracker } from 'utils/ad';
 import { renameSymbol } from 'utils/renameSymbol';
 
