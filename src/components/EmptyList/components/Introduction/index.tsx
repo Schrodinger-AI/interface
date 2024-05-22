@@ -24,7 +24,7 @@ function StepCard({ title, description, card }: TEmptyChannelIntroductionStep) {
         </div>
       ) : null}
       {card && card.image ? (
-        <div className="mt-[8px] shadow-cardShadow p-[12px] rounded-lg lg:max-h-[120px]">
+        <div className="mt-[8px] shadow-cardShadow p-[12px] rounded-lg">
           <SkeletonImage
             img={card.image}
             className="w-full lg:max-h-[120px] !rounded-none"

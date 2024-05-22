@@ -42,7 +42,7 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
     <div className={clsx([styles.emptyListWrap, className])}>
       <ArchiveSVG className={styles.emptyImg} />
 
-      <div className="w-full flex flex-col items-start pt-[8px]">
+      <div className={clsx('flex flex-col items-start pt-[8px]', isChannelShow ? 'w-full' : 'w-auto')}>
         {descriptionList.map((item, idx) => (
           <div key={idx} className={styles.emptyTips}>
             {item}
