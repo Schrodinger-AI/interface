@@ -38,12 +38,14 @@ export default function DetailPage() {
   const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
   const { jumpToPage } = useJumpToPage();
+  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
+
+  const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
   const tradeModal = useMemo(() => {
-    return cmsInfo?.tradeModal;
-  }, [cmsInfo?.tradeModal]);
+    return isGenZero ? cmsInfo?.gen0TradeModal || cmsInfo?.tradeModal : cmsInfo?.tradeModal;
+  }, [cmsInfo?.gen0TradeModal, cmsInfo?.tradeModal, isGenZero]);
 
-  const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const [rankInfo, setRankInfo] = useState<TRankInfoAddLevelInfo>();
 
   const adoptHandler = useAdoptHandler();
@@ -153,11 +155,24 @@ export default function DetailPage() {
   const onTrade = useCallback(() => {
     if (!schrodingerDetail) return;
     if (!tradeModal?.type || tradeModal?.type === 'modal') {
-      marketModal.show({ isTrade: true, detail: schrodingerDetail });
+      marketModal.show({ isTrade: true, detail: schrodingerDetail, isGenZero });
     } else {
-      jumpToPage({ link: tradeModal.link, linkType: tradeModal.type });
+      const link = tradeModal.link?.includes('/detail/buy')
+        ? `${tradeModal.link}/${cmsInfo?.curChain}-${symbol}/${cmsInfo?.curChain}`
+        : tradeModal.link;
+
+      jumpToPage({ link, linkType: tradeModal.type });
     }
-  }, [jumpToPage, marketModal, schrodingerDetail, tradeModal?.link, tradeModal?.type]);
+  }, [
+    schrodingerDetail,
+    tradeModal?.type,
+    tradeModal?.link,
+    marketModal,
+    isGenZero,
+    cmsInfo?.curChain,
+    symbol,
+    jumpToPage,
+  ]);
 
   useTimeoutFn(() => {
     if (!fromListAll && !isLogin) {
