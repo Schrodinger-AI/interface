@@ -1,5 +1,5 @@
 import { useWebLogin, WalletType, WebLoginState } from 'aelf-web-login';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { message } from 'antd';
 import useDiscoverProvider from './useDiscoverProvider';
 import { IContractError } from 'types';

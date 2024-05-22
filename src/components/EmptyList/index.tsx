@@ -5,6 +5,11 @@ import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useMemo } from 'react';
 import { ReactComponent as ArrowSVG } from 'assets/img/icons/arrow.svg';
 import { openExternalLink } from 'utils/openlink';
+import Banner from './components/Banner';
+import Introduction from './components/Introduction';
+import { Col, Row } from 'antd';
+import useResponsive from 'hooks/useResponsive';
+import { Ellipsis } from 'antd-mobile';
 
 export interface IEmptyListProps {
   isChannelShow?: boolean;
@@ -14,6 +19,7 @@ export interface IEmptyListProps {
 
 export const EmptyList = ({ isChannelShow = false, defaultDescription = '', className }: IEmptyListProps) => {
   const cmsInfo = useCmsInfo();
+  const { isLG } = useResponsive();
 
   const emptyChannelGroupList = useMemo(() => {
     return cmsInfo?.emptyChannelGroupList || [];
@@ -48,19 +54,46 @@ export const EmptyList = ({ isChannelShow = false, defaultDescription = '', clas
         emptyChannelGroupList &&
         emptyChannelGroupList.map((group, groupIdx) => (
           <div key={groupIdx} className={styles.emptyGroupWrap}>
-            <div className={styles.emptyGroupTitle}>{`${groupIdx + 1}. ${group.title}`}</div>
-            {group.list &&
-              group.list.map((channel, channelIdx) => (
-                <div key={channelIdx} className={styles.channelWrap} onClick={() => onChannelClick(channel.link)}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className={styles.channelImg} src={channel.imgUrl || ''} alt="" />
-                  <div className={styles.channelContent}>
-                    <div className={styles.channelTitle}>{channel.title || ''}</div>
-                    <div className={styles.channelDescription}>{channel.description || ''}</div>
-                  </div>
-                  <ArrowSVG className={styles.arrowWrap} />
-                </div>
-              ))}
+            <div className={clsx('mb-[16px]', styles.emptyGroupTitle)}>{group.title}</div>
+            {group?.banner && group.banner.length
+              ? group.banner.map((banner, index) => {
+                  return <Banner banner={banner} key={index} />;
+                })
+              : null}
+            {group?.introduction ? <Introduction {...group.introduction} /> : null}
+            {group?.list && (
+              <Row gutter={[16, 16]}>
+                {group.list.map((channel, channelIdx) => (
+                  <Col span={isLG ? 24 : 12} key={channelIdx} onClick={() => onChannelClick(channel.link)}>
+                    <div
+                      className={clsx(
+                        'border border-solid border-neutralDivider rounded-[16px] flex items-start p-[12px] cursor-pointer',
+                      )}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        className={clsx('w-[32px] h-[32px] rounded-lg mr-[8px]')}
+                        src={channel.imgUrl || ''}
+                        alt=""
+                      />
+                      <div className={clsx('h-full flex items-center')}>
+                        <div className="flex-1 flex h-full items-start flex-col">
+                          <div className={clsx('text-neutralPrimary text-sm font-medium')}>{channel.title || ''}</div>
+                          <Ellipsis
+                            className={clsx('text-neutralSecondary text-xs')}
+                            rows={2}
+                            direction="end"
+                            expandText={null}
+                            collapseText={null}
+                            content={channel.description || ''}
+                          />
+                        </div>
+                        <ArrowSVG className={clsx('ml-[12px] scale-75')} />
+                      </div>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            )}
           </div>
         ))}
 
