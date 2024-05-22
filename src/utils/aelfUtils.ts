@@ -1,7 +1,7 @@
 import AElf from 'aelf-sdk';
 import { Approve, GetAvailableAllowance } from 'contract/multiToken';
 import { message } from 'antd';
-import { DEFAULT_ERROR } from './formattError';
+import { DEFAULT_ERROR } from './formatError';
 import { timesDecimals } from './calculate';
 import BigNumber from 'bignumber.js';
 import { IContractError } from 'types';

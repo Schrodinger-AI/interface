@@ -8,7 +8,7 @@ import { useCheckJoined } from './useJoin';
 import { sleep } from '@portkey/utils';
 import useLoading from './useLoading';
 import { IContractError } from 'types';
-import { formatErrorMsg, LoginFailed } from 'utils/formattError';
+import { formatErrorMsg, LoginFailed } from 'utils/formatError';
 import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
 import { store } from 'redux/store';
 

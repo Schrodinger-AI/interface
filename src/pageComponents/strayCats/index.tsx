@@ -14,7 +14,7 @@ import { useTimeoutFn } from 'react-use';
 import { checkAIService } from 'api/request';
 import { useModal } from '@ebay/nice-modal-react';
 import SyncAdoptModal from 'components/SyncAdoptModal';
-import { AIServerError } from 'utils/formattError';
+import { AIServerError } from 'utils/formatError';
 import { AdoptActionErrorCode } from 'hooks/Adopt/adopt';
 import useLoading from 'hooks/useLoading';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';

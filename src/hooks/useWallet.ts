@@ -45,7 +45,6 @@ export const useWalletInit = () => {
   const callBack = useCallback(
     (state: WebLoginState) => {
       if (state === WebLoginState.lock) {
-        console.log('WebLoginState.lock');
         backToHomeByRoute();
       }
       if (state === WebLoginState.logined) {

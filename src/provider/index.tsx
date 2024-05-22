@@ -14,7 +14,7 @@ import { checkDomain } from 'api/request';
 import NiceModal from '@ebay/nice-modal-react';
 import { setCmsInfo } from 'redux/reducer/info';
 import NotFoundPage from 'components/notFound';
-import { AELFDProviderTheme } from './config';
+import { AELFDProviderCustomToken, AELFDProviderTheme } from './config';
 import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
@@ -117,7 +117,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   return (
     <>
       <StoreProvider>
-        <AELFDProvider theme={AELFDProviderTheme}>
+        <AELFDProvider theme={AELFDProviderTheme} customToken={AELFDProviderCustomToken}>
           <WagmiProvider config={wagmiConfig}>
             <QueryClientProvider client={queryClient}>
               <RainbowKitProvider locale="en-US">

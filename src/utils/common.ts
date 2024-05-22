@@ -1,3 +1,5 @@
+import { MAIN_DOMAIN } from 'constants/common';
+
 export const sleep = (time: number) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -12,10 +14,8 @@ export function dotString(str: string, maxLength = 16) {
 }
 
 export function getSecondHostName() {
-  const env = process.env.NEXT_PUBLIC_APP_ENV;
-  const mainDomain = env === 'test' ? 'schrodingerai.com' : 'schrodingernft.ai';
   const hostname = window?.location.hostname || '';
-  if (!hostname || hostname === mainDomain) return '';
+  if (!hostname || MAIN_DOMAIN.includes(hostname)) return '';
   return hostname.split('.')[0];
 }
 

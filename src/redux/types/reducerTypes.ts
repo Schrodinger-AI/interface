@@ -92,6 +92,16 @@ export type TCustomizationItemType = {
     show: boolean;
     title: string;
     desc: string;
+    type?: 'link' | 'modal' | 'externalLink';
+    link?: string;
+    items: Array<TTradeItem>;
+  };
+  gen0TradeModal: {
+    show: boolean;
+    title: string;
+    desc: string;
+    type?: 'link' | 'modal' | 'externalLink';
+    link?: string;
     items: Array<TTradeItem>;
   };
   tradeModalOnMarketPlace: {
@@ -145,6 +155,7 @@ export type TGlobalConfigType = {
     value: string;
   }>;
   forestActivity?: string;
+  ecoEarn?: string;
   showNftQuantity?: number;
   [key: string]: any;
 };
