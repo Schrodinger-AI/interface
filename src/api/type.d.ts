@@ -159,6 +159,7 @@ interface ICatsListParams {
 interface ICatDetailParams {
   chainId: string;
   symbol: string;
+  address?: string; // wallet address
 }
 
 interface ITransactionMessageListParams {
