@@ -24,9 +24,21 @@ export type TEmptyChannelIntroductionStep = {
   };
 };
 
+export type TEmptyChannelIntroductionList = {
+  title?: string;
+  description?: string[];
+  image?: {
+    pc: string;
+    mobile: string;
+    link?: string;
+    linkType?: TLinkType;
+  }[];
+};
+
 export type TEmptyChannelIntroduction = {
   title: string;
-  step: TEmptyChannelIntroductionStep[];
+  step?: TEmptyChannelIntroductionStep[];
+  list?: TEmptyChannelIntroductionList[];
 };
 
 export type TEmptyChannelGroup = {

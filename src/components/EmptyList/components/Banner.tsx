@@ -11,10 +11,7 @@ function Banner({ banner }: { banner: TEmptyChannelBanner }) {
 
   return (
     <div
-      className={clsx(
-        'flex w-full h-auto first:mt-0 mt-[8px] overflow-hidden lg:max-h-[120px]',
-        banner?.link ? 'cursor-pointer' : '',
-      )}
+      className={clsx('flex w-full h-auto first:mt-0 mt-[8px] overflow-hidden', banner?.link ? 'cursor-pointer' : '')}
       onClick={() => jumpToPage({ link: banner?.link, linkType: banner?.linkType })}>
       <SkeletonImage
         img={isLG ? banner.imgUrl.mobile || '' : banner.imgUrl.pc || ''}
