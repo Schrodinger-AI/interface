@@ -58,8 +58,6 @@ export type TCustomThemeType = {
   };
 };
 
-export type TLinkType = 'externalLink' | 'link';
-
 export type TBannerConfigButton = {
   text: string;
   buttonType?: 'default' | 'primary';
@@ -289,6 +287,14 @@ export interface IActivityDetailCard {
   description?: string[];
 }
 
+export enum HandleCardType {
+  'BindEVM' = 'bindEVM',
+}
+
+export interface IActivityDetailHandle {
+  type: HandleCardType;
+}
+
 export interface IActivityDetailRules {
   title?: string;
   titleIcon?: string;
@@ -298,6 +304,7 @@ export interface IActivityDetailRules {
   link?: IActivityDetailRulesLink[];
   bottomDescription?: string[];
   cardList?: IActivityDetailCard[];
+  handleCard?: IActivityDetailHandle[];
 }
 
 export interface IActivityDetailData {

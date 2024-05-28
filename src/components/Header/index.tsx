@@ -8,7 +8,7 @@ import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as LeftArrow } from 'assets/img/icons/left-arrow.svg';
 import { Badge, Modal } from 'antd';
 import styles from './style.module.css';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
@@ -39,6 +39,7 @@ import { ListTypeEnum } from 'types';
 import StrayCatsItem from './components/StrayCatsItem';
 import NoticeDrawer from './components/NoticeDrawer';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import EventListDrawer from './components/EventListDrawer';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -52,6 +53,7 @@ export default function Header() {
   const customTheme = useGetCustomTheme();
   const pathname = usePathname();
   const [noticeOpen, setNoticeOpen] = useState<boolean>(false);
+  const [eventListOpen, setEventListOpen] = useState<boolean>(false);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const cmsInfo = useCmsInfo();
@@ -104,13 +106,23 @@ export default function Header() {
         return;
       }
 
+      if (type === RouterItemType.EventList) {
+        if (isLG) {
+          router.push('/event-list');
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+        } else {
+          setEventListOpen(true);
+        }
+        return;
+      }
+
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
       if (schema === '/') {
         store.dispatch(setCurViewListType(ListTypeEnum.All));
       }
     },
-    [checkLogin, isLogin, marketModal, router],
+    [checkLogin, isLG, isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -348,6 +360,10 @@ export default function Header() {
     setRankListEntranceOpen(false);
   };
 
+  useEffect(() => {
+    setEventListOpen(false);
+  }, [pathname]);
+
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
       {env === ENVIRONMENT.TEST && (
@@ -429,6 +445,7 @@ export default function Header() {
         })}
       </Modal>
       <NoticeDrawer open={noticeOpen} onClose={() => setNoticeOpen(false)} />
+      <EventListDrawer open={eventListOpen} onClose={() => setEventListOpen(false)} />
     </section>
   );
 }

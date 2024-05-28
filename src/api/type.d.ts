@@ -192,3 +192,22 @@ interface ITransactionMessageListData {
   totalCount: number;
   data: ITransactionMessageListItem[];
 }
+
+type TLinkType = 'externalLink' | 'link';
+
+interface IActivityListItem {
+  bannerUrl?: string;
+  activityName?: string;
+  activityId: string;
+  beginTime?: string;
+  endTime?: string;
+  isNew?: boolean;
+  linkUrl?: string;
+  linkType?: TLinkType;
+}
+
+interface IActivityList {
+  hasNewActivity: boolean;
+  totalCount: number;
+  items: IActivityListItem[];
+}

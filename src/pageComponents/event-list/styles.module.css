@@ -1,0 +1,7 @@
+.event-container {
+  :global {
+    .infinite-scroll-component__outerdiv {
+      @apply h-full;
+    }
+  }
+}

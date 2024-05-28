@@ -107,7 +107,10 @@ function SkeletonImage(props: ISkeletonImage) {
   return (
     <div className={clsx('relative rounded-lg overflow-hidden', styles['skeleton-image'], className)}>
       {(loading || !imageUrl) && (
-        <Skeleton.Image className="absolute top-0 left-0 !w-full !h-full" active={imageUrl ? skeletonActive : false} />
+        <Skeleton.Image
+          className={clsx('absolute top-0 left-0 !w-full !h-full')}
+          active={imageUrl ? skeletonActive : false}
+        />
       )}
       {imageUrl ? (
         <div className="w-full h-full relative">

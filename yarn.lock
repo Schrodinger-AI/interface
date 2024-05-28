@@ -3692,7 +3692,7 @@
 
 "@svgr/babel-plugin-transform-svg-component@8.0.0", "@svgr/babel-plugin-transform-svg-component@^8.0.0":
   version "8.0.0"
-  resolved "https://registry.npmmirror.com/@svgr/babel-plugin-transform-svg-component/-/babel-plugin-transform-svg-component-8.0.0.tgz#013b4bfca88779711f0ed2739f3f7efcefcf4f7e"
+  resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-transform-svg-component/-/babel-plugin-transform-svg-component-8.0.0.tgz#013b4bfca88779711f0ed2739f3f7efcefcf4f7e"
   integrity sha512-DFx8xa3cZXTdb/k3kfPeaixecQLgKh5NVBMwD0AQxOzcZawK4oo1Jh9LbrcACUivsCA7TLG8eeWgrDXjTMhRmw==
 
 "@svgr/babel-preset@8.1.0":
@@ -3730,7 +3730,7 @@
 
 "@svgr/plugin-jsx@8.1.0", "@svgr/plugin-jsx@^8.1.0":
   version "8.1.0"
-  resolved "https://registry.npmmirror.com/@svgr/plugin-jsx/-/plugin-jsx-8.1.0.tgz#96969f04a24b58b174ee4cd974c60475acbd6928"
+  resolved "https://registry.yarnpkg.com/@svgr/plugin-jsx/-/plugin-jsx-8.1.0.tgz#96969f04a24b58b174ee4cd974c60475acbd6928"
   integrity sha512-0xiIyBsLlr8quN+WyuxooNW9RJ0Dpr8uOnH/xrCVO8GLUcwHISwj1AG0k+LFzteTkAA0GbX0kj9q6Dk70PTiPA==
   dependencies:
     "@babel/core" "^7.21.3"
@@ -3740,7 +3740,7 @@
 
 "@svgr/plugin-svgo@8.1.0", "@svgr/plugin-svgo@^8.1.0":
   version "8.1.0"
-  resolved "https://registry.npmmirror.com/@svgr/plugin-svgo/-/plugin-svgo-8.1.0.tgz#b115b7b967b564f89ac58feae89b88c3decd0f00"
+  resolved "https://registry.yarnpkg.com/@svgr/plugin-svgo/-/plugin-svgo-8.1.0.tgz#b115b7b967b564f89ac58feae89b88c3decd0f00"
   integrity sha512-Ywtl837OGO9pTLIN/onoWLmDQ4zFUycI1g76vuKGEz6evR/ZTJlJuz3G/fIkb6OVBJ2g0o6CGJzaEjfmEo3AHA==
   dependencies:
     cosmiconfig "^8.1.3"
@@ -4696,7 +4696,7 @@ aelf-bridge@^0.0.10:
 
 aelf-design@^0.1.73-alpha.0:
   version "0.1.73-alpha.0"
-  resolved "https://registry.npmjs.org/aelf-design/-/aelf-design-0.1.73-alpha.0.tgz#23c74bb6a6bfd8116d1f1b1fef26817200463f56"
+  resolved "https://registry.yarnpkg.com/aelf-design/-/aelf-design-0.1.73-alpha.0.tgz#23c74bb6a6bfd8116d1f1b1fef26817200463f56"
   integrity sha512-8Ftks9x2xpwTssOKUSCzIW4VJO2PkHZoET9sJn0R2IzsmyhCb9SyBpOTqizTOw4poecUmzjumChQAuSSzrsKFA==
   dependencies:
     "@svgr/babel-plugin-transform-svg-component" "^8.0.0"

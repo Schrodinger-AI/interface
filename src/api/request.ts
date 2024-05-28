@@ -102,3 +102,30 @@ export const bindAddress = async (data: {
 }): Promise<void> => {
   return request.post('/app/bind-address', data);
 };
+
+export const getActivityDetailJoint = async (): Promise<{ data: IActivityDetailData }> => {
+  return cmsRequest.get('/items/activity_detail_joint');
+};
+
+export const activityList = async (params: { skipCount?: number; maxResultCount?: number }): Promise<IActivityList> => {
+  return request.get('/app/activity/list', { params });
+};
+
+export const bindAddressActivity = async (data: {
+  aelfAddress: string;
+  sourceChainAddress: string;
+  signature: string;
+  publicKey: string;
+  activityId: string;
+}): Promise<void> => {
+  return request.post('/app/activity/bind-address', data);
+};
+
+export const addressRelation = async (data: {
+  aelfAddress: string;
+  activityId: string;
+}): Promise<{
+  sourceChainAddress?: string;
+}> => {
+  return request.post('/app/activity/address-relation', data);
+};
