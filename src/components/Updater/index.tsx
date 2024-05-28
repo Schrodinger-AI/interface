@@ -3,6 +3,7 @@ import useGetUnreadMessagesCount from 'hooks/useGetUnreadMessagesCount';
 import { useInitData } from 'hooks/useInitData';
 import useUpdateLoginStatus from 'hooks/useUpdateLoginStatus';
 import useNavigationGuard from 'provider/useNavigationGuard';
+import { useEffect } from 'react';
 import { getHasNewActivities } from 'utils/getHasNewActivities';
 
 const Updater = () => {
@@ -10,7 +11,11 @@ const Updater = () => {
   useNavigationGuard();
   useUpdateLoginStatus();
   useGetUnreadMessagesCount();
-  getHasNewActivities();
+
+  useEffect(() => {
+    getHasNewActivities();
+  }, []);
+
   return null;
 };
 

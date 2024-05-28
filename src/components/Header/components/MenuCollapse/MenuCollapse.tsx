@@ -39,7 +39,10 @@ function MenuCollapse({ title, item, onPressCompassItems }: IProps) {
                   className="h-[56px] pr-[16px] pl-[40px] flex items-center justify-between"
                   key={sub.title}
                   onClick={() => onPressCompassItems(sub)}>
-                  <span className="text-base font-medium text-neutralTitle">{sub.title}</span>
+                  <div className="flex items-center">
+                    {sub.icon ? <img src={sub.icon} alt="logo" className="mr-[8px] w-[18px] h-[18px]" /> : null}
+                    <span className="text-base font-medium text-neutralTitle">{sub.title}</span>
+                  </div>
                   <ArrowIcon className="size-[14px]" />
                 </div>
               );

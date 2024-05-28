@@ -11,5 +11,6 @@ export interface ICompassProps {
   title?: string;
   schema?: string;
   type?: RouterItemType; // default is inner
+  icon?: string;
   items?: Array<ICompassProps>;
 }

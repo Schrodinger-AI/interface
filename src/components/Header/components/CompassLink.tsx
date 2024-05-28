@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 
-export const CompassText = (props: { title?: string; schema?: string }) => {
+export const CompassText = (props: { title?: string; schema?: string; icon?: string }) => {
   const pathname = usePathname();
   const isCurrent = pathname?.toLocaleLowerCase() === props.schema?.toLowerCase();
 
@@ -16,11 +16,12 @@ export const CompassText = (props: { title?: string; schema?: string }) => {
     <span
       className={clsx(
         styles['header-menu'],
-        `!rounded-[12px] text-lg ${
+        `!rounded-[12px] text-lg flex items-center ${
           isCurrent ? '!text-brandDefault' : ''
         } hover:text-brandHover cursor-pointer font-medium`,
       )}>
-      {props.title}
+      {props.icon ? <img src={props.icon} alt="logo" className="mr-[8px] w-[18px] h-[18px]" /> : null}
+      <span>{props.title}</span>
     </span>
   );
 };
@@ -37,7 +38,7 @@ export const CompassLink = ({ item, className, onPressCompassItems }: ICompassLi
 
   const { hasNewActivities } = useGetStoreInfo();
 
-  const renderCom = <CompassText title={title} schema={schema} />;
+  const renderCom = <CompassText title={title} schema={schema} icon={item.icon} />;
   const onPress = useCallback(
     (event: any) => {
       event.preventDefault();
