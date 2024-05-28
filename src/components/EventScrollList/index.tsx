@@ -6,7 +6,6 @@ import Loading from 'components/Loading';
 import EventList from './components/EventList';
 import TableEmpty from 'components/TableEmpty';
 import clsx from 'clsx';
-import { useWalletService } from 'hooks/useWallet';
 import { sleep } from '@portkey/utils';
 
 const endMessage = (
@@ -22,7 +21,6 @@ function EventScrollList(props?: { useInfiniteScroll?: boolean }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(0);
-  const { wallet } = useWalletService();
 
   const loader = useMemo(
     () => (
@@ -38,6 +36,10 @@ function EventScrollList(props?: { useInfiniteScroll?: boolean }) {
       if (loadingMore || !hasMore) return;
       await sleep(1000);
       // TODO: mock
+      // const res = await activityList({
+      // skipCount: (pageSize - 1) * 20,
+      // maxResultCount: 20,
+      // });
       const res: IActivityList = {
         hasNewActivity: false,
         totalCount: 3,

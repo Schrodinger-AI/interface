@@ -28,7 +28,7 @@ function EventList({
   }, [beginTime, endTime]);
 
   return (
-    <div className="px-[14px] lg:px-[22px]">
+    <div className="lg:px-[22px]">
       <div className="p-[2px] relative">
         <div
           className="relative w-full h-auto cursor-pointer shadow-cardShadow2 overflow-hidden rounded-lg mb-[16px] lg:mb-[24px]"

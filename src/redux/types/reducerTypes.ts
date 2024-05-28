@@ -23,6 +23,7 @@ export type InfoStateType = {
   isJoin: boolean;
   curViewListType: ListTypeEnum;
   unreadMessagesCount: number;
+  hasNewActivities: boolean;
 };
 
 export type TTradeItem = {

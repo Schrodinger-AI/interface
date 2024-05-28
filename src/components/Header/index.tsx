@@ -40,12 +40,14 @@ import StrayCatsItem from './components/StrayCatsItem';
 import NoticeDrawer from './components/NoticeDrawer';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import EventListDrawer from './components/EventListDrawer';
+import Image from 'next/image';
+import TagNewIcon from 'assets/img/event/tag-new-square.png';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, walletType } = useWalletService();
   const { isLogin } = useGetLoginStatus();
-  const { unreadMessagesCount } = useGetStoreInfo();
+  const { unreadMessagesCount, hasNewActivities } = useGetStoreInfo();
 
   const { isLG } = useResponsive();
   const router = useRouter();
@@ -222,13 +224,18 @@ export default function Header() {
                 onPressCompassItems(item);
               }}>
               <div className="text-lg">{item.title}</div>
-              <ArrowIcon className="size-4" />
+              <span className="flex items-center">
+                {item.type === RouterItemType.EventList && hasNewActivities ? (
+                  <Image alt="new" src={TagNewIcon} width={30} height={14} className="mr-[8px]" />
+                ) : null}
+                <ArrowIcon className="size-4" />
+              </span>
             </div>
           ),
         };
       }
     });
-  }, [menuItems, onPressCompassItems]);
+  }, [hasNewActivities, menuItems, onPressCompassItems]);
 
   const onOpenNotice = () => {
     if (isLG) {
