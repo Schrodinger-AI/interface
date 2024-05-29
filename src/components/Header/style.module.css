@@ -2,7 +2,7 @@
 .dropdown {
   @apply !min-w-[260px];
   :global(.aelfd-dropdown-menu) {
-    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none !p-0 overflow-hidden;
+    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none !p-0 overflow-hidden mt-[30px];
   }
   :global(.aelfd-dropdown-menu-item) {
     transition: none !important;
