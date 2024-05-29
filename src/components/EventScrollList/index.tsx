@@ -6,13 +6,13 @@ import Loading from 'components/Loading';
 import EventList from './components/EventList';
 import TableEmpty from 'components/TableEmpty';
 import clsx from 'clsx';
-import { sleep } from '@portkey/utils';
+import { activityList } from 'api/request';
 
 const endMessage = (
   <div className="text-textSecondary text-base font-medium pt-[28px] pb-[28px] text-center">No more yet~</div>
 );
 
-const emptyCom = <TableEmpty title="No notifications" description="You don't have notifications yet" />;
+const emptyCom = <TableEmpty title="No events" description="There is no event yet" />;
 
 function EventScrollList(props?: { useInfiniteScroll?: boolean }) {
   const { useInfiniteScroll = true } = props || {};
@@ -34,59 +34,10 @@ function EventScrollList(props?: { useInfiniteScroll?: boolean }) {
   const getEventList = async (pageSize: number) => {
     try {
       if (loadingMore || !hasMore) return;
-      await sleep(1000);
-      // TODO: mock
-      // const res = await activityList({
-      // skipCount: (pageSize - 1) * 20,
-      // maxResultCount: 20,
-      // });
-      const res: IActivityList = {
-        hasNewActivity: false,
-        totalCount: 3,
-        items: [
-          {
-            bannerUrl: 'https://schrodinger-mainnet.s3.ap-northeast-1.amazonaws.com/banner/Banner_ETransfer.png',
-            activityName: 'activity name 3',
-            activityId: '1',
-            beginTime: '1714348800000',
-            endTime: '1719619200000',
-            isNew: true,
-            linkUrl: 'activity-detail-joint',
-            linkType: 'link',
-          },
-          {
-            bannerUrl: 'https://schrodinger-mainnet.s3.ap-northeast-1.amazonaws.com/banner/Banner_ETransfer.png',
-            activityName: 'activity name 3',
-            activityId: '1',
-            beginTime: '1714348800000',
-            endTime: '1719619200000',
-            isNew: false,
-            linkUrl: '/activity-detail-portkey',
-            linkType: 'link',
-          },
-          {
-            bannerUrl: 'https://schrodinger-mainnet.s3.ap-northeast-1.amazonaws.com/banner/Banner_ETransfer.png',
-            activityName: 'activity name 2',
-            activityId: '1',
-            beginTime: '1715731200000',
-            endTime: '1714348800000',
-            isNew: false,
-            linkUrl: '/activity-detail',
-            linkType: 'link',
-          },
-          {
-            bannerUrl: 'https://schrodinger-mainnet.s3.ap-northeast-1.amazonaws.com/banner/Banner_ETransfer.png',
-            activityName: 'activity name 1',
-            activityId: '1',
-            beginTime: '1715731200000',
-            endTime: '1714348800000',
-            isNew: false,
-            linkUrl: '/rank-list',
-            linkType: 'link',
-          },
-        ],
-      };
-      console.log('=====finally');
+      const res = await activityList({
+        skipCount: (pageSize - 1) * 20,
+        maxResultCount: 20,
+      });
       if (pageSize === 1) {
         setDataSource(res.items || []);
       } else {

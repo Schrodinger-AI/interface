@@ -107,6 +107,12 @@ export const getActivityDetailJoint = async (): Promise<{ data: IActivityDetailD
   return cmsRequest.get('/items/activity_detail_joint');
 };
 
+export const activityInfo = async (): Promise<{
+  hasNewActivity: boolean;
+}> => {
+  return request.get('/app/activity/info');
+};
+
 export const activityList = async (params: { skipCount?: number; maxResultCount?: number }): Promise<IActivityList> => {
   return request.get('/app/activity/list', { params });
 };

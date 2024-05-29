@@ -158,7 +158,10 @@ function BindEvm() {
           {evmAddress ? (
             <div
               onClick={hasBind ? undefined : openAccountModal}
-              className={clsx('mt-[4px] flex items-center', hasBind ? '!text-neutralDisable' : '!text-brandDefault')}>
+              className={clsx(
+                'mt-[4px] flex items-center w-max',
+                hasBind ? '!text-neutralDisable' : '!text-brandDefault',
+              )}>
               {hasBind ? <CommonCopy toCopy={evmAddress}>{renderAddress()}</CommonCopy> : renderAddress()}
             </div>
           ) : null}
