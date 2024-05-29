@@ -109,7 +109,7 @@ function BindEvm() {
     if (hasBind) {
       return (
         <Button disabled={true} size="medium" className="!rounded-lg">
-          Binded
+          binded
         </Button>
       );
     } else {
