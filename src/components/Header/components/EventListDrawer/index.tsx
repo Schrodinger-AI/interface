@@ -10,7 +10,7 @@ function EventListDrawer(props: DrawerProps) {
       {...props}
       rootClassName={styles['event-drawer']}
       width={438}
-      title="Event"
+      title="Events"
       destroyOnClose
       closeIcon={false}
       extra={

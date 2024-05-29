@@ -7,7 +7,7 @@ export default function EventList() {
   return (
     <div className={clsx('w-full overflow-hidden', styles['event-container'])}>
       <MobileBackNav />
-      <div className="text-neutralTitle text-2xl font-semibold">Event</div>
+      <div className="text-neutralTitle text-2xl font-semibold">Events</div>
       <EventScrollList />
     </div>
   );

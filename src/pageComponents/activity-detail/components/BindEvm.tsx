@@ -21,6 +21,7 @@ function BindEvm() {
   const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();
   const [evmAddress, setEvmAddress] = useState<string>('');
+  const [sourceChainAddress, setSourceChainAddress] = useState<string>('');
   const [bindLoading, setBindLoading] = useState<boolean>(false);
   const [hasBind, setHasBind] = useState<boolean>(false);
   const { wallet } = useWalletService();
@@ -40,13 +41,17 @@ function BindEvm() {
         activityId: activityId,
       });
       if (sourceChainAddress) {
+        setSourceChainAddress(sourceChainAddress);
         setEvmAddress(sourceChainAddress);
         setHasBind(true);
+        return true;
       } else {
         setHasBind(false);
+        return false;
       }
     } catch (error) {
       setHasBind(false);
+      return false;
     }
   };
 
@@ -65,10 +70,14 @@ function BindEvm() {
           publicKey: res.publicKey,
           activityId,
         });
-        getAddressRelation(wallet.address, activityId);
+        setSourceChainAddress(evmAddress);
+        setEvmAddress(evmAddress);
+        setHasBind(true);
+        // getAddressRelation(wallet.address, activityId);
       }
     } catch (error) {
       /* empty */
+      console.log('=====error', error);
     }
     setBindLoading(false);
   }, [activityId, bindLoading, evmAddress, getSignInfo, wallet.address]);
@@ -78,12 +87,15 @@ function BindEvm() {
       openConnectModal && openConnectModal();
     } else {
       checkLogin({
-        onSuccess: () => {
+        onSuccess: async (address?: string) => {
+          if (!address || !activityId) return;
+          const bind = await getAddressRelation(address, activityId);
+          if (bind) return;
           openConnectModal && openConnectModal();
         },
       });
     }
-  }, [checkLogin, isLogin, openConnectModal]);
+  }, [activityId, checkLogin, isLogin, openConnectModal]);
 
   const toBind = useCallback(() => {
     if (isLogin) {
@@ -101,7 +113,7 @@ function BindEvm() {
         </Button>
       );
     } else {
-      if (connected) {
+      if (connected && isLogin) {
         return (
           <Button type="primary" size="medium" className="!rounded-lg" onClick={toBind} loading={bindLoading}>
             Bind
@@ -115,21 +127,24 @@ function BindEvm() {
         );
       }
     }
-  }, [bindLoading, connected, hasBind, toBind, toConnect]);
+  }, [bindLoading, connected, hasBind, isLogin, toBind, toConnect]);
 
-  const renderAddress = useCallback(() => {
-    return (
-      <span className={clsx('text-sm font-medium', hasBind ? 'text-neutralDisable' : 'text-brandDefault')}>
-        {isLG
-          ? getOmittedStr(evmAddress, OmittedType.CUSTOM, {
-              prevLen: 4,
-              endLen: 4,
-              limitLen: 9,
-            })
-          : getOmittedStr(evmAddress, OmittedType.ADDRESS)}
-      </span>
-    );
-  }, [evmAddress, hasBind, isLG]);
+  const renderAddress = useCallback(
+    (address: string) => {
+      return (
+        <span className={clsx('text-sm font-medium', hasBind ? 'text-neutralDisable' : 'text-brandDefault')}>
+          {isLG
+            ? getOmittedStr(address, OmittedType.CUSTOM, {
+                prevLen: 4,
+                endLen: 4,
+                limitLen: 9,
+              })
+            : getOmittedStr(address, OmittedType.ADDRESS)}
+        </span>
+      );
+    },
+    [hasBind, isLG],
+  );
 
   useEffect(() => {
     setConnected(account.isConnected);
@@ -155,14 +170,18 @@ function BindEvm() {
           <span className="text-base text-neutralPrimary font-medium">
             {hasBind ? 'Address has been binded' : 'Bind the address'}
           </span>
-          {evmAddress ? (
+          {isLogin && (evmAddress || sourceChainAddress) ? (
             <div
               onClick={hasBind ? undefined : openAccountModal}
               className={clsx(
                 'mt-[4px] flex items-center w-max',
                 hasBind ? '!text-neutralDisable' : '!text-brandDefault',
               )}>
-              {hasBind ? <CommonCopy toCopy={evmAddress}>{renderAddress()}</CommonCopy> : renderAddress()}
+              {hasBind ? (
+                <CommonCopy toCopy={sourceChainAddress}>{renderAddress(sourceChainAddress)}</CommonCopy>
+              ) : (
+                renderAddress(evmAddress)
+              )}
             </div>
           ) : null}
         </div>
