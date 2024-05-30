@@ -108,26 +108,35 @@ function BindEvm() {
   const renderButton = useCallback(() => {
     if (hasBind) {
       return (
-        <Button disabled={true} size="medium" className="!rounded-lg">
+        <Button disabled={true} size={isLG ? 'small' : 'medium'} className="!rounded-lg w-[72px] lg:w-[90px]">
           binded
         </Button>
       );
     } else {
       if (connected && isLogin) {
         return (
-          <Button type="primary" size="medium" className="!rounded-lg" onClick={toBind} loading={bindLoading}>
+          <Button
+            type="primary"
+            size={isLG ? 'small' : 'medium'}
+            className="!rounded-lg w-[72px] lg:w-[90px]"
+            onClick={toBind}
+            loading={bindLoading}>
             Bind
           </Button>
         );
       } else {
         return (
-          <Button type="primary" size="medium" className="!rounded-lg" onClick={toConnect}>
+          <Button
+            type="primary"
+            size={isLG ? 'small' : 'medium'}
+            className="!rounded-lg w-[72px] lg:w-[90px]"
+            onClick={toConnect}>
             Go
           </Button>
         );
       }
     }
-  }, [bindLoading, connected, hasBind, isLogin, toBind, toConnect]);
+  }, [bindLoading, connected, hasBind, isLG, isLogin, toBind, toConnect]);
 
   const renderAddress = useCallback(
     (address: string) => {
