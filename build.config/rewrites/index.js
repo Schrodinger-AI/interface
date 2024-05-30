@@ -1,6 +1,7 @@
 const devConfig = require('./development');
 const proConfig = require('./production');
 const testConfig = require('./test');
-const { NODE_ENV } = process.env;
+const { NEXT_PUBLIC_APP_ENV } = process.env;
 
-module.exports = NODE_ENV === 'production' ? proConfig : NODE_ENV === 'test' ? testConfig : devConfig;
+module.exports =
+  NEXT_PUBLIC_APP_ENV === 'production' ? proConfig : NEXT_PUBLIC_APP_ENV === 'test' ? testConfig : devConfig;
