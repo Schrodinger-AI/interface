@@ -14,7 +14,7 @@ function Banner({ banner }: { banner: TEmptyChannelBanner }) {
   const onBannerClick = () => {
     jumpToPage({ link: banner?.link, linkType: banner?.linkType });
     if (banner?.link?.includes(etransferDomain)) {
-      AdTracker.trackEvent('user_click_etransfer_noneSGR_test');
+      AdTracker.trackEvent('user_click_etransfer_noneSGR');
     }
   };
 

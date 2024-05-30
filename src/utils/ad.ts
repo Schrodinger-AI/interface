@@ -1,5 +1,5 @@
 import { ENVIRONMENT } from 'constants/url';
-export type AdEvent = 'adopt' | 'reroll' | 'connect_wallet' | 'user_click_etransfer_noneSGR_test';
+export type AdEvent = 'adopt' | 'reroll' | 'connect_wallet' | 'user_click_etransfer_noneSGR';
 import { store } from 'redux/store';
 
 export class AdTracker {
@@ -19,7 +19,7 @@ export class AdTracker {
     try {
       const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
-      if (env === 'test') {
+      if (env === 'production') {
         console.log('=====this.gtm', event);
         this.gtm.push({ event, ...this.adInfo, ...payload });
       }
