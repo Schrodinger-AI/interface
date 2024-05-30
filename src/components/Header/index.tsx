@@ -42,6 +42,8 @@ import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import EventListDrawer from './components/EventListDrawer';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new-square.png';
+import TagHotIcon from 'assets/img/event/tag-hot.json';
+import Lottie from 'lottie-react';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -228,6 +230,14 @@ export default function Header() {
                 {item.type === RouterItemType.EventList && hasNewActivities ? (
                   <Image alt="new" src={TagNewIcon} width={30} height={14} className="mr-[8px]" />
                 ) : null}
+                {item.type === RouterItemType.EventList && cmsInfo?.eventHot ? (
+                  <Lottie
+                    animationData={TagHotIcon}
+                    autoPlay={true}
+                    loop={true}
+                    className={'w-[30px] h-auto mb-[8px]'}
+                  />
+                ) : null}
                 <ArrowIcon className="size-4" />
               </span>
             </div>
@@ -235,7 +245,7 @@ export default function Header() {
         };
       }
     });
-  }, [hasNewActivities, menuItems, onPressCompassItems]);
+  }, [cmsInfo?.eventHot, hasNewActivities, menuItems, onPressCompassItems]);
 
   const onOpenNotice = () => {
     if (isLG) {

@@ -7,6 +7,9 @@ import styles from '../style.module.css';
 import clsx from 'clsx';
 import Image from 'next/image';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import TagHotIcon from 'assets/img/event/tag-hot.json';
+import { useCmsInfo } from 'redux/hooks';
+import Lottie from 'lottie-react';
 
 export const CompassText = (props: { title?: string; schema?: string; icon?: string }) => {
   const pathname = usePathname();
@@ -38,6 +41,8 @@ export const CompassLink = ({ item, className, onPressCompassItems }: ICompassLi
 
   const { hasNewActivities } = useGetStoreInfo();
 
+  const cmsInfo = useCmsInfo();
+
   const renderCom = <CompassText title={title} schema={schema} icon={item.icon} />;
   const onPress = useCallback(
     (event: any) => {
@@ -56,6 +61,14 @@ export const CompassLink = ({ item, className, onPressCompassItems }: ICompassLi
       {renderCom}
       {type === RouterItemType.EventList && hasNewActivities ? (
         <Image alt="new" src={TagNewIcon} width={32} height={16} className="absolute -top-[14px] -right-[8px] z-10" />
+      ) : null}
+      {type === RouterItemType.EventList && cmsInfo?.eventHot ? (
+        <Lottie
+          animationData={TagHotIcon}
+          autoPlay={true}
+          loop={true}
+          className={'w-[32px] h-auto absolute -top-[22px] -right-[8px] z-[11]'}
+        />
       ) : null}
     </span>
   );
