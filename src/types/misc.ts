@@ -1,5 +1,3 @@
-import { TLinkType } from 'redux/types/reducerTypes';
-
 export type TEmptyChannelInfo = {
   title: string;
   description: string;

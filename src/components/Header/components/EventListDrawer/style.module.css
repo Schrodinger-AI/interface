@@ -1,0 +1,16 @@
+.event-drawer {
+  :global {
+    .aelfd-drawer-header {
+      @apply p-[24px] border-none;
+      .aelfd-drawer-title {
+        @apply text-2xl font-semibold;
+      }
+    }
+    .aelfd-drawer-body {
+      @apply p-0;
+      .infinite-scroll-component__outerdiv {
+        @apply h-full;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 /* stylelint-disable no-descending-specificity */
 .footer {
   @apply flex flex-col lg:flex-row 
-  justify-center lg:justify-between 
+  justify-center 
   gap-[16px]
   items-center px-[16px] md:px-[40px] font-normal text-[14px] leading-[22px] text-[#919191] h-[98px] lg:h-[64px] w-full;
 }

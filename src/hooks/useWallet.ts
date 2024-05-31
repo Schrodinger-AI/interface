@@ -226,9 +226,10 @@ export const useCheckLoginAndToken = () => {
   const isConnectWallet = useMemo(() => loginState === WebLoginState.logined, [loginState]);
   const { getToken, checkTokenValid } = useGetToken();
   const { isLogin } = useGetLoginStatus();
-  const success = useRef<<T = any>() => T | void>();
+  const { wallet } = useWalletService();
+  const success = useRef<<T = any, R = any>(params?: R) => T | void | Promise<void>>();
 
-  const checkLogin = async (params?: { onSuccess?: <T = any>() => T | void }) => {
+  const checkLogin = async (params?: { onSuccess?: <T = any>() => T | void | Promise<void> }) => {
     const { onSuccess } = params || {};
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
     if (isConnectWallet) {
@@ -251,11 +252,16 @@ export const useCheckLoginAndToken = () => {
     login();
   };
 
-  useEffect(() => {
+  const successCallback = async (address: string) => {
     if (isLogin) {
-      success.current && success.current();
+      success.current && (await success.current(address));
       success.current = undefined;
     }
+  };
+
+  useEffect(() => {
+    successCallback(wallet.address);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
 
   useEffect(() => {

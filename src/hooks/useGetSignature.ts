@@ -4,6 +4,7 @@ import { message } from 'antd';
 import useDiscoverProvider from './useDiscoverProvider';
 import { IContractError } from 'types';
 import { formatErrorMsg } from 'utils/formatError';
+import { appName } from 'constants/common';
 
 const AElf = require('aelf-sdk');
 
@@ -40,7 +41,7 @@ export const useGetSignature = () => {
         }
       } else {
         const sign = await getSignature({
-          appName: 'schrodinger',
+          appName,
           address: wallet.address,
           signInfo:
             walletType === WalletType.portkey

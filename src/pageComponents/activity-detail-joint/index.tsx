@@ -1,4 +1,4 @@
-import { getActivityDetailPortkey } from 'api/request';
+import { getActivityDetailJoint } from 'api/request';
 import { useCallback, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import useLoading from 'hooks/useLoading';
@@ -9,7 +9,7 @@ import RulesList from 'pageComponents/activity-detail/components/RulesList';
 import MobileBackNav from 'components/MobileBackNav';
 import useResponsive from 'hooks/useResponsive';
 
-export default function ActivityDetail() {
+export default function ActivityDetailJoint() {
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const { isLG } = useResponsive();
@@ -19,7 +19,7 @@ export default function ActivityDetail() {
 
   const rankList = useCallback(async () => {
     showLoading();
-    const { data } = await getActivityDetailPortkey();
+    const { data } = await getActivityDetailJoint();
     setRulesList(data.rules || []);
     setPageTitle(data.pageTitle || '');
     closeLoading();
@@ -33,7 +33,6 @@ export default function ActivityDetail() {
     <div className="w-full flex flex-col items-center">
       <div className="w-full max-w-[1360px]">
         {isLG ? <MobileBackNav /> : null}
-
         <h1 className="lg:pt-[24px] flex items-start pb-[8px] font-semibold text-neutralTitle text-2xl">
           {!isLG ? (
             <div className="h-[32px] flex items-center justify-center">

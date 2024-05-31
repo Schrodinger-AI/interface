@@ -7,10 +7,13 @@ import { divDecimals } from 'utils/calculate';
 import { renameSymbol } from 'utils/renameSymbol';
 
 export default function DetailTitle({ detail, fromListAll }: { detail: TSGRTokenInfo; fromListAll: boolean }) {
-  const amountStr = useMemo(
-    () => divDecimals(detail.amount, detail.decimals).toFixed(),
-    [detail?.amount, detail.decimals],
-  );
+  const amountStr = useMemo(() => {
+    if (fromListAll) {
+      return divDecimals(detail.amount, detail.decimals).toFixed();
+    } else {
+      return divDecimals(detail.holderAmount, detail.decimals).toFixed();
+    }
+  }, [detail.amount, detail.decimals, detail.holderAmount, fromListAll]);
 
   const amountText = useMemo(() => (fromListAll ? 'Amount' : 'Amount Owned'), [fromListAll]);
 

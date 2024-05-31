@@ -22,6 +22,7 @@ import { openExternalLink } from 'utils/openlink';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { NEED_LOGIN_PAGE } from 'constants/router';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import MobileBackNav from 'components/MobileBackNav';
 
 interface IProps {
   rulesList?: string[];
@@ -287,15 +288,18 @@ function AwardAnnouncement({
   return (
     <div className="w-full flex flex-col items-center">
       <div className="w-full max-w-[1360px]">
-        <h1 className="pt-[24px] flex items-start pb-[8px] font-semibold text-2xl">
-          <div className="h-[32px] flex items-center justify-center">
-            <ArrowSVG
-              className="w-[24px] mr-[8px] rotate-90  cursor-pointer"
-              onClick={() => {
-                router.back();
-              }}
-            />
-          </div>
+        {isLG ? <MobileBackNav /> : null}
+        <h1 className="lg:pt-[24px] flex items-start pb-[8px] font-semibold text-2xl">
+          {!isLG ? (
+            <div className="h-[32px] flex items-center justify-center">
+              <ArrowSVG
+                className="w-[24px] mr-[8px] rotate-90  cursor-pointer"
+                onClick={() => {
+                  router.back();
+                }}
+              />
+            </div>
+          ) : null}
 
           <span className="flex-1">{pageTitle}</span>
         </h1>

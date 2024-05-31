@@ -73,7 +73,7 @@ export default function DetailPage() {
     let result;
     try {
       showLoading();
-      result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '' });
+      result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '', address: wallet.address });
       const generation = result?.generation;
       const traits = result?.traits;
       await generateCatsRankInfo(generation, traits, wallet.address);

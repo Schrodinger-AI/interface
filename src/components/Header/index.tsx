@@ -8,7 +8,7 @@ import { ReactComponent as CloseSVG } from 'assets/img/close.svg';
 import { ReactComponent as LeftArrow } from 'assets/img/icons/left-arrow.svg';
 import { Badge, Modal } from 'antd';
 import styles from './style.module.css';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
@@ -39,19 +39,25 @@ import { ListTypeEnum } from 'types';
 import StrayCatsItem from './components/StrayCatsItem';
 import NoticeDrawer from './components/NoticeDrawer';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import EventListDrawer from './components/EventListDrawer';
+import Image from 'next/image';
+import TagNewIcon from 'assets/img/event/tag-new-square.png';
+import TagHotIcon from 'assets/img/event/tag-hot.json';
+import Lottie from 'lottie-react';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
   const { logout, wallet, walletType } = useWalletService();
   const { isLogin } = useGetLoginStatus();
-  const { unreadMessagesCount } = useGetStoreInfo();
+  const { unreadMessagesCount, hasNewActivities } = useGetStoreInfo();
 
-  const { isLG } = useResponsive();
+  const { isLG, isXL } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
   const customTheme = useGetCustomTheme();
   const pathname = usePathname();
   const [noticeOpen, setNoticeOpen] = useState<boolean>(false);
+  const [eventListOpen, setEventListOpen] = useState<boolean>(false);
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const cmsInfo = useCmsInfo();
@@ -104,13 +110,23 @@ export default function Header() {
         return;
       }
 
+      if (type === RouterItemType.EventList) {
+        if (isLG) {
+          router.push('/event-list');
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+        } else {
+          setEventListOpen(true);
+        }
+        return;
+      }
+
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
       if (schema === '/') {
         store.dispatch(setCurViewListType(ListTypeEnum.All));
       }
     },
-    [checkLogin, isLogin, marketModal, router],
+    [checkLogin, isLG, isLogin, marketModal, router],
   );
 
   const [logoutComplete, setLogoutComplete] = useState(true);
@@ -210,13 +226,26 @@ export default function Header() {
                 onPressCompassItems(item);
               }}>
               <div className="text-lg">{item.title}</div>
-              <ArrowIcon className="size-4" />
+              <span className="flex items-center">
+                {item.type === RouterItemType.EventList && hasNewActivities ? (
+                  <Image alt="new" src={TagNewIcon} width={30} height={14} className="mr-[8px]" />
+                ) : null}
+                {item.type === RouterItemType.EventList && cmsInfo?.eventHot ? (
+                  <Lottie
+                    animationData={TagHotIcon}
+                    autoPlay={true}
+                    loop={true}
+                    className={'w-[30px] h-auto mb-[8px]'}
+                  />
+                ) : null}
+                <ArrowIcon className="size-4" />
+              </span>
             </div>
           ),
         };
       }
     });
-  }, [menuItems, onPressCompassItems]);
+  }, [cmsInfo?.eventHot, hasNewActivities, menuItems, onPressCompassItems]);
 
   const onOpenNotice = () => {
     if (isLG) {
@@ -343,10 +372,21 @@ export default function Header() {
     }[customTheme.header.theme];
   }, [customTheme.header.theme]);
 
+  const logoImageIsLx = useMemo(() => {
+    return {
+      [CustomThemeType.light]: require('assets/img/logo/schrodinger-b.png').default.src,
+      [CustomThemeType.dark]: require('assets/img/logo/schrodinger-w.png').default.src,
+    }[customTheme.header.theme];
+  }, [customTheme.header.theme]);
+
   const closeRankListEntrance = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setRankListEntranceOpen(false);
   };
+
+  useEffect(() => {
+    setEventListOpen(false);
+  }, [pathname]);
 
   return (
     <section className={clsx('sticky top-0 left-0 z-[100] flex-shrink-0', styles[customTheme.header.theme])}>
@@ -395,7 +435,10 @@ export default function Header() {
 
       <div className="px-[16px] lg:px-[40px] h-[60px] lg:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
-          {
+          {isXL && !isLG ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoImageIsLx} alt="logo" className="w-auto h-[32px]" onClick={() => router.replace('/')} />
+          ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={logoImage}
@@ -403,7 +446,8 @@ export default function Header() {
               className="w-[120px] h-[24px] lg:w-[160px] lg:h-[32px]"
               onClick={() => router.replace('/')}
             />
-          }
+          )}
+
           <NavHostTag />
         </div>
         {customTheme.header.hideMenu ? null : FunctionalArea(menuItems)}
@@ -429,6 +473,7 @@ export default function Header() {
         })}
       </Modal>
       <NoticeDrawer open={noticeOpen} onClose={() => setNoticeOpen(false)} />
+      <EventListDrawer open={eventListOpen} onClose={() => setEventListOpen(false)} />
     </section>
   );
 }

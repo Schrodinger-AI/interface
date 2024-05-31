@@ -43,3 +43,5 @@ export const EXPLORE_URL = {
   TDVV: explorerUrls[env].TDVV,
   TDVW: explorerUrls[env].TDVW,
 };
+
+export const etransferDomain = 'https://etransfer';

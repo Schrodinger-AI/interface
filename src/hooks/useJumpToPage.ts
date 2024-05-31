@@ -3,7 +3,6 @@ import { useCheckLoginAndToken } from './useWallet';
 import { NEED_LOGIN_PAGE } from 'constants/router';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter } from 'next/navigation';
-import { TLinkType } from 'redux/types/reducerTypes';
 
 export const useJumpToPage = () => {
   const { checkLogin } = useCheckLoginAndToken();

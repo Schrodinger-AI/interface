@@ -23,6 +23,7 @@ export type InfoStateType = {
   isJoin: boolean;
   curViewListType: ListTypeEnum;
   unreadMessagesCount: number;
+  hasNewActivities: boolean;
 };
 
 export type TTradeItem = {
@@ -57,8 +58,6 @@ export type TCustomThemeType = {
     theme: CustomThemeType;
   };
 };
-
-export type TLinkType = 'externalLink' | 'link';
 
 export type TBannerConfigButton = {
   text: string;
@@ -118,6 +117,7 @@ export type TCustomizationItemType = {
   emptyChannelGroupDescription: Array<string>;
   bannerConfig?: Record<string, TBannerConfigItem>;
   needBindEvm?: string[];
+  eventHot?: boolean;
   [key: string]: any;
 };
 
@@ -289,6 +289,14 @@ export interface IActivityDetailCard {
   description?: string[];
 }
 
+export enum HandleCardType {
+  'BindEVM' = 'bindEVM',
+}
+
+export interface IActivityDetailHandle {
+  type: HandleCardType;
+}
+
 export interface IActivityDetailRules {
   title?: string;
   titleIcon?: string;
@@ -298,6 +306,7 @@ export interface IActivityDetailRules {
   link?: IActivityDetailRulesLink[];
   bottomDescription?: string[];
   cardList?: IActivityDetailCard[];
+  handleCard?: IActivityDetailHandle[];
 }
 
 export interface IActivityDetailData {

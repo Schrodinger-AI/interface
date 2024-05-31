@@ -12,6 +12,7 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import RulesCard from './RulesCard';
+import HandleCard from './HandleCard';
 
 function RulesList({
   title,
@@ -22,6 +23,7 @@ function RulesList({
   cardList,
   subTitle,
   titleIcon,
+  handleCard,
 }: IActivityDetailRules) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
@@ -153,6 +155,7 @@ function RulesList({
           })}
         </div>
       ) : null}
+      {handleCard && handleCard.length ? <HandleCard handleCardList={handleCard} /> : null}
       <RulesCard cardList={cardList || []} />
       {rulesTable?.header.length ? <RulesTable {...rulesTable} /> : null}
       {bottomDescription && bottomDescription.length ? renderDescription(bottomDescription) : null}
