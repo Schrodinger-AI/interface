@@ -24,7 +24,9 @@ function EventList({
   const formatTime = useMemo(() => {
     if (!endTime || !beginTime) return false;
 
-    return `${moment(Number(beginTime)).format('YYYY/MM/DD')} ~ ${moment(Number(endTime)).format('YYYY/MM/DD')}`;
+    return `${moment(Number(beginTime)).utc().format('YYYY/MM/DD')} (UTC) ~ ${moment(Number(endTime))
+      .utc()
+      .format('YYYY/MM/DD')} (UTC)`;
   }, [beginTime, endTime]);
 
   return (
