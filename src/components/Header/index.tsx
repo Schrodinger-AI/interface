@@ -51,7 +51,7 @@ export default function Header() {
   const { isLogin } = useGetLoginStatus();
   const { unreadMessagesCount, hasNewActivities } = useGetStoreInfo();
 
-  const { isLG } = useResponsive();
+  const { isLG, isXL } = useResponsive();
   const router = useRouter();
   const marketModal = useModal(MarketModal);
   const customTheme = useGetCustomTheme();
@@ -372,6 +372,13 @@ export default function Header() {
     }[customTheme.header.theme];
   }, [customTheme.header.theme]);
 
+  const logoImageIsLx = useMemo(() => {
+    return {
+      [CustomThemeType.light]: require('assets/img/logo/schrodinger-b.png').default.src,
+      [CustomThemeType.dark]: require('assets/img/logo/schrodinger-w.png').default.src,
+    }[customTheme.header.theme];
+  }, [customTheme.header.theme]);
+
   const closeRankListEntrance = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setRankListEntranceOpen(false);
@@ -428,7 +435,10 @@ export default function Header() {
 
       <div className="px-[16px] lg:px-[40px] h-[60px] lg:h-[80px] mx-auto flex justify-between items-center w-full">
         <div className="flex flex-1 overflow-hidden justify-start items-center" onClick={handleRoute}>
-          {
+          {isXL && !isLG ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoImageIsLx} alt="logo" className="w-auto h-[32px]" onClick={() => router.replace('/')} />
+          ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={logoImage}
@@ -436,7 +446,8 @@ export default function Header() {
               className="w-[120px] h-[24px] lg:w-[160px] lg:h-[32px]"
               onClick={() => router.replace('/')}
             />
-          }
+          )}
+
           <NavHostTag />
         </div>
         {customTheme.header.hideMenu ? null : FunctionalArea(menuItems)}
