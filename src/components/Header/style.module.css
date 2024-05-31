@@ -2,7 +2,7 @@
 .dropdown {
   @apply !min-w-[260px];
   :global(.aelfd-dropdown-menu) {
-    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none !p-0 overflow-hidden;
+    @apply rounded-[12px] border-[#EDEDED] border-solid border-[1px] shadow-none !p-0 overflow-hidden mt-[30px];
   }
   :global(.aelfd-dropdown-menu-item) {
     transition: none !important;
@@ -26,13 +26,17 @@
 }
 
 .menuModal {
-  @apply h-screen top-0 !m-0 !w-screen !max-w-[100vw] pb-0;
+  @apply h-screen top-0 !m-0 !w-screen !max-w-[100vw] pb-0 overflow-y-hidden;
   * {
     @apply !shadow-none;
   }
   :global {
     .aelfd-modal-content {
-      @apply w-full  h-full rounded-none !px-0 !py-[20px];
+      @apply w-full  h-full rounded-none !px-0 !py-[20px] flex flex-col overflow-y-hidden;
+
+      .aelfd-modal-body {
+        @apply overflow-y-auto flex-1;
+      }
     }
     .aelfd-modal-title {
       @apply !font-semibold;

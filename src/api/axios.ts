@@ -55,10 +55,10 @@ class Request {
             return {};
           case '50000':
             message.error(errorMessage);
-            return null;
+            return Promise.reject(errorMessage);
           default:
             message.error(errorMessage);
-            return res;
+            return Promise.reject(res);
         }
       },
       (error) => {

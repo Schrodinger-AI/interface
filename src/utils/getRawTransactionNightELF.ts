@@ -123,7 +123,7 @@ export const getRawTransactionNightELF = async ({
 }: CreateTransactionParams) => {
   const provider = new (window as any).NightElf.AElf({
     httpProvider: [rpcUrl],
-    appName: appName,
+    appName,
     pure: true,
   });
 

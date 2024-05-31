@@ -1,8 +1,10 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { resetCustomTheme, setCustomTheme } from 'redux/reducer/customTheme';
+import { setCurViewListType } from 'redux/reducer/info';
 import { dispatch } from 'redux/store';
 import { CustomThemeType } from 'redux/types/reducerTypes';
+import { ListTypeEnum } from 'types';
 
 const needHideMenu = ['/invitee'];
 const needSetUpCustomTheme = ['/referral', '/invitee'];
@@ -40,6 +42,12 @@ const useNavigationGuard = () => {
 
   useEffect(() => {
     setUpCustomTheme(pathname);
+
+    if (pathname === '/my-cats') {
+      dispatch(setCurViewListType(ListTypeEnum.My));
+    } else {
+      dispatch(setCurViewListType(ListTypeEnum.All));
+    }
   }, [pathname]);
 };
 

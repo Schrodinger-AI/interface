@@ -11,6 +11,7 @@ import { IContractError } from 'types';
 import { formatErrorMsg, LoginFailed } from 'utils/formatError';
 import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
 import { store } from 'redux/store';
+import { appName } from 'constants/common';
 
 const AElf = require('aelf-sdk');
 
@@ -120,7 +121,7 @@ export const useGetToken = () => {
         }
       } else {
         const sign = await getSignature({
-          appName: 'schrodinger',
+          appName,
           address: wallet.address,
           signInfo:
             walletType === WalletType.portkey

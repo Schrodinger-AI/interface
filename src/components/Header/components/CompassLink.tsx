@@ -2,10 +2,16 @@ import { ICompassProps, RouterItemType } from '../type';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
+import TagNewIcon from 'assets/img/event/tag-new-square.png';
 import styles from '../style.module.css';
 import clsx from 'clsx';
+import Image from 'next/image';
+import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
+import TagHotIcon from 'assets/img/event/tag-hot.json';
+import { useCmsInfo } from 'redux/hooks';
+import Lottie from 'lottie-react';
 
-export const CompassText = (props: { title?: string; schema?: string }) => {
+export const CompassText = (props: { title?: string; schema?: string; icon?: string }) => {
   const pathname = usePathname();
   const isCurrent = pathname?.toLocaleLowerCase() === props.schema?.toLowerCase();
 
@@ -13,11 +19,12 @@ export const CompassText = (props: { title?: string; schema?: string }) => {
     <span
       className={clsx(
         styles['header-menu'],
-        `!rounded-[12px] text-lg ${
+        `!rounded-[12px] text-lg flex items-center ${
           isCurrent ? '!text-brandDefault' : ''
         } hover:text-brandHover cursor-pointer font-medium`,
       )}>
-      {props.title}
+      {props.icon ? <img src={props.icon} alt="logo" className="mr-[8px] w-[18px] h-[18px]" /> : null}
+      <span>{props.title}</span>
     </span>
   );
 };
@@ -31,7 +38,12 @@ export interface ICompassLinkProps {
 export const CompassLink = ({ item, className, onPressCompassItems }: ICompassLinkProps) => {
   const { schema, type, title } = item;
   const isOut = type === RouterItemType.Out || !type;
-  const renderCom = <CompassText title={title} schema={schema} />;
+
+  const { hasNewActivities } = useGetStoreInfo();
+
+  const cmsInfo = useCmsInfo();
+
+  const renderCom = <CompassText title={title} schema={schema} icon={item.icon} />;
   const onPress = useCallback(
     (event: any) => {
       event.preventDefault();
@@ -45,8 +57,19 @@ export const CompassLink = ({ item, className, onPressCompassItems }: ICompassLi
       {renderCom}
     </Link>
   ) : (
-    <span className={className} onClick={onPress}>
+    <span className={clsx('relative', className)} onClick={onPress}>
       {renderCom}
+      {type === RouterItemType.EventList && hasNewActivities ? (
+        <Image alt="new" src={TagNewIcon} width={32} height={16} className="absolute -top-[14px] -right-[8px] z-10" />
+      ) : null}
+      {type === RouterItemType.EventList && cmsInfo?.eventHot ? (
+        <Lottie
+          animationData={TagHotIcon}
+          autoPlay={true}
+          loop={true}
+          className={'w-[32px] h-auto absolute -top-[22px] -right-[8px] z-[11]'}
+        />
+      ) : null}
     </span>
   );
 };

@@ -15,6 +15,7 @@ const initialState: InfoStateType = {
   isJoin: false,
   curViewListType: ListTypeEnum.All,
   unreadMessagesCount: 0,
+  hasNewActivities: false,
 };
 
 // Actual Slice
@@ -66,6 +67,9 @@ export const infoSlice = createSlice({
     setUnreadMessagesCount(state, action) {
       state.unreadMessagesCount = action.payload;
     },
+    setHasNewActivities(state, action) {
+      state.hasNewActivities = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -88,6 +92,7 @@ export const {
   setCurViewListType,
   setAdInfo,
   setUnreadMessagesCount,
+  setHasNewActivities,
 } = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;

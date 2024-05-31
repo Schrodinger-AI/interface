@@ -2,6 +2,7 @@ export enum RouterItemType {
   Out = 'out',
   Inner = 'link',
   MarketModal = 'marketModal',
+  EventList = 'eventList',
   ExternalLink = 'externalLink',
 }
 
@@ -10,5 +11,6 @@ export interface ICompassProps {
   title?: string;
   schema?: string;
   type?: RouterItemType; // default is inner
+  icon?: string;
   items?: Array<ICompassProps>;
 }
