@@ -194,9 +194,13 @@ const useAdoptHandler = () => {
 
         closeLoading();
         const amount = await adoptInput(parentItemInfo, account, parentPrice, rankInfo);
-        const { adoptId, outputAmount, symbol, tokenName } = await approveAdopt({ amount, account, parentItemInfo });
+        const { adoptId, outputAmount, symbol, tokenName, inputAmount } = await approveAdopt({
+          amount,
+          account,
+          parentItemInfo,
+        });
 
-        await adoptConfirm(parentItemInfo, { adoptId, symbol, outputAmount, tokenName }, account);
+        await adoptConfirm(parentItemInfo, { adoptId, symbol, outputAmount, inputAmount, tokenName }, account);
       } catch (error) {
         console.log(error, 'error==');
         closeLoading();

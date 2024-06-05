@@ -1,0 +1,25 @@
+.button-wrapper {
+  :global(.aelfd-btn) {
+    > span {
+      @apply overflow-hidden w-full text-ellipsis;
+
+      word-break: break-all;
+    }
+  }
+}
+
+.card-result-modal-wrap {
+  @apply !z-[1004];
+  .card-result-modal {
+    @apply !overflow-visible;
+    :global {
+      .aelfd-modal-content {
+        @apply !overflow-visible;
+        
+        .aelfd-modal-header {
+          @apply !rounded-tl-lg !rounded-tr-lg;
+        }
+      }
+    }
+  }
+}

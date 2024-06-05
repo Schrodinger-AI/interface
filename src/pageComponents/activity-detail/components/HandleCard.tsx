@@ -7,7 +7,7 @@ import { Col, Row } from 'antd';
 import clsx from 'clsx';
 
 function HandleCard({ handleCardList }: { handleCardList: IActivityDetailHandle[] }) {
-  const { isXL } = useResponsive();
+  const { isLG } = useResponsive();
 
   const getHandleComponent = (type: HandleCardType) => {
     switch (type) {
@@ -21,16 +21,16 @@ function HandleCard({ handleCardList }: { handleCardList: IActivityDetailHandle[
   if (!handleCardList || !handleCardList.length) return null;
 
   return (
-    <Row gutter={[24, isXL ? 12 : 16]} className="mt-[12px]">
+    <Row gutter={[24, isLG ? 12 : 16]} className="mt-[12px]">
       {handleCardList.map((item, index) => {
         return (
           <Col
-            span={isXL ? 24 : 12}
+            span={isLG ? 24 : 12}
             key={index}
-            className={clsx('flex items-center last:mb-[4px]', isXL ? 'flex-col' : 'flex-row')}>
+            className={clsx('flex items-center last:mb-[4px]', isLG ? 'flex-col' : 'flex-row')}>
             <div
               className={clsx(
-                'shadow-cardShadow py-[16px] flex-1 px-[16px] lg:px-[24px] rounded-lg flex items-center h-[96px] lg:h-[120px] w-full lg:w-auto ',
+                'shadow-cardShadow py-[16px] flex-1 px-[16px] lg:px-[24px] rounded-lg flex items-center h-[96px] lg:h-[120px] w-full',
               )}>
               {getHandleComponent(item.type)}
             </div>

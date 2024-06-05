@@ -6,7 +6,7 @@ import Balance from 'components/Balance';
 import CommonModal from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';
 import NoticeBar from 'components/NoticeBar';
-import SGRTokenInfo from 'components/SGRTokenInfo';
+import SGRTokenInfo, { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
 import AIImageSelect from 'components/AIImageSelect';
@@ -37,7 +37,7 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 interface IAdoptNextModal {
   isAcross?: boolean;
   data: IAdoptNextData;
-  onConfirm?: (image: string) => void;
+  onConfirm?: (image: string, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
 
@@ -53,8 +53,8 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
 
   const onClick = useCallback(() => {
     setLoading(true);
-    onConfirm?.(images[selectImage]);
-  }, [images, onConfirm, selectImage]);
+    onConfirm?.(images[selectImage], SGRToken);
+  }, [SGRToken, images, onConfirm, selectImage]);
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
     modal.hide();
