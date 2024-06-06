@@ -19,6 +19,10 @@
         .aelfd-modal-header {
           @apply !rounded-tl-lg !rounded-tr-lg;
         }
+
+        .aelfd-modal-body {
+          @apply !pt-0 lg:!pt-[16px];
+        }
       }
     }
   }

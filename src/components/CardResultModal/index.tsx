@@ -188,7 +188,7 @@ function CardResultModal({
                   rarity={info?.levelInfo?.describe}
                   img={image}
                   rank={info?.rank}
-                  className="w-[180px] h-[180px]"
+                  className="w-[128px] h-[128px] lg:w-[180px] lg:h-[180px]"
                 />
               ) : null}
             </div>
