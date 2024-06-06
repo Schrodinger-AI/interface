@@ -13,6 +13,18 @@ import { isMobile } from 'react-device-detect';
 import styles from './index.module.css';
 import clsx from 'clsx';
 
+export const getDescriptionCom = (description: string | ReactNode | string[]) => {
+  if (typeof description === 'string') {
+    return <p>{description}</p>;
+  } else if (description instanceof Array) {
+    return description.map((item, index) => {
+      return <p key={index}>{item}</p>;
+    });
+  } else {
+    return description;
+  }
+};
+
 export enum Status {
   ERROR = 'error',
   WARNING = 'warning',
@@ -124,18 +136,6 @@ function ResultModal({
       </div>
     );
   }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick]);
-
-  const getDescriptionCom = (description: string | ReactNode | string[]) => {
-    if (typeof description === 'string') {
-      return <p>{description}</p>;
-    } else if (description instanceof Array) {
-      return description.map((item, index) => {
-        return <p key={index}>{item}</p>;
-      });
-    } else {
-      return description;
-    }
-  };
 
   return (
     <CommonModal

@@ -131,6 +131,7 @@ export default function StrayCatsPage() {
             outputAmount: record.nextAmount,
             symbol: record.nextSymbol,
             tokenName: record.nextTokenName,
+            inputAmount: record.consumeAmount,
           },
           wallet.address,
         );

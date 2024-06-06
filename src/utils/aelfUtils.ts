@@ -63,7 +63,7 @@ const openBatchApprovalEntrance = async () => {
       if (!provider) return null;
       await provider.request({
         method: MethodsBase.SET_WALLET_CONFIG_OPTIONS,
-        payload: { showBatchApproveToken: true },
+        payload: { batchApproveNFT: true },
       });
     }
   } catch (error) {
@@ -78,7 +78,7 @@ export const approve = async (spender: string, symbol: string, amount: string, c
         spender: spender,
         symbol,
         amount: Number(amount),
-        showBatchApproveToken: true,
+        batchApproveNFT: true,
       },
       {
         chain: chainId,
