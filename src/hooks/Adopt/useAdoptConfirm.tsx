@@ -11,7 +11,7 @@ import {
 import { ITrait, TSGRToken } from 'types/tokens';
 import { ZERO } from 'constants/misc';
 import AdoptNextModal from 'components/AdoptNextModal';
-import { AELF_TOKEN_INFO } from 'constants/assets';
+import { AELF_TOKEN_INFO, POINTS_COEFFICIENT } from 'constants/assets';
 import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { AdoptActionErrorCode } from './adopt';
@@ -19,7 +19,6 @@ import PromptModal from 'components/PromptModal';
 import { IContractError, ISendResult } from 'types';
 import { getAdoptErrorMessage } from './getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
-import ResultModal, { Status } from 'components/ResultModal';
 import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
 import { getExploreLink } from 'utils';
 import { store } from 'redux/store';
@@ -33,11 +32,14 @@ import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { useWalletService } from 'hooks/useWallet';
 import { renameSymbol } from 'utils/renameSymbol';
+import CardResultModal, { Status } from 'components/CardResultModal';
+import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
+import { formatTokenPrice } from 'utils/format';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
   const adoptNextModal = useModal(AdoptNextModal);
-  const resultModal = useModal(ResultModal);
+  const cardResultModal = useModal(CardResultModal);
 
   const { txFee: commonTxFee } = useTxFee();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
@@ -67,7 +69,10 @@ export const useAdoptConfirm = () => {
       childrenItemInfo: IAdoptNextInfo;
       account: string;
       rankInfo?: IRankInfo;
-    }): Promise<string> => {
+    }): Promise<{
+      selectImage: string;
+      SGRTokenInfo?: ISGRTokenInfoProps;
+    }> => {
       return new Promise(async (resolve, reject) => {
         try {
           const [, ELFBalance] = await getParentBalance({
@@ -104,8 +109,11 @@ export const useAdoptConfirm = () => {
               adoptNextModal.hide();
               reject(AdoptActionErrorCode.cancel);
             },
-            onConfirm: (selectImage) => {
-              resolve(selectImage);
+            onConfirm: (selectImage, SGRTokenInfo) => {
+              resolve({
+                selectImage,
+                SGRTokenInfo,
+              });
             },
           });
         } catch (error) {
@@ -120,12 +128,14 @@ export const useAdoptConfirm = () => {
     async (
       confirmParams: {
         adoptId: string;
+        outputAmount: string | number;
+        symbol: string;
+        tokenName: string;
         image: string;
         imageUri: string;
         signature: string;
       },
       parentItemInfo: TSGRToken,
-      rankInfo?: IRankInfo,
     ): Promise<{
       txResult: ISendResult;
       image: string;
@@ -136,8 +146,7 @@ export const useAdoptConfirm = () => {
           const result = await adoptStep2Handler(confirmParams);
           resolve({
             txResult: result,
-            image: confirmParams.image,
-            imageUri: confirmParams.imageUri,
+            ...confirmParams,
           });
           promptModal.hide();
         } catch (error) {
@@ -159,21 +168,10 @@ export const useAdoptConfirm = () => {
           const errorMessage = getAdoptErrorMessage(error, 'adopt confirm error');
           singleMessage.error(errorMessage);
 
-          resultModal.show({
+          cardResultModal.show({
             modalTitle: 'You have failed minted!',
-            info: {
-              name: parentItemInfo.tokenName,
-              logo: confirmParams.image,
-              rank: rankInfo?.rank,
-            },
-            id: 'adopt-retry-modal',
+            amount: divDecimals(confirmParams.outputAmount, parentItemInfo.decimals).toFixed(),
             status: Status.ERROR,
-            description:
-              'Adopt can fail due to network issues, transaction fee increases, because someone else mint the inscription before you.',
-            onCancel: () => {
-              reject(AdoptActionErrorCode.cancel);
-              resultModal.hide();
-            },
             buttonInfo: {
               btnText: 'Try Again',
               openLoading: true,
@@ -181,17 +179,40 @@ export const useAdoptConfirm = () => {
                 const result = await adoptStep2Handler(confirmParams);
                 resolve({
                   txResult: result,
-                  image: confirmParams.image,
-                  imageUri: confirmParams.imageUri,
+                  ...confirmParams,
                 });
 
-                resultModal.hide();
+                cardResultModal.hide();
               },
+            },
+            description: (
+              <span className="font-medium text-neutralSecondary text-sm">
+                Adopt failed, you can re-adopt from &nbsp;
+                <span
+                  className="text-brandDefault cursor-pointer"
+                  onClick={() => {
+                    cardResultModal.hide();
+                    router.push('/stray-cats');
+                  }}>
+                  stray cats
+                </span>
+              </span>
+            ),
+            hideButton: false,
+            image: confirmParams.image,
+            info: {
+              name: confirmParams.tokenName,
+              symbol: confirmParams.symbol,
+              generation: confirmParams?.tokenName?.split('GEN')[1],
+            },
+            onCancel: () => {
+              reject(AdoptActionErrorCode.cancel);
+              cardResultModal.hide();
             },
           });
         }
       }),
-    [promptModal, resultModal],
+    [cardResultModal, promptModal, router],
   );
 
   const adoptConfirmHandler = useCallback(
@@ -241,6 +262,9 @@ export const useAdoptConfirm = () => {
 
         const confirmParams = {
           adoptId: childrenItemInfo.adoptId,
+          outputAmount: childrenItemInfo.outputAmount,
+          symbol: childrenItemInfo.symbol,
+          tokenName: childrenItemInfo.tokenName,
           image: image,
           imageUri: imageUri,
           signature: Buffer.from(signature, 'hex').toString('base64'),
@@ -259,7 +283,7 @@ export const useAdoptConfirm = () => {
             content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams, parentItemInfo, rankInfo);
+            const result = await retryAdoptConfirm(confirmParams, parentItemInfo);
             resolve(result);
           },
           onClose: () => {
@@ -295,10 +319,16 @@ export const useAdoptConfirm = () => {
       account: string;
       rankInfo?: IRankInfo;
     }) => {
-      const selectItem = await adoptConfirmInput({ infos, parentItemInfo, childrenItemInfo, account, rankInfo });
+      const { selectImage, SGRTokenInfo } = await adoptConfirmInput({
+        infos,
+        parentItemInfo,
+        childrenItemInfo,
+        account,
+        rankInfo,
+      });
 
       const { txResult, imageUri } = await adoptConfirmHandler({
-        image: selectItem,
+        image: selectImage,
         parentItemInfo,
         childrenItemInfo,
         rankInfo,
@@ -319,6 +349,7 @@ export const useAdoptConfirm = () => {
         txResult,
         nextTokenName,
         nextSymbol,
+        SGRTokenInfo,
       };
     },
     [adoptConfirmHandler, adoptConfirmInput],
@@ -331,47 +362,73 @@ export const useAdoptConfirm = () => {
       name,
       symbol,
       rankInfo,
+      SGRTokenInfo,
+      inputAmount,
     }: {
       transactionId: string;
       image: string;
       name: string;
       symbol: string;
-      rankInfo?: IRankInfo;
+      rankInfo?: TRankInfoAddLevelInfo;
+      SGRTokenInfo?: ISGRTokenInfoProps;
+      inputAmount: number | string;
     }) =>
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
         const explorerUrl = getExploreLink(transactionId, 'transaction', cmsInfo?.curChain);
-        console.log('=====getExploreLink', explorerUrl, transactionId, cmsInfo?.curChain, image, rankInfo);
-        resultModal.show({
-          modalTitle: 'Cat Successfully Adopted!',
-          info: {
-            name: name,
-            logo: image,
-            rank: rankInfo?.rank,
-          },
+        console.log(
+          '=====adoptConfirmSuccess',
+          explorerUrl,
+          transactionId,
+          cmsInfo?.curChain,
+          image,
+          rankInfo,
+          inputAmount,
+        );
+        const generation = name.split('GEN')[1];
+        const points = inputAmount
+          ? `${formatTokenPrice(ZERO.plus(inputAmount).multipliedBy(POINTS_COEFFICIENT['XPSGR-5']))} XPSGR-5`
+          : undefined;
+
+        cardResultModal.show({
+          modalTitle: rankInfo?.levelInfo?.describe
+            ? "Congrats! You've got a rare cat!"
+            : "Congrats! You've got a new cat!",
+          amount: SGRTokenInfo?.amount,
           status: Status.SUCCESS,
-          description: `You have successfully minted the inscription ${name}`,
           link: {
             href: explorerUrl,
           },
+          showScrap: generation === '9',
+          showLight: generation === '9' && rankInfo?.levelInfo?.describe ? true : false,
           buttonInfo: {
             btnText: `View Inscription`,
             openLoading: true,
             onConfirm: async () => {
               await intervalFetch.start(symbol);
               intervalFetch.remove();
-              resultModal.hide();
+              cardResultModal.hide();
               router.replace(`/detail?symbol=${symbol}&address=${wallet.address}`);
             },
+          },
+          hideButton: false,
+          image,
+          info: {
+            name,
+            symbol,
+            generation,
+            rank: rankInfo?.rank,
+            points,
+            levelInfo: rankInfo?.levelInfo,
           },
           onCancel: () => {
             resolve(true);
             intervalFetch.remove();
-            resultModal.hide();
+            cardResultModal.hide();
           },
         });
       }),
-    [intervalFetch, resultModal, router],
+    [cardResultModal, intervalFetch, router, wallet.address],
   );
 
   const getRankInfo = useCallback(
@@ -399,7 +456,7 @@ export const useAdoptConfirm = () => {
 
         const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
 
-        const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
+        const { txResult, image, nextTokenName, nextSymbol, SGRTokenInfo } = await approveAdoptConfirm({
           infos,
           childrenItemInfo,
           parentItemInfo,
@@ -412,6 +469,8 @@ export const useAdoptConfirm = () => {
           name: nextTokenName,
           symbol: nextSymbol,
           rankInfo,
+          SGRTokenInfo,
+          inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
         });
       } catch (error) {
         if (error === AdoptActionErrorCode.cancel) {

@@ -16,6 +16,7 @@ export interface IAdoptNextInfo {
   symbol: string;
   tokenName: string;
   outputAmount: string | number;
+  inputAmount: string | number;
   adoptId: string;
 }
 
