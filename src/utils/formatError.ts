@@ -17,7 +17,7 @@ enum SourceErrorType {
   Error3 = 'User denied',
   Error4 = 'User close the prompt',
   Error5 = 'Wallet not login',
-  Error6 = 'Insufficient allowance of ELF',
+  Error6 = '[TransferFrom]Insufficient allowance. Token:',
   Error7 = 'User Cancel',
 }
 
@@ -66,6 +66,10 @@ export const matchErrorMsg = <T>(message: T, method?: string) => {
     let resMessage: string = message;
 
     for (let index = 0; index < sourceErrors.length; index++) {
+      if (message.includes(SourceErrorType.Error6)) {
+        return TargetErrorType.Error6;
+      }
+
       if (message.includes(sourceErrors[index])) {
         resMessage = message.replace(sourceErrors[index], targetErrors[index]);
       }

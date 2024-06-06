@@ -187,17 +187,15 @@ export const useAdoptConfirm = () => {
             },
             description: (
               <span className="font-medium text-neutralSecondary text-sm">
-                Failure could be due to network issues or increase in transaction fee. You can continue to adopt from
-                &apos;
+                Adopt failed, you can re-adopt from &nbsp;
                 <span
                   className="text-brandDefault cursor-pointer"
                   onClick={() => {
                     cardResultModal.hide();
                     router.push('/stray-cats');
                   }}>
-                  Stray Cats
+                  stray cats
                 </span>
-                &apos; page.
               </span>
             ),
             hideButton: false,

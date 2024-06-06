@@ -195,11 +195,13 @@ function CardResultModal({
           ) : null}
           {info ? (
             <div className="flex flex-col w-full overflow-hidden flex-none lg:flex-1 mt-[16px] lg:mt-[0px] border border-solid border-neutralDivider rounded-lg lg:ml-[24px] p-[16px]">
-              <div className="flex flex-row justify-between items-center">
-                <div className="text-neutralTitle font-medium text-base">Info</div>
-              </div>
+              {!isLG ? (
+                <div className="flex flex-row justify-between items-center">
+                  <div className="text-neutralTitle font-medium text-base">Info</div>
+                </div>
+              ) : null}
+
               {!!info.name && <CardList title="Name" value={info.name} />}
-              {!!info.symbol && <CardList title="Symbol" value={info.symbol} />}
               {!!amount && <CardList title="Adopt amount" value={formatTokenPrice(amount)} />}
               {!!info.points && <CardList title="Points" value={info.points} />}
               {!!info.points && cmsInfo?.ecoEarn && (
