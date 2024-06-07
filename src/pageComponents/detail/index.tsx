@@ -25,6 +25,8 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
+import CardResultModal, { Status } from 'components/CardResultModal';
+import { sleep } from '@portkey/utils';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -32,6 +34,7 @@ export default function DetailPage() {
   const symbol = searchParams.get('symbol') || '';
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
+  const cardResultModal = useModal(CardResultModal);
 
   const { wallet } = useWalletService();
   const cmsInfo = useCmsInfo();
@@ -153,16 +156,49 @@ export default function DetailPage() {
   };
 
   const onTrade = useCallback(() => {
-    if (!schrodingerDetail) return;
-    if (!tradeModal?.type || tradeModal?.type === 'modal') {
-      marketModal.show({ isTrade: true, detail: schrodingerDetail, isGenZero });
-    } else {
-      const link = tradeModal.link?.includes('/detail/buy')
-        ? `${tradeModal.link}/${cmsInfo?.curChain}-${symbol}/${cmsInfo?.curChain}`
-        : tradeModal.link;
+    // TODO: demo
+    cardResultModal.show({
+      modalTitle: "Congrats! You've got a rare cat!",
+      title: 'title',
+      amount: '9.5',
+      status: Status.SUCCESS,
+      buttonInfo: {
+        btnText: 'View Inscription',
+        openLoading: true,
+        onConfirm: async () => {
+          await sleep(2000);
+        },
+      },
+      hideButton: false,
+      image:
+        'https://schrodinger-testnet.s3.amazonaws.com/watermarkimage/QmTnt9pnuFyu28sMeDfeAwKPGxxfReGHP3GvCijvrjP5kF',
+      info: {
+        name: 'SGRTEST-8492GEN9',
+        symbol: 'SGRTEST-8492',
+        generation: '9',
+        rank: 359,
+        points: '13,140 XPSGR-5',
+        levelInfo: {
+          describe: 'Diamond,25,',
+          level: '26',
+        },
+      },
+      showScrap: true,
+      showLight: true,
+      onCancel: () => {
+        cardResultModal.hide();
+      },
+    });
+    // if (!schrodingerDetail) return;
+    // if (!tradeModal?.type || tradeModal?.type === 'modal') {
+    //   marketModal.show({ isTrade: true, detail: schrodingerDetail, isGenZero });
+    // } else {
+    //   const link = tradeModal.link?.includes('/detail/buy')
+    //     ? `${tradeModal.link}/${cmsInfo?.curChain}-${symbol}/${cmsInfo?.curChain}`
+    //     : tradeModal.link;
 
-      jumpToPage({ link, linkType: tradeModal.type });
-    }
+    //   jumpToPage({ link, linkType: tradeModal.type });
+    // }
   }, [
     schrodingerDetail,
     tradeModal?.type,
