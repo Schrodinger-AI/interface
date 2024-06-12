@@ -63,11 +63,13 @@ export const useAdoptConfirm = () => {
       childrenItemInfo,
       account,
       rankInfo,
+      isDirect,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
       account: string;
+      isDirect?: boolean;
       rankInfo?: IRankInfo;
     }): Promise<{
       selectImage: string;
@@ -85,6 +87,7 @@ export const useAdoptConfirm = () => {
 
           adoptNextModal.show({
             isAcross,
+            isDirect,
             data: {
               SGRToken: {
                 tokenName: childrenItemInfo.tokenName,
@@ -312,12 +315,14 @@ export const useAdoptConfirm = () => {
       parentItemInfo,
       account,
       rankInfo,
+      isDirect,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
       parentItemInfo: TSGRToken;
       account: string;
       rankInfo?: IRankInfo;
+      isDirect?: boolean;
     }) => {
       const { selectImage, SGRTokenInfo } = await adoptConfirmInput({
         infos,
@@ -325,6 +330,7 @@ export const useAdoptConfirm = () => {
         childrenItemInfo,
         account,
         rankInfo,
+        isDirect,
       });
 
       const { txResult, imageUri } = await adoptConfirmHandler({
@@ -462,6 +468,7 @@ export const useAdoptConfirm = () => {
           parentItemInfo,
           account,
           rankInfo,
+          isDirect: childrenItemInfo.isDirect,
         });
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,

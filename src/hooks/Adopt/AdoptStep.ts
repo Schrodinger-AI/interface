@@ -1,6 +1,6 @@
 import { sleep } from '@portkey/utils';
 import { fetchSchrodingerImagesByAdoptId, fetchWaterImageRequest } from 'api/request';
-import { Adopt, confirmAdopt } from 'contract/schrodinger';
+import { Adopt, AdoptMaxGen, confirmAdopt } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { timesDecimals } from 'utils/calculate';
@@ -18,6 +18,7 @@ export interface IAdoptNextInfo {
   outputAmount: string | number;
   inputAmount: string | number;
   adoptId: string;
+  isDirect?: boolean;
 }
 
 export interface IAdoptedLogs extends IAdoptNextInfo {
@@ -37,8 +38,10 @@ export const adoptStep1Handler = async ({
   params,
   address,
   decimals,
+  isDirect,
 }: {
   address: string;
+  isDirect?: boolean;
   decimals: number;
   params: {
     parent: string;
@@ -63,7 +66,9 @@ export const adoptStep1Handler = async ({
 
   params.amount = timesDecimals(params.amount, decimals).toFixed(0);
 
-  const result = await Adopt(params);
+  const result = isDirect
+    ? await AdoptMaxGen({ tick: 'SGR', amount: params.amount, domain: params.domain })
+    : await Adopt(params);
 
   const TransactionResult = result.TransactionResult;
 

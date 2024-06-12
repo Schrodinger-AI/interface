@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
-import { ADOPT_NEXT_RATE } from 'constants/index';
+import { ADOPT_NEXT_RATE, DIRECT_ADOPT_GEN9_RATE } from 'constants/common';
 import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
 
@@ -23,6 +23,7 @@ export type TBalanceItem = {
 
 export type TAdoptActionModalProps = {
   modalTitle?: string;
+  isDirect?: boolean;
   info: IInfoCard;
   onClose?: <T>(params?: T) => void;
   onConfirm?: (amount: string) => void;
@@ -34,7 +35,16 @@ export type TAdoptActionModalProps = {
 function AdoptActionModal(params: TAdoptActionModalProps) {
   const modal = useModal();
   const adoptRulesModal = useModal(AdoptRulesModal);
-  const { modalTitle, info, onClose, onConfirm: onConfirmProps, balanceList, inputProps, isReset = false } = params;
+  const {
+    modalTitle,
+    info,
+    onClose,
+    isDirect,
+    onConfirm: onConfirmProps,
+    balanceList,
+    inputProps,
+    isReset = false,
+  } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
   const onCancel = useCallback(() => {
@@ -63,13 +73,18 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       return;
     }
 
+    if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
+      setErrorMessage('Please enter at least 2 SGR to ensure you can receive 1 9th-gen cat with one click.');
+      return;
+    }
+
     if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
       setErrorMessage('Please enter at least 1.0527 to ensure you can receive at least 1 next-gen cat.');
       return;
     }
 
     onConfirmProps && onConfirmProps(amount);
-  }, [inputProps?.max, isReset, onConfirmProps]);
+  }, [inputProps?.max, isDirect, isReset, onConfirmProps]);
 
   const [amount, setAmount] = useState<string>('');
   const receiveToken = useMemo(() => {
@@ -77,8 +92,9 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
     if (isReset) return amount;
-    return ZERO.plus(amountNumber.multipliedBy(0.95).toFixed(8)).toFixed();
-  }, [amount, isReset]);
+    const rate = isDirect ? DIRECT_ADOPT_GEN9_RATE : ADOPT_NEXT_RATE;
+    return ZERO.plus(amountNumber.multipliedBy(rate).toFixed(8)).toFixed();
+  }, [amount, isDirect, isReset]);
 
   const adoptFee = useMemo(() => {
     if (isReset) return '--';

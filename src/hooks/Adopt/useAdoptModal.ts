@@ -43,7 +43,13 @@ const useAdoptHandler = () => {
   );
 
   const adoptInput = useCallback(
-    (parentItemInfo: TSGRToken, account: string, parentPrice?: string, rankInfo?: IRankInfo): Promise<string> => {
+    (
+      parentItemInfo: TSGRToken,
+      account: string,
+      isDirect: boolean,
+      parentPrice?: string,
+      rankInfo?: IRankInfo,
+    ): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         showLoading();
         let symbolBalance;
@@ -61,7 +67,8 @@ const useAdoptHandler = () => {
         }
 
         adoptActionModal.show({
-          modalTitle: 'Adopt Next-Gen Cat',
+          modalTitle: isDirect ? 'Adopt GEN9 Cat with one click' : 'Adopt Next-Gen Cat',
+          isDirect,
           info: {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
@@ -111,9 +118,11 @@ const useAdoptHandler = () => {
       amount,
       parentItemInfo,
       account,
+      isDirect,
     }: {
       account: string;
       amount: string;
+      isDirect: boolean;
       parentItemInfo: TSGRToken;
     }): Promise<IAdoptedLogs> =>
       new Promise((resolve, reject) => {
@@ -140,6 +149,7 @@ const useAdoptHandler = () => {
                   amount,
                   domain,
                 },
+                isDirect,
                 address: account,
                 decimals: parentItemInfo.decimals,
               });
@@ -186,21 +196,26 @@ const useAdoptHandler = () => {
   }, [asyncModal]);
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, account: string, rankInfo?: IRankInfo) => {
+    async (parentItemInfo: TSGRToken, account: string, isDirect: boolean, rankInfo?: IRankInfo) => {
       try {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         await checkAIServer();
 
         closeLoading();
-        const amount = await adoptInput(parentItemInfo, account, parentPrice, rankInfo);
+        const amount = await adoptInput(parentItemInfo, account, isDirect, parentPrice, rankInfo);
         const { adoptId, outputAmount, symbol, tokenName, inputAmount } = await approveAdopt({
           amount,
           account,
+          isDirect,
           parentItemInfo,
         });
 
-        await adoptConfirm(parentItemInfo, { adoptId, symbol, outputAmount, inputAmount, tokenName }, account);
+        await adoptConfirm(
+          parentItemInfo,
+          { adoptId, symbol, outputAmount, inputAmount, tokenName, isDirect },
+          account,
+        );
       } catch (error) {
         console.log(error, 'error==');
         closeLoading();

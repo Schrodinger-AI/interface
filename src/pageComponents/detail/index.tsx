@@ -85,9 +85,9 @@ export default function DetailPage() {
     }
   }, [closeLoading, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
 
-  const onAdoptNextGeneration = () => {
+  const onAdoptNextGeneration = (isDirect: boolean) => {
     if (!schrodingerDetail) return;
-    adoptHandler(schrodingerDetail, wallet.address, rankInfo);
+    adoptHandler(schrodingerDetail, wallet.address, isDirect, rankInfo);
   };
 
   const onReset = () => {
@@ -107,6 +107,10 @@ export default function DetailPage() {
     [schrodingerDetail?.holderAmount],
   );
   const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
+  const showAdoptDirectly = useMemo(
+    () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
+    [holderNumberGtZero, schrodingerDetail?.generation],
+  );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
 
@@ -114,8 +118,21 @@ export default function DetailPage() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
-          <Button type="primary" className="!rounded-lg mr-[12px]" size="large" onClick={onAdoptNextGeneration}>
+          <Button
+            type="primary"
+            className="!rounded-lg mr-[12px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(false)}>
             Adopt Next-Gen Cat
+          </Button>
+        )}
+        {showAdoptDirectly && (
+          <Button
+            type="default"
+            className="!rounded-lg !border-brandDefault !text-brandDefault mr-[12px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(true)}>
+            Adopt directly to Gen-9 Cat
           </Button>
         )}
         {showReset && (
@@ -135,8 +152,21 @@ export default function DetailPage() {
     return (
       <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
         {showAdopt && (
-          <Button type="primary" className="!rounded-lg flex-1" size="large" onClick={onAdoptNextGeneration}>
+          <Button
+            type="primary"
+            className="!rounded-lg flex-1"
+            size="large"
+            onClick={() => onAdoptNextGeneration(false)}>
             Adopt Next-Gen Cat
+          </Button>
+        )}
+        {showAdoptDirectly && (
+          <Button
+            type="default"
+            className="!rounded-lg flex-1"
+            size="large"
+            onClick={() => onAdoptNextGeneration(true)}>
+            Adopt directly to Gen-9 Cat
           </Button>
         )}
         {showReset && (

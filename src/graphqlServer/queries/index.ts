@@ -101,6 +101,7 @@ export const GET_SUB_TRAITS_ALL_QUERY = gql`
   }
 `;
 
+// TODO: add directAdoption
 export const GET_STRAY_CATS_QUERY = gql`
   query getStrayCats($input: StrayCatInput) {
     getStrayCats(input: $input) {
