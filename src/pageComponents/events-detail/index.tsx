@@ -1,10 +1,9 @@
-import { getActivityDetail } from 'api/request';
-import { useCallback, useState } from 'react';
-import { useEffectOnce } from 'react-use';
+import { getEventDetail, getEventResultDetail, getEventsConfig } from 'api/request';
+import { useCallback, useEffect, useState } from 'react';
 import useLoading from 'hooks/useLoading';
 import { IEventsDetailList } from './types/type';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import EventsDetailsList from './components/EventsDetailsList';
 import MobileBackNav from 'components/MobileBackNav';
 import { useResponsive } from 'hooks/useResponsive';
@@ -14,20 +13,53 @@ export default function ActivityDetail() {
   const router = useRouter();
   const { isLG } = useResponsive();
 
+  const { id } = useParams() as {
+    id: string;
+  };
+
   const [eventsDetailsList, setEventsDetailsList] = useState<IEventsDetailList[]>([]);
   const [pageTitle, setPageTitle] = useState<string>('');
+  const [isFinal, setIsFinal] = useState<boolean>(false);
 
-  const rankList = useCallback(async () => {
-    showLoading();
-    const { data } = await getActivityDetail();
-    setEventsDetailsList(data.rules || []);
-    setPageTitle(data.pageTitle || '');
-    closeLoading();
-  }, [closeLoading, showLoading]);
+  const getEventInfo = useCallback(
+    async (id: string) => {
+      try {
+        if (!id) return;
+        showLoading();
+        const { data: configData } = await getEventsConfig();
+        const now = new Date().getTime();
 
-  useEffectOnce(() => {
-    rankList();
-  });
+        if (!configData[id]) {
+          setEventsDetailsList([]);
+          setPageTitle('');
+          return;
+        }
+
+        if (configData[id].startTime > now) return;
+
+        const requestApi = configData[id].endTime > now ? getEventDetail : getEventResultDetail;
+
+        if (configData[id].endTime > now) {
+          setIsFinal(false);
+        } else {
+          setIsFinal(true);
+        }
+
+        const { data } = await requestApi(id);
+
+        setEventsDetailsList(data.list || []);
+        setPageTitle(data.pageTitle || '');
+      } finally {
+        closeLoading();
+      }
+    },
+    [closeLoading, showLoading],
+  );
+
+  useEffect(() => {
+    if (!id) return;
+    getEventInfo(id);
+  }, [getEventInfo, id]);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -49,7 +81,7 @@ export default function ActivityDetail() {
         </h1>
         <div>
           {eventsDetailsList.map((item, index) => {
-            return <EventsDetailsList key={index} {...item} />;
+            return <EventsDetailsList key={index} {...item} isFinal={isFinal} />;
           })}
         </div>
       </div>

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Table, ToolTip } from 'aelf-design';
 import { TableColumnsType } from 'antd';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './style.module.css';
 import clsx from 'clsx';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
@@ -10,6 +10,8 @@ import { useResponsive } from 'hooks/useResponsive';
 import { formatTokenPrice } from 'utils/format';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
 import { IEventsDetailListTable } from '../types/type';
+import Loading from 'components/Loading';
+import { getEventRankList } from 'api/request';
 
 const renderCell = (value: string) => {
   return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
@@ -37,8 +39,18 @@ const renderTitle = (value: string, tooltip?: string[]) => {
   );
 };
 
-function EventsTable({ header, data }: IEventsDetailListTable) {
+function EventsTable({
+  header: th,
+  data,
+  server,
+  isFinal = false,
+}: IEventsDetailListTable & {
+  isFinal?: boolean;
+}) {
   const { isLG } = useResponsive();
+  const [header, setHeader] = useState<IEventsDetailListTable['header']>(server ? [] : th);
+  const [dataSource, setDataSource] = useState<IEventsDetailListTable['data']>(server ? [] : data);
+  const [loading, setLoading] = useState<boolean>(server ? true : false);
 
   const renderAddress = useCallback(
     (address: string) => {
@@ -83,18 +95,49 @@ function EventsTable({ header, data }: IEventsDetailListTable) {
     }
   }, [header, renderAddress]);
 
-  if (!columns || !columns.length) return null;
+  const getTableDataSource = useCallback(
+    async (server: string) => {
+      try {
+        setLoading(true);
+        const { header, data } = await getEventRankList(server, {
+          isFinal,
+        });
+
+        setHeader(header);
+        setDataSource(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [isFinal],
+  );
+
+  useEffect(() => {
+    if (server) {
+      getTableDataSource(server);
+    }
+  }, [getTableDataSource, server]);
+
+  if ((!columns || !columns.length) && !server) return null;
 
   return (
     <div className={clsx('mt-[8px] mb-[16px] w-full overflow-x-auto', styles['rules-table'])}>
-      <Table
-        dataSource={data || []}
-        columns={columns}
-        pagination={null}
-        scroll={{
-          x: 'max-content',
-        }}
-      />
+      {loading ? (
+        <div className="w-full flex justify-center items-center p-[32px]">
+          <Loading />
+        </div>
+      ) : (
+        <Table
+          dataSource={dataSource || []}
+          columns={columns}
+          pagination={null}
+          loading={loading}
+          scroll={{
+            x: 'max-content',
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -24,7 +24,10 @@ function EventsDetailsList({
   subTitle,
   titleIcon,
   handleCard,
-}: IEventsDetailList) {
+  isFinal = false,
+}: IEventsDetailList & {
+  isFinal?: boolean;
+}) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
@@ -157,7 +160,7 @@ function EventsDetailsList({
       ) : null}
       {handleCard && handleCard.length ? <HandleCard handleCardList={handleCard} /> : null}
       <StepsCard cardList={stepsCardList || []} />
-      {eventsTable?.header.length ? <EventsTable {...eventsTable} /> : null}
+      {eventsTable?.header?.length || eventsTable?.server ? <EventsTable {...eventsTable} isFinal={isFinal} /> : null}
       {bottomDescription && bottomDescription.length ? renderDescription(bottomDescription) : null}
     </div>
   );

@@ -1,8 +1,9 @@
 import { HandleCardType } from 'redux/types/reducerTypes';
 
 export interface IEventsDetailListTable {
-  data: Record<string, string | number>[];
-  header: {
+  server?: string;
+  data?: Record<string, string | number>[];
+  header?: {
     key: string;
     title: string;
     width: number;
@@ -50,4 +51,18 @@ export interface IEventsDetailList {
   bottomDescription?: string[];
   stepsCardList?: IEventsDetailListStepsCard[];
   handleCard?: IEventsDetailListHandle[];
+}
+
+export interface IEventsDetailData {
+  pageTitle?: string;
+  list?: IEventsDetailList[];
+}
+
+export interface IEventsConfigItem {
+  endTime: number;
+  startTime: number;
+}
+
+export interface IEventsConfig {
+  [eventId: string]: IEventsConfigItem;
 }
