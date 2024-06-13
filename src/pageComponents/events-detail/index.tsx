@@ -35,14 +35,14 @@ export default function ActivityDetail() {
           return;
         }
 
-        if (configData[id].startTime > now) return;
+        const showResult: boolean = configData[id].endTime < now || configData[id].startTime > now;
 
-        const requestApi = configData[id].endTime > now ? getEventDetail : getEventResultDetail;
+        const requestApi = showResult ? getEventResultDetail : getEventDetail;
 
-        if (configData[id].endTime > now) {
-          setIsFinal(false);
-        } else {
+        if (showResult) {
           setIsFinal(true);
+        } else {
+          setIsFinal(false);
         }
 
         const { data } = await requestApi(id);
