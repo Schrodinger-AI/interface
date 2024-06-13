@@ -41,7 +41,7 @@ function EventsDetailsList({
             return (
               <span
                 key={index}
-                className="text-sm text-neutralSecondary mt-[8px] flex"
+                className="text-sm text-neutralSecondary mt-[8px]"
                 dangerouslySetInnerHTML={{
                   __html: item,
                 }}
