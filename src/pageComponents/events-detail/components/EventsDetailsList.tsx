@@ -24,9 +24,14 @@ function EventsDetailsList({
   subTitle,
   titleIcon,
   handleCard,
+  timeCard,
   isFinal = false,
+  eventInProgressTime,
+  eventDisplayedTime,
 }: IEventsDetailList & {
   isFinal?: boolean;
+  eventInProgressTime?: [string, string];
+  eventDisplayedTime?: [string, string];
 }) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
@@ -44,6 +49,32 @@ function EventsDetailsList({
                 className="text-sm text-neutralSecondary mt-[8px]"
                 dangerouslySetInnerHTML={{
                   __html: item,
+                }}
+              />
+            );
+          })}
+        </span>
+      );
+    }
+    return null;
+  };
+
+  const renderTime = (timeDescription?: string[]) => {
+    if (timeDescription?.length) {
+      return (
+        <span className="flex flex-col">
+          {timeDescription.map((item, index) => {
+            const formatTime = item
+              .replace('{inProgressStartTime}', eventInProgressTime?.[0] || '')
+              .replace('{inProgressEndTime}', eventInProgressTime?.[1] || '')
+              .replace('{displayedStartTime}', eventDisplayedTime?.[0] || '')
+              .replace('{displayedEndTime}', eventDisplayedTime?.[1] || '');
+            return (
+              <span
+                key={index}
+                className="text-sm text-neutralSecondary mt-[8px]"
+                dangerouslySetInnerHTML={{
+                  __html: formatTime,
                 }}
               />
             );
@@ -151,6 +182,7 @@ function EventsDetailsList({
       ) : null}
       {subTitle && subTitle.length ? renderSubTitle(subTitle) : null}
       {description && description.length ? renderDescription(description) : null}
+      {timeCard && timeCard.length ? renderTime(timeCard) : null}
       {link && link.length ? (
         <div className="flex flex-col">
           {link.map((item) => {

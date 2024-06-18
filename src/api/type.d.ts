@@ -201,6 +201,7 @@ interface IActivityListItem {
   activityId: string;
   beginTime?: string;
   endTime?: string;
+  timeDescription?: string;
   isNew?: boolean;
   linkUrl?: string;
   linkType?: TLinkType;

@@ -141,16 +141,14 @@ export const getEventRankList = async <T = any>(url: string, data?: T): Promise<
   return request.post(url, data);
 };
 
-export const getEventsConfig = async (): Promise<{
-  data: IEventsConfig;
-}> => {
-  return cmsRequest.get(`/items/events_config`);
-};
-
 export const getEventDetail = async (id: string): Promise<{ data: IEventsDetailData }> => {
   return cmsRequest.get(`/items/event_detail_${id}`);
 };
 
 export const getEventResultDetail = async (id: string): Promise<{ data: IEventsDetailData }> => {
   return cmsRequest.get(`/items/event_detail_result_${id}`);
+};
+
+export const getEventsConfig = async (params: { activityId: string }): Promise<IEventsConfig> => {
+  return request.get('/app/activity/stage', { params });
 };

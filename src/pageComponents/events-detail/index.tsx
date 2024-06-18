@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import EventsDetailsList from './components/EventsDetailsList';
 import MobileBackNav from 'components/MobileBackNav';
 import { useResponsive } from 'hooks/useResponsive';
+import moment from 'moment';
 
 export default function ActivityDetail() {
   const { showLoading, closeLoading } = useLoading();
@@ -20,22 +21,26 @@ export default function ActivityDetail() {
   const [eventsDetailsList, setEventsDetailsList] = useState<IEventsDetailList[]>([]);
   const [pageTitle, setPageTitle] = useState<string>('');
   const [isFinal, setIsFinal] = useState<boolean>(false);
+  const [eventInProgressTime, setEventInProgressTime] = useState<[string, string]>();
+  const [eventDisplayedTime, setEventDisplayedTime] = useState<[string, string]>();
 
   const getEventInfo = useCallback(
     async (id: string) => {
       try {
         if (!id) return;
         showLoading();
-        const { data: configData } = await getEventsConfig();
+        const configData = await getEventsConfig({
+          activityId: id,
+        });
         const now = new Date().getTime();
 
-        if (!configData[id]) {
+        if (!configData) {
           setEventsDetailsList([]);
           setPageTitle('');
           return;
         }
 
-        const showResult: boolean = configData[id].endTime < now || configData[id].startTime > now;
+        const showResult: boolean = configData.inProgress.endTime < now || configData.inProgress.startTime > now;
 
         const requestApi = showResult ? getEventResultDetail : getEventDetail;
 
@@ -46,6 +51,24 @@ export default function ActivityDetail() {
         }
 
         const { data } = await requestApi(id);
+
+        const inProgressStartTime = `${moment(Number(configData.inProgress.startTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        const inProgressEndTime = `${moment(Number(configData.inProgress.endTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+
+        setEventInProgressTime([inProgressStartTime, inProgressEndTime]);
+
+        const displayedStartTime = `${moment(Number(configData.displayed.startTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        const displayedEndTime = `${moment(Number(configData.displayed.endTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+
+        setEventDisplayedTime([displayedStartTime, displayedEndTime]);
 
         setEventsDetailsList(data.list || []);
         setPageTitle(data.pageTitle || '');
@@ -81,7 +104,15 @@ export default function ActivityDetail() {
         </h1>
         <div>
           {eventsDetailsList.map((item, index) => {
-            return <EventsDetailsList key={index} {...item} isFinal={isFinal} />;
+            return (
+              <EventsDetailsList
+                key={index}
+                {...item}
+                isFinal={isFinal}
+                eventInProgressTime={eventInProgressTime}
+                eventDisplayedTime={eventDisplayedTime}
+              />
+            );
           })}
         </div>
       </div>
