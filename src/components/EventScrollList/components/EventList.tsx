@@ -12,6 +12,7 @@ function EventList({
   isNew = false,
   linkUrl,
   linkType = 'link',
+  timeDescription,
 }: IActivityListItem) {
   const { jumpToPage } = useJumpToPage();
 
@@ -22,12 +23,16 @@ function EventList({
   }, [endTime]);
 
   const formatTime = useMemo(() => {
+    if (timeDescription) {
+      return timeDescription;
+    }
+
     if (!endTime || !beginTime) return false;
 
     return `${moment(Number(beginTime)).utc().format('YYYY/MM/DD')} (UTC) ~ ${moment(Number(endTime))
       .utc()
       .format('YYYY/MM/DD')} (UTC)`;
-  }, [beginTime, endTime]);
+  }, [beginTime, endTime, timeDescription]);
 
   return (
     <div className="lg:px-[22px]">

@@ -35,6 +35,7 @@ export interface IEventsDetailListStepsCard {
   backgroundImage?: string;
   image?: IEventsDetailListStepsCardImage;
   description?: string[];
+  link?: Omit<IEventsDetailListStepsCardImage, 'className'>[];
 }
 
 export interface IEventsDetailListHandle {
@@ -46,6 +47,7 @@ export interface IEventsDetailList {
   titleIcon?: string;
   subTitle?: string[];
   description?: string[];
+  timeCard?: string[];
   eventsTable?: IEventsDetailListTable;
   link?: IEventsDetailListLink[];
   bottomDescription?: string[];
@@ -64,5 +66,6 @@ export interface IEventsConfigItem {
 }
 
 export interface IEventsConfig {
-  [eventId: string]: IEventsConfigItem;
+  inProgress: IEventsConfigItem;
+  displayed: IEventsConfigItem;
 }
