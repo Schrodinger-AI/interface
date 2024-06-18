@@ -26,10 +26,12 @@ function EventsDetailsList({
   handleCard,
   timeCard,
   isFinal = false,
-  eventTime,
+  eventInProgressTime,
+  eventDisplayedTime,
 }: IEventsDetailList & {
   isFinal?: boolean;
-  eventTime?: [string, string];
+  eventInProgressTime?: [string, string];
+  eventDisplayedTime?: [string, string];
 }) {
   const { isLG } = useResponsive();
   const { checkLogin } = useCheckLoginAndToken();
@@ -63,8 +65,10 @@ function EventsDetailsList({
         <span className="flex flex-col">
           {timeDescription.map((item, index) => {
             const formatTime = item
-              .replace('{startTime}', eventTime?.[0] || '')
-              .replace('{endTime}', eventTime?.[1] || '');
+              .replace('{inProgressStartTime}', eventInProgressTime?.[0] || '')
+              .replace('{inProgressEndTime}', eventInProgressTime?.[1] || '')
+              .replace('{displayedStartTime}', eventDisplayedTime?.[0] || '')
+              .replace('{displayedEndTime}', eventDisplayedTime?.[1] || '');
             return (
               <span
                 key={index}
