@@ -21,7 +21,8 @@ export default function ActivityDetail() {
   const [eventsDetailsList, setEventsDetailsList] = useState<IEventsDetailList[]>([]);
   const [pageTitle, setPageTitle] = useState<string>('');
   const [isFinal, setIsFinal] = useState<boolean>(false);
-  const [eventTime, setEventTime] = useState<[string, string]>();
+  const [eventInProgressTime, setEventInProgressTime] = useState<[string, string]>();
+  const [eventDisplayedTime, setEventDisplayedTime] = useState<[string, string]>();
 
   const getEventInfo = useCallback(
     async (id: string) => {
@@ -51,12 +52,23 @@ export default function ActivityDetail() {
 
         const { data } = await requestApi(id);
 
-        const startTime = `${moment(Number(configData.inProgress.startTime))
+        const inProgressStartTime = `${moment(Number(configData.inProgress.startTime))
           .utc()
           .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
-        const endTime = `${moment(Number(configData.displayed.endTime)).utc().format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        const inProgressEndTime = `${moment(Number(configData.inProgress.endTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
 
-        setEventTime([startTime, endTime]);
+        setEventInProgressTime([inProgressStartTime, inProgressEndTime]);
+
+        const displayedStartTime = `${moment(Number(configData.displayed.startTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        const displayedEndTime = `${moment(Number(configData.displayed.endTime))
+          .utc()
+          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+
+        setEventDisplayedTime([displayedStartTime, displayedEndTime]);
 
         setEventsDetailsList(data.list || []);
         setPageTitle(data.pageTitle || '');
@@ -92,7 +104,15 @@ export default function ActivityDetail() {
         </h1>
         <div>
           {eventsDetailsList.map((item, index) => {
-            return <EventsDetailsList key={index} {...item} isFinal={isFinal} eventTime={eventTime} />;
+            return (
+              <EventsDetailsList
+                key={index}
+                {...item}
+                isFinal={isFinal}
+                eventInProgressTime={eventInProgressTime}
+                eventDisplayedTime={eventDisplayedTime}
+              />
+            );
           })}
         </div>
       </div>
