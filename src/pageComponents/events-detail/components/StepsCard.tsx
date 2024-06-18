@@ -12,12 +12,14 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useRouter } from 'next/navigation';
 import { Row, Col } from 'antd';
 import { ReactComponent as NextArrow } from 'assets/img/icons/next-arrow.svg';
+import { useJumpToPage } from 'hooks/useJumpToPage';
 
 function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
   const { isXL } = useResponsive();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
+  const { jumpToPage } = useJumpToPage();
 
   const jumpTo = useCallback(
     (image?: IEventsDetailListStepsCardImage) => {
@@ -65,6 +67,34 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
     return null;
   };
 
+  const renderLink = (link?: Omit<IEventsDetailListStepsCardImage, 'className'>[]) => {
+    if (link && link?.length) {
+      return (
+        <span className={clsx(styles['rules-card-description'], 'flex flex-col')}>
+          {link?.map((item, index) => {
+            if (!item.link) return null;
+            return (
+              <span
+                key={index}
+                className="text-sm font-medium text-brandDefault cursor-pointer mt-[4px]"
+                dangerouslySetInnerHTML={{
+                  __html: item.link,
+                }}
+                onClick={() =>
+                  jumpToPage({
+                    link: item.url,
+                    linkType: item.linkType,
+                  })
+                }
+              />
+            );
+          })}
+        </span>
+      );
+    }
+    return null;
+  };
+
   if (!cardList || !cardList.length) return null;
 
   return (
@@ -96,6 +126,7 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
               <div className="flex flex-col">
                 {item?.title && <span className="text-base text-neutralTitle font-medium">{item?.title}</span>}
                 {renderDescription(item?.description)}
+                {renderLink(item.link)}
               </div>
             </div>
             <div className={clsx(isXL ? 'mt-[12px] rotate-90' : 'ml-[24px]')}>
