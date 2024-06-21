@@ -116,6 +116,7 @@ export type TCustomizationItemType = {
   emptyChannelGroupList: Array<TEmptyChannelGroup>;
   emptyChannelGroupDescription: Array<string>;
   bannerConfig?: Record<string, TBannerConfigItem>;
+  operationButtons?: TBannerConfigButton[];
   needBindEvm?: string[];
   eventHot?: boolean;
   [key: string]: any;

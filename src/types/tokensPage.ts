@@ -105,7 +105,7 @@ export interface IFilterSelect {
 export const getDefaultFilter = (
   ChainId: string,
   defaultFilter?: {
-    pathname?: string;
+    needRare?: boolean;
     rarityFilterItems:
       | {
           label: string;
@@ -114,8 +114,7 @@ export const getDefaultFilter = (
       | undefined;
   },
 ): IFilterSelect => {
-  const { pathname, rarityFilterItems } = defaultFilter || {};
-  const needRare = pathname && pathname === '/rare-cats';
+  const { needRare, rarityFilterItems } = defaultFilter || {};
   return {
     [FilterKeyEnum.Rarity]: {
       type: FilterType.Checkbox,

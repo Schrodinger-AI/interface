@@ -39,16 +39,6 @@ const useNavigationGuard = () => {
       dispatch(resetCustomTheme());
     }
   };
-
-  useEffect(() => {
-    setUpCustomTheme(pathname);
-
-    if (pathname === '/my-cats') {
-      dispatch(setCurViewListType(ListTypeEnum.My));
-    } else {
-      dispatch(setCurViewListType(ListTypeEnum.All));
-    }
-  }, [pathname]);
 };
 
 export default useNavigationGuard;

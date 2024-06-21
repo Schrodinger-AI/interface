@@ -96,7 +96,7 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
-    const path = fromListAll ? '/' : '/my-cats';
+    const path = fromListAll ? '/' : '/?pageState=1';
     route.replace(path);
   }, [fromListAll, route]);
 

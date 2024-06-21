@@ -1,6 +1,5 @@
 'use client';
 import OwnedItems from 'components/OwnedItems';
-import { ListTypeEnum } from 'types';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import useLoading from 'hooks/useLoading';
 import { useTimeoutFn } from 'react-use';
@@ -25,7 +24,7 @@ export default function TokensPage() {
     <div className="flex flex-col max-w-[2560px] w-full">
       {cmsInfo?.bannerConfig ? <TopBanner /> : null}
       <div className="px-4 lg:px-10 mt-[24px]">
-        <OwnedItems pageState={ListTypeEnum.My} />
+        <OwnedItems />
       </div>
     </div>
   );
