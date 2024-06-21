@@ -118,6 +118,7 @@ export type TCustomizationItemType = {
   bannerConfig?: Record<string, TBannerConfigItem>;
   needBindEvm?: string[];
   eventHot?: boolean;
+  adoptDirectlyNew?: boolean;
   [key: string]: any;
 };
 

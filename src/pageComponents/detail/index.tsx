@@ -25,6 +25,8 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
+import Image from 'next/image';
+import TagNewIcon from 'assets/img/event/tag-new.png';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -129,10 +131,13 @@ export default function DetailPage() {
         {showAdoptDirectly && (
           <Button
             type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault mr-[12px]"
+            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
             Adopt directly to Gen-9 Cat
+            {cmsInfo?.adoptDirectlyNew ? (
+              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
+            ) : null}
           </Button>
         )}
         {showReset && (
@@ -167,6 +172,9 @@ export default function DetailPage() {
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
             Adopt directly to Gen-9 Cat
+            {cmsInfo?.adoptDirectlyNew ? (
+              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
+            ) : null}
           </Button>
         )}
         {showReset && (
@@ -262,7 +270,7 @@ export default function DetailPage() {
               showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
-              onAdoptNextGeneration={onAdoptNextGeneration}
+              onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
             />
           )}
         </div>
@@ -293,7 +301,11 @@ export default function DetailPage() {
           </Button>
         )}
         {schrodingerDetail && (
-          <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+          <ItemInfo
+            detail={schrodingerDetail}
+            rankInfo={rankInfo}
+            onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
+          />
         )}
         {adoptAndResetButtonSmall()}
       </div>
