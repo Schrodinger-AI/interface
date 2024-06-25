@@ -1,4 +1,4 @@
-.tokens-page-radio-container {
+.common-radio-tab {
   :global {
     .aelfd-radio-group {
       @apply w-full h-full bg-neutralHoverBg rounded-lg p-[4px] flex;

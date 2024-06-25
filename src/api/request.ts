@@ -7,7 +7,12 @@ import {
 } from 'redux/types/reducerTypes';
 import request, { cmsRequest, tokenRequest } from './axios';
 import qs from 'qs';
-import { IEventsConfig, IEventsDetailData, IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
+import {
+  IEventsConfig,
+  IEventsDetailData,
+  IEventsDetailListTable,
+  IRankConfigData,
+} from 'pageComponents/events-detail/types/type';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -151,4 +156,12 @@ export const getEventResultDetail = async (id: string): Promise<{ data: IEventsD
 
 export const getEventsConfig = async (params: { activityId: string }): Promise<IEventsConfig> => {
   return request.get('/app/activity/stage', { params });
+};
+
+export const getRankConfig = async (): Promise<{ data: IRankConfigData }> => {
+  return cmsRequest.get(`/items/rank_config`);
+};
+
+export const getCatsRankList = async (url: string): Promise<IEventsDetailListTable['data']> => {
+  return request.get(url);
 };

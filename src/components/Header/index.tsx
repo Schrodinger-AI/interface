@@ -44,6 +44,7 @@ import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new-square.png';
 import TagHotIcon from 'assets/img/event/tag-hot.json';
 import Lottie from 'lottie-react';
+import InviteItem from './components/InviteItem';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -184,6 +185,7 @@ export default function Header() {
       },
       { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
+      { key: 'invite', label: <InviteItem checkAndRedirect={checkAndRedirect} /> },
       {
         key: 'logout',
         label: <LogoutItem />,

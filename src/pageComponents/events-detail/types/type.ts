@@ -69,3 +69,23 @@ export interface IEventsConfig {
   inProgress: IEventsConfigItem;
   displayed: IEventsConfigItem;
 }
+
+export enum RankType {
+  'HOLDER' = 'holder',
+  'COLLECTOR' = 'collector',
+}
+
+export interface IRankConfigItem {
+  description?: string[];
+  header?: IEventsDetailListTable['header'];
+  server?: IEventsDetailListTable['server'];
+}
+
+export interface IRankConfigData {
+  [RankType.HOLDER]: IRankConfigItem;
+  [RankType.COLLECTOR]: IRankConfigItem;
+  banner?: {
+    pc: string;
+    mobile: string;
+  };
+}

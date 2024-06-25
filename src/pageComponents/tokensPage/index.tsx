@@ -11,10 +11,25 @@ import clsx from 'clsx';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
-import styles from './styles.module.css';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
+import CommonRadioTab, { ICommonRadioTabButton } from 'components/CommonRadioTab';
+
+const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
+  {
+    value: ListTypeEnum.All,
+    label: 'All Cats',
+  },
+  {
+    value: ListTypeEnum.RARE,
+    label: 'Rare Cats',
+  },
+  {
+    value: ListTypeEnum.My,
+    label: 'My Cats',
+  },
+];
 
 export default function TokensPage() {
   const { getNoticeData } = useGetNoticeData();
@@ -75,21 +90,12 @@ export default function TokensPage() {
           'flex flex-col-reverse lg:flex-row justify-between px-0 lg:px-[40px]',
           cmsInfo?.bannerConfig ? 'mt-[24px]' : 'mt-0',
         )}>
-        <div
-          className={clsx(
-            styles['tokens-page-radio-container'],
-            'h-[48px] mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]',
-          )}>
-          <Radio.Group
-            onChange={(e) => onRadioChange(e.target.value)}
-            value={pageState}
-            size="large"
-            buttonStyle="solid">
-            <Radio.Button value={ListTypeEnum.All}>All Cats</Radio.Button>
-            <Radio.Button value={ListTypeEnum.RARE}>Rare Cats</Radio.Button>
-            <Radio.Button value={ListTypeEnum.My}>My Cats</Radio.Button>
-          </Radio.Group>
-        </div>
+        <CommonRadioTab
+          buttons={pageStateList}
+          value={pageState}
+          onRadioChange={onRadioChange}
+          className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
+        />
         {noticeData && noticeData?.length ? (
           <div className="flex-1 overflow-hidden ml-0 lg:ml-5 h-[48px] mb-[16px] lg:mb-0 mr-0 lg:mr-[12px]">
             <ScrollAlert data={noticeData} type="notice" />
