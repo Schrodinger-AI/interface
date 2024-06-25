@@ -58,6 +58,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [showBuy, setShowBuy] = useState<boolean>(false);
 
   const [isInvalid, setIsInvalid] = useState(true);
   const isInvalidRef = useRef(isInvalid);
@@ -70,8 +71,11 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
     if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
       setErrorMessage('Insufficient cat to consume. ');
+      setShowBuy(true);
       return;
     }
+
+    setShowBuy(false);
 
     if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
       setErrorMessage('Please enter at least 2 SGR to ensure you can receive 1 9th-gen cat with one click.');
@@ -153,6 +157,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   useEffect(() => {
     setErrorMessage('');
+    setShowBuy(false);
   }, [amount]);
 
   const onAdoptRulesClick = useCallback(() => {
@@ -198,6 +203,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         onChange={setAmount}
         status={errorMessage ? 'error' : ''}
         errorMessage={errorMessage}
+        showBuy={showBuy}
         placeholder={inputPlaceholder}
         {...inputProps}
       />

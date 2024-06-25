@@ -162,16 +162,16 @@ export default function DetailPage() {
             className="!rounded-lg flex-1"
             size="large"
             onClick={() => onAdoptNextGeneration(false)}>
-            Adopt Next-Gen Cat
+            Adopt Next-Gen
           </Button>
         )}
         {showAdoptDirectly && (
           <Button
             type="default"
-            className="!rounded-lg flex-1"
+            className="!rounded-lg flex-1 ml-[16px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
-            Adopt directly to Gen-9 Cat
+            Adopt Gen-9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}

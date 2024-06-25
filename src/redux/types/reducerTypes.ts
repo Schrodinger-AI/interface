@@ -158,6 +158,7 @@ export type TGlobalConfigType = {
   forestActivity?: string;
   ecoEarn?: string;
   showNftQuantity?: number;
+  buySGRFromETransfer?: string;
   [key: string]: any;
 };
 
