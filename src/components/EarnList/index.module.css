@@ -1,0 +1,18 @@
+.earn-list {
+  @apply mt-[24px];
+  :global {
+    .aelfd-table-thead {
+      @apply bg-neutralDefaultBg rounded-lg;
+
+      > tr > th {
+        @apply bg-transparent;
+      }
+      .aelfd-table-cell {
+        @apply rounded-none;
+      }
+      .aelfd-table-cell::before {
+        @apply !bg-transparent;
+      }
+    }
+  }
+}
