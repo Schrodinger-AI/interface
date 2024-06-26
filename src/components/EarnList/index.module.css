@@ -5,7 +5,7 @@
       @apply bg-neutralDefaultBg rounded-lg;
 
       > tr > th {
-        @apply bg-transparent;
+        @apply bg-neutralDefaultBg;
       }
       .aelfd-table-cell {
         @apply rounded-none;
