@@ -43,7 +43,7 @@ function ActionComponent({
   }, [account]);
 
   const jumpToEcoEarn = () => {
-    const link = cmsInfo?.ecoEarn;
+    const link = cmsInfo?.ecoEarn || cmsInfo?.gitbookEcoEarn;
     if (!link) return;
     openExternalLink(link, '_blank');
   };
