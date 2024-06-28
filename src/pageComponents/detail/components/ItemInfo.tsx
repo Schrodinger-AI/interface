@@ -60,7 +60,7 @@ export default function ItemInfo({
                 value={item.traitType}
                 className="text-neutralSecondary text-left lg:text-center font-medium text-sm"
               />
-              <div className="flex justify-center mt-[8px] items-center overflow-hidden">
+              <div className="flex justify-start lg:justify-center mt-[8px] items-center overflow-hidden">
                 <div
                   className="w-auto"
                   style={{
