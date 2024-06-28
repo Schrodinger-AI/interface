@@ -2,7 +2,7 @@ import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useGetSignature } from 'hooks/useGetSignature';
 import { bindAddress as bindEvmAddress } from 'api/request';
 import { useWalletService } from 'hooks/useWallet';
-import { Button, HashAddress } from 'aelf-design';
+import { Button, HashAddress, ToolTip } from 'aelf-design';
 import { useResponsive } from 'hooks/useResponsive';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -11,6 +11,7 @@ import { ReactComponent as ArrowIcon } from 'assets/img/icons/arrow.svg';
 import React from 'react';
 import { openExternalLink } from 'utils/openlink';
 import { OmittedType, getOmittedStr } from 'utils/addressFormatting';
+import CommonCopy from 'components/CommonCopy';
 
 function ActionComponent({
   data,
@@ -107,13 +108,17 @@ function ActionComponent({
   return (
     <div className="flex flex-col items-start">
       {cmsInfo?.needBindEvm && cmsInfo.needBindEvm.includes(symbol) && boundEvmAddress ? (
-        <span className="text-xs font-medium text-brandDefault">
-          {getOmittedStr(boundEvmAddress, OmittedType.CUSTOM, {
-            prevLen: 4,
-            endLen: 4,
-            limitLen: 9,
-          })}
-        </span>
+        <CommonCopy toCopy={boundEvmAddress}>
+          <ToolTip title={isLG ? '' : boundEvmAddress} trigger="hover">
+            <span className="text-xs font-medium text-brandDefault">
+              {getOmittedStr(boundEvmAddress, OmittedType.CUSTOM, {
+                prevLen: 4,
+                endLen: 4,
+                limitLen: 9,
+              })}
+            </span>
+          </ToolTip>
+        </CommonCopy>
       ) : null}
       <div className="w-max flex items-center cursor-pointer" onClick={jumpToEcoEarn}>
         <span className="text-xs font-medium text-brandDefault">Details</span>
