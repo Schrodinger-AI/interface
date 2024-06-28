@@ -60,10 +60,14 @@ export function TokenEarnList({
             return (
               <TableCell
                 value={
-                  <>
-                    <EarnAmountCount {...record} amount={amount} />
-                    {` ${record.symbol}`}
-                  </>
+                  record.amount ? (
+                    <>
+                      <EarnAmountCount {...record} amount={amount} />
+                      {` ${record.symbol}`}
+                    </>
+                  ) : (
+                    '--'
+                  )
                 }
               />
             );
