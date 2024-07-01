@@ -14,6 +14,9 @@ import { useResponsive } from 'hooks/useResponsive';
 import TextEllipsis from 'components/TextEllipsis';
 import HonourLabel from 'components/ItemCard/components/HonourLabel';
 import { renameSymbol } from 'utils/renameSymbol';
+import Image from 'next/image';
+
+const scarceWidth = 20;
 
 export default function ItemInfo({
   detail,
@@ -47,16 +50,38 @@ export default function ItemInfo({
     (item: ITrait) => {
       return (
         <Col span={isLG ? 24 : 8} key={item.traitType} className="px-[8px]">
-          <div className="flex flex-row lg:flex-col justify-center items-end lg:items-center bg-[#FAFAFA] overflow-hidden rounded-lg cursor-default py-[16px] lg:py-[24px] !px-[24px]">
+          <div
+            className={clsx(
+              'flex flex-row lg:flex-col justify-center items-end lg:items-center overflow-hidden rounded-lg cursor-default py-[16px] lg:py-[24px] !px-[24px]',
+              item.isRare ? 'bg-[#FFF5E6]' : 'bg-neutralHoverBg',
+            )}>
             <div key={item.traitType} className="flex-1 lg:flex-none lg:w-full overflow-hidden mr-[16px] lg:mr-0">
               <TextEllipsis
                 value={item.traitType}
                 className="text-neutralSecondary text-left lg:text-center font-medium text-sm"
               />
-              <TextEllipsis
-                value={item.value}
-                className="w-full text-left lg:text-center mt-[8px] text-neutralTitle font-medium text-xl"
-              />
+              <div className="flex justify-start lg:justify-center mt-[8px] items-center overflow-hidden">
+                <div
+                  className="w-auto"
+                  style={{
+                    maxWidth: item.isRare ? `calc(100% - ${scarceWidth + 8}px)` : '100%',
+                  }}>
+                  <TextEllipsis
+                    value={item.value}
+                    className="w-full text-left lg:text-center text-neutralTitle font-medium text-xl"
+                  />
+                </div>
+
+                {item.isRare ? (
+                  <Image
+                    src={require('assets/img/icons/scarce.svg').default}
+                    width={scarceWidth}
+                    height={scarceWidth}
+                    alt="scarce"
+                    className="ml-[8px]"
+                  />
+                ) : null}
+              </div>
             </div>
 
             <div className="mt-[8px] text-neutralSecondary flex justify-end lg:justify-center font-medium text-base">

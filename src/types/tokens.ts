@@ -4,6 +4,7 @@ export interface ITrait {
   traitType: string;
   value: string;
   percent: number;
+  isRare?: boolean;
 }
 
 export type TBaseSGRToken = {
