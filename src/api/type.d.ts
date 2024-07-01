@@ -65,11 +65,13 @@ interface IPointItem {
   inviteRate: number;
   thirdFollowersNumber: number;
   thirdRate: number;
+  ecoEarnReward: number;
 }
 
 interface IGetPointsData {
   pointDetails: Array<IPointItem>;
   hasBoundAddress: boolean;
+  evmAddress?: string;
 }
 
 interface ICatItemModel {
@@ -201,6 +203,7 @@ interface IActivityListItem {
   activityId: string;
   beginTime?: string;
   endTime?: string;
+  timeDescription?: string;
   isNew?: boolean;
   linkUrl?: string;
   linkType?: TLinkType;

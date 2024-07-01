@@ -7,6 +7,7 @@ import {
 } from 'redux/types/reducerTypes';
 import request, { cmsRequest, tokenRequest } from './axios';
 import qs from 'qs';
+import { IEventsConfig, IEventsDetailData, IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -134,4 +135,20 @@ export const addressRelation = async (data: {
   sourceChainAddress?: string;
 }> => {
   return request.post('/app/activity/address-relation', data);
+};
+
+export const getEventRankList = async <T = any>(url: string, data?: T): Promise<IEventsDetailListTable> => {
+  return request.post(url, data);
+};
+
+export const getEventDetail = async (id: string): Promise<{ data: IEventsDetailData }> => {
+  return cmsRequest.get(`/items/event_detail_${id}`);
+};
+
+export const getEventResultDetail = async (id: string): Promise<{ data: IEventsDetailData }> => {
+  return cmsRequest.get(`/items/event_detail_result_${id}`);
+};
+
+export const getEventsConfig = async (params: { activityId: string }): Promise<IEventsConfig> => {
+  return request.get('/app/activity/stage', { params });
 };
