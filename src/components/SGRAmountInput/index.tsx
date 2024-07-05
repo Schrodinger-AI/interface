@@ -4,6 +4,8 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo
 import { isPotentialNumber } from 'utils';
 import { ReactComponent as QuestionIcon } from 'assets/img/icons/question.svg';
 import { ToolTip } from 'aelf-design';
+import { useCmsInfo } from 'redux/hooks';
+import { openExternalLink } from 'utils/openlink';
 export interface ISGRAmountInputProps {
   title?: string;
   tips?: string[];
@@ -17,6 +19,7 @@ export interface ISGRAmountInputProps {
   placeholder?: string;
   status?: '' | 'warning' | 'error' | undefined;
   errorMessage?: string;
+  showBuy?: boolean;
 }
 
 export interface ISGRAmountInputInterface {
@@ -38,10 +41,12 @@ export const SGRAmountInput = forwardRef(
       placeholder,
       status = '',
       errorMessage = '',
+      showBuy = false,
     }: ISGRAmountInputProps,
     ref,
   ) => {
     const [amount, setAmount] = useState<string>('');
+    const cmsInfo = useCmsInfo();
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
@@ -131,7 +136,18 @@ export const SGRAmountInput = forwardRef(
           status={status}
           placeholder={placeholder || 'Enter amount'}
         />
-        {errorMessage && <span className="mt-[4px] text-sm text-functionalError">{errorMessage}</span>}
+        {errorMessage && (
+          <span className="mt-[4px] text-sm text-functionalError">
+            {errorMessage}
+            {showBuy && cmsInfo?.buySGRFromETransfer ? (
+              <span
+                className="text-brandDefault cursor-pointer"
+                onClick={() => openExternalLink(cmsInfo?.buySGRFromETransfer, '_blank')}>
+                buy $SGR
+              </span>
+            ) : null}
+          </span>
+        )}
       </div>
     );
   },

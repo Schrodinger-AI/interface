@@ -126,4 +126,5 @@ export interface ICreateTokenParams {
 export enum ListTypeEnum {
   My = 1,
   All = 2,
+  RARE = 3,
 }

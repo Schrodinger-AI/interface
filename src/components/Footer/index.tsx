@@ -14,7 +14,7 @@ export default function Footer({ className }: { className?: string }) {
   const showMargin = useMemo(() => {
     if (!isLG) return false;
     const path = pathName?.split('/')?.[1];
-    return ['detail'].includes(path);
+    return ['detail', ''].includes(path);
   }, [isLG, pathName]);
 
   return (

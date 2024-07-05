@@ -115,6 +115,15 @@ export const Adopt = async (
   options?: IContractOptions,
 ): Promise<ISendResult> => await schrodingerContractRequest('Adopt', params, options);
 
+export const AdoptMaxGen = async (
+  params: {
+    tick: string;
+    amount: string;
+    domain: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('AdoptMaxGen', params, options);
+
 export const confirmAdopt = async (params: IConfirmAdoptParams, options?: IContractOptions): Promise<ISendResult> =>
   await schrodingerContractRequest('Confirm', params, options);
 

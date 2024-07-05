@@ -36,12 +36,13 @@ function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
 
 interface IAdoptNextModal {
   isAcross?: boolean;
+  isDirect?: boolean;
   data: IAdoptNextData;
   onConfirm?: (image: string, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal) {
+function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose }: IAdoptNextModal) {
   const modal = useModal();
   const [loading, setLoading] = useState<boolean>(false);
   const [selectImage, setSelectImage] = useState<number>(-1);
@@ -63,7 +64,7 @@ function AdoptNextModal({ isAcross, data, onConfirm, onClose }: IAdoptNextModal)
   const title = useMemo(() => {
     return (
       <div className="font-semibold">
-        <div className="text-neutralTitle">Adopt Next-Gen Cat</div>
+        <div className="text-neutralTitle">{isDirect ? 'Adopt Gen9 Cat with one click' : 'Adopt Next-Gen Cat'}</div>
         {isAcross && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
