@@ -43,24 +43,16 @@ import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import qs from 'qs';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import SearchInput from './SearchInput';
 
-export default function OwnedItems({
-  pageState = ListTypeEnum.All,
-  noticeData,
-}: {
-  pageState?: ListTypeEnum;
-  noticeData?: IScrollAlertItem[];
-}) {
-  const pathname = usePathname();
+export default function OwnedItems() {
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
-  const { isLG, is2XL, is3XL, is4XL, is5XL } = useResponsive();
+  const { isLG } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
   const [collapsed, setCollapsed] = useState(!isLG);
   const [ownedTotal, setOwnedTotal] = useState(0);
@@ -69,13 +61,18 @@ export default function OwnedItems({
   const cmsInfo = store.getState().info.cmsInfo;
   const curChain = cmsInfo?.curChain || '';
   const [filterList, setFilterList] = useState(getFilterList(curChain));
+  const searchParams = useSearchParams();
+  const pageState: ListTypeEnum = useMemo(
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    [searchParams],
+  );
   const defaultFilter = useMemo(
     () =>
       getDefaultFilter(curChain, {
-        pathname,
+        needRare: pageState === ListTypeEnum.RARE,
         rarityFilterItems: cmsInfo?.rarityFilterItems,
       }),
-    [cmsInfo?.rarityFilterItems, curChain, pathname],
+    [cmsInfo?.rarityFilterItems, curChain, pageState],
   );
 
   const [filterSelect, setFilterSelect] = useState<IFilterSelect>(defaultFilter);
@@ -96,20 +93,6 @@ export default function OwnedItems({
   useEffect(() => {
     walletAddressRef.current = walletAddress;
   }, [walletAddress]);
-
-  const siderWidth = useMemo(() => {
-    if (is2XL) {
-      return '25%';
-    } else if (is3XL) {
-      return '22%';
-    } else if (is4XL) {
-      return '20%';
-    } else if (is5XL) {
-      return '21%';
-    } else {
-      return 368;
-    }
-  }, [is2XL, is3XL, is4XL, is5XL]);
 
   const defaultRequestParams = useMemo(() => {
     const filter = getFilter(defaultFilter);
@@ -145,6 +128,10 @@ export default function OwnedItems({
     const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
     try {
       const res = await requestCatApi({ ...params, address: wallet.address });
+
+      const locationState = location.search.split('pageState=')[1] || ListTypeEnum.All;
+      if (requestType !== Number(locationState)) return;
+
       const total = res.totalCount ?? 0;
       setTotal(total);
       const hasSearch =
@@ -197,7 +184,7 @@ export default function OwnedItems({
   const getFilterListData = useCallback(
     async ({ type }: { type: ListTypeEnum }) => {
       const currentWalletAddress = walletAddressRef.current;
-      const requestApi = type === ListTypeEnum.All ? getAllTraits : getTraits;
+      const requestApi = type === ListTypeEnum.My ? getTraits : getAllTraits;
       const reqParams: {
         chainId: string;
         address?: string;
@@ -205,7 +192,7 @@ export default function OwnedItems({
         chainId: curChain,
         address: currentWalletAddress,
       };
-      if (type === ListTypeEnum.All) {
+      if (type !== ListTypeEnum.My) {
         delete reqParams.address;
       }
       try {
@@ -213,7 +200,7 @@ export default function OwnedItems({
           input: reqParams,
         } as TGetTraitsParams & TGetAllTraitsParams);
         const { traitsFilter, generationFilter } =
-          type === ListTypeEnum.All ? (data as TGetAllTraitsResult).getAllTraits : (data as TGetTraitsResult).getTraits;
+          type === ListTypeEnum.My ? (data as TGetTraitsResult).getTraits : (data as TGetAllTraitsResult).getAllTraits;
         const traitsList =
           traitsFilter?.map((item) => ({
             label: item.traitType,
@@ -472,7 +459,7 @@ export default function OwnedItems({
     (item: TSGRItem) => {
       const params = qs.stringify({
         symbol: item.symbol,
-        from: pageState === ListTypeEnum.All ? 'all' : 'my',
+        from: pageState === ListTypeEnum.My ? 'my' : 'all',
       });
 
       router.push(`/detail?${params}`);
@@ -488,22 +475,18 @@ export default function OwnedItems({
   const [showTotalAmount, setShowTotalAmount] = useState<boolean>(true);
 
   const renderTotalAmount = useMemo(() => {
-    if (pageState === ListTypeEnum.All) {
+    if (pageState === ListTypeEnum.My) {
       return (
-        <span
-          className="text-2xl font-semibold min-w-max"
-          style={{
-            width: siderWidth,
-          }}>{`${total} ${total > 1 ? 'Cats' : 'Cat'}`}</span>
+        <div>
+          <span className="text-2xl font-semibold pr-[8px]">Owned</span>
+          <span className="text-base font-semibold">({total})</span>
+        </div>
       );
     }
     return (
-      <div>
-        <span className="text-2xl font-semibold pr-[8px]">Owned</span>
-        <span className="text-base font-semibold">({total})</span>
-      </div>
+      <span className="text-2xl font-semibold min-w-max w-[364px]">{`${total} ${total > 1 ? 'Cats' : 'Cat'}`}</span>
     );
-  }, [pageState, siderWidth, total]);
+  }, [pageState, total]);
 
   return (
     <div>
@@ -511,7 +494,7 @@ export default function OwnedItems({
         className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
         align="center"
         justify="space-between">
-        {showTotalAmount ? renderTotalAmount : null}
+        {showTotalAmount && isLG ? renderTotalAmount : null}
         {isLG ? (
           <Flex flex={1} gap={16} className="ml-[8px] flex justify-end">
             <Flex
@@ -531,11 +514,6 @@ export default function OwnedItems({
               }}
             />
           </Flex>
-        ) : null}
-        {!isLG && noticeData?.length ? (
-          <div className="flex-1 overflow-hidden h-[48px] ml-5">
-            <ScrollAlert data={noticeData} type="notice" />
-          </div>
         ) : null}
       </Flex>
       <Layout className="relative">
@@ -558,8 +536,9 @@ export default function OwnedItems({
           <Layout.Sider
             collapsedWidth={0}
             className={clsx('!bg-[var(--bg-page)] m-0 mt-5', collapsed && '!mr-5')}
-            width={collapsed ? siderWidth : 0}
+            width={collapsed ? 364 : 0}
             trigger={null}>
+            <div className="px-4 mb-[12px]">{renderTotalAmount}</div>
             {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
           </Layout.Sider>
         )}

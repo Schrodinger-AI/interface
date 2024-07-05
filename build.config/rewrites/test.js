@@ -1,6 +1,6 @@
 module.exports = [
-  { source: '/api/:path*', destination: 'https://schrodingerai.com/api/:path*' },
-  { source: '/cms/:path*', destination: 'https://schrodingerai.com/cms/:path*' },
+  { source: '/api/:path*', destination: 'https://sgr.schrodingerai.com/api/:path*' },
+  { source: '/cms/:path*', destination: 'https://sgr.schrodingerai.com/cms/:path*' },
   {
     source: '/schrodingerGQL/:path*',
     destination:
@@ -10,7 +10,7 @@ module.exports = [
     source: '/forestGQL/:path*',
     destination: 'https://test-indexer.eforest.finance/AElfIndexer_Forest/ForestIndexerPluginSchema/graphql/:path*',
   },
-  { source: '/connect/:path*', destination: 'https://schrodingerai.com/connect/:path*' },
+  { source: '/connect/:path*', destination: 'https://sgr.schrodingerai.com/connect/:path*' },
   {
     source: '/AElfIndexer_DApp/PortKeyIndexerCASchema/:path*',
     destination: 'https://dapp-portkey-test.portkey.finance/Portkey_DID/PortKeyIndexerCASchema/:path*',

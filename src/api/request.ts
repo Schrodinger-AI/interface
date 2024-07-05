@@ -7,7 +7,12 @@ import {
 } from 'redux/types/reducerTypes';
 import request, { cmsRequest, tokenRequest } from './axios';
 import qs from 'qs';
-import { IEventsConfig, IEventsDetailData, IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
+import {
+  IEventsConfig,
+  IEventsDetailData,
+  IEventsDetailListTable,
+  IRankConfigData,
+} from 'pageComponents/events-detail/types/type';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -23,8 +28,16 @@ export const fetchToken = async (data: ITokenParams) => {
   >('/token', qs.stringify(data) as any);
 };
 
-export const fetchSchrodingerImagesByAdoptId = async ({ adoptId }: { adoptId: string }): Promise<IAdoptImageInfo> => {
-  return request.get(`/app/schrodinger/imageInfo?adoptId=${adoptId}`);
+export const fetchSchrodingerImagesByAdoptId = async ({
+  adoptId,
+  transactionHash,
+}: {
+  adoptId: string;
+  transactionHash?: string;
+}): Promise<IAdoptImageInfo> => {
+  return request.get(
+    `/app/schrodinger/imageInfo?adoptId=${adoptId}${transactionHash ? `&transactionHash=${transactionHash}` : ''}`,
+  );
 };
 
 export const fetchWaterImageRequest = async (data: IWaterImageRequest): Promise<IWaterImage> => {
@@ -151,4 +164,12 @@ export const getEventResultDetail = async (id: string): Promise<{ data: IEventsD
 
 export const getEventsConfig = async (params: { activityId: string }): Promise<IEventsConfig> => {
   return request.get('/app/activity/stage', { params });
+};
+
+export const getRankConfig = async (): Promise<{ data: IRankConfigData }> => {
+  return cmsRequest.get(`/items/rank_config`);
+};
+
+export const getCatsRankList = async (url: string): Promise<{ items: IEventsDetailListTable['data'] }> => {
+  return request.get(url);
 };

@@ -1,0 +1,19 @@
+.common-radio-tab {
+  :global {
+    .aelfd-radio-group {
+      @apply w-full h-full bg-neutralHoverBg rounded-lg p-[4px] flex;
+
+      >.aelfd-radio-button-wrapper {
+        @apply flex-1 h-full bg-transparent border-none text-sm text-neutralDisable font-medium flex justify-center items-center;
+
+        &::before{
+          @apply w-0;
+        }
+
+        &.aelfd-radio-button-wrapper-checked {
+          @apply bg-white text-neutralTitle rounded-lg shadow-radioShadow;
+        }
+      }
+    }
+  }
+}

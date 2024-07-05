@@ -25,6 +25,8 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
+import Image from 'next/image';
+import TagNewIcon from 'assets/img/event/tag-new.png';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -85,9 +87,9 @@ export default function DetailPage() {
     }
   }, [closeLoading, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
 
-  const onAdoptNextGeneration = () => {
+  const onAdoptNextGeneration = (isDirect: boolean) => {
     if (!schrodingerDetail) return;
-    adoptHandler(schrodingerDetail, wallet.address, rankInfo);
+    adoptHandler(schrodingerDetail, wallet.address, isDirect, rankInfo);
   };
 
   const onReset = () => {
@@ -96,7 +98,7 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
-    const path = fromListAll ? '/' : '/my-cats';
+    const path = fromListAll ? '/' : '/?pageState=1';
     route.replace(path);
   }, [fromListAll, route]);
 
@@ -107,6 +109,10 @@ export default function DetailPage() {
     [schrodingerDetail?.holderAmount],
   );
   const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
+  const showAdoptDirectly = useMemo(
+    () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
+    [holderNumberGtZero, schrodingerDetail?.generation],
+  );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
 
@@ -114,10 +120,27 @@ export default function DetailPage() {
     return (
       <div className="flex flex-row">
         {showAdopt && (
-          <Button type="primary" className="!rounded-lg mr-[12px]" size="large" onClick={onAdoptNextGeneration}>
+          <Button
+            type="primary"
+            className="!rounded-lg mr-[12px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(false)}>
             Adopt Next-Gen Cat
           </Button>
         )}
+        {/* TODO: adopt directly */}
+        {/* {showAdoptDirectly && (
+          <Button
+            type="default"
+            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(true)}>
+            Adopt 9th-Gen
+            {cmsInfo?.adoptDirectlyNew ? (
+              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
+            ) : null}
+          </Button>
+        )} */}
         {showReset && (
           <Button
             type="default"
@@ -135,10 +158,27 @@ export default function DetailPage() {
     return (
       <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
         {showAdopt && (
-          <Button type="primary" className="!rounded-lg flex-1" size="large" onClick={onAdoptNextGeneration}>
-            Adopt Next-Gen Cat
+          <Button
+            type="primary"
+            className="!rounded-lg flex-1"
+            size="large"
+            onClick={() => onAdoptNextGeneration(false)}>
+            Adopt Next-Gen
           </Button>
         )}
+        {/* TODO: adopt directly */}
+        {/* {showAdoptDirectly && (
+          <Button
+            type="default"
+            className="!rounded-lg flex-1 ml-[16px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(true)}>
+            Adopt 9th-Gen
+            {cmsInfo?.adoptDirectlyNew ? (
+              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
+            ) : null}
+          </Button>
+        )} */}
         {showReset && (
           <Button
             type="default"
@@ -232,7 +272,7 @@ export default function DetailPage() {
               showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
-              onAdoptNextGeneration={onAdoptNextGeneration}
+              onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
             />
           )}
         </div>
@@ -263,7 +303,11 @@ export default function DetailPage() {
           </Button>
         )}
         {schrodingerDetail && (
-          <ItemInfo detail={schrodingerDetail} rankInfo={rankInfo} onAdoptNextGeneration={onAdoptNextGeneration} />
+          <ItemInfo
+            detail={schrodingerDetail}
+            rankInfo={rankInfo}
+            onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
+          />
         )}
         {adoptAndResetButtonSmall()}
       </div>

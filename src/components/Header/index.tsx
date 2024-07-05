@@ -31,7 +31,7 @@ import MenuDropdown from './components/MenuDropdown';
 import MenuCollapse from './components/MenuCollapse/MenuCollapse';
 import { SHOW_RANKING_ENTRY, NEED_LOGIN_PAGE } from 'constants/router';
 
-import { useCmsInfo } from 'redux/hooks';
+import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { store } from 'redux/store';
 import { setCurViewListType } from 'redux/reducer/info';
@@ -44,6 +44,7 @@ import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new-square.png';
 import TagHotIcon from 'assets/img/event/tag-hot.json';
 import Lottie from 'lottie-react';
+import InviteItem from './components/InviteItem';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -58,6 +59,7 @@ export default function Header() {
   const pathname = usePathname();
   const [noticeOpen, setNoticeOpen] = useState<boolean>(false);
   const [eventListOpen, setEventListOpen] = useState<boolean>(false);
+  const isJoin = useJoinStatus();
 
   const [menuModalVisibleModel, setMenuModalVisibleModel] = useState<ModalViewModel>(ModalViewModel.NONE);
   const cmsInfo = useCmsInfo();
@@ -184,17 +186,21 @@ export default function Header() {
       },
       { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
+      { key: 'invite', label: <InviteItem checkAndRedirect={checkAndRedirect} /> },
       {
         key: 'logout',
         label: <LogoutItem />,
       },
     ];
+    if (!isJoin) {
+      menuItems.splice(-2, 1);
+    }
     if (walletType !== WalletType.portkey) {
       menuItems.splice(1, 1);
     }
 
     return menuItems;
-  }, [wallet.address, checkAndRedirect, LogoutItem, walletType]);
+  }, [wallet.address, checkAndRedirect, LogoutItem, isJoin, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
     const _menuItems = [...menuItems];

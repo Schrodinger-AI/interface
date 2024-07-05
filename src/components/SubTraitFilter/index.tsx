@@ -16,8 +16,8 @@ import Loading from 'components/Loading';
 import { ZERO } from 'constants/misc';
 import CommonSearch from 'components/CommonSearch';
 import styles from './style.module.css';
-import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { ListTypeEnum } from 'types';
+import { useSearchParams } from 'next/navigation';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -38,15 +38,21 @@ export const SubTraitFilter = forwardRef(
   ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps, ref) => {
     const cmsInfo = useCmsInfo();
     const [isLoading, setIsLoading] = useState(false);
-    const { curViewListType } = useGetStoreInfo();
+    const searchParams = useSearchParams();
+
     const getSubTraits = useGetSubTraits();
     const getSubAllTraits = useGetSubAllTraits();
     const { wallet } = useWalletService();
     const [list, setList] = useState<TSubTraitItem[]>([]);
 
+    const curViewListType: ListTypeEnum = useMemo(
+      () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+      [searchParams],
+    );
+
     const getSubTraitList = useCallback(async () => {
       setIsLoading(true);
-      const requestApi = curViewListType === ListTypeEnum.All ? getSubAllTraits : getSubTraits;
+      const requestApi = curViewListType === ListTypeEnum.My ? getSubTraits : getSubAllTraits;
       const reqParams: {
         chainId: string;
         traitType: string;
@@ -56,7 +62,7 @@ export const SubTraitFilter = forwardRef(
         address: wallet.address || '',
         traitType,
       };
-      if (curViewListType === ListTypeEnum.All) {
+      if (curViewListType !== ListTypeEnum.My) {
         delete reqParams.address;
       }
       try {
@@ -65,9 +71,9 @@ export const SubTraitFilter = forwardRef(
         } as TGetSubAllTraitsParams & TGetSubTraitsParams);
 
         const { traitsFilter: traitsList } =
-          curViewListType === ListTypeEnum.All
-            ? (data as TGetSubAllTraitsResult).getAllTraits
-            : (data as TGetSubTraitsResult).getTraits;
+          curViewListType === ListTypeEnum.My
+            ? (data as TGetSubTraitsResult).getTraits
+            : (data as TGetSubAllTraitsResult).getAllTraits;
 
         const trait = traitsList[0];
         const list: TSubTraitItem[] = trait.values
