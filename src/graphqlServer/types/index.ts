@@ -140,6 +140,7 @@ export type TStrayCats = {
   nextSymbol: string;
   nextAmount: string;
   parentTraits: Omit<ITrait, 'percent'>[];
+  directAdoption: boolean;
 };
 
 export type TGetStrayCatsResult = {

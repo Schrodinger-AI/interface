@@ -121,6 +121,7 @@ export const GET_STRAY_CATS_QUERY = gql`
           traitType
           value
         }
+        directAdoption
       }
     }
   }

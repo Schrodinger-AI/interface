@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
-import { ADOPT_NEXT_RATE } from 'constants/index';
+import { ADOPT_NEXT_MIN, ADOPT_NEXT_RATE, DIRECT_ADOPT_GEN9_MIN, DIRECT_ADOPT_GEN9_RATE } from 'constants/common';
 import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
 
@@ -23,6 +23,8 @@ export type TBalanceItem = {
 
 export type TAdoptActionModalProps = {
   modalTitle?: string;
+  modalSubTitle?: string;
+  isDirect?: boolean;
   info: IInfoCard;
   onClose?: <T>(params?: T) => void;
   onConfirm?: (amount: string) => void;
@@ -34,7 +36,17 @@ export type TAdoptActionModalProps = {
 function AdoptActionModal(params: TAdoptActionModalProps) {
   const modal = useModal();
   const adoptRulesModal = useModal(AdoptRulesModal);
-  const { modalTitle, info, onClose, onConfirm: onConfirmProps, balanceList, inputProps, isReset = false } = params;
+  const {
+    modalTitle,
+    modalSubTitle,
+    info,
+    onClose,
+    isDirect,
+    onConfirm: onConfirmProps,
+    balanceList,
+    inputProps,
+    isReset = false,
+  } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
   const onCancel = useCallback(() => {
@@ -48,6 +60,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [showBuy, setShowBuy] = useState<boolean>(false);
 
   const [isInvalid, setIsInvalid] = useState(true);
   const isInvalidRef = useRef(isInvalid);
@@ -60,16 +73,41 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
     if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
       setErrorMessage('Insufficient cat to consume. ');
+      setShowBuy(true);
+      return;
+    }
+
+    if (inputProps?.max && BigNumber(amount).eq(inputProps?.max)) {
+      if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
+        setErrorMessage(
+          `Insufficient balance, you need at least ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt 1 9th-Gen cat, `,
+        );
+        setShowBuy(true);
+        return;
+      }
+      if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
+        setErrorMessage(`Insufficient balance, you need at least ${ADOPT_NEXT_MIN} $SGR to adopt 1 next-Gen cat, `);
+        setShowBuy(true);
+        return;
+      }
+    }
+
+    setShowBuy(false);
+
+    if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
+      setErrorMessage(
+        `Please enter at least ${DIRECT_ADOPT_GEN9_MIN} SGR to ensure you can receive 1 9th-gen cat with one click.`,
+      );
       return;
     }
 
     if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
-      setErrorMessage('Please enter at least 1.0527 to ensure you can receive at least 1 next-gen cat.');
+      setErrorMessage(`Please enter at least ${ADOPT_NEXT_MIN} to ensure you can receive at least 1 next-gen cat.`);
       return;
     }
 
     onConfirmProps && onConfirmProps(amount);
-  }, [inputProps?.max, isReset, onConfirmProps]);
+  }, [inputProps?.max, isDirect, isReset, onConfirmProps]);
 
   const [amount, setAmount] = useState<string>('');
   const receiveToken = useMemo(() => {
@@ -77,8 +115,9 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
     if (isReset) return amount;
-    return ZERO.plus(amountNumber.multipliedBy(0.95).toFixed(8)).toFixed();
-  }, [amount, isReset]);
+    const rate = isDirect ? DIRECT_ADOPT_GEN9_RATE : ADOPT_NEXT_RATE;
+    return ZERO.plus(amountNumber.multipliedBy(rate).toFixed(8)).toFixed();
+  }, [amount, isDirect, isReset]);
 
   const adoptFee = useMemo(() => {
     if (isReset) return '--';
@@ -95,8 +134,10 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const rateValue = useMemo(() => {
     if (isReset) return `Reroll 1 ${info.name} receive 1 ${renameSymbol(getOriginSymbol(info.name))}`;
-    return `Consume 1.0527 ${info.name} to adopt 1 next-gen cat `;
-  }, [info.name, isReset]);
+    return isDirect
+      ? `Consume ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt one 9th-Gen cat`
+      : `Consume ${ADOPT_NEXT_MIN} ${info.name} to adopt 1 next-gen cat `;
+  }, [info.name, isDirect, isReset]);
 
   const inputTitle = useMemo(() => {
     if (isReset) return 'Reroll Amount';
@@ -137,6 +178,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   useEffect(() => {
     setErrorMessage('');
+    setShowBuy(false);
   }, [amount]);
 
   const onAdoptRulesClick = useCallback(() => {
@@ -151,6 +193,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       onCancel={onCancel}
       afterClose={modal.remove}
       footer={confirmBtn}>
+      {modalSubTitle ? <div className="mb-[16px] text-sm text-neutralSecondary">{modalSubTitle}</div> : null}
       {!isReset && (
         <div className="flex bg-brandBg py-[14px] px-[16px] rounded-md mb-[24px] md:mb-[32px]">
           <InfoSVG className="flex-shrink-0" />
@@ -182,6 +225,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         onChange={setAmount}
         status={errorMessage ? 'error' : ''}
         errorMessage={errorMessage}
+        showBuy={showBuy && info.tag === 'GEN 0'}
         placeholder={inputPlaceholder}
         {...inputProps}
       />
