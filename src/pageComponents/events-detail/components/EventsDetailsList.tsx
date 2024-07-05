@@ -14,6 +14,27 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import StepsCard from './StepsCard';
 import HandleCard from './HandleCard';
 
+export const renderDescription = (description?: string[]) => {
+  if (description?.length) {
+    return (
+      <span className="flex flex-col">
+        {description.map((item, index) => {
+          return (
+            <span
+              key={index}
+              className="text-sm text-neutralSecondary mt-[8px]"
+              dangerouslySetInnerHTML={{
+                __html: item,
+              }}
+            />
+          );
+        })}
+      </span>
+    );
+  }
+  return null;
+};
+
 function EventsDetailsList({
   title,
   description,
@@ -37,27 +58,6 @@ function EventsDetailsList({
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
   const { isLogin } = useGetLoginStatus();
-
-  const renderDescription = (description?: string[]) => {
-    if (description?.length) {
-      return (
-        <span className="flex flex-col">
-          {description.map((item, index) => {
-            return (
-              <span
-                key={index}
-                className="text-sm text-neutralSecondary mt-[8px]"
-                dangerouslySetInnerHTML={{
-                  __html: item,
-                }}
-              />
-            );
-          })}
-        </span>
-      );
-    }
-    return null;
-  };
 
   const renderTime = (timeDescription?: string[]) => {
     if (timeDescription?.length) {

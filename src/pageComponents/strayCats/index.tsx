@@ -132,6 +132,7 @@ export default function StrayCatsPage() {
             symbol: record.nextSymbol,
             tokenName: record.nextTokenName,
             inputAmount: record.consumeAmount,
+            isDirect: record.directAdoption,
           },
           wallet.address,
         );

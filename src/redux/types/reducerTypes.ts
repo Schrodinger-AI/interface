@@ -116,8 +116,10 @@ export type TCustomizationItemType = {
   emptyChannelGroupList: Array<TEmptyChannelGroup>;
   emptyChannelGroupDescription: Array<string>;
   bannerConfig?: Record<string, TBannerConfigItem>;
+  operationButtons?: TBannerConfigButton[];
   needBindEvm?: string[];
   eventHot?: boolean;
+  adoptDirectlyNew?: boolean;
   [key: string]: any;
 };
 
@@ -159,6 +161,7 @@ export type TGlobalConfigType = {
   gitbookEcoEarn?: string;
   pixiePoints?: string;
   showNftQuantity?: number;
+  buySGRFromETransfer?: string;
   [key: string]: any;
 };
 

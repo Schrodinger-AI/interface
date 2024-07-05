@@ -67,7 +67,7 @@ export default function PointsPage() {
         <h1 className="pt-[24px] pb-[8px] font-semibold text-2xl">Details of credits token earned for this domain</h1>
         {cmsInfo?.pixiePoints ? (
           <p className="text-base font-medium text-neutralSecondary mt-[8px]">
-            You can earn more points by operating an independent subdomain,{' '}
+            You can earn more points by operating an independent subdomain.{' '}
             <span
               className="text-brandDefault cursor-pointer"
               onClick={() => {
