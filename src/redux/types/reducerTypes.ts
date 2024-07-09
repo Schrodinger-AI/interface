@@ -21,7 +21,6 @@ export type InfoStateType = {
   cmsInfo?: TCustomizationItemType & TGlobalConfigType;
   itemsFromLocal?: string[];
   isJoin: boolean;
-  curViewListType: ListTypeEnum;
   unreadMessagesCount: number;
   hasNewActivities: boolean;
 };

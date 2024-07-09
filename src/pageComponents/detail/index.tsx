@@ -128,8 +128,7 @@ export default function DetailPage() {
             Adopt Next-Gen Cat
           </Button>
         )}
-        {/* TODO: adopt directly */}
-        {/* {showAdoptDirectly && (
+        {showAdoptDirectly && (
           <Button
             type="default"
             className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px]"
@@ -140,7 +139,7 @@ export default function DetailPage() {
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
           </Button>
-        )} */}
+        )}
         {showReset && (
           <Button
             type="default"
@@ -166,8 +165,7 @@ export default function DetailPage() {
             Adopt Next-Gen
           </Button>
         )}
-        {/* TODO: adopt directly */}
-        {/* {showAdoptDirectly && (
+        {showAdoptDirectly && (
           <Button
             type="default"
             className="!rounded-lg flex-1 ml-[16px]"
@@ -178,7 +176,7 @@ export default function DetailPage() {
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
           </Button>
-        )} */}
+        )}
         {showReset && (
           <Button
             type="default"

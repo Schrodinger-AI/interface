@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from 'redux/store';
 import { HYDRATE } from 'next-redux-wrapper';
 import { InfoStateType, ThemeType } from 'redux/types/reducerTypes';
-import { ListTypeEnum } from 'types';
 
 const initialState: InfoStateType = {
   isMobile: false,
@@ -13,7 +12,6 @@ const initialState: InfoStateType = {
   theme: ThemeType.light,
   itemsFromLocal: [],
   isJoin: false,
-  curViewListType: ListTypeEnum.All,
   unreadMessagesCount: 0,
   hasNewActivities: false,
 };
@@ -61,9 +59,6 @@ export const infoSlice = createSlice({
         document.documentElement.classList.remove('dark-theme');
       }
     },
-    setCurViewListType(state, action) {
-      state.curViewListType = action.payload;
-    },
     setUnreadMessagesCount(state, action) {
       state.unreadMessagesCount = action.payload;
     },
@@ -89,7 +84,6 @@ export const {
   setTheme,
   setCmsInfo,
   setIsJoin,
-  setCurViewListType,
   setAdInfo,
   setUnreadMessagesCount,
   setHasNewActivities,
