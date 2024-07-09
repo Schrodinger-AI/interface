@@ -6,7 +6,7 @@ import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from './hooks/useGetNoticeData';
 import { useCmsInfo } from 'redux/hooks';
 import TopBanner from 'components/TopBanner';
-import { Button, Radio } from 'aelf-design';
+import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -14,7 +14,8 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
-import CommonRadioTab, { ICommonRadioTabButton } from 'components/CommonRadioTab';
+import { ICommonRadioTabButton } from 'components/CommonRadioTab';
+import CommonSegmented from 'components/CommonSegmented';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -61,7 +62,7 @@ export default function TokensPage() {
     getNotice();
   }, [getNotice]);
 
-  const onRadioChange = (value: ListTypeEnum) => {
+  const onSegmentedChange = (value: ListTypeEnum) => {
     if (value === ListTypeEnum.My) {
       if (!isLogin) {
         checkLogin({
@@ -90,10 +91,10 @@ export default function TokensPage() {
           'flex flex-col-reverse lg:flex-row justify-between px-0 lg:px-[40px]',
           cmsInfo?.bannerConfig ? 'mt-[24px]' : 'mt-0',
         )}>
-        <CommonRadioTab
-          buttons={pageStateList}
+        <CommonSegmented
+          options={pageStateList}
           value={pageState}
-          onRadioChange={onRadioChange}
+          onSegmentedChange={(value) => onSegmentedChange(value as ListTypeEnum)}
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />
         {noticeData && noticeData?.length ? (
