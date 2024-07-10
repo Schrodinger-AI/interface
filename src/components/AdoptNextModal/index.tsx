@@ -65,7 +65,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose }: IAdopt
     return (
       <div className="font-semibold">
         <div className="text-neutralTitle">{isDirect ? 'Adopt Gen9 Cat with one click' : 'Adopt Next-Gen Cat'}</div>
-        {isAcross && (
+        {isAcross && !isDirect && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
             adoption and your cat will gain multiple traits in this adoption.
@@ -73,7 +73,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose }: IAdopt
         )}
       </div>
     );
-  }, [isAcross]);
+  }, [isAcross, isDirect]);
 
   const newTraitsList = useMemo(() => {
     const inheritedMap: Record<string, string> = {};
