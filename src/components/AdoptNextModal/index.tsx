@@ -64,7 +64,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose }: IAdopt
   const title = useMemo(() => {
     return (
       <div className="font-semibold">
-        <div className="text-neutralTitle">{isDirect ? 'Adopt Gen9 Cat with one click' : 'Adopt Next-Gen Cat'}</div>
+        <div className="text-neutralTitle">{isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat'}</div>
         {isAcross && !isDirect && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>

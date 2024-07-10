@@ -122,19 +122,19 @@ export default function DetailPage() {
         {showAdopt && (
           <Button
             type="primary"
-            className="!rounded-lg mr-[12px]"
+            className="!rounded-lg mr-[12px] w-[184px]"
             size="large"
             onClick={() => onAdoptNextGeneration(false)}>
-            Adopt Next-Gen Cat
+            Adopt Next-Gen
           </Button>
         )}
         {showAdoptDirectly && (
           <Button
             type="default"
-            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px]"
+            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px] w-[184px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
-            Adopt 9th-Gen
+            Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
@@ -171,7 +171,7 @@ export default function DetailPage() {
             className="!rounded-lg flex-1 ml-[16px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
-            Adopt 9th-Gen
+            Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
