@@ -2,7 +2,7 @@
 
 import { getCatsRankList, getRankConfig } from 'api/request';
 import clsx from 'clsx';
-import CommonRadioTab, { ICommonRadioTabButton } from 'components/CommonRadioTab';
+import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CustomTable from 'components/CustomTable';
 import MobileBackNav from 'components/MobileBackNav';
 import SkeletonImage from 'components/SkeletonImage';
@@ -12,6 +12,7 @@ import { IEventsDetailListTable, IRankConfigData, RankType } from 'pageComponent
 import { useEffect, useMemo, useState } from 'react';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
 import { useRouter, useSearchParams } from 'next/navigation';
+import CommonSegmented from 'components/CommonSegmented';
 
 const tab: ICommonRadioTabButton<RankType>[] = [
   {
@@ -81,10 +82,10 @@ export default function CatsLeaderBoard() {
           </div>
         ) : null}
 
-        <CommonRadioTab
-          buttons={tab}
+        <CommonSegmented
+          options={tab}
           value={tabValue}
-          onRadioChange={(value) => {
+          onSegmentedChange={(value) => {
             router.replace(`/cats-leader-board?tab=${value}`);
           }}
           className="w-full lg:w-[310px]"

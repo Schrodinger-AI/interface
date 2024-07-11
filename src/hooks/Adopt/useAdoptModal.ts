@@ -67,7 +67,7 @@ const useAdoptHandler = () => {
         }
 
         adoptActionModal.show({
-          modalTitle: isDirect ? 'Adopt 9th-Gen Cat with one click' : 'Adopt Next-Gen Cat',
+          modalTitle: isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat',
           modalSubTitle: isDirect ? 'One-click adopt for 9th-Gen Cat' : '',
           isDirect,
           info: {

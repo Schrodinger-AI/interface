@@ -1,0 +1,25 @@
+.common-segmented {
+  :global {
+    .aelfd-segmented {
+      @apply w-full h-full bg-neutralHoverBg rounded-lg p-[4px] flex;
+
+      .aelfd-segmented-group {
+        @apply gap-1;
+      }
+
+      .aelfd-segmented-item {
+        @apply rounded-lg;
+      }
+
+      .aelfd-segmented-item-label {
+        @apply h-full flex items-center justify-center text-sm text-neutralDisable font-medium;
+      }
+
+      .aelfd-segmented-item-selected {
+        .aelfd-segmented-item-label {
+          @apply text-neutralTitle;
+        }
+      }
+    }
+  }
+}
