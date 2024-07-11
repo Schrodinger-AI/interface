@@ -119,25 +119,25 @@ export default function DetailPage() {
   function adoptAndResetButton() {
     return (
       <div className="flex flex-row">
-        {showAdopt && (
-          <Button
-            type="primary"
-            className="!rounded-lg mr-[12px] w-[184px]"
-            size="large"
-            onClick={() => onAdoptNextGeneration(false)}>
-            Adopt Next-Gen
-          </Button>
-        )}
         {showAdoptDirectly && (
           <Button
-            type="default"
-            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px] w-[184px]"
+            type="primary"
+            className="!rounded-lg mr-[12px] w-[240px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
             Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
+          </Button>
+        )}
+        {showAdopt && (
+          <Button
+            type="default"
+            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px] w-[240px]"
+            size="large"
+            onClick={() => onAdoptNextGeneration(false)}>
+            Adopt Next-Gen
           </Button>
         )}
         {showReset && (
@@ -158,7 +158,7 @@ export default function DetailPage() {
       <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
         {showAdopt && (
           <Button
-            type="primary"
+            type="default"
             className="!rounded-lg flex-1"
             size="large"
             onClick={() => onAdoptNextGeneration(false)}>
@@ -167,7 +167,7 @@ export default function DetailPage() {
         )}
         {showAdoptDirectly && (
           <Button
-            type="default"
+            type="primary"
             className="!rounded-lg flex-1 ml-[16px]"
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
