@@ -2,6 +2,7 @@ import { HandleCardType } from 'redux/types/reducerTypes';
 
 export interface IEventsDetailListTable {
   server?: string;
+  params?: Record<string, any>;
   data?: Record<string, string | number>[];
   header?: {
     key: string;
