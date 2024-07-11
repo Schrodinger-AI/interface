@@ -33,9 +33,6 @@ import { SHOW_RANKING_ENTRY, NEED_LOGIN_PAGE } from 'constants/router';
 
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { store } from 'redux/store';
-import { setCurViewListType } from 'redux/reducer/info';
-import { ListTypeEnum } from 'types';
 import StrayCatsItem from './components/StrayCatsItem';
 import NoticeDrawer from './components/NoticeDrawer';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
@@ -81,16 +78,13 @@ export default function Header() {
 
   const onPressCompassItems = useCallback(
     (item: ICompassProps) => {
-      const { type, schema, title } = item;
+      const { type, schema, schemaAfterLogin } = item;
 
       if (schema && NEED_LOGIN_PAGE.includes(schema)) {
         if (!isLogin) {
           checkLogin({
             onSuccess: () => {
               router.push(schema || '/');
-              if (schema === '/my-cats') {
-                store.dispatch(setCurViewListType(ListTypeEnum.My));
-              }
               setMenuModalVisibleModel(ModalViewModel.NONE);
             },
           });
@@ -122,11 +116,16 @@ export default function Header() {
         return;
       }
 
+      if (type === RouterItemType.Inner && schemaAfterLogin) {
+        if (isLogin) {
+          setMenuModalVisibleModel(ModalViewModel.NONE);
+          router.push(schemaAfterLogin);
+          return;
+        }
+      }
+
       setMenuModalVisibleModel(ModalViewModel.NONE);
       router.push(schema || '/');
-      if (schema === '/') {
-        store.dispatch(setCurViewListType(ListTypeEnum.All));
-      }
     },
     [checkLogin, isLG, isLogin, marketModal, router],
   );

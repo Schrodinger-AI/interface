@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
     <div className={`px-[20px] md:max-w-[780Px] mx-auto pb-[40Px] ${styles['term-service']}`}>
       <article className="pt-[20Px]">
         <hgroup>
-          <h1 className="text-center mb-0">Schrödinger Privacy Policy</h1>
+          <h1 className="text-center mb-0">Privacy Policy</h1>
           <p className="text-center mb-[2em]">Last Updated: March 6, 2024</p>
         </hgroup>
         <p>

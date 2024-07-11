@@ -1,10 +1,8 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { resetCustomTheme, setCustomTheme } from 'redux/reducer/customTheme';
-import { setCurViewListType } from 'redux/reducer/info';
 import { dispatch } from 'redux/store';
 import { CustomThemeType } from 'redux/types/reducerTypes';
-import { ListTypeEnum } from 'types';
 
 const needHideMenu = ['/invitee'];
 const needSetUpCustomTheme = ['/referral', '/invitee'];

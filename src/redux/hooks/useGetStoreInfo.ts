@@ -5,7 +5,6 @@ const useGetStoreInfo = () => {
   const info = useSelector(selectInfo);
   return {
     cmsInfo: info.cmsInfo,
-    curViewListType: info.curViewListType,
     unreadMessagesCount: info.unreadMessagesCount,
     hasNewActivities: info.hasNewActivities,
   };

@@ -70,8 +70,8 @@ export function getExploreLink(
   }
 }
 
-const testnetDefaultDomain = 'sgr.schrodingerai.com';
-const mainnetDefaultDomain = 'sgr.schrodingernft.ai';
+const testnetDefaultDomain = 'cat.schrodingerai.com';
+const mainnetDefaultDomain = 'cat.schrodingernft.ai';
 
 const defaultDomain =
   process.env.NEXT_PUBLIC_APP_ENV !== ENVIRONMENT.PRODUCTION ? testnetDefaultDomain : mainnetDefaultDomain;
