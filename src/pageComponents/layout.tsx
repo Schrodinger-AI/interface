@@ -25,6 +25,7 @@ import WalletAndTokenInfo from 'utils/walletAndTokenInfo';
 import { useGetToken } from 'hooks/useGetToken';
 import queryString from 'query-string';
 import { HIDE_MAIN_PADDING } from 'constants/router';
+import VConsole from 'vconsole';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -57,6 +58,9 @@ const Layout = dynamic(async () => {
     }, [pathname]);
 
     useEffect(() => {
+      if (process.env.NODE_ENV !== 'production') {
+        new VConsole();
+      }
       // store ad tracker
       const search = queryString.parse(location.search);
       store.dispatch(setAdInfo(search));

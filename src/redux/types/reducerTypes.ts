@@ -161,6 +161,7 @@ export type TGlobalConfigType = {
   pixiePoints?: string;
   showNftQuantity?: number;
   buySGRFromETransfer?: string;
+  telegramBotId?: string;
   [key: string]: any;
 };
 
