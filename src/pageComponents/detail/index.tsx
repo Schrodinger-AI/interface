@@ -89,7 +89,12 @@ export default function DetailPage() {
 
   const onAdoptNextGeneration = (isDirect: boolean) => {
     if (!schrodingerDetail) return;
-    adoptHandler(schrodingerDetail, wallet.address, isDirect, rankInfo);
+    adoptHandler({
+      parentItemInfo: schrodingerDetail,
+      account: wallet.address,
+      isDirect,
+      rankInfo,
+    });
   };
 
   const onReset = () => {

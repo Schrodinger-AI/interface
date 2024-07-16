@@ -3,9 +3,12 @@ import { ZERO } from 'constants/misc';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { isPotentialNumber } from 'utils';
 import { ReactComponent as QuestionIcon } from 'assets/img/icons/question.svg';
+import { ReactComponent as PixelsQuestionIcon } from 'assets/img/pixelsIcon/question.svg';
 import { ToolTip } from 'aelf-design';
 import { useCmsInfo } from 'redux/hooks';
 import { openExternalLink } from 'utils/openlink';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 export interface ISGRAmountInputProps {
   title?: string;
   tips?: string[];
@@ -20,6 +23,9 @@ export interface ISGRAmountInputProps {
   status?: '' | 'warning' | 'error' | undefined;
   errorMessage?: string;
   showBuy?: boolean;
+  defaultValue?: string;
+  disableInput?: boolean;
+  theme?: TModalTheme;
 }
 
 export interface ISGRAmountInputInterface {
@@ -42,10 +48,13 @@ export const SGRAmountInput = forwardRef(
       status = '',
       errorMessage = '',
       showBuy = false,
+      defaultValue = '',
+      disableInput = false,
+      theme = 'light',
     }: ISGRAmountInputProps,
     ref,
   ) => {
-    const [amount, setAmount] = useState<string>('');
+    const [amount, setAmount] = useState<string>(defaultValue);
     const cmsInfo = useCmsInfo();
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,11 +100,16 @@ export const SGRAmountInput = forwardRef(
 
     const suffix = useMemo(() => {
       return (
-        <span onClick={getMax} className="text-brandDefault font-medium cursor-pointer text-base">
+        <span
+          onClick={getMax}
+          className={clsx(
+            'font-medium cursor-pointer text-base',
+            theme === 'dark' ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+          )}>
           Max
         </span>
       );
-    }, [getMax]);
+    }, [getMax, theme]);
 
     const getAmount = useCallback(() => {
       return amount;
@@ -118,22 +132,31 @@ export const SGRAmountInput = forwardRef(
 
     return (
       <div className={`flex flex-col ${className}`}>
-        <span className="text-neutralPrimary font-medium text-lg flex items-center">
+        <span
+          className={clsx(
+            'font-medium text-lg flex items-center',
+            theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary',
+          )}>
           <span>{title}</span>
 
           {tips && (
             <ToolTip title={ToolTipTitle}>
-              <QuestionIcon className="ml-[8px]" />
+              {theme === 'dark' ? <PixelsQuestionIcon className="ml-[8px]" /> : <QuestionIcon className="ml-[8px]" />}
             </ToolTip>
           )}
         </span>
         <span className="mt-[4px] text-neutralSecondary text-base">{description}</span>
         <Input
-          className="mt-[16px]"
+          className={clsx(
+            'mt-[16px]',
+            theme === 'dark' &&
+              'rounded-none border border-solid border-pixelsBorder bg-pixelsPageBg text-pixelsWhiteBg',
+          )}
           value={amount}
           onChange={onChange}
-          suffix={suffix}
+          suffix={disableInput ? null : suffix}
           status={status}
+          disabled={disableInput}
           placeholder={placeholder || 'Enter amount'}
         />
         {errorMessage && (
@@ -141,7 +164,10 @@ export const SGRAmountInput = forwardRef(
             {errorMessage}
             {showBuy && cmsInfo?.buySGRFromETransfer ? (
               <span
-                className="text-brandDefault cursor-pointer"
+                className={clsx(
+                  'cursor-pointer',
+                  theme === 'dark' ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+                )}
                 onClick={() => openExternalLink(cmsInfo?.buySGRFromETransfer, '_blank')}>
                 buy $SGR
               </span>

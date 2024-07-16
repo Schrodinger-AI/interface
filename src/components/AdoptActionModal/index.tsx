@@ -1,19 +1,21 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { Button } from 'aelf-design';
 import Balance from 'components/Balance';
-import CommonModal from 'components/CommonModal';
+import CommonModal, { TModalTheme } from 'components/CommonModal';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
 import SGRAmountInput, { ISGRAmountInputInterface, ISGRAmountInputProps } from 'components/SGRAmountInput';
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
 import { ONE, ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
+import { ReactComponent as ExclamationCircleSVG } from 'assets/img/pixelsIcon/exclamationCircle.svg';
 import BigNumber from 'bignumber.js';
 import AdoptRulesModal from 'components/AdoptRulesModal';
 import { ADOPT_NEXT_MIN, ADOPT_NEXT_RATE, DIRECT_ADOPT_GEN9_MIN, DIRECT_ADOPT_GEN9_RATE } from 'constants/common';
 import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
+import { clsx } from 'clsx';
 
 export type TBalanceItem = {
   amount: string;
@@ -25,12 +27,14 @@ export type TAdoptActionModalProps = {
   modalTitle?: string;
   modalSubTitle?: string;
   isDirect?: boolean;
+  disableInput?: boolean;
   info: IInfoCard;
   onClose?: <T>(params?: T) => void;
   onConfirm?: (amount: string) => void;
   balanceList?: TBalanceItem[];
   inputProps?: ISGRAmountInputProps;
   isReset?: boolean;
+  theme?: TModalTheme;
 };
 
 function AdoptActionModal(params: TAdoptActionModalProps) {
@@ -42,10 +46,12 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     info,
     onClose,
     isDirect,
+    disableInput = false,
     onConfirm: onConfirmProps,
     balanceList,
     inputProps,
     isReset = false,
+    theme = 'light',
   } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
@@ -169,11 +175,15 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const confirmBtn = useMemo(
     () => (
-      <Button className="md:w-[356px]" disabled={isInvalid} onClick={() => onConfirm && onConfirm()} type="primary">
+      <Button
+        className={clsx('md:w-[356px]', theme === 'dark' ? '!primary-button-dark' : '')}
+        disabled={isInvalid}
+        onClick={() => onConfirm && onConfirm()}
+        type="primary">
         {isReset ? 'Reroll' : 'Adopt'}
       </Button>
     ),
-    [isInvalid, isReset, onConfirm],
+    [isInvalid, isReset, onConfirm, theme],
   );
 
   useEffect(() => {
@@ -185,6 +195,23 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     adoptRulesModal.show();
   }, [adoptRulesModal]);
 
+  const renderList = useCallback(
+    ({ title, content, children }: { title: string; content?: string; children?: ReactNode }) => {
+      return (
+        <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
+          <span className={clsx(theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>{title}</span>
+          {content ? (
+            <span className={clsx('mt-[4px] lg:mt-0', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {content}
+            </span>
+          ) : null}
+          {children ? children : null}
+        </div>
+      );
+    },
+    [theme],
+  );
+
   return (
     <CommonModal
       title={modalTitle}
@@ -192,24 +219,45 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       onOk={() => onConfirm && onConfirm()}
       onCancel={onCancel}
       afterClose={modal.remove}
+      theme={theme}
       footer={confirmBtn}>
-      {modalSubTitle ? <div className="mb-[16px] text-sm text-neutralSecondary">{modalSubTitle}</div> : null}
+      {modalSubTitle ? (
+        <div className={clsx('mb-[16px] text-sm', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+          {modalSubTitle}
+        </div>
+      ) : null}
       {!isReset && (
-        <div className="flex bg-brandBg py-[14px] px-[16px] rounded-md mb-[24px] md:mb-[32px]">
-          <InfoSVG className="flex-shrink-0" />
-          <span className="ml-[8px] text-neutralPrimary">
+        <div
+          className={clsx(
+            'flex py-[14px] px-[16px] mb-[24px] md:mb-[32px]',
+            theme === 'dark' ? 'rounded-none bg-pixelsPageBg' : 'rounded-md bg-brandBg',
+          )}>
+          {theme === 'dark' ? (
+            <ExclamationCircleSVG className="flex-shrink-0" />
+          ) : (
+            <InfoSVG className="flex-shrink-0" />
+          )}
+
+          <span className={clsx('ml-[8px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralPrimary')}>
             Learn more about the{' '}
-            <span className="text-brandDefault cursor-pointer" onClick={onAdoptRulesClick}>
+            <span
+              className={clsx(
+                'cursor-pointer',
+                theme === 'dark' ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+              )}
+              onClick={onAdoptRulesClick}>
               adoption rules
             </span>
             .
           </span>
         </div>
       )}
-      <InfoCard {...info} />
+      <InfoCard {...info} theme={theme} />
       <SGRAmountInput
         ref={sgrAmountInputRef}
         title={inputTitle}
+        disableInput={disableInput}
+        theme={theme}
         tips={
           isReset
             ? undefined
@@ -228,34 +276,40 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         errorMessage={errorMessage}
         showBuy={showBuy && info.tag === 'GEN 0'}
         placeholder={inputPlaceholder}
+        defaultValue={isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : ''}
         {...inputProps}
       />
-      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
-        <span className="text-neutralSecondary">{receiveLabel}</span>
-        <span className="text-neutralTitle mt-[4px] lg:mt-0">{receiveToken}</span>
-      </div>
-      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
-        <span className="text-neutralSecondary flex items-center gap-[8px]">{rateLabel}</span>
-        <span className="text-neutralTitle mt-[4px] lg:mt-0">{rateValue}</span>
-      </div>
-      {!isReset && (
-        <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
-          <span className="text-neutralSecondary">Adoption Fee to Be Charged</span>
-          <span className="text-neutralTitle mt-[4px] lg:mt-0">{adoptFee}</span>
-        </div>
-      )}
+      {renderList({
+        title: receiveLabel,
+        content: receiveToken,
+      })}
+      {renderList({
+        title: rateLabel,
+        content: rateValue,
+      })}
+      {!isReset &&
+        renderList({
+          title: 'Adoption Fee to Be Charged',
+          content: adoptFee,
+        })}
 
-      <div className="flex flex-col lg:flex-row justify-between mb-[16px]">
-        <span className="text-neutralSecondary">Transaction Fee</span>
-        <div className="flex flex-col items-start lg:items-end  mt-[4px] lg:mt-0">
-          <span className="text-neutralTitle">
-            {txFee} {DEFAULT_TOKEN_SYMBOL}
-          </span>
-          {tokenPrice && <span className="text-neutralSecondary mt-[4px]">$ {priceAmount}</span>}
-        </div>
-      </div>
+      {renderList({
+        title: 'Transaction Fee',
+        children: (
+          <div className="flex flex-col items-start lg:items-end  mt-[4px] lg:mt-0">
+            <span className={clsx(theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {txFee} {DEFAULT_TOKEN_SYMBOL}
+            </span>
+            {tokenPrice && (
+              <span className={clsx('mt-[4px]', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralSecondary')}>
+                $ {priceAmount}
+              </span>
+            )}
+          </div>
+        ),
+      })}
 
-      {balanceList && balanceList.length && <Balance items={balanceList} className="mt-[32px]" />}
+      {balanceList && balanceList.length && <Balance theme={theme} items={balanceList} className="mt-[32px]" />}
     </CommonModal>
   );
 }

@@ -20,4 +20,5 @@ export const DEFAULT_TOKEN_DECIMALS = DEFAULT_TOKEN_INFO.decimals;
 
 export const POINTS_COEFFICIENT = {
   'XPSGR-5': 1314,
+  'XPSGR-5-Direct': 9666,
 };

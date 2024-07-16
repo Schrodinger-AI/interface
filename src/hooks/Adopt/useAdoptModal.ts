@@ -21,6 +21,7 @@ import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formatError';
 import { AdTracker } from 'utils/ad';
 import { renameSymbol } from 'utils/renameSymbol';
+import { TModalTheme } from 'components/CommonModal';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -43,13 +44,23 @@ const useAdoptHandler = () => {
   );
 
   const adoptInput = useCallback(
-    (
-      parentItemInfo: TSGRToken,
-      account: string,
-      isDirect: boolean,
-      parentPrice?: string,
-      rankInfo?: IRankInfo,
-    ): Promise<string> => {
+    ({
+      parentItemInfo,
+      account,
+      isDirect,
+      parentPrice,
+      rankInfo,
+      disableInput = false,
+      theme = 'light',
+    }: {
+      parentItemInfo: TSGRToken;
+      account: string;
+      isDirect: boolean;
+      parentPrice?: string;
+      rankInfo?: IRankInfo;
+      disableInput?: boolean;
+      theme?: TModalTheme;
+    }): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         showLoading();
         let symbolBalance;
@@ -70,6 +81,8 @@ const useAdoptHandler = () => {
           modalTitle: isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat',
           modalSubTitle: isDirect ? 'One-click adopt for 9th-Gen Cat' : '',
           isDirect,
+          disableInput,
+          theme,
           info: {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
@@ -120,11 +133,13 @@ const useAdoptHandler = () => {
       parentItemInfo,
       account,
       isDirect,
+      theme = 'light',
     }: {
       account: string;
       amount: string;
       isDirect: boolean;
       parentItemInfo: TSGRToken;
+      theme?: TModalTheme;
     }): Promise<IAdoptedLogs> =>
       new Promise((resolve, reject) => {
         promptModal.show({
@@ -134,6 +149,7 @@ const useAdoptHandler = () => {
             tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
             subName: renameSymbol(parentItemInfo.symbol),
           },
+          theme,
           title: adopt1Message.prompt.title,
           content: {
             title: promptContentTitle,
@@ -197,26 +213,50 @@ const useAdoptHandler = () => {
   }, [asyncModal]);
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, account: string, isDirect: boolean, rankInfo?: IRankInfo) => {
+    async ({
+      parentItemInfo,
+      account,
+      isDirect,
+      rankInfo,
+      disableInput = false,
+      theme = 'light',
+    }: {
+      parentItemInfo: TSGRToken;
+      account: string;
+      isDirect: boolean;
+      rankInfo?: IRankInfo;
+      disableInput?: boolean;
+      theme?: TModalTheme;
+    }) => {
       try {
         showLoading();
         const parentPrice = await getTokenPrice(parentItemInfo.symbol);
         await checkAIServer();
 
         closeLoading();
-        const amount = await adoptInput(parentItemInfo, account, isDirect, parentPrice, rankInfo);
+        const amount = await adoptInput({
+          parentItemInfo,
+          account,
+          isDirect,
+          parentPrice,
+          rankInfo,
+          disableInput,
+          theme,
+        });
         const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash } = await approveAdopt({
           amount,
           account,
           isDirect,
           parentItemInfo,
+          theme,
         });
 
-        await adoptConfirm(
+        await adoptConfirm({
           parentItemInfo,
-          { adoptId, symbol, outputAmount, inputAmount, tokenName, isDirect, transactionHash },
+          childrenItemInfo: { adoptId, symbol, outputAmount, inputAmount, tokenName, isDirect, transactionHash },
           account,
-        );
+          theme,
+        });
       } catch (error) {
         console.log(error, 'error==');
         closeLoading();

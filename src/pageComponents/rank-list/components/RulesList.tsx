@@ -76,11 +76,11 @@ function RulesList({
         18,000 $SGR. You can participate in this campaign by contributing liquidity to our $SGR/ELF liquidity pool on
         AwakenSwap. All you have to do is visit:
         <a
-          href="https://awaken.finance/trading/SGR-1_ELF_3"
+          href="https://app.awaken.finance/trading/SGR-1_ELF_3"
           className="text-brandDefault"
           target="_blank"
           rel="noreferrer">
-          https://awaken.finance/trading/SGR-1_ELF_3
+          https://app.awaken.finance/trading/SGR-1_ELF_3
         </a>
         , and click "Add Liquidity" to contribute to our $SGR/ELF liquidity pool.
       </span>

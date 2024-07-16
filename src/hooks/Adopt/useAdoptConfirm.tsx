@@ -35,6 +35,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
+import { TModalTheme } from 'components/CommonModal';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -73,6 +74,7 @@ export const useAdoptConfirm = () => {
       rankInfo?: IRankInfo;
     }): Promise<{
       selectImage: string;
+      getWatermarkImage: boolean;
       SGRTokenInfo?: ISGRTokenInfoProps;
     }> => {
       return new Promise(async (resolve, reject) => {
@@ -107,14 +109,15 @@ export const useAdoptConfirm = () => {
                 usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
               },
             },
-
+            adoptId: childrenItemInfo.adoptId,
             onClose: () => {
               adoptNextModal.hide();
               reject(AdoptActionErrorCode.cancel);
             },
-            onConfirm: (selectImage, SGRTokenInfo) => {
+            onConfirm: (selectImage, getWatermarkImage, SGRTokenInfo) => {
               resolve({
                 selectImage,
+                getWatermarkImage,
                 SGRTokenInfo,
               });
             },
@@ -224,11 +227,13 @@ export const useAdoptConfirm = () => {
       image: originImage,
       parentItemInfo,
       rankInfo,
+      getWatermarkImage = false, // TODO: Distinguish whether to obtain watermarked images
     }: {
       childrenItemInfo: IAdoptNextInfo;
       image: string;
       parentItemInfo: TSGRToken;
       rankInfo?: IRankInfo;
+      getWatermarkImage?: boolean;
     }): Promise<{
       txResult: ISendResult;
       image: string;
@@ -299,8 +304,18 @@ export const useAdoptConfirm = () => {
   );
 
   const fetchImages = useCallback(
-    async ({ adoptId, transactionHash }: { adoptId: string; transactionHash?: string }) => {
-      asyncModal.show();
+    async ({
+      adoptId,
+      transactionHash,
+      theme = 'light',
+    }: {
+      adoptId: string;
+      transactionHash?: string;
+      theme?: TModalTheme;
+    }) => {
+      asyncModal.show({
+        theme,
+      });
       const result = await fetchTraitsAndImages(adoptId, transactionHash);
       asyncModal.hide();
       return result;
@@ -324,7 +339,7 @@ export const useAdoptConfirm = () => {
       rankInfo?: IRankInfo;
       isDirect?: boolean;
     }) => {
-      const { selectImage, SGRTokenInfo } = await adoptConfirmInput({
+      const { selectImage, SGRTokenInfo, getWatermarkImage } = await adoptConfirmInput({
         infos,
         parentItemInfo,
         childrenItemInfo,
@@ -338,6 +353,7 @@ export const useAdoptConfirm = () => {
         parentItemInfo,
         childrenItemInfo,
         rankInfo,
+        getWatermarkImage,
       });
       let nextTokenName = '';
       let nextSymbol = '';
@@ -370,6 +386,7 @@ export const useAdoptConfirm = () => {
       rankInfo,
       SGRTokenInfo,
       inputAmount,
+      isDirect = false,
     }: {
       transactionId: string;
       image: string;
@@ -378,6 +395,7 @@ export const useAdoptConfirm = () => {
       rankInfo?: TRankInfoAddLevelInfo;
       SGRTokenInfo?: ISGRTokenInfoProps;
       inputAmount: number | string;
+      isDirect?: boolean;
     }) =>
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
@@ -393,7 +411,11 @@ export const useAdoptConfirm = () => {
         );
         const generation = name.split('GEN')[1];
         const points = inputAmount
-          ? `${formatTokenPrice(ZERO.plus(inputAmount).multipliedBy(POINTS_COEFFICIENT['XPSGR-5']))} XPSGR-5`
+          ? `${formatTokenPrice(
+              ZERO.plus(inputAmount).multipliedBy(
+                isDirect ? POINTS_COEFFICIENT['XPSGR-5-Direct'] : POINTS_COEFFICIENT['XPSGR-5'],
+              ),
+            )} XPSGR-5`
           : undefined;
 
         cardResultModal.show({
@@ -456,11 +478,22 @@ export const useAdoptConfirm = () => {
   );
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, childrenItemInfo: IAdoptNextInfo, account: string) => {
+    async ({
+      parentItemInfo,
+      childrenItemInfo,
+      account,
+      theme = 'light',
+    }: {
+      parentItemInfo: TSGRToken;
+      childrenItemInfo: IAdoptNextInfo;
+      account: string;
+      theme?: TModalTheme;
+    }) => {
       try {
         const infos = await fetchImages({
           adoptId: childrenItemInfo.adoptId,
           transactionHash: childrenItemInfo.transactionHash,
+          theme,
         });
 
         const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
@@ -480,6 +513,7 @@ export const useAdoptConfirm = () => {
           symbol: nextSymbol,
           rankInfo,
           SGRTokenInfo,
+          isDirect: childrenItemInfo.isDirect,
           inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
         });
       } catch (error) {
