@@ -31,6 +31,7 @@ import { mainnet, polygon, optimism, arbitrum, base, zora } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { APP_NAME, PROJECT_ID, APP_NAME_TEST, PROJECT_ID_TEST } from 'constants/connectEvmWalletConfig';
 import { ENVIRONMENT } from 'constants/url';
+import ETransferLayout from './ETransferLayout';
 
 const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
@@ -121,13 +122,19 @@ function Provider({ children }: { children: React.ReactNode }) {
           <WagmiProvider config={wagmiConfig}>
             <QueryClientProvider client={queryClient}>
               <RainbowKitProvider locale="en-US">
-                <ConfigProvider locale={enUS} autoInsertSpaceInButton={false}>
+                <ConfigProvider
+                  locale={enUS}
+                  button={{
+                    autoInsertSpace: false,
+                  }}>
                   {loading ? (
                     <Loading content="Enrollment in progress"></Loading>
                   ) : isCorrectDomain ? (
                     <WebLoginProvider>
-                      <Updater />
-                      <NiceModal.Provider>{children}</NiceModal.Provider>
+                      <ETransferLayout>
+                        <Updater />
+                        <NiceModal.Provider>{children}</NiceModal.Provider>
+                      </ETransferLayout>
                     </WebLoginProvider>
                   ) : (
                     <NotFoundPage type={isCorrectDomain ? NotFoundType.path : NotFoundType.domain} />

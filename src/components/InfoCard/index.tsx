@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import SkeletonImage from 'components/SkeletonImage';
 import React, { ReactNode } from 'react';
 import styles from './index.module.css';
+import { useResponsive } from 'hooks/useResponsive';
+import { TModalTheme } from 'components/CommonModal';
 
 export interface IInfoCard {
   logo?: string;
@@ -14,11 +16,13 @@ export interface IInfoCard {
     value: string;
   }[];
   className?: string;
+  theme?: TModalTheme;
   layout?: 'horizontal' | 'vertical';
 }
 
 function InfoCard(params: IInfoCard) {
-  const { logo, name, tag, rank, items, subName, className, layout = 'horizontal' } = params;
+  const { isLG } = useResponsive();
+  const { logo, name, tag, rank, items, subName, className, layout = 'horizontal', theme = 'light' } = params;
 
   return (
     <div
@@ -26,10 +30,18 @@ function InfoCard(params: IInfoCard) {
         'flex items-center',
         styles['info-card'],
         layout === 'vertical' ? 'flex-col' : 'flex-row',
+        theme === 'dark' ? styles['info-card-dark'] : '',
         className,
       )}>
       <div className="flex items-center">
-        {logo ? <SkeletonImage img={logo} tag={tag} rank={rank} className={clsx('w-[180px] h-[180px]')} /> : null}
+        {logo ? (
+          <SkeletonImage
+            img={logo}
+            tag={tag}
+            rank={rank}
+            className={clsx(isLG ? 'w-[112px] h-[112px]' : 'w-[180px] h-[180px]')}
+          />
+        ) : null}
       </div>
       <div
         className={`overflow-hidden flex flex-col ${layout === 'vertical' ? 'mt-[16px] w-full' : 'ml-[16px] flex-1'}`}>

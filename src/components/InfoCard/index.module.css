@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .info-card {
   @apply overflow-hidden;
   .item {
@@ -8,5 +9,14 @@
     .value {
       @apply whitespace-nowrap overflow-hidden text-ellipsis text-base text-neutralPrimary font-semibold;
     }
+  }
+}
+
+.info-card-dark {
+  .title {
+    @apply !text-pixelsDivider;
+  }
+  .value {
+    @apply !text-neutralWhiteBg;
   }
 }

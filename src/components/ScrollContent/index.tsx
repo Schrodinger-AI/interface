@@ -61,7 +61,7 @@ function ScrollContent(props: IContentProps) {
       />
       {loadingMore ? (
         <div className="w-full flex justify-center items-center">
-          <Loading size="small" />
+          <Loading size="middle" />
         </div>
       ) : null}
     </div>

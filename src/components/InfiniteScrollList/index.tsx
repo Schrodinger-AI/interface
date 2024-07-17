@@ -25,7 +25,7 @@ function InfiniteScrollList<T>(props: { listProps?: ListProps<T>; infiniteScroll
       loader={
         loader || (
           <div className="w-full flex justify-center items-center pt-[12px] pb-[12px] lg:pb-0">
-            <Loading size="small" />
+            <Loading size="middle" />
           </div>
         )
       }
