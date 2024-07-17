@@ -227,56 +227,72 @@ export const useAdoptConfirm = () => {
       image: originImage,
       parentItemInfo,
       rankInfo,
-      getWatermarkImage = false, // TODO: Distinguish whether to obtain watermarked images
+      getWatermarkImage,
+      infos,
     }: {
       childrenItemInfo: IAdoptNextInfo;
       image: string;
       parentItemInfo: TSGRToken;
       rankInfo?: IRankInfo;
       getWatermarkImage?: boolean;
+      infos: IAdoptImageInfo;
     }): Promise<{
       txResult: ISendResult;
       image: string;
       imageUri: string;
     }> => {
       return new Promise(async (resolve, reject) => {
-        // showLoading();
-        const imageSignature = await fetchWaterImages({
-          adoptId: childrenItemInfo.adoptId,
-          image: originImage,
-        });
-        adoptNextModal.hide();
-        // closeLoading();
-        if (imageSignature?.error || !imageSignature.signature) {
-          reject(imageSignature?.error || 'Failed to obtain watermark image');
-          captureMessage({
-            type: SentryMessageType.HTTP,
-            params: {
-              name: 'fetchWaterImages',
-              method: 'post',
-              query: {
-                adoptId: childrenItemInfo.adoptId,
-                image: originImage,
-              },
-              description: imageSignature,
-            },
+        let confirmParams;
+        if (getWatermarkImage) {
+          // showLoading();
+          const imageSignature = await fetchWaterImages({
+            adoptId: childrenItemInfo.adoptId,
+            image: originImage,
           });
-          return;
+          adoptNextModal.hide();
+          // closeLoading();
+          if (imageSignature?.error || !imageSignature.signature) {
+            reject(imageSignature?.error || 'Failed to obtain watermark image');
+            captureMessage({
+              type: SentryMessageType.HTTP,
+              params: {
+                name: 'fetchWaterImages',
+                method: 'post',
+                query: {
+                  adoptId: childrenItemInfo.adoptId,
+                  image: originImage,
+                },
+                description: imageSignature,
+              },
+            });
+            return;
+          }
+
+          const signature = imageSignature.signature;
+          const image = imageSignature.image;
+          const imageUri = imageSignature.imageUri;
+
+          confirmParams = {
+            adoptId: childrenItemInfo.adoptId,
+            outputAmount: childrenItemInfo.outputAmount,
+            symbol: childrenItemInfo.symbol,
+            tokenName: childrenItemInfo.tokenName,
+            image: image,
+            imageUri: imageUri,
+            signature: Buffer.from(signature, 'hex').toString('base64'),
+          };
+        } else {
+          adoptNextModal.hide();
+          confirmParams = {
+            adoptId: childrenItemInfo.adoptId,
+            outputAmount: childrenItemInfo.outputAmount,
+            symbol: childrenItemInfo.symbol,
+            tokenName: childrenItemInfo.tokenName,
+            image: infos.image,
+            imageUri: infos.imageUri,
+            signature: Buffer.from(infos.signature, 'hex').toString('base64'),
+          };
         }
-
-        const signature = imageSignature.signature;
-        const image = imageSignature.image;
-        const imageUri = imageSignature.imageUri;
-
-        const confirmParams = {
-          adoptId: childrenItemInfo.adoptId,
-          outputAmount: childrenItemInfo.outputAmount,
-          symbol: childrenItemInfo.symbol,
-          tokenName: childrenItemInfo.tokenName,
-          image: image,
-          imageUri: imageUri,
-          signature: Buffer.from(signature, 'hex').toString('base64'),
-        };
 
         promptModal.show({
           info: {
@@ -354,6 +370,7 @@ export const useAdoptConfirm = () => {
         childrenItemInfo,
         rankInfo,
         getWatermarkImage,
+        infos,
       });
       let nextTokenName = '';
       let nextSymbol = '';

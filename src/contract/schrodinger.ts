@@ -132,3 +132,6 @@ export const rerollSGR = async (params: IRerollSGRParams, options?: IContractOpt
 
 export const AcceptReferral = async (params: { referrer: string }, options?: IContractOptions): Promise<ISendResult> =>
   await schrodingerContractRequest('AcceptReferral', params, options);
+
+export const RerollAdoption = async (adoptId: string, options?: IContractOptions): Promise<ISendResult> =>
+  await schrodingerContractRequest('RerollAdoption', adoptId, options);

@@ -6,6 +6,8 @@ import CommonModal from 'components/CommonModal';
 import { useCallback, useState } from 'react';
 import SkeletonImage from 'components/SkeletonImage';
 import { IContractError } from 'types';
+import { RerollAdoption } from 'contract/schrodinger';
+import AdoptNextModal from 'components/AdoptNextModal';
 
 function CancelAdoptModal({
   title,
@@ -21,28 +23,28 @@ function CancelAdoptModal({
   adoptId: string;
 }) {
   const modal = useModal();
+  const adoptNextModal = useModal(AdoptNextModal);
   const [loading, setLoading] = useState<boolean>(false);
 
   const onCancel = () => {
     modal.hide();
   };
 
-  const onConfirm = useCallback(() => {
+  const onConfirm = useCallback(async () => {
     try {
       setLoading(true);
-      setTimeout(() => {
-        // TODO: Call RerollAdoption Contract
-        console.log('=====adoptId', adoptId);
-        modal.hide();
-        setLoading(true);
-      }, 1000);
+      await RerollAdoption(adoptId);
+      modal.hide();
+      adoptNextModal.hide();
+      setLoading(false);
     } catch (error) {
       const resError = error as IContractError;
       setLoading(false);
       modal.hide();
+      adoptNextModal.hide();
       message.error(resError.errorMessage?.message);
     }
-  }, [adoptId, modal]);
+  }, [adoptId, adoptNextModal, modal]);
 
   return (
     <CommonModal

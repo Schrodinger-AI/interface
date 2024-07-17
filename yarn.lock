@@ -1610,6 +1610,67 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
+"@etransfer/core@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.2.0.tgz#86af8bb6fe374bca304fccc852092191f1ad6e72"
+  integrity sha512-L4r+UWyWsk63PKmlsqtXZeTDXhfavO2YZ/3JG9n3tpgjYASXO1JKau9ZBEFvX4PLns+5+vxHcTQP0Hrp9C9+rg==
+  dependencies:
+    "@etransfer/services" "^1.2.0"
+    "@etransfer/types" "^1.2.0"
+    "@etransfer/utils" "^1.2.0"
+
+"@etransfer/request@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.0.tgz#a6c2bddec20ae2f3e4de913e634318a25c9263ae"
+  integrity sha512-KnytkvyikSRh3M32vPwiMmqZ6aehrQ1TFwWvoVj3w8byo1M20xEnvzQ5WPFb0yxCVGO4eJ7ECph3SumETDsEMg==
+  dependencies:
+    "@etransfer/types" "^1.2.0"
+    "@etransfer/utils" "^1.2.0"
+    axios "^0.24.0"
+
+"@etransfer/services@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/services/-/services-1.2.0.tgz#5ab700e4c517a114fec7cdbafecd33b7525c5ff6"
+  integrity sha512-0LaxdviPYXxfwYbaBkqOw4cG3K2BkE5BWRfNotIu5PP5iTYsaoDAq6dqopdzNcfnrmn6eftxZcQu9eSqLUz2GA==
+  dependencies:
+    "@etransfer/request" "^1.2.0"
+    "@etransfer/types" "^1.2.0"
+    "@etransfer/utils" "^1.2.0"
+    "@portkey/types" "2.6.6"
+
+"@etransfer/types@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.0.tgz#ed186d6196e2500c81b011839c61d875e8391a68"
+  integrity sha512-qSnpRRG4d7+E5+X0ra8Gu3ncIAebfueqK0XXbWX6xzpFhQ8a1ODVo3n5OHHQzJwBEOkWpkS7V9H8gllf2va3BA==
+
+"@etransfer/ui-react@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/ui-react/-/ui-react-1.2.0.tgz#b10ed91a58a155fa6f07a1917f025309db911726"
+  integrity sha512-spNeNlwp9FFmAzTjxslCuxVocJktdagj0cUU5kdtFXCrQ46XNtr0zrzLmSK0lQwaFpgdm5m2QERQEbugwhWPmQ==
+  dependencies:
+    "@etransfer/core" "^1.2.0"
+    "@etransfer/types" "^1.2.0"
+    "@etransfer/utils" "^1.2.0"
+    "@portkey/types" "2.6.6"
+    "@portkey/utils" "2.6.6"
+    antd "4.24.14"
+    bignumber.js "^9.1.0"
+    clsx "^1.2.1"
+    lottie-web "5.9.6"
+    moment "^2.29.4"
+    query-string "^7.1.1"
+    react-qrcode-logo "2.9.0"
+    react-use "^17.4.0"
+    uuid "^8.3.2"
+
+"@etransfer/utils@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/utils/-/utils-1.2.0.tgz#74e64107bc638f617c1a2021e25d70b0a537ff4c"
+  integrity sha512-VmXu24rGTf4pq4FiR0EpCrRklTmtF/Pp8bOfT/R2YQ79G28kUhRTS+RSYlmqYS0nhwHfTg4V0u2zrbs2LU91OQ==
+  dependencies:
+    "@etransfer/services" "^1.2.0"
+    "@etransfer/types" "^1.2.0"
+
 "@firebase/analytics-compat@0.2.6":
   version "0.2.6"
   resolved "https://registry.npmmirror.com/@firebase/analytics-compat/-/analytics-compat-0.2.6.tgz#50063978c42f13eb800e037e96ac4b17236841f4"
@@ -2895,6 +2956,11 @@
     "@abp/signalr" "^7.0.0"
     "@portkey/utils" "^2.7.1-alpha.0"
 
+"@portkey/types@2.6.6":
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.6.6.tgz#07af958da36f777aa68149a6bfd7bb0df1c9f992"
+  integrity sha512-oMsduRi2juBqQffhIgD5NSoVxnmmG+lL3W6RnJueyfh/itbaEZfIlC1g9o4NM4TVuxZPIf0ahfPaXGR9CriIYQ==
+
 "@portkey/types@^1.0.0-alpha.4":
   version "1.5.3"
   resolved "https://registry.npmmirror.com/@portkey/types/-/types-1.5.3.tgz#6a20d091efd5d9297d7cb6bb41f6ce5d445835c2"
@@ -2909,6 +2975,11 @@
   version "2.7.1-alpha.0"
   resolved "https://registry.npmmirror.com/@portkey/types/-/types-2.7.1-alpha.0.tgz#0f769b12734dc892895131f5da3ab8cf9c3f2802"
   integrity sha512-2c04bZeBrZPssKt4U2jQpJMYv9OItnKuIrEjmtc5BQhbQxMTvi5N4CZjz/h140lUcCZoMrCSOnBkImc/1WGoAg==
+
+"@portkey/utils@2.6.6":
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-2.6.6.tgz#8fa5eb93a4ca43baa14345a75876a8701de2c1f6"
+  integrity sha512-1hooVcRxGafEyyD/TGqx9vsGwsl50RElCBz5hqTJ1mUDy3Q5OWFtSPU0dnTPpUwJlzJHUJCZMvO+wI2dCJHncA==
 
 "@portkey/utils@^2.6.8":
   version "2.6.8"

@@ -124,9 +124,9 @@ export default function StrayCatsPage() {
         showLoading();
         await checkAIServer();
         closeLoading();
-        adoptConfirm(
-          formatAdoptConfirmParams(record),
-          {
+        adoptConfirm({
+          parentItemInfo: formatAdoptConfirmParams(record),
+          childrenItemInfo: {
             adoptId: record.adoptId,
             outputAmount: record.nextAmount,
             symbol: record.nextSymbol,
@@ -134,8 +134,8 @@ export default function StrayCatsPage() {
             inputAmount: record.consumeAmount,
             isDirect: record.directAdoption,
           },
-          wallet.address,
-        );
+          account: wallet.address,
+        });
       } catch (error) {
         closeLoading();
       }
