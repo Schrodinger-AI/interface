@@ -12,6 +12,9 @@ const rotateY = plugin(function ({ addUtilities }) {
       borderRadius: '0',
       boxShadow: '4px 4px 4px 0 #262284',
     },
+    '.tg-card-shadow': {
+      boxShadow: '4px 4px 4px 0 #262284',
+    },
   });
 });
 

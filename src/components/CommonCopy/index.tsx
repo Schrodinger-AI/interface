@@ -1,16 +1,19 @@
 import { useCopyToClipboard } from 'react-use';
 import React from 'react';
 import { ReactComponent as CopyIcon } from 'assets/img/copy.svg';
+import { ReactComponent as CopyIconLarge } from 'assets/img/copy-large.svg';
 import { message } from 'antd';
 import clsx from 'clsx';
 export default function CommonCopy({
   toCopy,
   children,
   className,
+  size = 'small',
 }: {
   toCopy: string;
   children?: React.ReactNode;
   className?: string;
+  size?: 'small' | 'large';
 }) {
   const [, setCopied] = useCopyToClipboard();
   return (
@@ -23,7 +26,7 @@ export default function CommonCopy({
           setCopied(toCopy);
           message.success('Copied');
         }}>
-        <CopyIcon />
+        {size === 'small' ? <CopyIcon /> : <CopyIconLarge />}
       </span>
     </span>
   );

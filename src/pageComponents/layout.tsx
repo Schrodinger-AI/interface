@@ -26,6 +26,7 @@ import { useGetToken } from 'hooks/useGetToken';
 import queryString from 'query-string';
 import { HIDE_MAIN_PADDING } from 'constants/router';
 import VConsole from 'vconsole';
+import useTelegram from 'hooks/useTelegram';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -39,6 +40,8 @@ const Layout = dynamic(async () => {
     const { getToken } = useGetToken();
 
     const pathname = usePathname();
+
+    const { isInTelegram } = useTelegram();
 
     const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
       chainId: SupportedELFChainId.MAIN_NET,
@@ -110,8 +113,8 @@ const Layout = dynamic(async () => {
     }, [pathname]);
 
     const isHiddenLayout = useMemo(() => {
-      return ['/assets'].includes(pathname);
-    }, [pathname]);
+      return ['/assets'].includes(pathname) || isInTelegram();
+    }, [isInTelegram, pathname]);
 
     useEffect(() => {
       WalletAndTokenInfo.setWallet(webLoginContext.walletType, webLoginContext.wallet, webLoginContext.version);
