@@ -32,6 +32,7 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
+  const source = searchParams.get('source');
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
@@ -98,7 +99,8 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
-    const path = fromListAll ? '/' : '/?pageState=1';
+    const baseUrl = source ? `/${source}` : '';
+    const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
     route.replace(path);
   }, [fromListAll, route]);
 
@@ -245,7 +247,7 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {adoptAndResetButton()}
-            {tradeModal?.show && schrodingerDetail && (
+            {!source && tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
                 className="!rounded-lg !border-brandDefault !text-brandDefault"
@@ -291,7 +293,7 @@ export default function DetailPage() {
             rank={rankInfo?.rank}
           />
         )}
-        {tradeModal?.show && schrodingerDetail && (
+        {!source && tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
             className="!rounded-lg !border-brandDefault !text-brandDefault h-[48px] w-full mt-[16px]"
