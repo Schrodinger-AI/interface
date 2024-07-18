@@ -1610,15 +1610,6 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
-"@etransfer/core@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.2.0.tgz#86af8bb6fe374bca304fccc852092191f1ad6e72"
-  integrity sha512-L4r+UWyWsk63PKmlsqtXZeTDXhfavO2YZ/3JG9n3tpgjYASXO1JKau9ZBEFvX4PLns+5+vxHcTQP0Hrp9C9+rg==
-  dependencies:
-    "@etransfer/services" "^1.2.0"
-    "@etransfer/types" "^1.2.0"
-    "@etransfer/utils" "^1.2.0"
-
 "@etransfer/core@^1.2.1-alpha.0":
   version "1.2.1-alpha.0"
   resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.2.1-alpha.0.tgz#08e5bf6a89763d3b65631f3d47e9a695ea44690e"
@@ -1628,15 +1619,6 @@
     "@etransfer/types" "^1.2.1-alpha.0"
     "@etransfer/utils" "^1.2.1-alpha.0"
 
-"@etransfer/request@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.0.tgz#a6c2bddec20ae2f3e4de913e634318a25c9263ae"
-  integrity sha512-KnytkvyikSRh3M32vPwiMmqZ6aehrQ1TFwWvoVj3w8byo1M20xEnvzQ5WPFb0yxCVGO4eJ7ECph3SumETDsEMg==
-  dependencies:
-    "@etransfer/types" "^1.2.0"
-    "@etransfer/utils" "^1.2.0"
-    axios "^0.24.0"
-
 "@etransfer/request@^1.2.1-alpha.0":
   version "1.2.1-alpha.0"
   resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.1-alpha.0.tgz#b8e1a3ccaa1a78bbcc04f28343e499373932882b"
@@ -1645,16 +1627,6 @@
     "@etransfer/types" "^1.2.1-alpha.0"
     "@etransfer/utils" "^1.2.1-alpha.0"
     axios "^0.24.0"
-
-"@etransfer/services@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/services/-/services-1.2.0.tgz#5ab700e4c517a114fec7cdbafecd33b7525c5ff6"
-  integrity sha512-0LaxdviPYXxfwYbaBkqOw4cG3K2BkE5BWRfNotIu5PP5iTYsaoDAq6dqopdzNcfnrmn6eftxZcQu9eSqLUz2GA==
-  dependencies:
-    "@etransfer/request" "^1.2.0"
-    "@etransfer/types" "^1.2.0"
-    "@etransfer/utils" "^1.2.0"
-    "@portkey/types" "2.6.6"
 
 "@etransfer/services@^1.2.1-alpha.0":
   version "1.2.1-alpha.0"
@@ -1666,24 +1638,19 @@
     "@etransfer/utils" "^1.2.1-alpha.0"
     "@portkey/types" "2.6.6"
 
-"@etransfer/types@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.0.tgz#ed186d6196e2500c81b011839c61d875e8391a68"
-  integrity sha512-qSnpRRG4d7+E5+X0ra8Gu3ncIAebfueqK0XXbWX6xzpFhQ8a1ODVo3n5OHHQzJwBEOkWpkS7V9H8gllf2va3BA==
-
 "@etransfer/types@^1.2.1-alpha.0":
   version "1.2.1-alpha.0"
   resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.1-alpha.0.tgz#39bb2a39597fadf3b9dd2839f3d60edbf3911f9a"
   integrity sha512-WACRgd5vo6KgcwHr8OHEC1BHq9u0NSEM74xykbzSuaU4ZTWAhU5acz0DSsgdWiPbWY9Z+ixUZ0I0ZgHklk5LZw==
 
-"@etransfer/ui-react@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/ui-react/-/ui-react-1.2.0.tgz#b10ed91a58a155fa6f07a1917f025309db911726"
-  integrity sha512-spNeNlwp9FFmAzTjxslCuxVocJktdagj0cUU5kdtFXCrQ46XNtr0zrzLmSK0lQwaFpgdm5m2QERQEbugwhWPmQ==
+"@etransfer/ui-react@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/ui-react/-/ui-react-1.2.1-alpha.0.tgz#cfc4c4d36d55110421e428ac6dc7768d808a1569"
+  integrity sha512-N3g/ECYhgYINY8i29VMvFALurHNxV25GoCEH3Z0aP2rmkCJoxvY2E35q2+x6rVEcQegP12x5KJn43/cANyBq5g==
   dependencies:
-    "@etransfer/core" "^1.2.0"
-    "@etransfer/types" "^1.2.0"
-    "@etransfer/utils" "^1.2.0"
+    "@etransfer/core" "^1.2.1-alpha.0"
+    "@etransfer/types" "^1.2.1-alpha.0"
+    "@etransfer/utils" "^1.2.1-alpha.0"
     "@portkey/types" "2.6.6"
     "@portkey/utils" "2.6.6"
     antd "4.24.14"
@@ -1695,14 +1662,6 @@
     react-qrcode-logo "2.9.0"
     react-use "^17.4.0"
     uuid "^8.3.2"
-
-"@etransfer/utils@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@etransfer/utils/-/utils-1.2.0.tgz#74e64107bc638f617c1a2021e25d70b0a537ff4c"
-  integrity sha512-VmXu24rGTf4pq4FiR0EpCrRklTmtF/Pp8bOfT/R2YQ79G28kUhRTS+RSYlmqYS0nhwHfTg4V0u2zrbs2LU91OQ==
-  dependencies:
-    "@etransfer/services" "^1.2.0"
-    "@etransfer/types" "^1.2.0"
 
 "@etransfer/utils@^1.2.1-alpha.0":
   version "1.2.1-alpha.0"

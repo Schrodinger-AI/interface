@@ -3,8 +3,7 @@ import { useWalletService } from './useWallet';
 import { SignatureParams, WalletType } from 'aelf-web-login';
 import { did } from '@portkey/did-ui-react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { ETransferConfig } from '@etransfer/ui-react';
-import { eTransferCore } from '@etransfer/core';
+import { ETransferConfig, etransferCore } from '@etransfer/ui-react';
 import { AuthTokenSource, PortkeyVersion } from '@etransfer/types';
 import { getCaInfo } from 'utils/getCaInfo';
 import { getETransferJWT, recoverPubKeyBySignature } from '@etransfer/utils';
@@ -137,13 +136,14 @@ export function useETransferAuthToken() {
       });
       let authToken;
       const jwtData = await getETransferJWT(asyncStorage, `${caHash}${managerAddress}`);
+      console.log('=====getETransferAuthToken jwtData', jwtData);
       if (jwtData) {
         authToken = `${jwtData.token_type} ${jwtData.access_token}`;
       } else {
         const { pubkey, signature, plainText } = await getUserInfo({ managerAddress, caHash, originChainId });
         let params;
         if (walletType === WalletType.elf) {
-          const recaptchaToken = await eTransferCore.getReCaptcha(wallet.address);
+          const recaptchaToken = await etransferCore.getReCaptcha(wallet.address);
           params = {
             pubkey,
             signature,
@@ -165,9 +165,8 @@ export function useETransferAuthToken() {
             source: AuthTokenSource.Portkey,
             recaptchaToken: undefined,
           };
-          console.log('=====getETransferAuthToken params', params);
         }
-        authToken = await eTransferCore.getAuthToken(params);
+        authToken = await etransferCore.getAuthToken(params);
       }
 
       ETransferConfig.setConfig({
@@ -177,7 +176,7 @@ export function useETransferAuthToken() {
       });
       return authToken;
     } catch (error) {
-      console.log(error);
+      console.log('=====getETransferAuthToken error', error);
       throw error;
     }
   }, [getManagerAddress, getUserInfo, isLogin, wallet, walletType]);

@@ -1,3 +1,4 @@
+import { ETRANSFER_TOKEN_KEY } from 'constants/assets';
 import { setItemsFromLocal } from 'redux/reducer/info';
 import { resetLoginStatus } from 'redux/reducer/loginStatus';
 import { setWalletInfo } from 'redux/reducer/userInfo';
@@ -7,6 +8,7 @@ import { storages } from 'storages';
 export const resetAccount = () => {
   localStorage.removeItem(storages.accountInfo);
   localStorage.removeItem(storages.walletInfo);
+  localStorage.removeItem(ETRANSFER_TOKEN_KEY);
   dispatch(
     setWalletInfo({
       address: '',
