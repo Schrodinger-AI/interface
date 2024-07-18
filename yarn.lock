@@ -1619,6 +1619,15 @@
     "@etransfer/types" "^1.2.0"
     "@etransfer/utils" "^1.2.0"
 
+"@etransfer/core@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.2.1-alpha.0.tgz#08e5bf6a89763d3b65631f3d47e9a695ea44690e"
+  integrity sha512-D4jIDWnt9ztJw+Jbo3C0pOmZVb3b9hY5iEX74r3zipnN+jlRe96ls1hVIlE74+HCKvvWWUQcIv3NCDVnR0JW6w==
+  dependencies:
+    "@etransfer/services" "^1.2.1-alpha.0"
+    "@etransfer/types" "^1.2.1-alpha.0"
+    "@etransfer/utils" "^1.2.1-alpha.0"
+
 "@etransfer/request@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.0.tgz#a6c2bddec20ae2f3e4de913e634318a25c9263ae"
@@ -1626,6 +1635,15 @@
   dependencies:
     "@etransfer/types" "^1.2.0"
     "@etransfer/utils" "^1.2.0"
+    axios "^0.24.0"
+
+"@etransfer/request@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.1-alpha.0.tgz#b8e1a3ccaa1a78bbcc04f28343e499373932882b"
+  integrity sha512-nfkrQ4a3WB/oZbCi6C9mJDKr+N1MTrN5wglZRdu0UlrbnIJv1Sh4FB5WJ8QAAiIhQfQkFltrebgxYRkiPKpOtQ==
+  dependencies:
+    "@etransfer/types" "^1.2.1-alpha.0"
+    "@etransfer/utils" "^1.2.1-alpha.0"
     axios "^0.24.0"
 
 "@etransfer/services@^1.2.0":
@@ -1638,10 +1656,25 @@
     "@etransfer/utils" "^1.2.0"
     "@portkey/types" "2.6.6"
 
+"@etransfer/services@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/services/-/services-1.2.1-alpha.0.tgz#7aadc0786be960fe6128a031a724e54c8089bd2b"
+  integrity sha512-beYoEvCvQnmAIZUXdkOl7wZ4WbEpF9zVec1rUD6+Ze94chmsWfFR6vROgK1zIe7CKw1mvpQw1ogqOdspw03XkA==
+  dependencies:
+    "@etransfer/request" "^1.2.1-alpha.0"
+    "@etransfer/types" "^1.2.1-alpha.0"
+    "@etransfer/utils" "^1.2.1-alpha.0"
+    "@portkey/types" "2.6.6"
+
 "@etransfer/types@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.0.tgz#ed186d6196e2500c81b011839c61d875e8391a68"
   integrity sha512-qSnpRRG4d7+E5+X0ra8Gu3ncIAebfueqK0XXbWX6xzpFhQ8a1ODVo3n5OHHQzJwBEOkWpkS7V9H8gllf2va3BA==
+
+"@etransfer/types@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.1-alpha.0.tgz#39bb2a39597fadf3b9dd2839f3d60edbf3911f9a"
+  integrity sha512-WACRgd5vo6KgcwHr8OHEC1BHq9u0NSEM74xykbzSuaU4ZTWAhU5acz0DSsgdWiPbWY9Z+ixUZ0I0ZgHklk5LZw==
 
 "@etransfer/ui-react@^1.2.0":
   version "1.2.0"
@@ -1670,6 +1703,14 @@
   dependencies:
     "@etransfer/services" "^1.2.0"
     "@etransfer/types" "^1.2.0"
+
+"@etransfer/utils@^1.2.1-alpha.0":
+  version "1.2.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/utils/-/utils-1.2.1-alpha.0.tgz#344256c53cc64b08d27a2ca3dbb268f726b7f093"
+  integrity sha512-mCdtnFtCrm2yadqMFB8Ebqk1vly0U5mAJfnavI970tSNKFVVGxC5X1ZIpyH8ZvY5rXJDfpO/ROz7N3M45ZKn/w==
+  dependencies:
+    "@etransfer/services" "^1.2.1-alpha.0"
+    "@etransfer/types" "^1.2.1-alpha.0"
 
 "@firebase/analytics-compat@0.2.6":
   version "0.2.6"

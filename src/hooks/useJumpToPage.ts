@@ -9,14 +9,14 @@ export const useJumpToPage = () => {
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
 
-  const jumpToPage = ({ link, linkType }: { link?: string; linkType?: TLinkType }) => {
+  const jumpToPage = ({ link, linkType, needLogin }: { link?: string; linkType?: TLinkType; needLogin?: boolean }) => {
     if (!link) return;
     switch (linkType) {
       case 'externalLink':
         openExternalLink(link, '_blank');
         break;
       case 'link':
-        if (NEED_LOGIN_PAGE.includes(link)) {
+        if (NEED_LOGIN_PAGE.includes(link) || needLogin) {
           if (isLogin) {
             router.push(link);
           } else {
