@@ -143,6 +143,7 @@ export function useETransferAuthToken() {
         const { pubkey, signature, plainText } = await getUserInfo({ managerAddress, caHash, originChainId });
         let params;
         if (walletType === WalletType.elf) {
+          const recaptchaToken = await eTransferCore.getReCaptcha(wallet.address);
           params = {
             pubkey,
             signature,
@@ -150,7 +151,7 @@ export function useETransferAuthToken() {
             managerAddress: wallet.address,
             version: PortkeyVersion.v2,
             source: AuthTokenSource.NightElf,
-            recaptchaToken: undefined,
+            recaptchaToken: recaptchaToken,
           };
         } else {
           params = {
@@ -164,7 +165,7 @@ export function useETransferAuthToken() {
             source: AuthTokenSource.Portkey,
             recaptchaToken: undefined,
           };
-          console.log('=====useETransferAuthToken params', params);
+          console.log('=====getETransferAuthToken params', params);
         }
         authToken = await eTransferCore.getAuthToken(params);
       }

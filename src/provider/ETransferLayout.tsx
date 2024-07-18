@@ -3,26 +3,22 @@
 import React, { useEffect } from 'react';
 import { ETransferConfig, ETransferLayoutProvider, ETransferStyleProvider } from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function ETransferLayout({ children }: { children: React.ReactNode }) {
+  const cmsInfo = useCmsInfo();
   useEffect(() => {
-    // TODO use cms config
     ETransferConfig.setConfig({
-      depositConfig: {
-        defaultDepositToken: 'USDT',
-        defaultReceiveToken: 'SGR',
-        defaultChainId: 'tDVW',
-        defaultNetwork: 'TRX',
-        supportNetworks: ['SETH', 'TRX', 'BSC'],
-      },
-      authorization: {
-        jwt: '', // ETransfer Auth Token
-      },
-      networkType: 'TESTNET',
-      etransferUrl: 'https://test-app.etransfer.exchange',
-      etransferAuthUrl: 'https://test-app.etransfer.exchange',
+      networkType: cmsInfo?.etransferConfig.networkType,
+      etransferUrl: cmsInfo?.etransferConfig.etransferUrl,
+      etransferAuthUrl: cmsInfo?.etransferConfig.etransferAuthUrl,
     });
-  }, []);
+  }, [
+    cmsInfo?.etransferConfig.etransferAuthUrl,
+    cmsInfo?.etransferConfig.etransferUrl,
+    cmsInfo?.etransferConfig.networkType,
+  ]);
+
   return (
     <ETransferStyleProvider>
       <ETransferLayoutProvider>{children}</ETransferLayoutProvider>
