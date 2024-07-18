@@ -11,7 +11,7 @@ interface ResponseType<T> {
 
 class Request {
   instance: AxiosInstance;
-  baseConfig: AxiosRequestConfig = { baseURL: 'https://cat.schrodingerai.com/api', timeout: 120000 };
+  baseConfig: AxiosRequestConfig = { baseURL: '/api', timeout: 120000 };
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(Object.assign({}, this.baseConfig, config));
@@ -20,10 +20,7 @@ class Request {
       async (config: AxiosRequestConfig) => {
         // add token
         const baseURL = config.baseURL || '';
-        if (
-          !['https://cat.schrodingerai.com/connect', 'https://cat.schrodingerai.com/cms'].includes(baseURL) &&
-          ['/api'].includes(baseURL)
-        ) {
+        if (!['/connect', '/cms'].includes(baseURL) && ['/api'].includes(baseURL)) {
           const token = await WalletAndTokenInfo.getToken(config.url || '');
           if (token) {
             config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
@@ -129,10 +126,10 @@ class Request {
 }
 
 const tokenRequest = new Request({
-  baseURL: 'https://cat.schrodingerai.com/connect',
+  baseURL: '/connect',
 });
 
-const cmsRequest = new Request({ baseURL: 'https://cat.schrodingerai.com/cms' });
+const cmsRequest = new Request({ baseURL: '/cms' });
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new Request({});
