@@ -11,12 +11,13 @@ export const useJumpToPage = () => {
 
   const jumpToPage = ({ link, linkType, needLogin }: { link?: string; linkType?: TLinkType; needLogin?: boolean }) => {
     if (!link) return;
+    const href = link.split('?')[0];
     switch (linkType) {
       case 'externalLink':
         openExternalLink(link, '_blank');
         break;
       case 'link':
-        if (NEED_LOGIN_PAGE.includes(link) || needLogin) {
+        if (NEED_LOGIN_PAGE.includes(link) || NEED_LOGIN_PAGE.includes(href) || needLogin) {
           if (isLogin) {
             router.push(link);
           } else {

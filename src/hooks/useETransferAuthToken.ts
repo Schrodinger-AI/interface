@@ -137,6 +137,7 @@ export function useETransferAuthToken() {
       });
       let authToken;
       const jwtData = await getETransferJWT(asyncStorage, `${caHash}${managerAddress}`);
+      console.log('=====getETransferAuthToken jwtData', jwtData);
       if (jwtData) {
         authToken = `${jwtData.token_type} ${jwtData.access_token}`;
       } else {
@@ -165,9 +166,11 @@ export function useETransferAuthToken() {
             source: AuthTokenSource.Portkey,
             recaptchaToken: undefined,
           };
-          console.log('=====getETransferAuthToken params', params);
         }
+        console.log('=====getETransferAuthToken params', params);
         authToken = await eTransferCore.getAuthToken(params);
+
+        console.log('=====getETransferAuthToken authToken', authToken);
       }
 
       ETransferConfig.setConfig({
@@ -177,7 +180,7 @@ export function useETransferAuthToken() {
       });
       return authToken;
     } catch (error) {
-      console.log(error);
+      console.log('=====getETransferAuthToken error', error);
       throw error;
     }
   }, [getManagerAddress, getUserInfo, isLogin, wallet, walletType]);

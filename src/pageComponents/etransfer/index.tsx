@@ -6,14 +6,16 @@ import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
 import useLoading from 'hooks/useLoading';
 import { useCallback, useEffect, useMemo } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
+import { useTimeoutFn } from 'react-use';
 
 export default function ETransfer() {
   const { isMD } = useResponsive();
   const cmsInfo = useCmsInfo();
   const searchParams = useSearchParams();
   const { isLogin } = useGetLoginStatus();
+  const router = useRouter();
 
   const defaultParams = useMemo(() => {
     return {
@@ -42,6 +44,12 @@ export default function ETransfer() {
     getAuthToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
+
+  useTimeoutFn(() => {
+    if (!isLogin) {
+      router.replace('/');
+    }
+  }, 3000);
 
   useEffect(() => {
     ETransferConfig.setConfig({
