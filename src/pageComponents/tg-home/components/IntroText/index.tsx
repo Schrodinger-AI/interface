@@ -17,9 +17,9 @@ export default function IntroText() {
         gap={8}>
         <CatSVG className="w-[70px] h-[60px] absolute left-[34px] -top-9" />
         <img
-          src={require('assets/img/telegram/lucky-text.png').default.src}
+          src={require('assets/img/telegram/kitty-text.png').default.src}
           alt=""
-          className="w-[104px] h-9 object-contain"
+          className="w-[94px] h-9 object-contain"
         />
         <p>{`Welcome to the intriguing world of Schrodinger's Cats! Here's a quick guide to get you started:`}</p>
         <div>
