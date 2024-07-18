@@ -79,9 +79,6 @@ export default function TgHome() {
       <div className="mt-10">
         <AdoptModule onAdopt={OpenAdoptModal} />
       </div>
-      {/* <Button onClick={OpenAdoptModal} disabled={!wallet.address || !schrodingerDetail}>
-        Adopt
-      </Button> */}
     </div>
   );
 }
