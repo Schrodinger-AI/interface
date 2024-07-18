@@ -16,10 +16,10 @@ export default function BalanceModule() {
     <>
       <Flex justify="space-between" align="center" className="text-neutralWhiteBg text-sm font-normal">
         <span className="font-medium">Balance:</span>
-        <Flex gap={8} align="center" onClick={handleRules} className="cursor-pointer w-fit">
+        {/* <Flex gap={8} align="center" onClick={handleRules} className="cursor-pointer w-fit">
           Rule
           <TipSVG className="w-[14px] h-[14px]" />
-        </Flex>
+        </Flex> */}
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">
         {balanceData.map((item, index) => {

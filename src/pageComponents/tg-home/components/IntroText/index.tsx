@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 
 export default function IntroText() {
   const handleCommunity = useCallback(() => {
-    //TODO:
+    window.open('https://t.me/projectschrodingercat');
   }, []);
 
   return (
@@ -21,12 +21,12 @@ export default function IntroText() {
           alt=""
           className="w-[104px] h-9 object-contain"
         />
-        <p>Welcome to the mysterious Schrodinger Blind box, the rules of the game:</p>
+        <p>{`Welcome to the intriguing world of Schrodinger's Cats! Here's a quick guide to get you started:`}</p>
         <div>
-          <p>1. Open the blind box and draw out the rare cat with luck;</p>
-          <p>2. Each time you open the blind box, it will cost 1.82 $SGR;</p>
-          <p>3. After obtaining a rare cat, you can Trade it out in the trade and get a high profit;</p>
-          <p>4. Users who join the community will increase the probability of drawing a rare cat!</p>
+          <p>{`1. Tap on "Adopt a cat" and see if fortune smiles upon you with a Rare Cat.`}</p>
+          <p>{`2. Adopting a cat comes with a small cost of 1.6 $SGR.`}</p>
+          <p>{`3. Lucky enough to pull a Rare Cat? Head over to the Forest marketplace to trade it for a guaranteed profit.`}</p>
+          <p>{`4. Increase your chances of finding a Rare Cat by becoming a part of the Schrodinger's community!`}</p>
         </div>
         <Flex align="center" gap={4} className="cursor-pointer w-fit" onClick={handleCommunity}>
           <span className="text-pixelsPrimaryTextPink">Community</span>
