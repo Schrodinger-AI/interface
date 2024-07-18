@@ -1,25 +1,23 @@
 import { Flex } from 'antd';
-import { useCallback } from 'react';
 import { ReactComponent as TipSVG } from 'assets/img/telegram/tip-icon.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
+import Link from 'next/link';
 
 export default function BalanceModule() {
   const { formatAddress, balanceData, fullAddress } = useBalanceService();
-
-  const handleRules = useCallback(() => {
-    //TODO:
-  }, []);
 
   return (
     <>
       <Flex justify="space-between" align="center" className="text-neutralWhiteBg text-sm font-normal">
         <span className="font-medium">Balance:</span>
-        {/* <Flex gap={8} align="center" onClick={handleRules} className="cursor-pointer w-fit">
-          Rule
-          <TipSVG className="w-[14px] h-[14px]" />
-        </Flex> */}
+        <Link href="/telegram/rules">
+          <Flex gap={8} align="center" className="cursor-pointer w-fit text-neutralWhiteBg">
+            Rule
+            <TipSVG className="w-[14px] h-[14px]" />
+          </Flex>
+        </Link>
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">
         {balanceData.map((item, index) => {

@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from 'aelf-design';
 import { Flex } from 'antd';
-import { useCallback } from 'react';
+import Link from 'next/link';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
-  const handleMyCats = useCallback(() => {
-    //TODO:
-  }, []);
+  const { isLogin } = useGetLoginStatus();
 
   return (
     <Flex
@@ -19,9 +18,11 @@ export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
           alt=""
           className="w-[143px] h-9 object-contain"
         />
-        <Button size="small" className="!primary-button-dark !px-2 !text-pixelsWhiteBg !text-xs !font-medium">
-          My Cats
-        </Button>
+        <Link href={isLogin ? '/telegram?pageState=1' : ''}>
+          <Button size="small" className="!primary-button-dark !px-2 !text-pixelsWhiteBg !text-xs !font-medium">
+            My Cats
+          </Button>
+        </Link>
       </Flex>
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((item, index) => {
