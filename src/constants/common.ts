@@ -30,4 +30,6 @@ export const DIRECT_ADOPT_GEN9_RATE = ZERO.plus(0.625);
 export const DIRECT_ADOPT_GEN9_MIN = 1.6;
 export const ADOPT_NEXT_MIN = 1.0527;
 
+export const GEN0_SYMBOL = 'SGR-1';
+
 export const PORTKEY_LOGIN_CHAIN_ID_KEY = 'portkeyLoginChainId';

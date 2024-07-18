@@ -21,7 +21,7 @@ export default function BalanceModule() {
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">
         {balanceData.map((item, index) => {
-          return <BalanceItem key={index} {...item} />;
+          return <BalanceItem key={index} {...item} onBuy={item.onBuy} />;
         })}
       </Flex>
       <Flex className="text-sm font-medium text-neutralWhiteBg mt-4" align="center">

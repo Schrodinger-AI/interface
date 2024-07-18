@@ -27,7 +27,8 @@ export default function BalanceItem({ symbol, amount, onBuy }: IBalanceItemProps
       <Flex
         justify="center"
         align="center"
-        className="w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple active:bg-pixelsCardBg bg-pixelsPageBg tg-card-shadow">
+        className="w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple active:bg-pixelsCardBg bg-pixelsPageBg tg-card-shadow"
+        onClick={onBuy}>
         {buyText}
       </Flex>
     </Flex>

@@ -5,27 +5,35 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { divDecimals } from 'utils/calculate';
 import { IBalanceItemProps } from '../components/BalanceItem';
+import { GEN0_SYMBOL } from 'constants/common';
+import { useJumpToPage } from 'hooks/useJumpToPage';
+import { BUY_ELF_URL, BUY_SGR_URL } from 'constants/router';
 
 export default function useBalanceService() {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const { wallet } = useWalletService();
   const { showLoading, closeLoading } = useLoading();
+  const { jumpToPage } = useJumpToPage();
 
   const balanceData: Array<IBalanceItemProps> = useMemo(() => {
     return [
       {
         symbol: 'SGR',
         amount: divDecimals(sgrBalance, 8).toString(),
-        onBuy: () => undefined,
+        onBuy: () => {
+          jumpToPage({ link: BUY_SGR_URL, linkType: 'link' });
+        },
       },
       {
         symbol: 'ELF',
         amount: divDecimals(elfBalance, 8).toString(),
-        onBuy: () => undefined,
+        onBuy: () => {
+          jumpToPage({ link: BUY_ELF_URL, linkType: 'link' });
+        },
       },
     ];
-  }, [elfBalance, sgrBalance]);
+  }, [elfBalance, jumpToPage, sgrBalance]);
 
   const getBalance = useCallback(async () => {
     if (!wallet.address) return;
@@ -33,7 +41,7 @@ export default function useBalanceService() {
       showLoading();
       const [sgrBalanceRes, elfBalanceRes] = await Promise.all([
         GetBalance({
-          symbol: 'SGR',
+          symbol: GEN0_SYMBOL,
           owner: wallet.address,
         }),
         GetBalance({
