@@ -3,6 +3,8 @@ import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import Loading from 'components/Loading';
 import clsx from 'clsx';
+import Image from 'next/image';
+import loadingCat from 'assets/img/loading-cat.gif';
 
 function SyncAdoptModal({
   closable = false,
@@ -31,6 +33,12 @@ function SyncAdoptModal({
       title={'Adopt Cats'}
       footer={null}>
       <div className="flex flex-col gap-6">
+        {theme === 'dark' ? (
+          <div className="w-full flex justify-center items-center">
+            <Image src={loadingCat} width={120} height={120} alt={'loading'} />
+          </div>
+        ) : null}
+
         <NoticeBar text={innerText} theme={theme} />
         {showLoading && (
           <div className="flex justify-center items-center gap-2">
