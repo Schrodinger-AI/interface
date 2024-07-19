@@ -149,9 +149,9 @@ export const SGRAmountInput = forwardRef(
         <Input
           className={clsx(
             'mt-[16px]',
-            'hover:bg-transparent active:bg-transparent',
+            'hover:bg-transparent',
             theme === 'dark' &&
-              'rounded-none border border-solid border-pixelsBorder bg-pixelsPageBg text-pixelsWhiteBg',
+              'rounded-none border border-solid border-pixelsBorder !bg-pixelsPageBg text-pixelsWhiteBg',
           )}
           value={amount}
           onChange={onChange}

@@ -75,10 +75,10 @@ function CancelAdoptModal({
         <SkeletonImage img={nftImage} className="w-[180px]" />
       </div>
       <p className="text-neutralTitle text-base lg:text-2xl font-medium text-center mt-[16px] lg:mt-[32px]">
-        Adopt {tokenName} and receive {amount} An SGR?
+        Are you sure you want to reroll {tokenName} to claim {amount} $SGR?
       </p>
       <p className="text-neutralSecondary text-sm lg:text-xl text-center mt-[16px] lg:mt-[32px]">
-        Reroll will consume this NFT and restore the same amount of the original SGR, which is irreversible
+        If you reroll, your NFT will be burnt and converted into $SGR. This action cannot be undone.
       </p>
     </CommonModal>
   );
