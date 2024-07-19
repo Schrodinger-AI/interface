@@ -139,10 +139,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
         {/* <NoticeBar text="Please don't close this window until you complete the adoption." /> */}
-        <NoticeBar
-          text={isDirect ? 'Congrats! You adopted a GEN9 Cat!' : 'Congrats! You adopted a Cat!'}
-          type="success"
-        />
+        <NoticeBar text="Congratulations! Your Cat is ready for adoption." type="success" />
         {images.length > 1 ? (
           <DescriptionItem title="Select the Cat You Prefer">
             <span className="text-functionalWarning text-base">
