@@ -9,6 +9,8 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
 import { useTimeoutFn } from 'react-use';
+import styles from './styles.module.css';
+import clsx from 'clsx';
 
 export default function ETransfer() {
   const { isMD } = useResponsive();
@@ -65,7 +67,7 @@ export default function ETransfer() {
   if (visible || !isLogin) return null;
 
   return (
-    <div className="m-auto max-w-[1024px]">
+    <div className={clsx('m-auto max-w-[1024px]', styles['etransfer-deposit-wrap'])}>
       <ETransferDepositProvider>
         <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
       </ETransferDepositProvider>
