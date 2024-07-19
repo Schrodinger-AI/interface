@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useWalletService } from './useWallet';
-import { SignatureParams, WalletType } from 'aelf-web-login';
+import { SignatureParams, useWebLogin, WalletType } from 'aelf-web-login';
 import { did } from '@portkey/did-ui-react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { ETransferConfig, etransferCore } from '@etransfer/ui-react';
@@ -11,12 +11,12 @@ import { getETransferJWT, recoverPubKeyBySignature } from '@etransfer/utils';
 import useDiscoverProvider from './useDiscoverProvider';
 import { asyncStorage } from 'utils/lib';
 import AElf from 'aelf-sdk';
-import { ChainId } from '@portkey/provider-types';
 
 export function useETransferAuthToken() {
   const { wallet, walletType } = useWalletService();
   const { isLogin } = useGetLoginStatus();
   const { discoverProvider } = useDiscoverProvider();
+  const { getSignature: getSignatureWeb } = useWebLogin();
 
   const getManagerAddress = useCallback(async () => {
     let managerAddress;
@@ -79,10 +79,15 @@ export function useETransferAuthToken() {
     let signInfo: string;
     let getSignature;
     let address: string;
-    if (walletType !== WalletType.portkey) {
-      // nightElf or discover
+    if (walletType === WalletType.discover) {
+      // discover
       signInfo = AElf.utils.sha256(plainText);
       getSignature = getDiscoverSignature;
+      address = wallet.address || '';
+    } else if (walletType === WalletType.elf) {
+      // nightElf
+      signInfo = AElf.utils.sha256(plainText);
+      getSignature = getSignatureWeb;
       address = wallet.address || '';
     } else {
       // portkey sdk
@@ -98,33 +103,60 @@ export function useETransferAuthToken() {
     if (result.error) throw result.errorMessage;
 
     return { signature: result?.signature || '', plainText };
-  }, [getDiscoverSignature, getPortKeySignature, wallet.address, walletType]);
+  }, [getDiscoverSignature, getPortKeySignature, getSignatureWeb, wallet.address, walletType]);
 
   const getUserInfo = useCallback(
-    async ({
-      managerAddress,
-      caHash,
-      originChainId,
-    }: {
-      managerAddress: string;
-      caHash: string;
-      originChainId: ChainId;
-    }) => {
+    async ({ managerAddress }: { managerAddress: string }) => {
       const signatureResult = await handleGetSignature();
       const pubkey = recoverPubKeyBySignature(signatureResult.plainText, signatureResult.signature) + '';
       return {
         pubkey,
         signature: signatureResult.signature,
         plainText: signatureResult.plainText,
-        caHash,
-        originChainId,
         managerAddress: managerAddress,
       };
     },
     [handleGetSignature],
   );
 
-  const getETransferAuthToken = useCallback(async () => {
+  const getETransferAuthTokenELF = useCallback(async () => {
+    if (!wallet) throw new Error('Failed to obtain walletInfo information.');
+    if (!isLogin) throw new Error('You are not logged in.');
+
+    try {
+      const managerAddress = wallet.address;
+      let authToken;
+      const jwtData = await getETransferJWT(asyncStorage, `nightelf${managerAddress}`);
+      if (jwtData) {
+        authToken = `${jwtData.token_type} ${jwtData.access_token}`;
+      } else {
+        const { pubkey, signature, plainText } = await getUserInfo({ managerAddress });
+        const recaptchaToken = await etransferCore.getReCaptcha(wallet.address);
+        const params = {
+          pubkey,
+          signature,
+          plainText,
+          managerAddress: wallet.address,
+          version: PortkeyVersion.v2,
+          source: AuthTokenSource.NightElf,
+          recaptchaToken: recaptchaToken,
+        };
+        authToken = await etransferCore.getAuthToken(params);
+      }
+
+      ETransferConfig.setConfig({
+        authorization: {
+          jwt: authToken,
+        },
+      });
+      return authToken;
+    } catch (error) {
+      console.log('=====getETransferAuthToken error', error);
+      throw error;
+    }
+  }, [getUserInfo, isLogin, wallet]);
+
+  const getETransferAuthTokenPortkeyAndDiscover = useCallback(async () => {
     if (!wallet) throw new Error('Failed to obtain walletInfo information.');
     if (!isLogin) throw new Error('You are not logged in.');
 
@@ -137,36 +169,21 @@ export function useETransferAuthToken() {
       });
       let authToken;
       const jwtData = await getETransferJWT(asyncStorage, `${caHash}${managerAddress}`);
-      console.log('=====getETransferAuthToken jwtData', jwtData);
       if (jwtData) {
         authToken = `${jwtData.token_type} ${jwtData.access_token}`;
       } else {
-        const { pubkey, signature, plainText } = await getUserInfo({ managerAddress, caHash, originChainId });
-        let params;
-        if (walletType === WalletType.elf) {
-          const recaptchaToken = await etransferCore.getReCaptcha(wallet.address);
-          params = {
-            pubkey,
-            signature,
-            plainText,
-            managerAddress: wallet.address,
-            version: PortkeyVersion.v2,
-            source: AuthTokenSource.NightElf,
-            recaptchaToken: recaptchaToken,
-          };
-        } else {
-          params = {
-            pubkey,
-            signature,
-            plainText,
-            caHash,
-            chainId: originChainId,
-            managerAddress,
-            version: PortkeyVersion.v2,
-            source: AuthTokenSource.Portkey,
-            recaptchaToken: undefined,
-          };
-        }
+        const { pubkey, signature, plainText } = await getUserInfo({ managerAddress });
+        const params = {
+          pubkey,
+          signature,
+          plainText,
+          caHash,
+          chainId: originChainId,
+          managerAddress,
+          version: PortkeyVersion.v2,
+          source: AuthTokenSource.Portkey,
+          recaptchaToken: undefined,
+        };
         authToken = await etransferCore.getAuthToken(params);
       }
 
@@ -181,6 +198,14 @@ export function useETransferAuthToken() {
       throw error;
     }
   }, [getManagerAddress, getUserInfo, isLogin, wallet, walletType]);
+
+  const getETransferAuthToken = useCallback(async () => {
+    if (walletType === WalletType.elf) {
+      await getETransferAuthTokenELF();
+    } else {
+      await getETransferAuthTokenPortkeyAndDiscover();
+    }
+  }, [getETransferAuthTokenELF, getETransferAuthTokenPortkeyAndDiscover, walletType]);
 
   return { getETransferAuthToken };
 }
