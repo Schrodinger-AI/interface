@@ -197,14 +197,14 @@ export default function StrayCatsPage() {
         },
       },
       {
-        title: 'Operation',
+        title: 'Action',
         dataIndex: 'operation',
         key: 'operation',
         fixed: 'right',
         render: (_, record) => {
           return (
             <Button type="primary" size="small" onClick={() => onAdopt(record)}>
-              Adopt
+              Operation
             </Button>
           );
         },
