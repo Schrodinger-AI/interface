@@ -27,6 +27,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
+import useTelegram from 'hooks/useTelegram';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -42,6 +43,11 @@ export default function DetailPage() {
   const marketModal = useModal(MarketModal);
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
+  const { isInTelegram } = useTelegram();
+
+  const isInTG = useMemo(() => {
+    return isInTelegram();
+  }, [isInTelegram]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
@@ -115,7 +121,7 @@ export default function DetailPage() {
     () => (schrodingerDetail?.holderAmount || 0) > 0,
     [schrodingerDetail?.holderAmount],
   );
-  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
+  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine && !isInTG, [genLtNine, holderNumberGtZero, isInTG]);
   const showAdoptDirectly = useMemo(
     () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
     [holderNumberGtZero, schrodingerDetail?.generation],
@@ -232,7 +238,11 @@ export default function DetailPage() {
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
   return (
-    <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
+    <section
+      className={clsx(
+        'mt-[24px] lg:mt-[24px] flex flex-col items-center w-full',
+        isInTG && 'px-4 lg:px-10 pb-[100px]',
+      )}>
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
@@ -284,7 +294,7 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <div className="w-full flex flex-row justify-start items-center" onClick={onBack}>
+        <div className="w-fit cursor-pointer flex flex-row justify-start items-center self-start" onClick={onBack}>
           <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>

@@ -10,7 +10,7 @@ export interface IBalanceItemProps {
 
 export default function BalanceItem({ symbol, amount, onBuy }: IBalanceItemProps) {
   const amountText = useMemo(() => {
-    return `${formatNumber(amount)} ${symbol}`;
+    return `${formatNumber(amount, { minFormat: 1000, decimalPlaces: 2 })} ${symbol}`;
   }, [amount, symbol]);
 
   const buyText = useMemo(() => {

@@ -17,6 +17,8 @@ import useLoading from 'hooks/useLoading';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
 import StrayCats from 'pageComponents/strayCats';
+import BackCom from './components/BackCom';
+import useTelegram from 'hooks/useTelegram';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -49,6 +51,11 @@ export default function TokensPage() {
   const { jumpToPage } = useJumpToPage();
 
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
+  const { isInTelegram } = useTelegram();
+
+  const isInTG = useMemo(() => {
+    return isInTelegram();
+  }, [isInTelegram]);
 
   const getNotice = useCallback(async () => {
     try {
@@ -86,6 +93,7 @@ export default function TokensPage() {
 
   return (
     <div className="flex flex-col max-w-[2560px] w-full">
+      <BackCom className="mt-6 m-4 ml-4 lg:ml-10" />
       <div
         className={clsx(
           'flex flex-col-reverse lg:flex-row justify-between px-0 lg:px-[40px]',
@@ -103,7 +111,7 @@ export default function TokensPage() {
           </div>
         ) : null} */}
 
-        {cmsInfo?.operationButtons?.length ? (
+        {!isInTG && cmsInfo?.operationButtons?.length ? (
           <div
             className={clsx(
               'flex justify-end fixed lg:static bottom-0 left-0 z-20 bg-neutralWhiteBg p-[16px] lg:p-0 w-full lg:w-auto border-0 border-t-[1px] border-solid border-neutralDivider lg:border-none',
