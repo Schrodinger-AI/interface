@@ -143,9 +143,7 @@ const Layout = dynamic(async () => {
             </div>
           </AntdLayout>
         ) : (
-          <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
-            {children}
-          </div>
+          <>{children}</>
         )}
         <div
           className={clsx(

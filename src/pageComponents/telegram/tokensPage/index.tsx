@@ -19,6 +19,7 @@ import CommonSegmented from 'components/CommonSegmented';
 import StrayCats from 'pageComponents/strayCats';
 import BackCom from './components/BackCom';
 import useTelegram from 'hooks/useTelegram';
+import { PAGE_CONTAINER_ID } from 'constants/index';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -92,7 +93,7 @@ export default function TokensPage() {
   }, 3000);
 
   return (
-    <div className="flex flex-col max-w-[2560px] w-full">
+    <div className="flex flex-col max-w-[2560px] w-full h-full overflow-scroll" id={PAGE_CONTAINER_ID}>
       <BackCom className="mt-6 m-4 ml-4 lg:ml-10" />
       <div
         className={clsx(
