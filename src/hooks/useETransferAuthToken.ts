@@ -133,6 +133,7 @@ export function useETransferAuthToken() {
       const { caHash, originChainId } = await getCaInfo({
         walletType,
         address: wallet.address,
+        walletInfo: wallet,
       });
       let authToken;
       const jwtData = await getETransferJWT(asyncStorage, `${caHash}${managerAddress}`);

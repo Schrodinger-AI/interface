@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import SkeletonImage from 'components/SkeletonImage';
 import React, { ReactNode } from 'react';
 import styles from './index.module.css';
-import { useResponsive } from 'hooks/useResponsive';
 import { TModalTheme } from 'components/CommonModal';
 
 export interface IInfoCard {
@@ -21,7 +20,6 @@ export interface IInfoCard {
 }
 
 function InfoCard(params: IInfoCard) {
-  const { isLG } = useResponsive();
   const { logo, name, tag, rank, items, subName, className, layout = 'horizontal', theme = 'light' } = params;
 
   return (
@@ -34,14 +32,7 @@ function InfoCard(params: IInfoCard) {
         className,
       )}>
       <div className="flex items-center">
-        {logo ? (
-          <SkeletonImage
-            img={logo}
-            tag={tag}
-            rank={rank}
-            className={clsx(isLG ? 'w-[112px] h-[112px]' : 'w-[180px] h-[180px]')}
-          />
-        ) : null}
+        {logo ? <SkeletonImage img={logo} tag={tag} rank={rank} className={clsx('w-[180px] h-[180px]')} /> : null}
       </div>
       <div
         className={`overflow-hidden flex flex-col ${layout === 'vertical' ? 'mt-[16px] w-full' : 'ml-[16px] flex-1'}`}>

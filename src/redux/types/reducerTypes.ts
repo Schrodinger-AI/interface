@@ -169,6 +169,10 @@ export type TGlobalConfigType = {
     etransferUrl: string;
     etransferAuthUrl: string;
   };
+  tgHomePageText: Array<Array<string> | string>;
+  tgRulesText: Array<Array<string> | string>;
+  tgCommunityUrl: string;
+  gitbookUrlInTgRules: string;
   [key: string]: any;
 };
 

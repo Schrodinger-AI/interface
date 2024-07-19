@@ -3,11 +3,14 @@ import { Flex } from 'antd';
 import { ReactComponent as ExpendSVG } from 'assets/img/telegram/expend.svg';
 import { ReactComponent as CatSVG } from 'assets/img/telegram/cat.svg';
 import { useCallback } from 'react';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function IntroText() {
+  const { tgHomePageText, tgCommunityUrl } = useCmsInfo() || {};
+
   const handleCommunity = useCallback(() => {
-    window.open('https://t.me/projectschrodingercat');
-  }, []);
+    tgCommunityUrl && window.open(tgCommunityUrl);
+  }, [tgCommunityUrl]);
 
   return (
     <div className="relative">
@@ -21,13 +24,17 @@ export default function IntroText() {
           alt=""
           className="w-[94px] h-9 object-contain"
         />
-        <p>{`Welcome to the intriguing world of Schrodinger's Cats! Here's a quick guide to get you started:`}</p>
-        <div>
-          <p>{`1. Tap on "Adopt a cat" and see if fortune smiles upon you with a Rare Cat.`}</p>
-          <p>{`2. Adopting a cat comes with a small cost of 1.6 $SGR.`}</p>
-          <p>{`3. Lucky enough to pull a Rare Cat? Head over to the Forest marketplace to trade it for a guaranteed profit.`}</p>
-          <p>{`4. Increase your chances of finding a Rare Cat by becoming a part of the Schrodinger's community!`}</p>
-        </div>
+        {tgHomePageText?.map((item, index) => {
+          return typeof item === 'string' ? (
+            <p key={index}>{item}</p>
+          ) : (
+            <div key={index}>
+              {item.map((text, i) => {
+                return <p key={'' + index + i}>{text}</p>;
+              })}
+            </div>
+          );
+        })}
         <Flex align="center" gap={4} className="cursor-pointer w-fit" onClick={handleCommunity}>
           <span className="text-pixelsPrimaryTextPink">Community</span>
           <ExpendSVG className="w-[14px] h-[14px] leading-[14px]" />
