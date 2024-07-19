@@ -1,0 +1,9 @@
+.etransfer-deposit-wrap {
+  :global {
+    .etransfer-ui-common-svg {
+      svg {
+        @apply !h-auto !w-auto;
+      }
+    }
+  }
+}
