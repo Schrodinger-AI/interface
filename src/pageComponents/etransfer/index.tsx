@@ -11,9 +11,10 @@ import { useCmsInfo } from 'redux/hooks';
 import { useTimeoutFn } from 'react-use';
 import styles from './styles.module.css';
 import clsx from 'clsx';
+import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 
 export default function ETransfer() {
-  const { isMD } = useResponsive();
+  const { isMD, isLG } = useResponsive();
   const cmsInfo = useCmsInfo();
   const searchParams = useSearchParams();
   const { isLogin } = useGetLoginStatus();
@@ -68,6 +69,7 @@ export default function ETransfer() {
 
   return (
     <div className={clsx('m-auto max-w-[1024px]', styles['etransfer-deposit-wrap'])}>
+      {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" /> : null}
       <ETransferDepositProvider>
         <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
       </ETransferDepositProvider>

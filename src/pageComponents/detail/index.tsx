@@ -321,6 +321,7 @@ export default function DetailPage() {
           <ItemInfo
             detail={schrodingerDetail}
             rankInfo={rankInfo}
+            source={source}
             onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
           />
         )}
