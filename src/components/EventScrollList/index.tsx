@@ -25,7 +25,7 @@ function EventScrollList(props?: { useInfiniteScroll?: boolean }) {
   const loader = useMemo(
     () => (
       <div className={clsx('w-full flex justify-center items-center py-[12px]', pageSize <= 1 ? 'pt-[60px]' : '')}>
-        <Loading size={pageSize <= 1 ? 'default' : 'small'} />
+        <Loading size={pageSize <= 1 ? 'default' : 'middle'} />
       </div>
     ),
     [pageSize],

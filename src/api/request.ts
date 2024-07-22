@@ -36,7 +36,7 @@ export const fetchSchrodingerImagesByAdoptId = async ({
   transactionHash?: string;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/imageInfo?adoptId=${adoptId}${transactionHash ? `&transactionHash=${transactionHash}` : ''}`,
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}${transactionHash ? `&transactionHash=${transactionHash}` : ''}`,
   );
 };
 

@@ -1,5 +1,5 @@
 import { useWalletService } from 'hooks/useWallet';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Pagination, Table } from 'aelf-design';
 import { TableColumnsType } from 'antd';
@@ -19,6 +19,7 @@ import { AdoptActionErrorCode } from 'hooks/Adopt/adopt';
 import useLoading from 'hooks/useLoading';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { renameSymbol } from 'utils/renameSymbol';
+import { ListTypeEnum } from 'types';
 
 const textStyle =
   'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
@@ -47,6 +48,15 @@ export default function StrayCatsPage() {
     pageSize && setPageSize(pageSize);
     page && setPageNum(page);
   };
+
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const isTGPage = pathName === '/telegram';
+
+  const pageState: ListTypeEnum = useMemo(
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    [searchParams],
+  );
 
   const getStrayCatsData = useCallback(async () => {
     try {
@@ -124,9 +134,9 @@ export default function StrayCatsPage() {
         showLoading();
         await checkAIServer();
         closeLoading();
-        adoptConfirm(
-          formatAdoptConfirmParams(record),
-          {
+        adoptConfirm({
+          parentItemInfo: formatAdoptConfirmParams(record),
+          childrenItemInfo: {
             adoptId: record.adoptId,
             outputAmount: record.nextAmount,
             symbol: record.nextSymbol,
@@ -134,8 +144,8 @@ export default function StrayCatsPage() {
             inputAmount: record.consumeAmount,
             isDirect: record.directAdoption,
           },
-          wallet.address,
-        );
+          account: wallet.address,
+        });
       } catch (error) {
         closeLoading();
       }
@@ -187,21 +197,33 @@ export default function StrayCatsPage() {
         },
       },
       {
-        title: 'Operation',
+        title: 'Action',
         dataIndex: 'operation',
         key: 'operation',
         fixed: 'right',
         render: (_, record) => {
           return (
             <Button type="primary" size="small" onClick={() => onAdopt(record)}>
-              Adopt
+              Operation
             </Button>
           );
         },
       },
     ],
-    [formatTokenAmount, onAdopt],
+    [formatTokenAmount, onAdopt, isTGPage],
   );
+
+  const getColumns = () => {
+    if (isTGPage) {
+      return columns.filter((item) => {
+        if (['Action', 'Name'].includes(item.title as any as string)) {
+          return item;
+        }
+      });
+    } else {
+      return columns;
+    }
+  };
 
   useTimeoutFn(() => {
     if (!isLogin) {
@@ -222,7 +244,7 @@ export default function StrayCatsPage() {
         <div className="w-full mt-[24px] lg:mt-[40px]">
           <Table
             dataSource={dataSource}
-            columns={columns}
+            columns={getColumns()}
             loading={loading}
             pagination={null}
             locale={{

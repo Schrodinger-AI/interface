@@ -2,14 +2,28 @@ import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
 import { ReactComponent as Close } from 'assets/img/clear.svg';
+import { ReactComponent as PixelsClose } from 'assets/img/pixelsIcon/closeIcon.svg';
 import useResponsive from 'hooks/useResponsive';
+import clsx from 'clsx';
+
+export type TModalTheme = 'dark' | 'light';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
   width?: number;
   disableMobileLayout?: boolean;
+  theme?: TModalTheme;
 }
 function CommonModal(props: ModalProps) {
-  const { children, className, title, subTitle, wrapClassName, width = 800, disableMobileLayout = false } = props;
+  const {
+    children,
+    className,
+    title,
+    subTitle,
+    wrapClassName,
+    width = 800,
+    disableMobileLayout = false,
+    theme = 'light',
+  } = props;
 
   const { isLG } = useResponsive();
 
@@ -18,17 +32,22 @@ function CommonModal(props: ModalProps) {
       keyboard={false}
       maskClosable={false}
       destroyOnClose={true}
-      closeIcon={<Close width={24} height={24} />}
+      closeIcon={theme === 'dark' ? <PixelsClose width={14} height={14} /> : <Close width={24} height={24} />}
       width={width}
       centered
+      footer={null}
       {...props}
-      className={`${styles.modal} ${isLG && styles['modal-mobile']} ${
-        isLG && !disableMobileLayout && styles['modal-full-screen']
-      } ${className || ''}`}
+      className={clsx(
+        styles.modal,
+        isLG && styles['modal-mobile'],
+        isLG && !disableMobileLayout && styles['modal-full-screen'],
+        theme === 'dark' && styles['modal-mobile-dark'],
+        className,
+      )}
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
-          <div className="pr-8 break-words">{title}</div>
+          <div className={(clsx('pr-8 break-words'), styles['modal-title'])}>{title}</div>
           {subTitle && <div className="mt-2">{subTitle}</div>}
         </div>
       }>

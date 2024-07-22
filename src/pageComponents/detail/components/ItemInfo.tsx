@@ -23,11 +23,13 @@ export default function ItemInfo({
   rankInfo,
   onAdoptNextGeneration,
   showAdopt,
+  source,
 }: {
   detail: TSGRToken;
   rankInfo?: TRankInfoAddLevelInfo;
   onAdoptNextGeneration: () => void;
   showAdopt?: boolean;
+  source?: string | null;
 }) {
   const learnMoreModal = useModal(LearnMoreModal);
   const onLearnMoreClick = useCallback(() => {
@@ -180,7 +182,7 @@ export default function ItemInfo({
           {detail.generation == 0 ? noTraits() : traits()}
         </div>
       </div>
-      {isLearnMoreShow && (
+      {isLearnMoreShow && !source && (
         <div className="flex justify-end mt-[16px]">
           <div className="cursor-pointer flex items-center" onClick={onLearnMoreClick}>
             <span className="text-brandDefault text-sm font-medium">Learn More</span>

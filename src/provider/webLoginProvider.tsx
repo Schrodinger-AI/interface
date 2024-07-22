@@ -21,6 +21,7 @@ const WebLoginProviderDynamic = dynamic(
     const cmsInfo = store.getState().info.cmsInfo;
     const serverV2 = cmsInfo?.portkeyServerV2;
     const connectUrlV2 = cmsInfo?.connectUrlV2;
+    const telegramBotId = cmsInfo?.telegramBotId;
 
     const webLogin = await import('aelf-web-login').then((module) => module);
 
@@ -39,6 +40,11 @@ const WebLoginProviderDynamic = dynamic(
           baseURL: serverV2 || '',
         },
         serviceUrl: serverV2,
+        socialLogin: {
+          Telegram: {
+            botId: telegramBotId,
+          },
+        },
         loginConfig: {
           recommendIndexes: [0, 1],
           loginMethodsOrder: ['Google', 'Apple', 'Telegram', 'Email'],

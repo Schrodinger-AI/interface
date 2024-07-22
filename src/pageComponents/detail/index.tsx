@@ -27,6 +27,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
+import useTelegram from 'hooks/useTelegram';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -41,6 +42,11 @@ export default function DetailPage() {
   const marketModal = useModal(MarketModal);
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
+  const { isInTelegram } = useTelegram();
+
+  const isInTG = useMemo(() => {
+    return isInTelegram();
+  }, [isInTelegram]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
@@ -89,7 +95,12 @@ export default function DetailPage() {
 
   const onAdoptNextGeneration = (isDirect: boolean) => {
     if (!schrodingerDetail) return;
-    adoptHandler(schrodingerDetail, wallet.address, isDirect, rankInfo);
+    adoptHandler({
+      parentItemInfo: schrodingerDetail,
+      account: wallet.address,
+      isDirect,
+      rankInfo,
+    });
   };
 
   const onReset = () => {
@@ -98,9 +109,10 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
-    const path = fromListAll ? '/' : '/?pageState=1';
+    const baseUrl = isInTG ? `/telegram` : '';
+    const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
     route.replace(path);
-  }, [fromListAll, route]);
+  }, [fromListAll, isInTG, route]);
 
   const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
   const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
@@ -108,7 +120,7 @@ export default function DetailPage() {
     () => (schrodingerDetail?.holderAmount || 0) > 0,
     [schrodingerDetail?.holderAmount],
   );
-  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine, [genLtNine, holderNumberGtZero]);
+  const showAdopt = useMemo(() => holderNumberGtZero && genLtNine && !isInTG, [genLtNine, holderNumberGtZero, isInTG]);
   const showAdoptDirectly = useMemo(
     () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
     [holderNumberGtZero, schrodingerDetail?.generation],
@@ -225,7 +237,11 @@ export default function DetailPage() {
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
   return (
-    <section className="mt-[24px] lg:mt-[24px] flex flex-col items-center w-full">
+    <section
+      className={clsx(
+        'mt-[24px] lg:mt-[24px] flex flex-col items-center w-full',
+        isInTG && 'px-4 lg:px-10 pb-[100px]',
+      )}>
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
@@ -245,7 +261,7 @@ export default function DetailPage() {
           {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {adoptAndResetButton()}
-            {tradeModal?.show && schrodingerDetail && (
+            {!isInTG && tradeModal?.show && schrodingerDetail && (
               <Button
                 type="default"
                 className="!rounded-lg !border-brandDefault !text-brandDefault"
@@ -277,7 +293,7 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <div className="w-full flex flex-row justify-start items-center" onClick={onBack}>
+        <div className="w-fit cursor-pointer flex flex-row justify-start items-center self-start" onClick={onBack}>
           <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
@@ -291,7 +307,7 @@ export default function DetailPage() {
             rank={rankInfo?.rank}
           />
         )}
-        {tradeModal?.show && schrodingerDetail && (
+        {!isInTG && tradeModal?.show && schrodingerDetail && (
           <Button
             type="default"
             className="!rounded-lg !border-brandDefault !text-brandDefault h-[48px] w-full mt-[16px]"
@@ -304,6 +320,7 @@ export default function DetailPage() {
           <ItemInfo
             detail={schrodingerDetail}
             rankInfo={rankInfo}
+            source={isInTG ? 'telegram' : ''}
             onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
           />
         )}

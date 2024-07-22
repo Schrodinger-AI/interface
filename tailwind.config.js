@@ -6,6 +6,15 @@ const rotateY = plugin(function ({ addUtilities }) {
     '.rotate-y-180': {
       transform: 'rotateY(180deg)',
     },
+    '.primary-button-dark': {
+      backgroundColor: 'var(--pixels-card-bg)',
+      border: '1px dashed var(--pixels-primary-text-purple)',
+      borderRadius: '0',
+      boxShadow: '4px 4px 4px 0 #262284',
+    },
+    '.tg-card-shadow': {
+      boxShadow: '4px 4px 4px 0 #262284',
+    },
   });
 });
 
@@ -51,6 +60,24 @@ module.exports = {
         warning100: 'var(--warning-100)',
         warning500: 'var(--warning-500)',
         warning600: 'var(--warning-600)',
+
+        pixelsModalBg: 'var(--pixels-modal-bg)',
+        pixelsPrimaryTextPurple: 'var(--pixels-primary-text-purple)',
+        pixelsPrimaryTextPink: 'var(--pixels-primary-text-pink)',
+        pixelsSecondaryTextPurple: 'var(--pixels-secondary-text-purple)',
+        pixelsSecondaryTextPink: 'var(--pixels-secondary-text-pink)',
+        pixelsTertiaryTextPurple: 'var(--pixels-tertiary-text-purple)',
+        pixelsTertiaryTextPink: 'var(--pixels-tertiary-text-pink)',
+        pixelsDivider: 'var(--pixels-divider)',
+        pixelsBorder: 'var(--pixels-border)',
+        pixelsPageBg: 'var(--pixels-page-bg)',
+        pixelsCardBg: 'var(--pixels-card-bg)',
+        pixelsPinkContainer: 'var(--pixels-pink-container)',
+        pixelsWarning: 'var(--pixels-warning)',
+        pixelsComplete: 'var(--pixels-complete)',
+        pixelsPaleYellow: 'var(--pixels-pale-yellow)',
+        pixelsDashPurple: 'var(--pixels-dash-purple)',
+        pixelsWhiteBg: 'var(--pixels-white-bg)',
       },
       fontSize: {
         xxs: ['10px', '16px'],
@@ -70,6 +97,7 @@ module.exports = {
         cardShadow: '0px 0px 12px 0px rgb(27 63 116 / 8%)',
         cardShadow2: '0px 4px 12px 0px rgb(27 63 116 / 8%)',
         radioShadow: '0px 2px 8px 0px rgb(0 0 0 / 5%)',
+        darkPixelsShadow: '4px 4px 4px 0 #262284',
       },
       keyframes: {
         loading: {
