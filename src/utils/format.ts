@@ -101,21 +101,24 @@ export function formatNumber(
   toFixedProps?: {
     decimalPlaces?: number;
     roundingMode?: BigNumber.RoundingMode;
+    minFormat?: number;
   },
 ) {
-  const { decimalPlaces = 4, roundingMode = BigNumber.ROUND_DOWN } = toFixedProps || {};
+  const { decimalPlaces = 4, roundingMode = BigNumber.ROUND_DOWN, minFormat = MUnit } = toFixedProps || {};
   const numberBig: BigNumber = BigNumber.isBigNumber(number) ? number : new BigNumber(number);
   if (numberBig.isNaN() || numberBig.eq(0)) return '0';
 
   const regexp = /(?:\.0*|(\.\d+?)0+)$/;
 
   const abs = numberBig.abs();
-  if (abs.gt(TUnit)) {
+  if (abs.gt(TUnit) && abs.gte(minFormat)) {
     return BigNumber(numberBig.div(TUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'T';
-  } else if (abs.gte(BUnit)) {
+  } else if (abs.gte(BUnit) && abs.gte(minFormat)) {
     return BigNumber(numberBig.div(BUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'B';
-  } else if (abs.gte(MUnit)) {
+  } else if (abs.gte(MUnit) && abs.gte(minFormat)) {
     return BigNumber(numberBig.div(MUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'M';
+  } else if (abs.gte(KUnit) && abs.gte(minFormat)) {
+    return BigNumber(numberBig.div(KUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'K';
   } else {
     return BigNumber(numberBig.toFixed(2, roundingMode)).toFormat();
   }

@@ -43,7 +43,7 @@ import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import qs from 'qs';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -66,6 +66,10 @@ export default function OwnedItems() {
     () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
     [searchParams],
   );
+
+  const pathName = usePathname();
+  const isTGPage = pathName === '/telegram';
+
   const defaultFilter = useMemo(
     () =>
       getDefaultFilter(curChain, {
@@ -460,6 +464,7 @@ export default function OwnedItems() {
       const params = qs.stringify({
         symbol: item.symbol,
         from: pageState === ListTypeEnum.My ? 'my' : 'all',
+        source: isTGPage ? 'telegram' : undefined,
       });
 
       router.push(`/detail?${params}`);

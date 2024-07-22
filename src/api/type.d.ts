@@ -37,6 +37,9 @@ interface IAdoptImageInfo {
     attributes: (IBaseTrait & { percent: number })[];
     images: string[];
   };
+  image: string;
+  signature: string;
+  imageUri: string;
 }
 
 interface IWaterImageRequest {

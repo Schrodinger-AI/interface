@@ -1,11 +1,12 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import CommonModal from 'components/CommonModal';
+import CommonModal, { TModalTheme } from 'components/CommonModal';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import Loading from 'components/Loading';
 import useResponsive from 'hooks/useResponsive';
 import { Button } from 'aelf-design';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
 import { transactionPending } from 'constants/promptMessage';
+import clsx from 'clsx';
 
 interface IProps {
   title?: string;
@@ -16,6 +17,7 @@ interface IProps {
         onConfirm?: Function;
       }[]
     | false;
+  theme?: TModalTheme;
   initialization?: <T = any, R = void>(params?: T) => Promise<void | R>;
   onClose?: <T>(params?: T) => void;
   content?: {
@@ -24,7 +26,7 @@ interface IProps {
   };
 }
 
-function PromptModal({ title, info, buttonConfig, initialization, content, onClose }: IProps) {
+function PromptModal({ title, info, buttonConfig, initialization, content, onClose, theme = 'light' }: IProps) {
   const modal = useModal();
   const { isLG } = useResponsive();
   const [loading, setLoading] = useState<boolean>(true);
@@ -83,7 +85,7 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
                 size="ultra"
                 key={index}
                 disabled={loading}
-                className={`${isLG ? 'w-full' : '!w-[256px]'}`}
+                className={clsx(isLG ? 'w-full' : '!w-[256px]', theme === 'dark' && 'primary-button-dark')}
                 onClick={() => onRetry(item?.onConfirm)}>
                 {item.btnText}
               </Button>
@@ -132,21 +134,30 @@ function PromptModal({ title, info, buttonConfig, initialization, content, onClo
       onOk={() => onConfirm()}
       onCancel={onCancel}
       afterClose={modal.remove}
+      theme={theme}
       footer={footer()}>
       <div className="w-full h-full flex flex-col relative">
-        <InfoCard {...info} className="mt-[40px] lg:mt-0" />
+        <InfoCard {...info} className="mt-0" theme={theme} />
         {content ? (
-          <div className="mt-[32px] bg-neutralHoverBg rounded-lg p-[24px]">
-            <div className="text-lg text-neutralPrimary font-medium">
+          <div
+            className={clsx(
+              'mt-[32px] rounded-lg p-[24px]',
+              theme === 'dark' ? 'bg-pixelsPageBg' : 'bg-neutralHoverBg',
+            )}>
+            <div
+              className={clsx('text-lg font-medium', theme === 'dark' ? 'text-neutralWhiteBg' : 'text-neutralPrimary')}>
               {content?.title ? getContentCom(content?.title) : transactionPending}
             </div>
-            <div className="text-base text-neutralSecondary mt-[16px]">{getContentCom(content?.content)}</div>
+            <div
+              className={clsx('text-base mt-[16px]', theme === 'dark' ? 'text-pixelsBorder' : 'text-neutralSecondary')}>
+              {getContentCom(content?.content)}
+            </div>
           </div>
         ) : null}
         {loading && (
           <div className="absolute w-full h-full top-0 left-0 flex justify-center items-center">
             <div className="p-[24px] w-max h-max bg-fillMask1 rounded-[16px]">
-              <Loading />
+              <Loading color={theme === 'dark' ? 'purple' : 'blue'} />
             </div>
           </div>
         )}

@@ -19,6 +19,7 @@ import light from 'assets/lottie/light.json';
 import scrap from 'assets/lottie/scrap.json';
 import { useCmsInfo } from 'redux/hooks';
 import { useJumpToPage } from 'hooks/useJumpToPage';
+import useTelegram from 'hooks/useTelegram';
 
 export enum Status {
   ERROR = 'error',
@@ -124,6 +125,8 @@ function CardResultModal({
 
   const aProps = useMemo(() => (isMobile ? {} : { target: '_blank', rel: 'noreferrer' }), []);
 
+  const { isInTelegram } = useTelegram();
+
   const modalFooter = useMemo(() => {
     return (
       <div className="flex flex-1 lg:flex-none flex-col justify-center items-center">
@@ -140,7 +143,7 @@ function CardResultModal({
           </div>
         ) : null}
 
-        {link && (
+        {link && !isInTelegram() && (
           <div className="flex items-center mt-[16px]">
             <a href={link.href} {...aProps} className="flex items-center">
               <span className="text-brandDefault font-medium text-base mr-[8px]">
@@ -154,7 +157,7 @@ function CardResultModal({
         )}
       </div>
     );
-  }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick]);
+  }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick, isInTelegram]);
 
   return (
     <>
@@ -188,7 +191,7 @@ function CardResultModal({
                   rarity={info?.levelInfo?.describe}
                   img={image}
                   rank={info?.rank}
-                  className="w-[128px] h-[128px] lg:w-[180px] lg:h-[180px]"
+                  className="w-[180px] h-[180px]"
                 />
               ) : null}
             </div>

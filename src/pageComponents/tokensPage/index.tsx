@@ -122,6 +122,7 @@ export default function TokensPage() {
                     jumpToPage({
                       link: item.link,
                       linkType: item.linkType,
+                      needLogin: item.needLogin,
                     });
                   }}>
                   {item.text}

@@ -1,6 +1,6 @@
+import { NetworkType } from '@etransfer/ui-react';
 import { ICompassProps } from 'components/Header/type';
 import { TNftActivityListByConditionInput } from 'graphqlServer';
-import { ListTypeEnum } from 'types';
 import { TEmptyChannelGroup } from 'types/misc';
 
 export enum ThemeType {
@@ -62,6 +62,7 @@ export type TBannerConfigButton = {
   text: string;
   buttonType?: 'default' | 'primary';
   link?: string;
+  needLogin?: boolean;
   linkType?: TLinkType;
 };
 
@@ -161,6 +162,20 @@ export type TGlobalConfigType = {
   pixiePoints?: string;
   showNftQuantity?: number;
   buySGRFromETransfer?: string;
+  telegramBotId?: string;
+  etransferConfig: {
+    supportChainIds: string[];
+    networkType: NetworkType;
+    etransferUrl: string;
+    etransferAuthUrl: string;
+  };
+  tgHomePageText: Array<Array<string> | string>;
+  tgRulesText: Array<{
+    title: string;
+    content: Array<string> | string;
+  }>;
+  tgCommunityUrl: string;
+  twitterUrlInTgRules: string;
   [key: string]: any;
 };
 
