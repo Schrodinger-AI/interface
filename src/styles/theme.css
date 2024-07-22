@@ -38,6 +38,25 @@
   --warning-600: #F90;
   --warning-500: #FFB272;
   --bg-white-8: rgb(255 255 255 / 8%);
+
+  /* tg pixels */
+  --pixels-modal-bg: #17171C;
+  --pixels-pink-container: #2E1524;
+  --pixels-primary-text-purple: #7936E5;
+  --pixels-primary-text-pink: #FE026B;
+  --pixels-secondary-text-purple: #8D62D3;
+  --pixels-secondary-text-pink: #FC78CC;
+  --pixels-tertiary-text-purple: #D3B5FF;
+  --pixels-tertiary-text-pink: #FFB9E1;
+  --pixels-divider: #9C9DA9;
+  --pixels-page-bg: #040406;
+  --pixels-card-bg: #27238A;
+  --pixels-border: #5D5E66;
+  --pixels-warning: #FCE502;
+  --pixels-complete: #40F4D2;
+  --pixels-pale-yellow: #FFEBB5;
+  --pixels-dash-purple: #4743C5;
+  --pixels-white-bg: #FFF;
 }
 
 .dark-theme {

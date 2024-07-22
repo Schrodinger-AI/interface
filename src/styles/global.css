@@ -49,6 +49,10 @@ code {
    @apply h-full;
 }
 
+.etransfer-ui-wrapper {
+  @apply h-full;
+}
+
 .aelfd-checkbox-wrapper > .aelfd-checkbox + span {
   @apply block flex-1 min-w-0;
 }
