@@ -333,3 +333,20 @@ interface INftInfo {
   traitPairsDictionary: Array<Pick<ITraitInfo, 'key' | 'value'>>;
   _rankStrForShow?: string;
 }
+
+interface INftSaleInfoItem {
+  tokenName: string;
+  logoImage: string;
+  collectionName: string;
+  floorPrice?: number;
+  floorPriceSymbol?: string;
+  lastDealPrice?: number;
+  lastDealPriceSymbol?: string;
+  listingPrice?: number;
+  maxOfferPrice?: number;
+  availableQuantity?: number;
+}
+interface INftSaleInfoParams {
+  id: string;
+  excludedAddress?: string;
+}

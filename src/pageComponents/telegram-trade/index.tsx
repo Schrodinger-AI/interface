@@ -1,6 +1,16 @@
 import { Collection } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
+import { useSearchParams } from 'next/navigation';
+import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 
 export default function TradePage() {
-  return <Collection nftCollectionId="tDVW-SGRTEST-0" />;
+  const searchParams = useSearchParams();
+  const cId = searchParams.get('cId') || '';
+
+  return (
+    <>
+      <BackCom className="py-4 px-4" />
+      <Collection nftCollectionId={cId} />
+    </>
+  );
 }

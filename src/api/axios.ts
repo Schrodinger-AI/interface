@@ -11,7 +11,7 @@ interface ResponseType<T> {
 
 class Request {
   instance: AxiosInstance;
-  baseConfig: AxiosRequestConfig = { baseURL: 'https://cat.schrodingerai.com/api', timeout: 120000 };
+  baseConfig: AxiosRequestConfig = { baseURL: '/api', timeout: 120000 };
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(Object.assign({}, this.baseConfig, config));
@@ -127,10 +127,10 @@ class Request {
 }
 
 const tokenRequest = new Request({
-  baseURL: 'https://cat.schrodingerai.com/connect',
+  baseURL: '/connect',
 });
 
-const cmsRequest = new Request({ baseURL: 'https://cat.schrodingerai.com/cms' });
+const cmsRequest = new Request({ baseURL: '/cms' });
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new Request({});

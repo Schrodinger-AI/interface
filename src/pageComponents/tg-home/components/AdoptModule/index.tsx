@@ -4,7 +4,7 @@ import { Flex } from 'antd';
 import Link from 'next/link';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
-export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
+export default function AdoptModule({ onAdopt, cId }: { onAdopt: () => void; cId: string }) {
   const { isLogin } = useGetLoginStatus();
 
   return (
@@ -38,7 +38,7 @@ export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
             My Cats
           </Button>
         </Link>
-        <Link href="/telegram/forest/trade" className="flex-1">
+        <Link href={`/telegram/forest/trade?cId=${cId}`} className="flex-1">
           <Button
             size="medium"
             type="primary"

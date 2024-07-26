@@ -13,6 +13,7 @@ import {
   IEventsDetailListTable,
   IRankConfigData,
 } from 'pageComponents/events-detail/types/type';
+import { store } from 'redux/store';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -183,23 +184,35 @@ export const getCatsRankList = async (url: string): Promise<{ items: IEventsDeta
 };
 
 export const fetchListings = async (params: IListingsParams): Promise<IListingsResponse> => {
+  const forestUrl = store.getState()?.info?.cmsInfo?.forestUrl || '';
   return request.get<IListingsResponse>('/app/market/nft-listings', {
     params,
-    baseURL: 'https://test.eforest.finance/api/',
+    baseURL: `${forestUrl}/api/`,
   });
 };
 
 export const getTokenUsdPrice = async (params: { symbol: string }): Promise<IGetTokenPriceData> => {
+  const forestUrl = store.getState()?.info?.cmsInfo?.forestUrl || '';
   return request.get<IGetTokenPriceData>('/app/tokens/market-data', {
     params,
-    baseURL: 'https://test.eforest.finance/api/',
+    baseURL: `${forestUrl}/api/`,
   });
 };
 
 export const fetchForestConfigItems = async (): Promise<any> => {
-  return request.get('/items/config', { baseURL: 'https://test.eforest.finance/cms/' });
+  const forestUrl = store.getState()?.info?.cmsInfo?.forestUrl || '';
+  return request.get('/items/config', { baseURL: `${forestUrl}/cms/` });
 };
 
 export const fetchNftInfo = async (params: { id: string; address: string }): Promise<INftInfo> => {
-  return request.get<INftInfo>('/app/nft/nft-info', { params, baseURL: 'https://test.eforest.finance/api/' });
+  const forestUrl = store.getState()?.info?.cmsInfo?.forestUrl || '';
+  return request.get<INftInfo>('/app/nft/nft-info', { params, baseURL: `${forestUrl}/api/` });
+};
+
+export const fetchNftSalesInfo = async (params: INftSaleInfoParams) => {
+  const forestUrl = store.getState()?.info?.cmsInfo?.forestUrl || '';
+  return request.get<INftSaleInfoItem>('/app/nft/nft-for-sale', {
+    params,
+    baseURL: `${forestUrl}/api/`,
+  });
 };

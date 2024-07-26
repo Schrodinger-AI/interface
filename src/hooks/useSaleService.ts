@@ -1,7 +1,9 @@
 import { useCmsInfo } from 'redux/hooks';
 import { useWalletService } from './useWallet';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import getMaxNftQuantityOfSell from 'utils/getMaxNftQuantityOfSell';
+import { fetchNftSalesInfo } from 'api/request';
+import useLoading from './useLoading';
 
 export function useGetListItemsForSale({ symbol, decimals }: { symbol: string; decimals: number }) {
   const { wallet } = useWalletService();
@@ -30,5 +32,47 @@ export function useGetListItemsForSale({ symbol, decimals }: { symbol: string; d
   return {
     listedAmount,
     balance,
+    fetchData: getMaxNftQuantity,
+  };
+}
+
+export function useSaleInfo({ symbol }: { symbol: string }) {
+  const { curChain } = useCmsInfo() || {};
+  const [saleInfo, setSaleInfo] = useState<INftSaleInfoItem>();
+  const { wallet } = useWalletService();
+  const { showLoading, closeLoading } = useLoading();
+
+  const nftId = useMemo(() => {
+    return symbol && curChain ? `${curChain}-${symbol}` : '';
+  }, [curChain, symbol]);
+
+  const fetchSaleInfo = useCallback(async () => {
+    try {
+      showLoading();
+      const saleInfo = await fetchNftSalesInfo({
+        id: nftId,
+        excludedAddress: wallet.address,
+      });
+      closeLoading();
+      if (saleInfo) setSaleInfo(saleInfo);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      closeLoading();
+    }
+  }, [closeLoading, nftId, showLoading, wallet.address]);
+
+  const maxBuyAmount = useMemo(() => {
+    return saleInfo?.availableQuantity || 0;
+  }, [saleInfo?.availableQuantity]);
+
+  useEffect(() => {
+    fetchSaleInfo();
+  }, [fetchSaleInfo]);
+
+  return {
+    maxBuyAmount,
+    saleInfo,
+    fetchData: fetchSaleInfo,
   };
 }

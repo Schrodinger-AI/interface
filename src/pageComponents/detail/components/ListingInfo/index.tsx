@@ -7,11 +7,8 @@ import { formatNumber, formatTokenPrice, formatUSDPrice } from 'utils/format';
 import CommonCopy from 'components/CommonCopy';
 import { useWalletService } from 'hooks/useWallet';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
-import { useBuy, useSell } from 'forest-ui-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import getNftInfo from 'utils/getNftInfo';
-import { useCmsInfo } from 'redux/hooks';
-import useLoading from 'hooks/useLoading';
+import { useCallback } from 'react';
+import useForestSdk from 'hooks/useForestSdk';
 
 export default function ListingInfo({
   page,
@@ -21,6 +18,7 @@ export default function ListingInfo({
   onChange,
   rate,
   symbol,
+  onRefresh,
 }: {
   page: number;
   pageSize: number;
@@ -29,43 +27,30 @@ export default function ListingInfo({
   onChange: (page?: number, pageSize?: number) => void;
   rate: number;
   symbol: string;
+  onRefresh?: () => void;
 }) {
-  const [nftInfo, setNftInfo] = useState<INftInfo>();
   const { wallet } = useWalletService();
-  const { curChain } = useCmsInfo() || {};
-  const { buyNow } = useBuy({ nftInfo });
-  const { sell } = useSell({ nftInfo });
-  const { showLoading, closeLoading } = useLoading();
-
-  const nftId = useMemo(() => {
-    return symbol && curChain ? `${curChain}-${symbol}` : '';
-  }, [curChain, symbol]);
-
-  const initNftInfo = useCallback(async () => {
-    if (!nftId || !wallet.address) return;
-    showLoading();
-    const nftInfo = await getNftInfo({
-      nftId,
-      address: wallet.address,
-    });
-    closeLoading();
-    if (nftInfo) setNftInfo(nftInfo);
-  }, [closeLoading, nftId, showLoading, wallet.address]);
-
-  useEffect(() => {
-    initNftInfo();
-  }, [initNftInfo]);
+  const { buyNow, sell } = useForestSdk({
+    symbol,
+  });
 
   const onClick = useCallback(
     async (list: FormatListingType) => {
       if (list.ownerAddress === wallet.address) {
+        // sell({
+        //   onViewNft: onRefresh,
+        // });
         sell();
         return;
       }
+      // buyNow({
+      //   onViewNft: onRefresh,
+      // });
       buyNow();
     },
     [buyNow, sell, wallet.address],
   );
+
   return (
     <div className="w-full rounded-lg border-solid border border-[#EDEDED] flex flex-col mt-[16px]">
       <div className="w-full h-[72px] flex flex-row justify-between items-center p-[24px] border-solid border border-[#E1E1E1] border-x-0 border-t-0">

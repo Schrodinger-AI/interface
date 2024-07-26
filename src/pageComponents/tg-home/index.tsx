@@ -77,7 +77,7 @@ export default function TgHome() {
         <IntroText />
       </div>
       <div className="mt-10">
-        <AdoptModule onAdopt={OpenAdoptModal} />
+        <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
       </div>
     </div>
   );

@@ -31,10 +31,12 @@ import useTelegram from 'hooks/useTelegram';
 import useListingsList from 'pageComponents/tg-home/hooks/useListingsList';
 import ListingInfo from './components/ListingInfo';
 import styles from './style.module.css';
-import { useGetListItemsForSale } from 'hooks/useSaleService';
+import { useGetListItemsForSale, useSaleInfo } from 'hooks/useSaleService';
 import { divDecimals } from 'utils/calculate';
 import BigNumber from 'bignumber.js';
 import { ItemType } from 'antd/es/menu/interface';
+import useForestSdk from 'hooks/useForestSdk';
+import 'forest-ui-react/dist/assets/index.css';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -50,17 +52,27 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
-  const { page, pageSize, listings, totalCount, onChange, elfPrice } = useListingsList({
+  const {
+    page,
+    pageSize,
+    listings,
+    totalCount,
+    onChange,
+    elfPrice,
+    fetchData: refreshListing,
+  } = useListingsList({
     symbol: schrodingerDetail?.symbol || '',
   });
 
-  const { listedAmount, balance } = useGetListItemsForSale({
+  const { listedAmount, fetchData: refreshSaleListedInfo } = useGetListItemsForSale({
     symbol: schrodingerDetail?.symbol || '',
     decimals: schrodingerDetail?.decimals || 8,
   });
 
+  const { maxBuyAmount, fetchData: refreshSaleInfo } = useSaleInfo({ symbol: schrodingerDetail?.symbol || '' });
+
   const isInTG = useMemo(() => {
-    return !isInTelegram();
+    return isInTelegram();
   }, [isInTelegram]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
@@ -73,6 +85,10 @@ export default function DetailPage() {
 
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
+
+  const { buyNow, sell } = useForestSdk({
+    symbol: schrodingerDetail?.symbol || '',
+  });
 
   const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
     if (generation !== 9) {
@@ -135,10 +151,7 @@ export default function DetailPage() {
     () => (schrodingerDetail?.holderAmount || 0) > 0,
     [schrodingerDetail?.holderAmount],
   );
-  const holderNumberGtOne = useMemo(
-    () => (schrodingerDetail?.holderAmount || 0) > 1,
-    [schrodingerDetail?.holderAmount],
-  );
+
   const showAdopt = useMemo(() => holderNumberGtZero && genLtNine && !isInTG, [genLtNine, holderNumberGtZero, isInTG]);
   const showAdoptDirectly = useMemo(
     () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
@@ -147,17 +160,13 @@ export default function DetailPage() {
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
 
-  const totalSupply = useMemo(() => {
-    return divDecimals(schrodingerDetail?.amount, schrodingerDetail?.decimals).toFixed();
-  }, [schrodingerDetail?.amount, schrodingerDetail?.decimals]);
-
   const holderAmount = useMemo(() => {
     return divDecimals(schrodingerDetail?.holderAmount, schrodingerDetail?.decimals).toFixed();
   }, [schrodingerDetail?.decimals, schrodingerDetail?.holderAmount]);
 
   const showBuyInTrade = useMemo(() => {
-    return isInTG && BigNumber(totalCount).minus(listedAmount).gte(1);
-  }, [isInTG, listedAmount, totalCount]);
+    return isInTG && BigNumber(maxBuyAmount).gte(1);
+  }, [isInTG, maxBuyAmount]);
 
   const showSellInTrade = useMemo(() => {
     return isInTG && BigNumber(holderAmount).minus(listedAmount).gte(1);
@@ -167,19 +176,44 @@ export default function DetailPage() {
     return isInTG && holderNumberGtZero && (showSellInTrade || showBuyInTrade);
   }, [holderNumberGtZero, isInTG, showBuyInTrade, showSellInTrade]);
 
+  const refreshData = useCallback(() => {
+    getDetail();
+    refreshListing();
+    refreshSaleListedInfo();
+    refreshSaleInfo();
+  }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
+
   const items: ItemType[] = useMemo(() => {
     const tradeItems = [
       showBuyInTrade && {
         key: 'Buy',
-        label: 'Buy',
+        label: (
+          <div
+            onClick={() => {
+              // buyNow({ onViewNft: refreshData });
+              buyNow();
+            }}>
+            Buy
+          </div>
+        ),
       },
       showSellInTrade && {
         key: 'Sell',
-        label: 'Sell',
+        label: (
+          <div
+            onClick={() => {
+              // sell({
+              //   onViewNft: refreshData,
+              // });
+              sell();
+            }}>
+            Sell
+          </div>
+        ),
       },
     ];
     return tradeItems.filter((i) => i) as ItemType[];
-  }, [showBuyInTrade, showSellInTrade]);
+  }, [buyNow, sell, showBuyInTrade, showSellInTrade]);
 
   function adoptAndResetButton() {
     return (
@@ -391,6 +425,7 @@ export default function DetailPage() {
             onChange={onChange}
             rate={Number(elfPrice)}
             symbol={schrodingerDetail?.symbol || ''}
+            onRefresh={refreshListing}
           />
         )}
         {schrodingerDetail && (

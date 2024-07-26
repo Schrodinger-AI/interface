@@ -117,5 +117,6 @@ export default function useListingsList({ symbol }: { symbol: string }) {
     pageSize,
     onChange,
     elfPrice,
+    fetchData,
   };
 }
