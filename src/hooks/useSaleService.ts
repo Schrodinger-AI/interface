@@ -47,6 +47,7 @@ export function useSaleInfo({ symbol }: { symbol: string }) {
   }, [curChain, symbol]);
 
   const fetchSaleInfo = useCallback(async () => {
+    if (!nftId || !wallet.address) return;
     try {
       showLoading();
       const saleInfo = await fetchNftSalesInfo({
