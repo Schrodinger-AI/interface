@@ -30,6 +30,7 @@ export type TSGRItem = TBaseSGRToken & {
   awakenPrice?: string;
   token?: string;
   address?: string;
+  forestPrice?: string | number;
 };
 
 export type TSGRToken = GenerateType<

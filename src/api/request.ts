@@ -60,8 +60,16 @@ export const catsList = async (data: ICatsListParams): Promise<ICatsListData> =>
   return request.post('/app/cat/list', data);
 };
 
+export const catsListBot = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/bot-list', data);
+};
+
 export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
   return request.post('/app/cat/all', data);
+};
+
+export const catsListBotAll = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/bot-all', data);
 };
 
 export const getGlobalConfig = async (): Promise<{ data: TGlobalConfigType }> => {
@@ -172,4 +180,26 @@ export const getRankConfig = async (): Promise<{ data: IRankConfigData }> => {
 
 export const getCatsRankList = async (url: string): Promise<{ items: IEventsDetailListTable['data'] }> => {
   return request.get(url);
+};
+
+export const fetchListings = async (params: IListingsParams): Promise<IListingsResponse> => {
+  return request.get<IListingsResponse>('/app/market/nft-listings', {
+    params,
+    baseURL: 'https://test.eforest.finance/api/',
+  });
+};
+
+export const getTokenUsdPrice = async (params: { symbol: string }): Promise<IGetTokenPriceData> => {
+  return request.get<IGetTokenPriceData>('/app/tokens/market-data', {
+    params,
+    baseURL: 'https://test.eforest.finance/api/',
+  });
+};
+
+export const fetchForestConfigItems = async (): Promise<any> => {
+  return request.get('/items/config', { baseURL: 'https://test.eforest.finance/cms/' });
+};
+
+export const fetchNftInfo = async (params: { id: string; address: string }): Promise<INftInfo> => {
+  return request.get<INftInfo>('/app/nft/nft-info', { params, baseURL: 'https://test.eforest.finance/api/' });
 };

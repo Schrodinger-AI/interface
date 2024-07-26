@@ -82,7 +82,7 @@ export default function useBalanceService() {
   return {
     sgrBalance,
     elfBalance,
-    getBalance,
+    refresh: getBalance,
     address: wallet.address,
     formatAddress,
     fullAddress,

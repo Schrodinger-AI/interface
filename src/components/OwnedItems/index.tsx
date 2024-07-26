@@ -38,7 +38,7 @@ import {
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
-import { catsList, catsListAll } from 'api/request';
+import { catsList, catsListAll, catsListBot, catsListBotAll } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
@@ -48,6 +48,7 @@ import qs from 'qs';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import SearchInput from './SearchInput';
+import useTelegram from 'hooks/useTelegram';
 
 export default function OwnedItems() {
   const { wallet } = useWalletService();
@@ -93,6 +94,7 @@ export default function OwnedItems() {
   const { isLogin } = useGetLoginStatus();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const { isInTG } = useTelegram();
 
   useEffect(() => {
     walletAddressRef.current = walletAddress;
@@ -121,15 +123,18 @@ export default function OwnedItems() {
     params,
     loadMore = false,
     requestType,
+    inTG = false,
   }: {
     params: ICatsListParams;
     loadMore?: boolean;
     requestType: ListTypeEnum;
+    inTG?: boolean;
   }) => {
     if (!params.chainId) {
       return;
     }
-    const requestCatApi = requestType === ListTypeEnum.My ? catsList : catsListAll;
+    const requestCatApi =
+      requestType === ListTypeEnum.My ? (inTG ? catsListBot : catsList) : inTG ? catsListBotAll : catsListAll;
     try {
       const res = await requestCatApi({ ...params, address: wallet.address });
 
@@ -179,8 +184,9 @@ export default function OwnedItems() {
     fetchData({
       params: defaultRequestParams,
       requestType: pageState,
+      inTG: isInTG,
     });
-  }, [defaultRequestParams, pageState, isLogin, defaultFilter]);
+  }, [defaultRequestParams, pageState, isLogin, defaultFilter, isInTG]);
 
   const getTraits = useGetTraits();
   const getAllTraits = useGetAllTraits();
@@ -249,9 +255,10 @@ export default function OwnedItems() {
       fetchData({
         params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
+        inTG: isInTG,
       });
     },
-    [tempFilterSelect, requestParams, pageState],
+    [tempFilterSelect, requestParams, pageState, isInTG],
   );
 
   const filterChange = useCallback(
@@ -373,6 +380,7 @@ export default function OwnedItems() {
       fetchData({
         params: { ...requestParams, keyword: value, skipCount: getPageNumber(1, pageSize) },
         requestType: pageState,
+        inTG: isInTG,
       });
     },
     {
@@ -397,9 +405,10 @@ export default function OwnedItems() {
     fetchData({
       params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize) },
       requestType: pageState,
+      inTG: isInTG,
     });
     setCollapsed(false);
-  }, [curChain, handleBaseClearAll, pageState, requestParams]);
+  }, [curChain, handleBaseClearAll, pageState, requestParams, isInTG]);
 
   const handleTagsClearAll = useCallback(() => {
     const filterData = getDefaultFilter(curChain);
@@ -410,8 +419,9 @@ export default function OwnedItems() {
     fetchData({
       params: { ...requestParams, ...filter, skipCount: getPageNumber(1, pageSize), keyword: '' },
       requestType: pageState,
+      inTG: isInTG,
     });
-  }, [curChain, handleBaseClearAll, pageState, requestParams]);
+  }, [curChain, handleBaseClearAll, pageState, requestParams, isInTG]);
 
   const symbolChange = (e: any) => {
     setSearchParam(e.target.value);
@@ -425,6 +435,7 @@ export default function OwnedItems() {
     fetchData({
       params: { ...requestParams, keyword: '', skipCount: getPageNumber(1, pageSize) },
       requestType: pageState,
+      inTG: isInTG,
     });
   };
 
@@ -446,8 +457,9 @@ export default function OwnedItems() {
       },
       loadMore: true,
       requestType: pageState,
+      inTG: isInTG,
     });
-  }, [loading, loadingMore, hasMore, current, requestParams, pageState]);
+  }, [loading, loadingMore, hasMore, current, requestParams, pageState, isInTG]);
 
   const emptyText = useMemo(() => {
     return (

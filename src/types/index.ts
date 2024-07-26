@@ -129,3 +129,50 @@ export enum ListTypeEnum {
   RARE = 3,
   Stray = 4,
 }
+
+export type FormatListingType = {
+  price: number;
+  quantity: number;
+  expiration: string;
+  fromName: string;
+  ownerAddress: string;
+  whitelistHash: string | null;
+  purchaseToken: { symbol: string };
+  key: string;
+  decimals: number;
+  startTime: number;
+  endTime: number;
+};
+
+export interface IPrice {
+  symbol: string;
+  amount: number;
+}
+
+export interface ITimestamp {
+  seconds: number;
+  nanos: number;
+}
+
+export interface IListDuration {
+  startTime: ITimestamp;
+  publicTime: ITimestamp;
+  durationHours?: number;
+  durationMinutes: number;
+}
+
+export enum ListType {
+  NOT_LISTED,
+  FIXED_PRICE,
+  ENGLISH_AUCTION,
+  DUTCH_AUCTION,
+}
+
+export interface IListedNFTInfo {
+  symbol: string;
+  owner: string;
+  quantity: number;
+  listType: ListType;
+  price: IPrice;
+  duration: IListDuration;
+}

@@ -11,7 +11,7 @@ interface ResponseType<T> {
 
 class Request {
   instance: AxiosInstance;
-  baseConfig: AxiosRequestConfig = { baseURL: '/api', timeout: 120000 };
+  baseConfig: AxiosRequestConfig = { baseURL: 'https://cat.schrodingerai.com/api', timeout: 120000 };
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(Object.assign({}, this.baseConfig, config));
@@ -37,11 +37,12 @@ class Request {
     this.instance.interceptors.response.use(
       <T>(response: AxiosResponse<ResponseType<T>>) => {
         const res = response.data;
+
         const { code, data, message: errorMessage } = response.data;
         if (response.config.url?.includes('api.etherscan.io')) {
           return res;
         }
-        if (config.baseURL?.includes('cms')) {
+        if (config.baseURL?.includes('cms') || response?.config.baseURL?.includes('cms')) {
           return data;
         }
         if (config.baseURL?.includes('connect')) {
@@ -126,10 +127,10 @@ class Request {
 }
 
 const tokenRequest = new Request({
-  baseURL: '/connect',
+  baseURL: 'https://cat.schrodingerai.com/connect',
 });
 
-const cmsRequest = new Request({ baseURL: '/cms' });
+const cmsRequest = new Request({ baseURL: 'https://cat.schrodingerai.com/cms' });
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new Request({});

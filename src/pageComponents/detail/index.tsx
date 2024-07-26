@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button } from 'aelf-design';
+import { Button, Dropdown } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
@@ -28,6 +28,13 @@ import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
 import useTelegram from 'hooks/useTelegram';
+import useListingsList from 'pageComponents/tg-home/hooks/useListingsList';
+import ListingInfo from './components/ListingInfo';
+import styles from './style.module.css';
+import { useGetListItemsForSale } from 'hooks/useSaleService';
+import { divDecimals } from 'utils/calculate';
+import BigNumber from 'bignumber.js';
+import { ItemType } from 'antd/es/menu/interface';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -43,9 +50,17 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
+  const { page, pageSize, listings, totalCount, onChange, elfPrice } = useListingsList({
+    symbol: schrodingerDetail?.symbol || '',
+  });
+
+  const { listedAmount, balance } = useGetListItemsForSale({
+    symbol: schrodingerDetail?.symbol || '',
+    decimals: schrodingerDetail?.decimals || 8,
+  });
 
   const isInTG = useMemo(() => {
-    return isInTelegram();
+    return !isInTelegram();
   }, [isInTelegram]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
@@ -120,6 +135,10 @@ export default function DetailPage() {
     () => (schrodingerDetail?.holderAmount || 0) > 0,
     [schrodingerDetail?.holderAmount],
   );
+  const holderNumberGtOne = useMemo(
+    () => (schrodingerDetail?.holderAmount || 0) > 1,
+    [schrodingerDetail?.holderAmount],
+  );
   const showAdopt = useMemo(() => holderNumberGtZero && genLtNine && !isInTG, [genLtNine, holderNumberGtZero, isInTG]);
   const showAdoptDirectly = useMemo(
     () => holderNumberGtZero && (schrodingerDetail?.generation || 0) === 0,
@@ -127,6 +146,40 @@ export default function DetailPage() {
   );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
+
+  const totalSupply = useMemo(() => {
+    return divDecimals(schrodingerDetail?.amount, schrodingerDetail?.decimals).toFixed();
+  }, [schrodingerDetail?.amount, schrodingerDetail?.decimals]);
+
+  const holderAmount = useMemo(() => {
+    return divDecimals(schrodingerDetail?.holderAmount, schrodingerDetail?.decimals).toFixed();
+  }, [schrodingerDetail?.decimals, schrodingerDetail?.holderAmount]);
+
+  const showBuyInTrade = useMemo(() => {
+    return isInTG && BigNumber(totalCount).minus(listedAmount).gte(1);
+  }, [isInTG, listedAmount, totalCount]);
+
+  const showSellInTrade = useMemo(() => {
+    return isInTG && BigNumber(holderAmount).minus(listedAmount).gte(1);
+  }, [holderAmount, isInTG, listedAmount]);
+
+  const showTrade = useMemo(() => {
+    return isInTG && holderNumberGtZero && (showSellInTrade || showBuyInTrade);
+  }, [holderNumberGtZero, isInTG, showBuyInTrade, showSellInTrade]);
+
+  const items: ItemType[] = useMemo(() => {
+    const tradeItems = [
+      showBuyInTrade && {
+        key: 'Buy',
+        label: 'Buy',
+      },
+      showSellInTrade && {
+        key: 'Sell',
+        label: 'Sell',
+      },
+    ];
+    return tradeItems.filter((i) => i) as ItemType[];
+  }, [showBuyInTrade, showSellInTrade]);
 
   function adoptAndResetButton() {
     return (
@@ -160,6 +213,13 @@ export default function DetailPage() {
             onClick={onReset}>
             Reroll
           </Button>
+        )}
+        {showTrade && (
+          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
+            <Button type="primary" className="!rounded-lg mr-[12px] flex-1" size="large">
+              Trade
+            </Button>
+          </Dropdown>
         )}
       </div>
     );
@@ -197,6 +257,13 @@ export default function DetailPage() {
             onClick={onReset}>
             Reroll
           </Button>
+        )}
+        {showTrade && (
+          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
+            <Button type="primary" className="!rounded-lg flex-1 ml-[16px]" size="large">
+              Trade
+            </Button>
+          </Dropdown>
         )}
       </div>
     );
@@ -238,10 +305,7 @@ export default function DetailPage() {
 
   return (
     <section
-      className={clsx(
-        'mt-[24px] lg:mt-[24px] flex flex-col items-center w-full',
-        isInTG && 'px-4 lg:px-10 pb-[100px]',
-      )}>
+      className={clsx('mt-[24px] lg:mt-[24px] flex flex-col items-center w-full', isInTG && styles.tgDetailContainer)}>
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
@@ -293,7 +357,9 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <div className="w-fit cursor-pointer flex flex-row justify-start items-center self-start" onClick={onBack}>
+        <div
+          className={clsx('w-fit cursor-pointer flex flex-row justify-start items-center self-start')}
+          onClick={onBack}>
           <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
@@ -315,6 +381,17 @@ export default function DetailPage() {
             onClick={onTrade}>
             Trade
           </Button>
+        )}
+        {isInTG && listings && listings.length > 0 && (
+          <ListingInfo
+            data={listings}
+            page={page}
+            pageSize={pageSize}
+            total={totalCount}
+            onChange={onChange}
+            rate={Number(elfPrice)}
+            symbol={schrodingerDetail?.symbol || ''}
+          />
         )}
         {schrodingerDetail && (
           <ItemInfo

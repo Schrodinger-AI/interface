@@ -1,6 +1,6 @@
 import { WebLoginState } from 'aelf-web-login';
 import { IAccountInfo } from 'types';
-import { storages } from 'storages';
+import { storages } from 'constants/storages';
 import { needCheckTokenUrl } from 'contract/token';
 
 export const isCurrentPageNeedToken = (): boolean => {

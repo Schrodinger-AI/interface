@@ -27,6 +27,9 @@ import queryString from 'query-string';
 import { HIDE_MAIN_PADDING } from 'constants/router';
 import VConsole from 'vconsole';
 import useTelegram from 'hooks/useTelegram';
+import { ContractInstance } from 'forest-ui-react';
+
+import 'forest-ui-react/dist/assets/index.css';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -42,6 +45,10 @@ const Layout = dynamic(async () => {
     const pathname = usePathname();
 
     const { isInTelegram } = useTelegram();
+
+    console.log('WebLoginInstance.get()', WebLoginInstance.get());
+
+    ContractInstance.set(WebLoginInstance.get());
 
     const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
       chainId: SupportedELFChainId.MAIN_NET,
