@@ -15,7 +15,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "forest-ui-react": "0.0.2",
     "@ant-design/icons": "^5.3.1",
     "@apollo/client": "^3.9.6",
     "@babel/plugin-transform-private-methods": "^7.24.1",
@@ -54,6 +53,7 @@
     "elliptic": "^6.5.4",
     "eslint-plugin-no-inline-styles": "^1.0.5",
     "firebase": "^9.23.0",
+    "forest-ui-react": "0.0.3",
     "graphql": "^16.8.1",
     "lodash-es": "^4.17.21",
     "lottie-react": "^2.4.0",

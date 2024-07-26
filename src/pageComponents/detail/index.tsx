@@ -86,10 +86,6 @@ export default function DetailPage() {
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
 
-  const { buyNow, sell } = useForestSdk({
-    symbol: schrodingerDetail?.symbol || '',
-  });
-
   const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
     if (generation !== 9) {
       setRankInfo(undefined);
@@ -183,33 +179,20 @@ export default function DetailPage() {
     refreshSaleInfo();
   }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
 
+  const { buyNow, sell } = useForestSdk({
+    symbol: schrodingerDetail?.symbol || '',
+    onViewNft: refreshData,
+  });
+
   const items: ItemType[] = useMemo(() => {
     const tradeItems = [
       showBuyInTrade && {
         key: 'Buy',
-        label: (
-          <div
-            onClick={() => {
-              // buyNow({ onViewNft: refreshData });
-              buyNow();
-            }}>
-            Buy
-          </div>
-        ),
+        label: <div onClick={buyNow}>Buy</div>,
       },
       showSellInTrade && {
         key: 'Sell',
-        label: (
-          <div
-            onClick={() => {
-              // sell({
-              //   onViewNft: refreshData,
-              // });
-              sell();
-            }}>
-            Sell
-          </div>
-        ),
+        label: <div onClick={sell}>Sell</div>,
       },
     ];
     return tradeItems.filter((i) => i) as ItemType[];
@@ -425,7 +408,7 @@ export default function DetailPage() {
             onChange={onChange}
             rate={Number(elfPrice)}
             symbol={schrodingerDetail?.symbol || ''}
-            onRefresh={refreshListing}
+            onRefresh={refreshData}
           />
         )}
         {schrodingerDetail && (

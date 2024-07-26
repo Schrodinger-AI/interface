@@ -27,25 +27,21 @@ export default function ListingInfo({
   onChange: (page?: number, pageSize?: number) => void;
   rate: number;
   symbol: string;
-  onRefresh?: () => void;
+  onRefresh: () => void;
 }) {
   const { wallet } = useWalletService();
+
   const { buyNow, sell } = useForestSdk({
     symbol,
+    onViewNft: onRefresh,
   });
 
   const onClick = useCallback(
     async (list: FormatListingType) => {
       if (list.ownerAddress === wallet.address) {
-        // sell({
-        //   onViewNft: onRefresh,
-        // });
         sell();
         return;
       }
-      // buyNow({
-      //   onViewNft: onRefresh,
-      // });
       buyNow();
     },
     [buyNow, sell, wallet.address],
@@ -96,17 +92,19 @@ export default function ListingInfo({
                       <CommonCopy className="ml-2 cursor-pointer" toCopy={addPrefixSuffix(list?.ownerAddress || '')} />
                     </Flex>
                   </Flex>
-                  <Flex justify="end">
-                    <Button
-                      type="primary"
-                      size="small"
-                      className="!w-[75px] !rounded-md"
-                      onClick={() => {
-                        onClick(list);
-                      }}>
-                      {list.ownerAddress === wallet.address ? 'Sell' : 'Buy'}
-                    </Button>
-                  </Flex>
+                  {list.ownerAddress !== wallet.address && (
+                    <Flex justify="end">
+                      <Button
+                        type="primary"
+                        size="small"
+                        className="!w-[75px] !rounded-md"
+                        onClick={() => {
+                          onClick(list);
+                        }}>
+                        Buy
+                      </Button>
+                    </Flex>
+                  )}
                 </Flex>
               </div>
             </div>

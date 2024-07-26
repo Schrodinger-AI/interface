@@ -5,10 +5,10 @@ import useLoading from './useLoading';
 import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export default function useForestSdk({ symbol }: { symbol: string }) {
+export default function useForestSdk({ symbol, onViewNft }: { symbol: string; onViewNft: () => void }) {
   const [nftInfo, setNftInfo] = useState<INftInfo>();
-  const { buyNow } = useBuy({ nftInfo });
-  const { sell } = useSell({ nftInfo });
+  const { buyNow } = useBuy({ nftInfo, onViewNft });
+  const { sell } = useSell({ nftInfo, onViewNft });
   const { showLoading, closeLoading } = useLoading();
   const { wallet } = useWalletService();
   const { curChain } = useCmsInfo() || {};
