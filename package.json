@@ -15,6 +15,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "forest-ui-react": "0.0.2",
     "@ant-design/icons": "^5.3.1",
     "@apollo/client": "^3.9.6",
     "@babel/plugin-transform-private-methods": "^7.24.1",

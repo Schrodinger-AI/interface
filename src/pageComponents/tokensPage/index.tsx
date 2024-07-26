@@ -16,6 +16,8 @@ import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
+import { Trade } from 'forest-ui-react';
+import 'forest-ui-react/dist/assets/index.css';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -85,6 +87,7 @@ export default function TokensPage() {
 
   return (
     <div className="flex flex-col max-w-[2560px] w-full">
+      <Trade name="jhhj" />
       {cmsInfo?.bannerConfig ? <TopBanner /> : null}
       <div
         className={clsx(

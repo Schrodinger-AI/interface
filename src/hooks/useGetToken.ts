@@ -1,6 +1,6 @@
 import { useWebLogin, WalletType, WebLoginState } from 'aelf-web-login';
 import { useCallback, useMemo } from 'react';
-import { storages } from 'storages';
+import { storages } from 'constants/storages';
 import { fetchToken } from 'api/request';
 import { message } from 'antd';
 import useDiscoverProvider from './useDiscoverProvider';

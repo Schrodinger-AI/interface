@@ -27,6 +27,9 @@ import queryString from 'query-string';
 import { HIDE_MAIN_PADDING } from 'constants/router';
 import VConsole from 'vconsole';
 import useTelegram from 'hooks/useTelegram';
+import { ContractInstance } from 'forest-ui-react';
+
+import 'forest-ui-react/dist/assets/index.css';
 
 const Layout = dynamic(async () => {
   const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
@@ -103,6 +106,10 @@ const Layout = dynamic(async () => {
           viewMethod: callTDVWViewMethod,
         },
       ]);
+
+      console.log('WebLoginInstance.get()', WebLoginInstance.get());
+
+      ContractInstance.set(WebLoginInstance.get());
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [webLoginContext.loginState]);
 

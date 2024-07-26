@@ -173,3 +173,7 @@ export const getRankConfig = async (): Promise<{ data: IRankConfigData }> => {
 export const getCatsRankList = async (url: string): Promise<{ items: IEventsDetailListTable['data'] }> => {
   return request.get(url);
 };
+
+export const fetchForestConfigItems = async (): Promise<any> => {
+  return cmsRequest.get('items/config', { baseURL: 'https://test.eforest.finance/cms/' });
+};
