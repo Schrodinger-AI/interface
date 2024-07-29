@@ -68,7 +68,7 @@ const Layout = dynamic(async () => {
     }, [pathname]);
 
     useEffect(() => {
-      if (process.env.NEXT_PUBLIC_APP_ENV === 'dev') {
+      if (process.env.NEXT_PUBLIC_APP_ENV !== 'production') {
         new VConsole();
       }
       // store ad tracker
