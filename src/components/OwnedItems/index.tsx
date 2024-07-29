@@ -133,7 +133,6 @@ export default function OwnedItems() {
     if (!params.chainId) {
       return;
     }
-    if (inTG && requestType === ListTypeEnum.My && !params.address) return;
     const requestCatApi =
       requestType === ListTypeEnum.My ? (inTG ? catsListBot : catsList) : inTG ? catsListBotAll : catsListAll;
     try {
