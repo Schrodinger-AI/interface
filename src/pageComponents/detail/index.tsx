@@ -3,7 +3,7 @@ import { Button, Dropdown } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, message } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useWalletService } from 'hooks/useWallet';
@@ -42,6 +42,7 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
+  const callbackPath = searchParams.get('callbackPath') || '';
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
@@ -136,10 +137,14 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
+    if (callbackPath && callbackPath === 'collection') {
+      route.back();
+      return;
+    }
     const baseUrl = isInTG ? `/telegram` : '';
     const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
     route.replace(path);
-  }, [fromListAll, isInTG, route]);
+  }, [callbackPath, fromListAll, isInTG, route]);
 
   const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
   const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
@@ -179,24 +184,44 @@ export default function DetailPage() {
     refreshSaleInfo();
   }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
 
-  const { buyNow, sell } = useForestSdk({
+  const { buyNow, sell, nftInfo } = useForestSdk({
     symbol: schrodingerDetail?.symbol || '',
-    onViewNft: refreshData,
+    onViewNft: () => {
+      route.replace('/telegram?pageState=1');
+    },
   });
 
   const items: ItemType[] = useMemo(() => {
     const tradeItems = [
       showBuyInTrade && {
         key: 'Buy',
-        label: <div onClick={buyNow}>Buy</div>,
+        label: (
+          <div
+            onClick={() => {
+              buyNow();
+            }}>
+            Buy
+          </div>
+        ),
       },
       showSellInTrade && {
         key: 'Sell',
-        label: <div onClick={sell}>Sell</div>,
+        label: (
+          <div
+            onClick={() => {
+              if (!nftInfo) {
+                message.warning('Synchronising data on the blockchain. Please wait a few seconds.');
+                return;
+              }
+              sell();
+            }}>
+            Sell
+          </div>
+        ),
       },
     ];
     return tradeItems.filter((i) => i) as ItemType[];
-  }, [buyNow, sell, showBuyInTrade, showSellInTrade]);
+  }, [buyNow, nftInfo, sell, showBuyInTrade, showSellInTrade]);
 
   function adoptAndResetButton() {
     return (

@@ -49,5 +49,5 @@ export default ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  return <div>{children}</div>;
+  return <>{children}</>;
 };

@@ -9,6 +9,7 @@ import { useWalletService } from 'hooks/useWallet';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { useCallback } from 'react';
 import useForestSdk from 'hooks/useForestSdk';
+import { useRouter } from 'next/navigation';
 
 export default function ListingInfo({
   page,
@@ -31,20 +32,20 @@ export default function ListingInfo({
 }) {
   const { wallet } = useWalletService();
 
-  const { buyNow, sell } = useForestSdk({
+  const router = useRouter();
+
+  const { buyNow } = useForestSdk({
     symbol,
-    onViewNft: onRefresh,
+    onViewNft: () => {
+      router.replace('/telegram?pageState=1');
+    },
   });
 
   const onClick = useCallback(
     async (list: FormatListingType) => {
-      if (list.ownerAddress === wallet.address) {
-        sell();
-        return;
-      }
-      buyNow();
+      buyNow(list);
     },
-    [buyNow, sell, wallet.address],
+    [buyNow],
   );
 
   return (
