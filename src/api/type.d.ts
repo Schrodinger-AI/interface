@@ -111,6 +111,7 @@ interface IRankInfo {
   probability: string;
   percent: string;
   type: string;
+  levelInfo: any;
   price: {
     elf: string;
     usd: string;
