@@ -44,7 +44,7 @@ export default function TgHome() {
     }
   }, [cmsInfo?.curChain, isLogin, wallet.address]);
 
-  const OpenAdoptModal = () => {
+  const OpenAdoptModal = useCallback(() => {
     if (!wallet.address || !schrodingerDetail) return;
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
       tipsModal.show({
@@ -64,7 +64,7 @@ export default function TgHome() {
       isDirect: true,
       theme: 'dark',
     });
-  };
+  }, [adoptHandler, jumpToPage, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
 
   useEffect(() => {
     getDetail();
