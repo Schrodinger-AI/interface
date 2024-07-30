@@ -9,7 +9,7 @@ import { GEN0_SYMBOL } from 'constants/common';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { BUY_ELF_URL, BUY_SGR_URL } from 'constants/router';
 
-export default function useBalanceService() {
+export default function useBalanceService({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const { wallet } = useWalletService();
@@ -50,6 +50,7 @@ export default function useBalanceService() {
         }),
       ]);
       setSgrBalance(sgrBalanceRes?.balance || '0');
+      onSgrBalanceChange && onSgrBalanceChange(sgrBalanceRes?.balance || '0');
       setElfBalance(elfBalanceRes?.balance || '0');
       return {
         sgrBalance: sgrBalanceRes?.balance || '0',
@@ -64,7 +65,7 @@ export default function useBalanceService() {
     } finally {
       closeLoading();
     }
-  }, [closeLoading, showLoading, wallet.address]);
+  }, [closeLoading, onSgrBalanceChange, showLoading, wallet.address]);
 
   useEffect(() => {
     getBalance();

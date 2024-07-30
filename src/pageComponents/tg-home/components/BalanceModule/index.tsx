@@ -6,8 +6,10 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
 
-export default function BalanceModule() {
-  const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService();
+export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
+  const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
+    onSgrBalanceChange,
+  });
 
   return (
     <>

@@ -13,7 +13,6 @@ import BalanceModule from './components/BalanceModule';
 import IntroText from './components/IntroText';
 import AdoptModule from './components/AdoptModule';
 import { DIRECT_ADOPT_GEN9_MIN, GEN0_SYMBOL } from 'constants/common';
-import useBalanceService from './hooks/useBalanceService';
 import { divDecimals } from 'utils/calculate';
 import { useModal } from '@ebay/nice-modal-react';
 import TipsModal from 'components/TipsModal';
@@ -26,9 +25,13 @@ export default function TgHome() {
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
-  const { sgrBalance } = useBalanceService();
   const { jumpToPage } = useJumpToPage();
   const tipsModal = useModal(TipsModal);
+  const [sgrBalance, setSgrBalance] = useState('0');
+
+  const onBalanceChange = useCallback((value: string) => {
+    value && setSgrBalance(value);
+  }, []);
 
   const getDetail = useCallback(async () => {
     if (wallet.address && !isLogin) return;
@@ -72,7 +75,7 @@ export default function TgHome() {
 
   return (
     <div className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6', styles.pageContainer)}>
-      <BalanceModule />
+      <BalanceModule onSgrBalanceChange={onBalanceChange} />
       <div className="mt-10">
         <IntroText />
       </div>
