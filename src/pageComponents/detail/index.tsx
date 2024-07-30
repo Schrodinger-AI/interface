@@ -176,8 +176,8 @@ export default function DetailPage() {
   }, [holderAmount, isInTG, listedAmount]);
 
   const showTrade = useMemo(() => {
-    return isInTG && (showSellInTrade || showBuyInTrade) && isGenNine;
-  }, [isGenNine, isInTG, showBuyInTrade, showSellInTrade]);
+    return isInTG && (showSellInTrade || showBuyInTrade) && (isGenNine || isGenZero);
+  }, [isGenNine, isGenZero, isInTG, showBuyInTrade, showSellInTrade]);
 
   const refreshData = useCallback(() => {
     getDetail();
