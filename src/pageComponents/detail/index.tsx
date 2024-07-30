@@ -78,6 +78,8 @@ export default function DetailPage() {
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
+  const isGenNine = useMemo(() => (schrodingerDetail?.generation || 0) === 9, [schrodingerDetail?.generation]);
+
   const tradeModal = useMemo(() => {
     return isGenZero ? cmsInfo?.gen0TradeModal || cmsInfo?.tradeModal : cmsInfo?.tradeModal;
   }, [cmsInfo?.gen0TradeModal, cmsInfo?.tradeModal, isGenZero]);
@@ -174,8 +176,8 @@ export default function DetailPage() {
   }, [holderAmount, isInTG, listedAmount]);
 
   const showTrade = useMemo(() => {
-    return isInTG && (showSellInTrade || showBuyInTrade);
-  }, [isInTG, showBuyInTrade, showSellInTrade]);
+    return isInTG && (showSellInTrade || showBuyInTrade) && isGenNine;
+  }, [isGenNine, isInTG, showBuyInTrade, showSellInTrade]);
 
   const refreshData = useCallback(() => {
     getDetail();
@@ -258,7 +260,7 @@ export default function DetailPage() {
         )}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
-            <Button type="primary" className="!rounded-lg mr-[12px] flex-1" size="large">
+            <Button type="primary" className="!rounded-lg mr-[12px] !px-7" size="large">
               Trade
             </Button>
           </Dropdown>
@@ -294,7 +296,10 @@ export default function DetailPage() {
         {showReset && (
           <Button
             type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]"
+            className={clsx(
+              '!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]',
+              isInTG && 'flex-1',
+            )}
             size="large"
             onClick={onReset}>
             Reroll
@@ -302,7 +307,7 @@ export default function DetailPage() {
         )}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
-            <Button type="primary" className="!rounded-lg flex-1 ml-[16px]" size="large">
+            <Button type="primary" className="!rounded-lg ml-[16px] !px-7" size="large">
               Trade
             </Button>
           </Dropdown>
@@ -402,7 +407,7 @@ export default function DetailPage() {
         <div
           className={clsx('w-fit cursor-pointer flex flex-row justify-start items-center self-start')}
           onClick={onBack}>
-          <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
+          <ArrowSVG className={clsx('size-4 flex-shrink-0', { ['common-revert-90']: true })} />
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
         <div className="mt-[16px]" />
