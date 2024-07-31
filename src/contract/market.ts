@@ -1,11 +1,18 @@
 import { webLoginInstance } from './webLogin';
 import { formatErrorMsg } from 'utils/formatError';
-import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
+import {
+  ContractMethodType,
+  IContractError,
+  IContractOptions,
+  IListedNFTInfo,
+  ISendResult,
+  SupportedELFChainId,
+} from 'types';
 import { store } from 'redux/store';
 import { getTxResultRetry } from 'utils/getTxResult';
 import { sleep } from '@portkey/utils';
 
-const multiTokenContractRequest = async <T, R>(
+const marketContractRequest = async <T, R>(
   method: string,
   params: T,
   options?: IContractOptions,
@@ -13,8 +20,8 @@ const multiTokenContractRequest = async <T, R>(
   const info = store.getState().info.cmsInfo;
 
   const addressList = {
-    main: info?.tokenMainAddress,
-    side: info?.tokenSideAddress,
+    main: info?.marketMainAddress,
+    side: info?.marketSideAddress,
   };
 
   try {
@@ -22,12 +29,21 @@ const multiTokenContractRequest = async <T, R>(
       ? addressList.main
       : addressList.side) as unknown as string;
     const curChain: Chain = options?.chain || info!.curChain;
+
+    console.log('=====marketContractRequest type: ', method, options?.type);
+    console.log('=====marketContractRequest address: ', method, address);
+    console.log('=====marketContractRequest curChain: ', method, curChain);
+    console.log('=====marketContractRequest params: ', method, params);
+
     if (options?.type === ContractMethodType.VIEW) {
       const res: R = await webLoginInstance.callViewMethod(curChain, {
         contractAddress: address,
         methodName: method,
         args: params,
       });
+
+      console.log('=====marketContractRequest res: ', method, res);
+
       const result = res as IContractError;
       if (result?.error || result?.code || result?.Error) {
         return Promise.reject(formatErrorMsg(result, method));
@@ -41,7 +57,11 @@ const multiTokenContractRequest = async <T, R>(
         args: params,
       });
 
+      console.log('=====marketContractRequest res: ', method, res);
+
       const result = res as IContractError;
+
+      console.log('=====marketContractRequest result: ', method, JSON.stringify(result), result?.Error);
 
       if (result?.error || result?.code || result?.Error) {
         return Promise.reject(formatErrorMsg(result, method));
@@ -54,66 +74,32 @@ const multiTokenContractRequest = async <T, R>(
         TransactionId: resTransactionId!,
         chainId: info!.curChain,
       });
+
+      console.log('=====marketContractRequest transaction: ', method, transaction);
+
       return Promise.resolve({ TransactionId: transaction.TransactionId, TransactionResult: transaction.txResult });
     }
   } catch (error) {
+    console.error('=====marketContractRequest error: ', method, JSON.stringify(error), error);
     const resError = error as IContractError;
     return Promise.reject(formatErrorMsg(resError, method));
   }
 };
 
-export const GetAllowance = async (
-  params: IGetAllowanceParams,
+export const GetListedNFTInfoList = async (
+  params: {
+    symbol: string;
+    owner: string;
+  },
   options?: IContractOptions,
-): Promise<IGetAllowanceResponse & IContractError> => {
+): Promise<IContractError & { value: IListedNFTInfo[] }> => {
   try {
-    const res = (await multiTokenContractRequest('GetAllowance', params, {
+    const res = (await marketContractRequest('GetListedNFTInfoList', params, {
       ...options,
       type: ContractMethodType.VIEW,
-    })) as IGetAllowanceResponse & IContractError;
+    })) as IContractError & { value: IListedNFTInfo[] };
     return Promise.resolve(res);
-  } catch (error) {
-    return Promise.reject(error);
+  } catch (_) {
+    return Promise.reject(null);
   }
 };
-
-export const GetAvailableAllowance = async (
-  params: IGetAllowanceParams,
-  options?: IContractOptions,
-): Promise<IGetAllowanceResponse & IContractError> => {
-  try {
-    const res = (await multiTokenContractRequest('GetAvailableAllowance', params, {
-      ...options,
-      type: ContractMethodType.VIEW,
-    })) as IGetAllowanceResponse & IContractError;
-    return Promise.resolve(res);
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
-export const Approve = async (params: IApproveParams, options?: IContractOptions): Promise<IContractError> => {
-  const networkType = store?.getState()?.info?.cmsInfo?.networkTypeV2;
-  try {
-    const res = (await multiTokenContractRequest(
-      'Approve',
-      { ...params, networkType },
-      {
-        ...options,
-      },
-    )) as IContractError;
-    return Promise.resolve(res);
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
-interface IBalanceResult {
-  symbol: string;
-  owner: string;
-  balance: string;
-}
-export const GetBalance = async (
-  params: IGetBalanceParams,
-  options: IContractOptions = { type: ContractMethodType.VIEW },
-): Promise<IBalanceResult> => (await multiTokenContractRequest('GetBalance', params, options)) as IBalanceResult;

@@ -1,0 +1,10 @@
+.collapse-custom {
+  :global {
+    .aelfd-collapse-header {
+      @apply !h-[72px] !items-center;
+    }
+    .aelfd-collapse-content-box {
+      @apply !p-0;
+    }
+  }
+}

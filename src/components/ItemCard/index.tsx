@@ -7,6 +7,7 @@ import { useCmsInfo } from 'redux/hooks';
 import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
+import useTelegram from 'hooks/useTelegram';
 export enum CardType {
   MY = 'my',
   LATEST = 'latest',
@@ -32,7 +33,10 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
     awakenPrice,
     token,
     inscriptionDeploy,
+    forestPrice,
   } = item || {};
+
+  const { isInTG } = useTelegram();
 
   const transformedAmount = useMemo(() => formatTokenPrice(amount, { decimalPlaces: decimals }), [amount, decimals]);
 
@@ -43,6 +47,10 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   const tokenDisplay = useMemo(() => {
     return token ? `${formatNumber(token)} SGR` : '';
   }, [token]);
+
+  const listingPriceDisplay = useMemo(() => {
+    return forestPrice && forestPrice !== -1 ? `${formatNumber(forestPrice)} ELF` : '--';
+  }, [forestPrice]);
 
   const cmsInfo = useCmsInfo();
 
@@ -118,12 +126,30 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
                 <XIcon className="fill-neutralDisable" />
                 <div className="ml-1 text-xs text-neutralPrimary font-medium">{transformedAmount}</div>
               </div>
-              <div className="flex flex-row items-center">
-                <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">{tokenDisplay}</div>
-              </div>
-              <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
-                {awakenPriceDisplay}
-              </div>
+              {!isInTG && (
+                <div className="flex flex-row items-center">
+                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                    {tokenDisplay}
+                  </div>
+                </div>
+              )}
+              {!isInTG && (
+                <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                  {awakenPriceDisplay}
+                </div>
+              )}
+              {isInTG && (
+                <>
+                  <div className="flex flex-row items-center justify-between text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                    <span>Listing Price</span>
+                    <span>{listingPriceDisplay}</span>
+                  </div>
+                  <div className="flex flex-row items-center justify-between text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                    {awakenPriceDisplay && <span>SPR</span>}
+                    <span>{awakenPriceDisplay}</span>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

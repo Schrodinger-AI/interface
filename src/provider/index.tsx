@@ -25,6 +25,9 @@ import dynamic from 'next/dynamic';
 import { useRequestCms } from 'redux/hooks';
 import ETransferLayout from './ETransferLayout';
 import ConnectEvmWalletProvider from './ConnectEvmWalletProvider';
+import { Trade, Collection, ForestProvider, useForestStore, Store } from 'forest-ui-react';
+import 'forest-ui-react/dist/assets/index.css';
+import Wrapper from './ForestInitWrapper';
 
 const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
@@ -101,8 +104,12 @@ function Provider({ children }: { children: React.ReactNode }) {
               ) : isCorrectDomain ? (
                 <WebLoginProvider>
                   <ETransferLayout>
-                    <Updater />
-                    <NiceModal.Provider>{children}</NiceModal.Provider>
+                    <ForestProvider>
+                      <Wrapper>
+                        <Updater />
+                        <NiceModal.Provider>{children}</NiceModal.Provider>
+                      </Wrapper>
+                    </ForestProvider>
                   </ETransferLayout>
                 </WebLoginProvider>
               ) : (
