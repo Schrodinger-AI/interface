@@ -229,6 +229,9 @@ export default function OwnedItems() {
             if (item.key === FilterKeyEnum.Traits) {
               return { ...item, data: traitsList };
             } else if (item.key === FilterKeyEnum.Generation) {
+              if (isInTG) {
+                return null;
+              }
               return { ...item, data: generationList } as CheckboxItemType;
             }
             return item;
