@@ -15,6 +15,7 @@ import { IAdoptNextData } from './type';
 import { getRarity } from 'utils/trait';
 import SkeletonImage from 'components/SkeletonImage';
 import CancelAdoptModal from 'components/CancelAdoptModal';
+import useTelegram from 'hooks/useTelegram';
 
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
@@ -76,6 +77,8 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
     if (onClose) return onClose();
     modal.hide();
   }, [modal, onClose]);
+
+  const { isInTG } = useTelegram();
 
   const title = useMemo(() => {
     return (
@@ -150,7 +153,14 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
           </DescriptionItem>
         ) : (
           <div className="w-full flex justify-center items-center">
-            <SkeletonImage img={images[0]} className="w-full lg:w-[180px]" />
+            <SkeletonImage
+              img={images[0]}
+              className="w-full lg:w-[180px]"
+              generation={isInTG && isDirect ? '9' : undefined}
+              rank={isInTG ? data?.SGRToken?.rankInfo?.rank : undefined}
+              rarity={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.describe : undefined}
+              level={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.level : undefined}
+            />
           </div>
         )}
 

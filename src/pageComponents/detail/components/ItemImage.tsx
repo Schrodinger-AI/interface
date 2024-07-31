@@ -1,5 +1,6 @@
 import { TSGRToken } from 'types/tokens';
 import SkeletonImage from 'components/SkeletonImage';
+import clsx from 'clsx';
 
 export default function ItemImage({
   detail: { generation, inscriptionImageUri },
@@ -13,7 +14,10 @@ export default function ItemImage({
   rank?: number;
 }) {
   return (
-    <div className="relative aspect-square w-full lg:mr-[40px] mr-0 lg:w-[450px] flex items-center justify-center mt-[16px] lg:mt-[0px] rounded-2xl	border-solid border border-[#E1E1E1] bg-[#F5FEF7CC]">
+    <div
+      className={clsx(
+        'relative aspect-square w-full lg:mr-[40px] mr-0 lg:w-[450px] flex items-center justify-center mt-[16px] lg:mt-[0px] rounded-2xl	border-solid border border-[#E1E1E1] bg-[#F5FEF7CC]',
+      )}>
       <SkeletonImage
         img={inscriptionImageUri}
         generation={generation}
@@ -21,7 +25,7 @@ export default function ItemImage({
         rarity={rarity}
         tagPosition="large"
         rank={rank}
-        className="w-full"
+        className={clsx('w-full')}
       />
     </div>
   );

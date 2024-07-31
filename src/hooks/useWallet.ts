@@ -19,7 +19,7 @@ import { setWalletInfo } from 'redux/reducer/userInfo';
 import { useLocalStorage } from 'react-use';
 import { cloneDeep } from 'lodash-es';
 import { WalletInfoType } from 'types';
-import { storages } from 'storages';
+import { storages } from 'constants/storages';
 import useBackToHomeByRoute from './useBackToHomeByRoute';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';

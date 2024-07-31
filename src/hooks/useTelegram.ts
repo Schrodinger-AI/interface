@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 
 export default function useTelegram() {
@@ -6,7 +6,12 @@ export default function useTelegram() {
     return TelegramPlatform.isTelegramPlatform();
   }, []);
 
+  const isInTG = useMemo(() => {
+    return isInTelegram();
+  }, [isInTelegram]);
+
   return {
     isInTelegram,
+    isInTG,
   };
 }

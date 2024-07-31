@@ -120,7 +120,7 @@ export function formatNumber(
   } else if (abs.gte(KUnit) && abs.gte(minFormat)) {
     return BigNumber(numberBig.div(KUnit).toFixed(decimalPlaces, roundingMode)).toFormat().replace(regexp, '$1') + 'K';
   } else {
-    return BigNumber(numberBig.toFixed(2, roundingMode)).toFormat();
+    return BigNumber(numberBig.toFixed(decimalPlaces, roundingMode)).toFormat();
   }
 }
 
