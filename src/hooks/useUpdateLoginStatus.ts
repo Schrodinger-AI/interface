@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { setLoginStatus } from 'redux/reducer/loginStatus';
 import { dispatch } from 'redux/store';
-import { storages } from 'storages';
+import { storages } from 'constants/storages';
 import { useGetToken } from './useGetToken';
 import { resetAccount } from 'utils/resetAccount';
 

@@ -1,5 +1,5 @@
 import { Flex } from 'antd';
-import { ReactComponent as BackSVG } from 'assets/img/telegram/back-left.svg';
+import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 
@@ -18,8 +18,8 @@ export default function BackCom({ className, url }: { className?: string; url?: 
         }
         router.back();
       }}>
-      <BackSVG className="text-base leading-4" />
-      <span className="text-sm font-medium text-neutralTitle">Back</span>
+      <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
+      <span className="font-semibold text-sm">Back</span>
     </Flex>
   );
 }

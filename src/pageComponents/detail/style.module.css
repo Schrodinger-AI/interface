@@ -1,0 +1,20 @@
+.dropdown {
+  @apply !min-w-[168px];
+  :global(.aelfd-dropdown-menu) {
+    @apply rounded-[12px] border-neutralBorder border-solid border-[1px] shadow-none !p-0 overflow-hidden;
+  }
+  :global(.aelfd-dropdown-menu-item) {
+    transition: none !important;
+    @apply h-[48px] hover:bg-neutralHoverBg !px-4;
+    span {
+      @apply text-[16px] font-medium text-neutralTitle;
+    }
+    * {
+      transition: none !important;
+    }
+  }
+}
+
+.tgDetailContainer {
+  @apply px-4 lg:px-10 pb-[100px];
+}

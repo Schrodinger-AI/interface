@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button } from 'aelf-design';
+import { Button, Dropdown } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, message } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useWalletService } from 'hooks/useWallet';
@@ -28,11 +28,21 @@ import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
 import useTelegram from 'hooks/useTelegram';
+import useListingsList from 'pageComponents/tg-home/hooks/useListingsList';
+import ListingInfo from './components/ListingInfo';
+import styles from './style.module.css';
+import { useGetListItemsForSale, useSaleInfo } from 'hooks/useSaleService';
+import { divDecimals } from 'utils/calculate';
+import BigNumber from 'bignumber.js';
+import { ItemType } from 'antd/es/menu/interface';
+import useForestSdk from 'hooks/useForestSdk';
+import 'forest-ui-react/dist/assets/index.css';
 
 export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
+  const callbackPath = searchParams.get('callbackPath') || '';
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
@@ -43,12 +53,32 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
+  const {
+    page,
+    pageSize,
+    listings,
+    totalCount,
+    onChange,
+    elfPrice,
+    fetchData: refreshListing,
+  } = useListingsList({
+    symbol: schrodingerDetail?.symbol || '',
+  });
+
+  const { listedAmount, fetchData: refreshSaleListedInfo } = useGetListItemsForSale({
+    symbol: schrodingerDetail?.symbol || '',
+    decimals: schrodingerDetail?.decimals || 8,
+  });
+
+  const { maxBuyAmount, fetchData: refreshSaleInfo } = useSaleInfo({ symbol: schrodingerDetail?.symbol || '' });
 
   const isInTG = useMemo(() => {
     return isInTelegram();
   }, [isInTelegram]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
+
+  const isGenNine = useMemo(() => (schrodingerDetail?.generation || 0) === 9, [schrodingerDetail?.generation]);
 
   const tradeModal = useMemo(() => {
     return isGenZero ? cmsInfo?.gen0TradeModal || cmsInfo?.tradeModal : cmsInfo?.tradeModal;
@@ -109,10 +139,14 @@ export default function DetailPage() {
   };
 
   const onBack = useCallback(() => {
+    if (callbackPath && callbackPath === 'collection') {
+      route.back();
+      return;
+    }
     const baseUrl = isInTG ? `/telegram` : '';
     const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
     route.replace(path);
-  }, [fromListAll, isInTG, route]);
+  }, [callbackPath, fromListAll, isInTG, route]);
 
   const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
   const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
@@ -127,6 +161,68 @@ export default function DetailPage() {
   );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
+
+  const holderAmount = useMemo(() => {
+    return divDecimals(schrodingerDetail?.holderAmount, schrodingerDetail?.decimals).toFixed();
+  }, [schrodingerDetail?.decimals, schrodingerDetail?.holderAmount]);
+
+  const showBuyInTrade = useMemo(() => {
+    return isInTG && BigNumber(maxBuyAmount).gte(1);
+  }, [isInTG, maxBuyAmount]);
+
+  const showSellInTrade = useMemo(() => {
+    return isInTG && BigNumber(holderAmount).minus(listedAmount).gte(1);
+  }, [holderAmount, isInTG, listedAmount]);
+
+  const showTrade = useMemo(() => {
+    return isInTG && (showSellInTrade || showBuyInTrade) && (isGenNine || isGenZero);
+  }, [isGenNine, isGenZero, isInTG, showBuyInTrade, showSellInTrade]);
+
+  const refreshData = useCallback(() => {
+    getDetail();
+    refreshListing();
+    refreshSaleListedInfo();
+    refreshSaleInfo();
+  }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
+
+  const { buyNow, sell, nftInfo } = useForestSdk({
+    symbol: schrodingerDetail?.symbol || '',
+    onViewNft: () => {
+      route.replace('/telegram?pageState=1');
+    },
+  });
+
+  const items: ItemType[] = useMemo(() => {
+    const tradeItems = [
+      showBuyInTrade && {
+        key: 'Buy',
+        label: (
+          <div
+            onClick={() => {
+              buyNow();
+            }}>
+            Buy
+          </div>
+        ),
+      },
+      showSellInTrade && {
+        key: 'Sell',
+        label: (
+          <div
+            onClick={() => {
+              if (!nftInfo) {
+                message.warning('Synchronising data on the blockchain. Please wait a few seconds.');
+                return;
+              }
+              sell();
+            }}>
+            Sell
+          </div>
+        ),
+      },
+    ];
+    return tradeItems.filter((i) => i) as ItemType[];
+  }, [buyNow, nftInfo, sell, showBuyInTrade, showSellInTrade]);
 
   function adoptAndResetButton() {
     return (
@@ -161,6 +257,13 @@ export default function DetailPage() {
             Reroll
           </Button>
         )}
+        {showTrade && (
+          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
+            <Button type="primary" className="!rounded-lg mr-[12px] !px-7" size="large">
+              Trade
+            </Button>
+          </Dropdown>
+        )}
       </div>
     );
   }
@@ -192,11 +295,21 @@ export default function DetailPage() {
         {showReset && (
           <Button
             type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]"
+            className={clsx(
+              '!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]',
+              isInTG && 'flex-1',
+            )}
             size="large"
             onClick={onReset}>
             Reroll
           </Button>
+        )}
+        {showTrade && (
+          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
+            <Button type="primary" className="!rounded-lg ml-[16px] !px-7" size="large">
+              Trade
+            </Button>
+          </Dropdown>
         )}
       </div>
     );
@@ -238,10 +351,7 @@ export default function DetailPage() {
 
   return (
     <section
-      className={clsx(
-        'mt-[24px] lg:mt-[24px] flex flex-col items-center w-full',
-        isInTG && 'px-4 lg:px-10 pb-[100px]',
-      )}>
+      className={clsx('mt-[24px] lg:mt-[24px] flex flex-col items-center w-full', isInTG && styles.tgDetailContainer)}>
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
@@ -293,8 +403,10 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <div className="w-fit cursor-pointer flex flex-row justify-start items-center self-start" onClick={onBack}>
-          <ArrowSVG className={clsx('size-4', { ['common-revert-90']: true })} />
+        <div
+          className={clsx('w-fit cursor-pointer flex flex-row justify-start items-center self-start')}
+          onClick={onBack}>
+          <ArrowSVG className={clsx('size-4 flex-shrink-0', { ['common-revert-90']: true })} />
           <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
         </div>
         <div className="mt-[16px]" />
@@ -315,6 +427,18 @@ export default function DetailPage() {
             onClick={onTrade}>
             Trade
           </Button>
+        )}
+        {isInTG && listings && listings.length > 0 && (
+          <ListingInfo
+            data={listings}
+            page={page}
+            pageSize={pageSize}
+            total={totalCount}
+            onChange={onChange}
+            rate={Number(elfPrice)}
+            symbol={schrodingerDetail?.symbol || ''}
+            onRefresh={refreshData}
+          />
         )}
         {schrodingerDetail && (
           <ItemInfo

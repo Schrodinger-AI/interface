@@ -4,7 +4,7 @@ import { Flex } from 'antd';
 import Link from 'next/link';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
-export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
+export default function AdoptModule({ onAdopt, cId }: { onAdopt: () => void; cId: string }) {
   const { isLogin } = useGetLoginStatus();
 
   return (
@@ -12,18 +12,11 @@ export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
       className="p-4 border-[2px] border-dashed border-pixelsPrimaryTextPurple bg-pixelsModalBg tg-card-shadow z-10 relative"
       vertical
       gap={16}>
-      <Flex align="center" justify="space-between">
-        <img
-          src={require('assets/img/telegram/adopt-text.png').default.src}
-          alt=""
-          className="w-[143px] h-9 object-contain"
-        />
-        <Link href={isLogin ? '/telegram?pageState=1' : ''}>
-          <Button size="small" className="!primary-button-dark !px-2 !text-pixelsWhiteBg !text-xs !font-medium">
-            My Cats
-          </Button>
-        </Link>
-      </Flex>
+      <img
+        src={require('assets/img/telegram/adopt-text.png').default.src}
+        alt=""
+        className="w-[143px] h-9 object-contain"
+      />
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((item, index) => {
           return (
@@ -37,6 +30,23 @@ export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
           );
         })}
       </div>
+      <Flex gap={16}>
+        <Link href={isLogin ? '/telegram?pageState=1' : ''} className="flex-1">
+          <Button
+            size="medium"
+            className="!w-full !bg-pixelsPageBg !border-dashed !border-[1px] !border-pixelsPrimaryTextPurple !tg-card-shadow !rounded-none !text-pixelsWhiteBg !text-sm !font-medium">
+            My Cats
+          </Button>
+        </Link>
+        <Link href={`/telegram/forest/trade?cId=${cId}`} className="flex-1">
+          <Button
+            size="medium"
+            type="primary"
+            className="!w-full !primary-button-dark !text-pixelsWhiteBg !text-sm !font-medium">
+            Trade
+          </Button>
+        </Link>
+      </Flex>
     </Flex>
   );
 }
