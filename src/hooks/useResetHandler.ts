@@ -10,7 +10,7 @@ import useLoading from './useLoading';
 import { rerollSGR } from 'contract/schrodinger';
 import ResultModal, { Status } from 'components/ResultModal';
 import { resetSGRMessage } from 'constants/promptMessage';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PromptModal from 'components/PromptModal';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { AdoptActionErrorCode } from './Adopt/adopt';
@@ -34,6 +34,9 @@ export const useResetHandler = () => {
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const { wallet } = useWalletService();
+
+  const searchParams = useSearchParams();
+  const source = searchParams.get('source');
 
   const intervalFetch = useIntervalGetSchrodingerDetail();
 
@@ -132,7 +135,7 @@ export const useResetHandler = () => {
                 await intervalFetch.start(originSymbol);
                 intervalFetch.remove();
                 resultModal.hide();
-                router.replace(`/detail?symbol=${originSymbol}&address=${wallet.address}`);
+                router.replace(`/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}`);
               } else {
                 router.replace('/');
               }

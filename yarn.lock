@@ -7139,10 +7139,10 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.0"
     signal-exit "^4.0.1"
 
-forest-ui-react@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.npmjs.org/forest-ui-react/-/forest-ui-react-0.0.12.tgz#4effc488e761bf919301065339e03bd7506a69cd"
-  integrity sha512-do30wpDw9lX82dIu1RJ0AmvO3IJBhUKCdufXMf2kShkGNeJ2+3NR1eQWO5bNI0RV5+osV+ODw0eBooR+x5t0Cw==
+forest-ui-react@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/forest-ui-react/-/forest-ui-react-0.0.13.tgz#77db48b09c0a52cc36c2f7b707e0b60dae84ee5c"
+  integrity sha512-9/Lz61ILxe78xasl23r1MBHDQyMKVmPGmrMjgn0l8/pfqREHjoOTc/7jvu4Bs8eNwEU2NrdkxW70cAlb6QbIBQ==
   dependencies:
     "@ebay/nice-modal-react" "^1.2.13"
     aelf-sdk "^3.4.14-beta.1"
@@ -8132,26 +8132,6 @@ isomorphic-unfetch@3.1.0:
   dependencies:
     node-fetch "^2.6.1"
     unfetch "^4.2.0"
-
-isows@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/isows/-/isows-1.0.4.tgz#810cd0d90cc4995c26395d2aa4cfa4037ebdf061"
-  integrity sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==
-
-isows@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/isows/-/isows-1.0.4.tgz#810cd0d90cc4995c26395d2aa4cfa4037ebdf061"
-  integrity sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==
-
-isows@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/isows/-/isows-1.0.4.tgz#810cd0d90cc4995c26395d2aa4cfa4037ebdf061"
-  integrity sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==
-
-isows@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmmirror.com/isows/-/isows-1.0.4.tgz#810cd0d90cc4995c26395d2aa4cfa4037ebdf061"
-  integrity sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==
 
 isows@1.0.4:
   version "1.0.4"
