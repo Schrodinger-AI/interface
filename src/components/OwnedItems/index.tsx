@@ -485,7 +485,7 @@ export default function OwnedItems() {
 
       router.push(`/detail?${params}`);
     },
-    [pageState, router],
+    [isTGPage, pageState, router],
   );
 
   useEffect(() => {

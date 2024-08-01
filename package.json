@@ -53,7 +53,7 @@
     "elliptic": "^6.5.4",
     "eslint-plugin-no-inline-styles": "^1.0.5",
     "firebase": "^9.23.0",
-    "forest-ui-react": "^0.0.12",
+    "forest-ui-react": "^0.0.13",
     "graphql": "^16.8.1",
     "lodash-es": "^4.17.21",
     "lottie-react": "^2.4.0",

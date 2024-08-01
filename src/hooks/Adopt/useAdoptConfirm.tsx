@@ -458,7 +458,7 @@ export const useAdoptConfirm = () => {
               await intervalFetch.start(symbol);
               intervalFetch.remove();
               cardResultModal.hide();
-              router.replace(`/detail?symbol=${symbol}&address=${wallet.address}&source=${source}`);
+              router.replace(`/detail?symbol=${symbol}&from=my&address=${wallet.address}&source=${source}`);
             },
           },
           hideButton: false,

@@ -1,15 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Trade, Collection, ForestProvider, useForestStore, Store } from 'forest-ui-react';
+import { useForestStore, Store } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchForestConfigItems } from 'api/request';
 import { cloneDeep } from 'lodash-es';
 import { useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
+import { useCmsInfo } from 'redux/hooks';
 
 export default ({ children }: { children: React.ReactNode }) => {
   const [state, { dispatch }] = useForestStore();
   const [loading, setLoading] = useState(false);
+  const cmsInfo = useCmsInfo();
   const { walletInfo } = cloneDeep(useSelector((store: AppState) => store.userInfo));
 
   useEffect(() => {
@@ -23,16 +25,16 @@ export default ({ children }: { children: React.ReactNode }) => {
     try {
       const { data } = await fetchForestConfigItems();
       dispatch({
-        type: 'setAelfInfo',
+        type: 'setCurChain',
         payload: {
-          aelfInfo: data,
+          chain: cmsInfo?.curChain,
         },
       });
 
       dispatch({
-        type: 'setCurChain',
+        type: 'setAelfInfo',
         payload: {
-          chain: data.curChain,
+          aelfInfo: data,
         },
       });
     } catch (error) {
