@@ -41,7 +41,7 @@ class Request {
         if (response.config.url?.includes('api.etherscan.io')) {
           return res;
         }
-        if (config.baseURL?.includes('cms')) {
+        if (config.baseURL?.includes('cms') || response?.config.baseURL?.includes('cms')) {
           return data;
         }
         if (config.baseURL?.includes('connect')) {
