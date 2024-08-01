@@ -41,7 +41,7 @@ export default ({ children }: { children: React.ReactNode }) => {
       console.error(error);
     }
     setLoading(false);
-  }, [dispatch]);
+  }, [cmsInfo?.curChain, dispatch]);
 
   useEffect(() => {
     fetchForestConfig();
