@@ -1,4 +1,4 @@
-FROM node:18.17.0
+FROM node:18.18.2
 
 ARG web=/opt/workspace/dapp
 ARG NEXT_PUBLIC_APP_ENV
