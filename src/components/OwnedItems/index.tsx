@@ -474,11 +474,11 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
     return (
       dataSource && (
         <Flex className="pt-0 lg:pt-6" justify="center" align="center">
-          <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" />
+          <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" theme={theme} />
         </Flex>
       )
     );
-  }, [dataSource, ownedTotal]);
+  }, [dataSource, ownedTotal, theme]);
 
   const onPress = useCallback(
     (item: TSGRItem) => {

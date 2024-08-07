@@ -25,7 +25,7 @@ import dynamic from 'next/dynamic';
 import { useRequestCms } from 'redux/hooks';
 import ETransferLayout from './ETransferLayout';
 import ConnectEvmWalletProvider from './ConnectEvmWalletProvider';
-import { Trade, Collection, ForestProvider, useForestStore, Store } from 'forest-ui-react';
+import { ForestProvider } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
 import Wrapper from './ForestInitWrapper';
 

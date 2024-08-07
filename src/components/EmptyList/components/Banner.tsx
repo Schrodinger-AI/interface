@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { TModalTheme } from 'components/CommonModal';
 import SkeletonImage from 'components/SkeletonImage';
 import { etransferDomain } from 'constants/url';
 import { useJumpToPage } from 'hooks/useJumpToPage';
@@ -7,7 +8,7 @@ import React from 'react';
 import { TEmptyChannelBanner } from 'types/misc';
 import { AdTracker } from 'utils/ad';
 
-function Banner({ banner }: { banner: TEmptyChannelBanner }) {
+function Banner({ banner, theme = 'light' }: { banner: TEmptyChannelBanner; theme?: TModalTheme }) {
   const { isLG } = useResponsive();
   const { jumpToPage } = useJumpToPage();
 
@@ -24,7 +25,7 @@ function Banner({ banner }: { banner: TEmptyChannelBanner }) {
       onClick={onBannerClick}>
       <SkeletonImage
         img={isLG ? banner.imgUrl.mobile || '' : banner.imgUrl.pc || ''}
-        className="w-full h-auto"
+        className={clsx('w-full h-auto', theme === 'dark' && '!rounded-none')}
         imageClassName="!rounded-none"
       />
     </div>

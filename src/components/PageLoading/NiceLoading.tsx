@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { ReactComponent as Close } from 'assets/img/modal-close.svg';
 import Loading from 'components/Loading';
 import useTelegram from 'hooks/useTelegram';
+import clsx from 'clsx';
 
 export interface ILoadingProps {
   visible?: boolean;
@@ -30,8 +31,9 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
   return (
     <Modal
       maskClosable={false}
-      className={`${styles.loading} ${showClose && styles.loadingWithClose}`}
+      className={`${styles.loading} ${showClose && styles.loadingWithClose} ${isInTG && styles.loadingDark}`}
       open={modal.visible}
+      rootClassName={clsx(isInTG && styles.loadingDarkWrap)}
       footer={null}
       onCancel={modal.hide}
       closable={false}
@@ -39,13 +41,17 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
       centered>
       <section className="flex flex-col justify-center items-center">
         <Loading color={isInTG ? 'purple' : 'blue'} />
-        <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">
+        <span
+          className={clsx(
+            'mt-[12px] text-sm font-normal text-center',
+            isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+          )}>
           {content || 'loading...'}
         </span>
       </section>
       {showClose && (
         <Close
-          className="absolute right-[12px] top-[12px] cursor-pointer"
+          className={clsx('absolute right-[12px] top-[12px] cursor-pointer', isInTG && styles['dark-close-icon'])}
           onClick={() => {
             onClose?.();
             modal.hide();
