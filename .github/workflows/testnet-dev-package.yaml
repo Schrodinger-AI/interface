@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.REPOSITORY_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/schrodinger-web-interface # change this to your project frontend name​
+          images: ${{ secrets.REPOSITORY_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/schrodinger-web-interface-dev # change this to your project frontend name​
           tags: |
             type=sha
       - name: Set up Docker Buildx
@@ -55,7 +55,7 @@ jobs:
               workflow_id: 'deployment_testnet.yaml',
               ref: 'main',
               inputs: {
-                appName: 'schrodinger-web-interface',
+                appName: 'schrodinger-web-interface-dev',
                 commit_sha: 'sha-${{ needs.build-and-push-image.outputs.short_sha }}',
               }
             })
