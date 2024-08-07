@@ -3,12 +3,12 @@
   .filter-tags-container {
     @apply flex flex-wrap items-center gap-[16px];
     .tag-item {
-      @apply flex items-center px-[12px] py-[5px] bg-neutralDefaultBg rounded-[12px];
+      @apply flex items-center px-[12px] py-[5px];
       .tag-label {
-        @apply flex items-center text-[14px] leading-[22px] text-neutralPrimary mr-[8px];
+        @apply flex items-center text-[14px] leading-[22px] mr-[8px];
       }
       .tag-close {
-        @apply text-neutralTitle size-3 transition-none;
+        @apply size-3 transition-none;
       }
     }
     .tag-item:hover {
@@ -24,5 +24,5 @@
 }
 
 .filter__button {
-  @apply py-[5px] cursor-pointer text-[14px] leading-[22px] font-medium text-brandDefault;
+  @apply py-[5px] cursor-pointer text-[14px] leading-[22px] font-medium;
 }

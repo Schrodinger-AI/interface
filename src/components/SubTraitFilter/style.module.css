@@ -6,4 +6,51 @@
   :global(.aelfd-checkbox-group-item) {
     @apply w-full pl-4 pr-5 hover:bg-neutralHoverBg active:bg-neutralHoverBg;
   }
+
+  .checkbox-dark {
+    :global {
+      .aelfd-col {
+        @apply hover:!bg-pixelsModalBg;
+      }
+      .aelfd-checkbox-wrapper {
+        .aelfd-checkbox {
+  
+          .aelfd-checkbox-inner {
+            @apply bg-pixelsModalBg border-[2px] border-pixelsBorder rounded-[2px];
+          }
+  
+          &.aelfd-checkbox-checked:not(.aelfd-checkbox-disabled) {
+            .aelfd-checkbox-inner {
+              @apply bg-pixelsSecondaryTextPurple border-pixelsSecondaryTextPurple;
+            }
+          }
+  
+          &.aelfd-checkbox-indeterminate .aelfd-checkbox-inner::after {
+            @apply bg-pixelsSecondaryTextPurple
+          }
+  
+        }
+  
+        .aelfd-checkbox + span {
+          @apply text-pixelsWhiteBg;
+        }
+  
+        &.aelfd-checkbox-wrapper-checked {
+          &.aelfd-checkbox-group-item {
+            @apply bg-pixelsModalBg;
+          }
+          .aelfd-checkbox + span {
+            @apply text-pixelsSecondaryTextPurple;
+          }
+        }
+        &.aelfd-checkbox-wrapper-checked.aelfd-checkbox-wrapper-disabled {
+          .aelfd-checkbox + span {
+            @apply text-pixelsWhiteBg;
+          }
+        }
+        
+      }
+    }
+  }
+
 }

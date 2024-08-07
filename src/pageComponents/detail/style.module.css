@@ -16,5 +16,5 @@
 }
 
 .tgDetailContainer {
-  @apply px-4 lg:px-10 pb-[100px];
+  @apply px-4 lg:px-10 pb-[100px] bg-pixelsPageBg;
 }

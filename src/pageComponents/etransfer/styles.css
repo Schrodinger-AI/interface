@@ -1,0 +1,121 @@
+.etransfer-ui-common-drawer {
+  .etransfer-ant-drawer-content {
+    @apply bg-pixelsModalBg;
+
+    .etransfer-ant-drawer-wrapper-body {
+      .etransfer-ant-drawer-header {
+        .etransfer-ant-drawer-header-title {
+          .etransfer-ant-drawer-close {
+            .close-icon {
+              svg path {
+                @apply fill-pixelsDivider;
+              }
+            }
+          }
+          .etransfer-ant-drawer-title {
+            @apply text-pixelsWhiteBg text-xl font-medium;
+
+            text-shadow: 2px 2px 0 var(--pixels-primary-text-pink);
+
+          }
+        }
+      }
+      .etransfer-ant-drawer-body {
+        .etransfer-ui-flex-row-center.etransfer-ui-deposit-tip {
+          @apply rounded-none bg-pixelsPageBg border-pixelsPageBg;
+
+          .text {
+            @apply text-pixelsBorder;
+
+            .token {
+              @apply text-pixelsDivider;
+            }
+          }
+        }
+        .deposit-address {
+          @apply rounded-none border-pixelsBorder;
+          
+          .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
+            .address-text-title {
+              @apply text-pixelsBorder;
+            }
+            .etransfer-ui-flex-row-center {
+              .address-text-content {
+                @apply text-pixelsTertiaryTextPurple;
+              }
+              
+            }
+          }
+        }
+        .etransfer-ui-deposit-info {
+          .info-line {
+            .info-title {
+              @apply text-pixelsBorder;
+            }
+            .info-value {
+              @apply text-pixelsWhiteBg;
+
+              .question-mark-icon {
+                .questionmark-icon {
+                  svg path {
+                    @apply stroke-pixelsWhiteBg;
+                  }
+                }
+              }
+            }
+            .info-exhibit {
+              @apply text-pixelsBorder;
+            }
+          }
+        }
+        .etransfer-ui-description-wrapper {
+          @apply bg-pixelsPageBg rounded-none;
+          >p {
+            @apply text-pixelsBorder;
+          }
+        }
+
+        .token-select-list {
+          .etransfer-ui-token-card-for-mobile {
+            @apply bg-pixelsModalBg border-transparent;
+
+            &.token-card-selected {
+              @apply bg-pixelsPageBg;
+            }
+            .token-card-name {
+              @apply text-pixelsWhiteBg text-base font-medium;
+            }
+            .token-card-symbol {
+              @apply text-pixelsBorder;
+            }
+          }
+          
+        }
+      }
+    }
+
+    .etransfer-ant-modal-root {
+      .etransfer-ant-modal {
+        .etransfer-ant-modal-content {
+          @apply bg-pixelsPageBg;
+          .etransfer-ant-modal-body {
+            .etransfer-ui-view-contract-address-modal-body {
+              .view-contract-address-modal-title {
+                @apply dark-title;
+              }
+              .view-contract-address-modal-contract {
+                @apply text-pixelsDivider;
+              }
+            }
+            .etransfer-ui-view-contract-address-modal-footer {
+              .etransfer-ant-btn-default {
+                @apply primary-button-dark;
+              }
+            }
+          }
+        }
+        
+      }
+    }
+  }
+}

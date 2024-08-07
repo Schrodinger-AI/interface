@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useMemo, useState } from 'react';
-import CommonModal from 'components/CommonModal';
+import CommonModal, { TModalTheme } from 'components/CommonModal';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { useResponsive } from 'hooks/useResponsive';
 import { Button } from 'aelf-design';
@@ -28,11 +28,17 @@ export enum Status {
   INFO = 'info',
 }
 
-function CardList({ title, value }: { title: string; value: string }) {
+function CardList({ title, value, isDark = false }: { title: string; value: string; isDark?: boolean }) {
   return (
     <div className="flex flex-row justify-between items-center mt-2 w-full overflow-hidden">
-      <div className="w-[110px] text-sm text-neutralSecondary">{title}</div>
-      <div className="flex-1 text-right text-sm text-neutralTitle font-medium truncate">{value}</div>
+      <div className={clsx('w-[110px] text-sm', isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>{title}</div>
+      <div
+        className={clsx(
+          'flex-1 text-right text-sm font-medium truncate',
+          isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+        )}>
+        {value}
+      </div>
     </div>
   );
 }
@@ -64,6 +70,7 @@ interface IProps {
     text?: string;
     href?: string;
   };
+  theme?: TModalTheme;
   onCancel?: <T, R>(params?: T) => R | void;
 }
 
@@ -79,6 +86,7 @@ function CardResultModal({
   link,
   showScrap = false,
   showLight = false,
+  theme = 'light',
   onCancel,
 }: IProps) {
   const modal = useModal();
@@ -126,6 +134,7 @@ function CardResultModal({
   const aProps = useMemo(() => (isMobile ? {} : { target: '_blank', rel: 'noreferrer' }), []);
 
   const { isInTelegram } = useTelegram();
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const modalFooter = useMemo(() => {
     return (
@@ -136,7 +145,7 @@ function CardResultModal({
               type="primary"
               size="ultra"
               loading={loading}
-              className={`${isLG ? 'w-full' : '!w-[256px]'}`}
+              className={clsx(isLG ? 'w-full' : '!w-[256px]', isDark ? 'primary-button-dark' : '')}
               onClick={onClick}>
               {buttonInfo?.btnText || 'View'}
             </Button>
@@ -146,18 +155,22 @@ function CardResultModal({
         {link && !isInTelegram() && (
           <div className="flex items-center mt-[16px]">
             <a href={link.href} {...aProps} className="flex items-center">
-              <span className="text-brandDefault font-medium text-base mr-[8px]">
+              <span
+                className={clsx(
+                  'font-medium text-base mr-[8px]',
+                  isDark ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+                )}>
                 {link.text || 'View on aelf Explorer'}
               </span>
               <span>
-                <ExportOutlined width={20} height={20} />
+                <ExportOutlined width={20} height={20} className={isDark ? 'fill-pixelsSecondaryTextPurple' : ''} />
               </span>
             </a>
           </div>
         )}
       </div>
     );
-  }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick, isInTelegram]);
+  }, [aProps, buttonInfo?.btnText, hideButton, isLG, link, loading, onClick, isInTelegram, isDark]);
 
   return (
     <>
@@ -166,10 +179,13 @@ function CardResultModal({
           modalTitle ? (
             <p className="flex flex-nowrap">
               <span className="mr-[8px] lg:mr-[12px] lg:mb-0">{Icon}</span>
-              <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">{modalTitle}</span>
+              <span className={clsx('font-semibold text-xl lg:text-2xl', isDark ? 'dark-title' : 'text-neutralTitle')}>
+                {modalTitle}
+              </span>
             </p>
           ) : null
         }
+        theme={theme}
         wrapClassName={styles['card-result-modal-wrap']}
         className={clsx('relative', styles['card-result-modal'])}
         disableMobileLayout={true}
@@ -197,16 +213,22 @@ function CardResultModal({
             </div>
           ) : null}
           {info ? (
-            <div className="flex flex-col w-full overflow-hidden flex-none lg:flex-1 mt-[16px] lg:mt-[0px] border border-solid border-neutralDivider rounded-lg lg:ml-[24px] p-[16px]">
+            <div
+              className={clsx(
+                'flex flex-col w-full overflow-hidden flex-none lg:flex-1 mt-[16px] lg:mt-[0px] border border-solid lg:ml-[24px] p-[16px]',
+                isDark ? 'rounded-none border-pixelsBorder' : 'rounded-lg border-neutralDivider',
+              )}>
               {!isLG ? (
                 <div className="flex flex-row justify-between items-center">
-                  <div className="text-neutralTitle font-medium text-base">Info</div>
+                  <div className={clsx('font-medium text-base', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                    Info
+                  </div>
                 </div>
               ) : null}
 
-              {!!info.name && <CardList title="Name" value={info.name} />}
-              {!!amount && <CardList title="Adopt amount" value={formatTokenPrice(amount)} />}
-              {!!info.points && <CardList title="Points" value={info.points} />}
+              {!!info.name && <CardList title="Name" value={info.name} isDark={isDark} />}
+              {!!amount && <CardList title="Adopt amount" value={formatTokenPrice(amount)} isDark={isDark} />}
+              {!!info.points && <CardList title="Points" value={info.points} isDark={isDark} />}
               {!!info.points && cmsInfo?.ecoEarn && (
                 <div className="w-full flex items-center justify-end">
                   <span
@@ -217,10 +239,14 @@ function CardResultModal({
                         linkType: 'externalLink',
                       })
                     }>
-                    <span className="text-xs font-medium text-brandDefault">
+                    <span
+                      className={clsx(
+                        'text-xs font-medium',
+                        isDark ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+                      )}>
                       View the SGR reward from point staking
                     </span>
-                    <ExportOutlined className="scale-[0.6]" />
+                    <ExportOutlined className={clsx('scale-[0.6]', isDark && 'fill-pixelsSecondaryTextPurple')} />
                   </span>
                 </div>
               )}

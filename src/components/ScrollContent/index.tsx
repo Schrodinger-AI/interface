@@ -9,6 +9,7 @@ import { CardType } from 'components/ItemCard';
 import styles from './style.module.css';
 import { ListGridType } from 'antd/es/list';
 import Loading from 'components/Loading';
+import { TModalTheme } from 'components/CommonModal';
 
 interface IContentProps {
   type: CardType;
@@ -17,13 +18,24 @@ interface IContentProps {
   className?: string;
   grid: ListGridType;
   emptyText?: ReactNode;
+  theme?: TModalTheme;
   loadMore?: () => void;
   onPress: (item: TSGRItem) => void;
   ListProps: ListProps<TSGRItem>;
 }
 
 function ScrollContent(props: IContentProps) {
-  const { ListProps, loadMore = () => null, type, grid, emptyText, onPress, loading, loadingMore } = props;
+  const {
+    ListProps,
+    loadMore = () => null,
+    type,
+    grid,
+    emptyText,
+    theme = 'light',
+    onPress,
+    loading,
+    loadingMore,
+  } = props;
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
   });
@@ -54,7 +66,7 @@ function ScrollContent(props: IContentProps) {
         loading={loading}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
-            <ItemCard type={type} item={item} onPress={onPress} />
+            <ItemCard type={type} item={item} onPress={onPress} theme={theme} />
           </List.Item>
         )}
         {...ListProps}

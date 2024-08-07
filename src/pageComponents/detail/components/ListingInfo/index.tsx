@@ -1,17 +1,19 @@
-import { Button, Pagination } from 'aelf-design';
+import { Button } from 'aelf-design';
 import { CollapseProps, Flex } from 'antd';
-import { FormatListingType } from 'types';
 import clsx from 'clsx';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { formatNumber, formatTokenPrice, formatUSDPrice } from 'utils/format';
 import CommonCopy from 'components/CommonCopy';
 import { useWalletService } from 'hooks/useWallet';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import useForestSdk from 'hooks/useForestSdk';
 import { useRouter } from 'next/navigation';
 import { Collapse } from 'antd';
 import styles from './style.module.css';
+import { TModalTheme } from 'components/CommonModal';
+import CommonPagination from 'components/CommonPagination';
+import { FormatListingType } from 'types';
 
 export default function ListingInfo({
   page,
@@ -21,6 +23,7 @@ export default function ListingInfo({
   onChange,
   rate,
   symbol,
+  theme = 'light',
   onRefresh,
 }: {
   page: number;
@@ -30,12 +33,15 @@ export default function ListingInfo({
   onChange: (page?: number, pageSize?: number) => void;
   rate: number;
   symbol: string;
+  theme?: TModalTheme;
   onRefresh: () => void;
 }) {
   const { wallet } = useWalletService();
   const [expend, setExpend] = useState(true);
 
   const router = useRouter();
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const { buyNow } = useForestSdk({
     symbol,
@@ -51,96 +57,122 @@ export default function ListingInfo({
     [buyNow],
   );
 
-  const items: CollapseProps['items'] = [
-    {
-      key: 'content',
-      label: <div className="text-neutralTitle font-medium text-lg">Listing</div>,
-      children: (
-        <>
-          <div className="w-full overflow-hidden">
-            {data?.map((list, index) => {
-              const usdPrice = list?.price * (list?.purchaseToken?.symbol === 'ELF' ? rate : 1);
-              return (
-                <div
-                  key={index}
-                  className={clsx(
-                    'text-sm font-normal px-[24px] border-solid border border-[#EDEDED] border-x-0 border-t-0',
-                    index === data.length - 1 && 'border-none',
-                  )}>
-                  <div className="py-6">
-                    <Flex vertical gap={16}>
-                      <Flex justify="space-between" align="center">
-                        <span className="text-neutralSecondary">Unit Price</span>
-                        <span className="text-neutralTitle font-medium">{`${formatTokenPrice(list.price)} ${
-                          list.purchaseToken.symbol
-                        }`}</span>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <span className="text-neutralSecondary">Unit USD Price</span>
-                        <span className="text-neutralTitle font-medium">{formatUSDPrice(Number(usdPrice))}</span>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <span className="text-neutralSecondary">Amount</span>
-                        <span className="text-neutralTitle font-medium">{formatNumber(list.quantity)}</span>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <span className="text-neutralSecondary">Expiration</span>
-                        <span className="text-neutralTitle font-medium">{list.expiration || '--'}</span>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <span className="text-neutralSecondary">From</span>
-                        <Flex align="center">
-                          {list.ownerAddress === wallet.address
-                            ? 'you'
-                            : getOmittedStr(list.fromName || '', OmittedType.ADDRESS)}
-                          <CommonCopy
-                            className="ml-2 cursor-pointer"
-                            toCopy={addPrefixSuffix(list?.ownerAddress || '')}
-                          />
+  const items: CollapseProps['items'] = useMemo(
+    () => [
+      {
+        key: 'content',
+        label: <div className={clsx('font-medium text-lg', isDark ? 'dark-title' : 'text-neutralTitle')}>Listing</div>,
+        children: (
+          <>
+            <div className={clsx('w-full overflow-hidden', isDark && 'bg-pixelsModalBg')}>
+              {data?.map((list, index) => {
+                const usdPrice = list?.price * (list?.purchaseToken?.symbol === 'ELF' ? rate : 1);
+                return (
+                  <div
+                    key={index}
+                    className={clsx(
+                      'text-sm font-normal px-[24px] border-solid border border-[#EDEDED] border-x-0 border-t-0',
+                      index === data.length - 1 && 'border-none',
+                    )}>
+                    <div className="py-6">
+                      <Flex vertical gap={16}>
+                        <Flex justify="space-between" align="center">
+                          <span className={clsx(isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+                            Unit Price
+                          </span>
+                          <span
+                            className={clsx(
+                              'font-medium',
+                              isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+                            )}>{`${formatTokenPrice(list.price)} ${list.purchaseToken.symbol}`}</span>
                         </Flex>
+                        <Flex justify="space-between" align="center">
+                          <span className={clsx(isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+                            Unit USD Price
+                          </span>
+                          <span className={clsx('font-medium', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                            {formatUSDPrice(Number(usdPrice))}
+                          </span>
+                        </Flex>
+                        <Flex justify="space-between" align="center">
+                          <span className={clsx(isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>Amount</span>
+                          <span className={clsx('font-medium', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                            {formatNumber(list.quantity)}
+                          </span>
+                        </Flex>
+                        <Flex justify="space-between" align="center">
+                          <span className={clsx(isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+                            Expiration
+                          </span>
+                          <span className={clsx('font-medium', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                            {list.expiration || '--'}
+                          </span>
+                        </Flex>
+                        <Flex justify="space-between" align="center">
+                          <span className={clsx(isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>From</span>
+                          <Flex align="center">
+                            {list.ownerAddress === wallet.address ? (
+                              <span className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>you</span>
+                            ) : (
+                              <span className={clsx(isDark ? 'text-pixelsTertiaryTextPurple' : 'text-neutralTitle')}>
+                                {getOmittedStr(list.fromName || '', OmittedType.ADDRESS)}
+                              </span>
+                            )}
+                            <CommonCopy
+                              className="ml-2 cursor-pointer"
+                              toCopy={addPrefixSuffix(list?.ownerAddress || '')}
+                            />
+                          </Flex>
+                        </Flex>
+                        {list.ownerAddress !== wallet.address && (
+                          <div className="w-full">
+                            <Button
+                              type="primary"
+                              size="small"
+                              className={clsx('!w-[75px] !rounded-md !ml-auto', isDark && '!primary-button-dark')}
+                              onClick={() => {
+                                onClick(list);
+                              }}>
+                              Buy
+                            </Button>
+                          </div>
+                        )}
                       </Flex>
-                      {list.ownerAddress !== wallet.address && (
-                        <div className="w-full">
-                          <Button
-                            type="primary"
-                            size="small"
-                            className="!w-[75px] !rounded-md !ml-auto"
-                            onClick={() => {
-                              onClick(list);
-                            }}>
-                            Buy
-                          </Button>
-                        </div>
-                      )}
-                    </Flex>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-          {total > pageSize && (
-            <div className="p-4">
-              <Pagination
-                current={page}
-                pageSize={pageSize}
-                total={total}
-                showSizeChanger={false}
-                pageChange={onChange}
-                hideOnSinglePage
-              />
+                );
+              })}
             </div>
-          )}
-        </>
-      ),
-    },
-  ];
+            {total > pageSize && (
+              <div className="p-4">
+                <CommonPagination
+                  current={page}
+                  pageSize={pageSize}
+                  total={total}
+                  showSizeChanger={false}
+                  pageChange={onChange}
+                  theme={theme}
+                  hideOnSinglePage
+                />
+              </div>
+            )}
+          </>
+        ),
+      },
+    ],
+    [data, isDark, onChange, onClick, page, pageSize, rate, theme, total, wallet.address],
+  );
 
   return (
     <>
       <Collapse
         className={clsx(
-          'w-full mt-4 rounded-lg border-solid border border-[#EDEDED] overflow-hidden',
+          'w-full mt-4 border overflow-hidden',
           styles['collapse-custom'],
+          isDark && styles['collapse-custom-dark'],
+          isDark
+            ? 'rounded-none border-pixelsPrimaryTextPurple border-dashed bg-pixelsModalBg'
+            : 'rounded-lg border-neutralDivider border-solid bg-transparent',
         )}
         expandIconPosition="end"
         items={items}

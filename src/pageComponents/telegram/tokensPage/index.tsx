@@ -2,10 +2,9 @@
 import OwnedItems from 'components/OwnedItems';
 import { ListTypeEnum } from 'types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
+import { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from './hooks/useGetNoticeData';
 import { useCmsInfo } from 'redux/hooks';
-import TopBanner from 'components/TopBanner';
 import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -14,24 +13,24 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
-import { ICommonRadioTabButton } from 'components/CommonRadioTab';
-import CommonSegmented from 'components/CommonSegmented';
 import StrayCats from 'pageComponents/strayCats';
 import BackCom from './components/BackCom';
 import useTelegram from 'hooks/useTelegram';
 import { PAGE_CONTAINER_ID } from 'constants/index';
+import CommonTabs from 'components/CommonTabs';
+import { TabsProps } from 'antd';
 
-const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
+const pageStateList: TabsProps['items'] = [
   {
-    value: ListTypeEnum.All,
+    key: `${ListTypeEnum.All}`,
     label: 'All Cats',
   },
   {
-    value: ListTypeEnum.My,
+    key: `${ListTypeEnum.My}`,
     label: 'My Cats',
   },
   {
-    value: ListTypeEnum.Stray,
+    key: `${ListTypeEnum.Stray}`,
     label: 'Stray Cats',
   },
 ];
@@ -71,7 +70,7 @@ export default function TokensPage() {
     getNotice();
   }, [getNotice]);
 
-  const onSegmentedChange = (value: ListTypeEnum) => {
+  const onTabsChange = (value: ListTypeEnum) => {
     if ([ListTypeEnum.My, ListTypeEnum.Stray].includes(value)) {
       if (!isLogin) {
         checkLogin({
@@ -93,24 +92,20 @@ export default function TokensPage() {
   }, 3000);
 
   return (
-    <div className="flex flex-col max-w-[2560px] w-full h-full overflow-scroll" id={PAGE_CONTAINER_ID}>
-      <BackCom className="mt-6 m-4 ml-4 lg:ml-10" url="/telegram/home" />
+    <div className="flex flex-col max-w-[2560px] w-full h-full overflow-scroll bg-pixelsPageBg" id={PAGE_CONTAINER_ID}>
+      <BackCom className="mt-6 m-4 ml-4 lg:ml-10" url="/telegram/home" theme="dark" />
       <div
         className={clsx(
           'flex flex-col-reverse lg:flex-row justify-between px-0 lg:px-[40px]',
           cmsInfo?.bannerConfig ? 'mt-[24px]' : 'mt-0',
         )}>
-        <CommonSegmented
+        <CommonTabs
           options={pageStateList}
-          value={pageState}
-          onSegmentedChange={(value) => onSegmentedChange(value as ListTypeEnum)}
+          defaultValue={pageState}
+          onTabsChange={(value) => onTabsChange(value as ListTypeEnum)}
+          theme="dark"
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />
-        {/* {noticeData && noticeData?.length ? (
-          <div className="flex-1 overflow-hidden ml-0 lg:ml-5 h-[48px] mb-[16px] lg:mb-0 mr-0 lg:mr-[12px]">
-            <ScrollAlert data={noticeData} type="notice" />
-          </div>
-        ) : null} */}
 
         {!isInTG && cmsInfo?.operationButtons?.length ? (
           <div
@@ -141,7 +136,9 @@ export default function TokensPage() {
         ) : null}
       </div>
 
-      <div className="px-4 lg:px-10">{pageState === ListTypeEnum.Stray ? <StrayCats /> : <OwnedItems />}</div>
+      <div className="px-4 lg:px-10">
+        {pageState === ListTypeEnum.Stray ? <StrayCats theme="dark" /> : <OwnedItems theme="dark" />}
+      </div>
     </div>
   );
 }

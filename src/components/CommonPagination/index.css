@@ -1,0 +1,12 @@
+.aelfd-select-dropdown {
+  @apply bg-pixelsModalBg rounded-none border border-solid border-pixelsBorder;
+  .aelfd-select-item-option-selected {
+    @apply bg-pixelsPageBg text-pixelsSecondaryTextPurple;
+  }
+  .aelfd-select-item-option-active:not(.aelfd-select-item-option-disabled) {
+    @apply bg-pixelsPageBg text-pixelsSecondaryTextPurple;
+  }
+  .aelfd-select-item-option {
+    @apply text-pixelsWhiteBg;
+  }
+}

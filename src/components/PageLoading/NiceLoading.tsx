@@ -6,6 +6,7 @@ import { useMount } from 'ahooks';
 import { useState } from 'react';
 import { ReactComponent as Close } from 'assets/img/modal-close.svg';
 import Loading from 'components/Loading';
+import useTelegram from 'hooks/useTelegram';
 
 export interface ILoadingProps {
   visible?: boolean;
@@ -16,6 +17,7 @@ export interface ILoadingProps {
 
 export function NiceLoading({ showClose = false, content, onClose }: ILoadingProps) {
   const [isMount, setIsMount] = useState(false);
+  const { isInTG } = useTelegram();
 
   const modal = useModal();
 
@@ -36,7 +38,7 @@ export function NiceLoading({ showClose = false, content, onClose }: ILoadingPro
       closeIcon={null}
       centered>
       <section className="flex flex-col justify-center items-center">
-        <Loading />
+        <Loading color={isInTG ? 'purple' : 'blue'} />
         <span className="mt-[12px] text-[#1A1A1A] text-[14px] leading-[20px] font-normal text-center">
           {content || 'loading...'}
         </span>

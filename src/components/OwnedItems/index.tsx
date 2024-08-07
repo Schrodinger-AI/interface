@@ -45,12 +45,14 @@ import useColumns from 'hooks/useColumns';
 import { EmptyList } from 'components/EmptyList';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import qs from 'qs';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import SearchInput from './SearchInput';
 import useTelegram from 'hooks/useTelegram';
+import { ItemType } from 'antd/es/menu/interface';
+import { TModalTheme } from 'components/CommonModal';
 
-export default function OwnedItems() {
+export default function OwnedItems(params?: { theme?: TModalTheme }) {
+  const { theme = 'light' } = params || {};
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
   const { isLG } = useResponsive();
@@ -67,6 +69,8 @@ export default function OwnedItems() {
     () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
     [searchParams],
   );
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const pathName = usePathname();
   const isTGPage = pathName === '/telegram';
@@ -303,7 +307,7 @@ export default function OwnedItems() {
   const renderCollapseItemsLabel = useCallback(
     ({ title, tips }: { title: string; tips?: string }) => {
       return (
-        <div className="flex items-center h-[26px]">
+        <div className={clsx('flex items-center h-[26px]', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
           {title}
           {tips ? (
             <ToolTip title={tips} trigger={isLG ? 'click' : 'hover'}>
@@ -315,7 +319,7 @@ export default function OwnedItems() {
         </div>
       );
     },
-    [isLG],
+    [isDark, isLG],
   );
 
   const collapseItems = useMemo(() => {
@@ -329,7 +333,7 @@ export default function OwnedItems() {
             children = [
               {
                 key: item.key,
-                label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} />,
+                label: <Comp dataSource={item} defaultValue={value} onChange={filterChange} theme={theme} />,
               },
             ];
           }
@@ -339,7 +343,7 @@ export default function OwnedItems() {
             children = item.data.map((subItem) => {
               return {
                 key: subItem.value,
-                label: <Comp label={subItem.label} count={subItem.count} />,
+                label: <Comp label={subItem.label} count={subItem.count} theme={theme} />,
                 children: [
                   {
                     key: subItem.value,
@@ -350,6 +354,7 @@ export default function OwnedItems() {
                         parentLabel={subItem.label}
                         parentValue={subItem.value}
                         value={value as MenuCheckboxItemDataType[]}
+                        theme={theme}
                         onChange={filterChange}
                       />
                     ),
@@ -371,7 +376,7 @@ export default function OwnedItems() {
           : undefined;
       })
       .filter((i) => i) as ItemType[];
-  }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs]);
+  }, [filterList, tempFilterSelect, renderCollapseItemsLabel, filterChange, compChildRefs, theme]);
 
   const collapsedChange = () => {
     setCollapsed(!collapsed);
@@ -499,37 +504,48 @@ export default function OwnedItems() {
     if (pageState === ListTypeEnum.My) {
       return (
         <div>
-          <span className="text-2xl font-semibold pr-[8px]">Owned</span>
-          <span className="text-base font-semibold">({total})</span>
+          <span className={clsx('text-2xl font-semibold pr-[8px]', isDark && 'text-pixelsWhiteBg')}>Owned</span>
+          <span className={clsx('text-base font-semibold', isDark && 'text-pixelsWhiteBg')}>({total})</span>
         </div>
       );
     }
     return (
-      <span className="text-2xl font-semibold min-w-max w-[364px]">{`${total} ${total > 1 ? 'Cats' : 'Cat'}`}</span>
+      <span className={clsx('text-2xl font-semibold min-w-max w-[364px]', isDark && 'text-pixelsWhiteBg')}>{`${total} ${
+        total > 1 ? 'Cats' : 'Cat'
+      }`}</span>
     );
-  }, [pageState, total]);
+  }, [pageState, total, isDark]);
 
   return (
-    <div>
+    <div className={clsx(isDark && 'bg-pixelsPageBg')}>
       <Flex
-        className="pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full"
+        className={clsx(
+          'pb-2 border-0 border-b border-solid border-neutralDivider text-neutralTitle w-full',
+          isDark && 'border-none',
+        )}
         align="center"
         justify="space-between">
         {showTotalAmount && isLG ? renderTotalAmount : null}
         {isLG ? (
           <Flex flex={1} gap={16} className="ml-[8px] flex justify-end">
             <Flex
-              className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
+              className={clsx(
+                'flex-none size-12 border border-solid cursor-pointer',
+                isDark
+                  ? 'rounded-none border-pixelsBorder bg-pixelsModalBg tg-card-shadow'
+                  : 'rounded-lg border-brandDefault bg-white',
+              )}
               justify="center"
               align="center"
               onClick={collapsedChange}>
-              <CollapsedSVG />
+              <CollapsedSVG className={isDark ? 'fill-pixelsWhiteBg' : 'fill-brandDefault'} />
             </Flex>
             <SearchInput
               placeholder="Search for an inscription symbol or name"
               value={searchParam}
               onChange={symbolChange}
               onPressEnter={symbolChange}
+              theme={theme}
               showTotalAmount={(value) => {
                 setShowTotalAmount(value);
               }}
@@ -552,6 +568,7 @@ export default function OwnedItems() {
               applyFilter();
               setCollapsed(false);
             }}
+            theme={theme}
           />
         ) : (
           <Layout.Sider
@@ -564,9 +581,13 @@ export default function OwnedItems() {
           </Layout.Sider>
         )}
 
-        <Layout className="!bg-[var(--bg-page)] relative">
+        <Layout className={clsx('relative', isDark ? 'bg-pixelsPageBg' : '!bg-[var(--bg-page)]')}>
           <Flex
-            className={clsx('bg-neutralWhiteBg z-[50] pb-5 pt-6 lg:pt-5', !isLG && 'sticky top-0')}
+            className={clsx(
+              'z-[50] pb-5 pt-6 lg:pt-5',
+              !isLG && 'sticky top-0',
+              isDark ? 'bg-pixelsPageBg' : 'bg-neutralWhiteBg',
+            )}
             vertical
             gap={12}>
             {isLG ? null : (
@@ -592,6 +613,7 @@ export default function OwnedItems() {
               filterSelect={filterSelect}
               clearAll={handleTagsClearAll}
               onchange={filterChange}
+              theme={theme}
               clearSearchChange={clearSearchChange}
             />
           </Flex>
@@ -601,6 +623,7 @@ export default function OwnedItems() {
             loading={loading}
             className={isLG && !tagList.length ? 'mt-[12px]' : ''}
             grid={{ gutter, column }}
+            theme={theme}
             emptyText={loading ? <></> : emptyText}
             onPress={onPress}
             loadMore={loadMoreData}

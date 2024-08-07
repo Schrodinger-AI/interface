@@ -37,6 +37,8 @@ import BigNumber from 'bignumber.js';
 import { ItemType } from 'antd/es/menu/interface';
 import useForestSdk from 'hooks/useForestSdk';
 import 'forest-ui-react/dist/assets/index.css';
+import { TModalTheme } from 'components/CommonModal';
+import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -147,6 +149,13 @@ export default function DetailPage() {
     const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
     route.replace(path);
   }, [callbackPath, fromListAll, isInTG, route]);
+
+  const theme: TModalTheme = useMemo(() => {
+    if (isInTG) {
+      return 'dark';
+    }
+    return 'light';
+  }, [isInTG]);
 
   const genGtZero = useMemo(() => (schrodingerDetail?.generation || 0) > 0, [schrodingerDetail?.generation]);
   const genLtNine = useMemo(() => (schrodingerDetail?.generation || 0) < 9, [schrodingerDetail?.generation]);
@@ -351,7 +360,11 @@ export default function DetailPage() {
 
   return (
     <section
-      className={clsx('mt-[24px] lg:mt-[24px] flex flex-col items-center w-full', isInTG && styles.tgDetailContainer)}>
+      className={clsx(
+        'mt-[24px] lg:mt-[24px] flex flex-col items-center w-full',
+        isInTG && styles.tgDetailContainer,
+        theme === 'dark' && 'bg-pixelsPageBg',
+      )}>
       <div className="w-full max-w-[1360px] hidden lg:block">
         <Breadcrumb
           items={[
@@ -403,20 +416,16 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <div
-          className={clsx('w-fit cursor-pointer flex flex-row justify-start items-center self-start')}
-          onClick={onBack}>
-          <ArrowSVG className={clsx('size-4 flex-shrink-0', { ['common-revert-90']: true })} />
-          <div className="ml-[8px] font-semibold text-sm w-full">Back</div>
-        </div>
+        <BackCom className="w-full" theme={theme} />
         <div className="mt-[16px]" />
-        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
+        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} theme={theme} />}
         {schrodingerDetail && (
           <ItemImage
             detail={schrodingerDetail}
             level={rankInfo?.levelInfo?.level}
             rarity={rankInfo?.levelInfo?.describe}
             rank={rankInfo?.rank}
+            theme={theme}
           />
         )}
         {!isInTG && tradeModal?.show && schrodingerDetail && (
@@ -436,6 +445,7 @@ export default function DetailPage() {
             total={totalCount}
             onChange={onChange}
             rate={Number(elfPrice)}
+            theme={theme}
             symbol={schrodingerDetail?.symbol || ''}
             onRefresh={refreshData}
           />
@@ -445,6 +455,7 @@ export default function DetailPage() {
             detail={schrodingerDetail}
             rankInfo={rankInfo}
             source={isInTG ? 'telegram' : ''}
+            theme={theme}
             onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
           />
         )}

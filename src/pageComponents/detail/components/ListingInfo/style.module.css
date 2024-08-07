@@ -8,3 +8,11 @@
     }
   }
 }
+
+.collapse-custom-dark {
+  :global {
+    .aelfd-collapse-content {
+      @apply border-pixelsBorder;
+    }
+  }
+}
