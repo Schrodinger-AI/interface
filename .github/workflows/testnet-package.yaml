@@ -1,7 +1,7 @@
 name: Build and Push Image
 on:
   push:
-    branches: ['dev', 'feature/*']
+    branches: ['dev-stable']
 jobs:
   build-and-push-image:
     runs-on: schrodinger-runner
@@ -39,7 +39,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_APP_ENV=test
             NODE_ENV=test
-            BUILD_ENV=test
+            BUILD_ENV=test-stable
   dispatch:
     runs-on: schrodinger-runner
     needs: build-and-push-image
