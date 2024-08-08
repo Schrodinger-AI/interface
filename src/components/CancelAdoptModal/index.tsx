@@ -63,7 +63,7 @@ function CancelAdoptModal({
           <Button
             className={clsx(
               'flex-1 lg:flex-none lg:w-[356px] mr-[16px]',
-              theme === 'dark' ? '!primary-default-dark' : '!rounded-lg border-brandDefault text-brandDefault',
+              theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
             )}
             onClick={onCancel}
             type="default">

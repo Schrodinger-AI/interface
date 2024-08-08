@@ -101,8 +101,8 @@ export default function TokensPage() {
         )}>
         <CommonTabs
           options={pageStateList}
-          defaultValue={pageState}
-          onTabsChange={(value) => onTabsChange(value as ListTypeEnum)}
+          activeKey={`${pageState}`}
+          onTabsChange={(value) => onTabsChange(Number(value) as ListTypeEnum)}
           theme="dark"
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />

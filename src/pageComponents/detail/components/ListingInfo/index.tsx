@@ -71,8 +71,9 @@ export default function ListingInfo({
                   <div
                     key={index}
                     className={clsx(
-                      'text-sm font-normal px-[24px] border-solid border border-[#EDEDED] border-x-0 border-t-0',
+                      'text-sm font-normal px-[24px] border-solid border border-x-0 border-t-0',
                       index === data.length - 1 && 'border-none',
+                      isDark ? 'border-pixelsBorder' : 'border-[#EDEDED]',
                     )}>
                     <div className="py-6">
                       <Flex vertical gap={16}>

@@ -50,7 +50,7 @@ const CollapseForPhone = ({
       <>
         <Flex className={styles['footer-wrapper']} gap={16}>
           <Button
-            className={clsx(styles['footer-button'], isDark && '!primary-default-dark')}
+            className={clsx(styles['footer-button'], isDark && '!default-button-dark')}
             type="primary"
             ghost
             onClick={handleClearAll}>

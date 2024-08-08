@@ -277,13 +277,17 @@ export default function DetailPage() {
     );
   }
 
-  const adoptAndResetButtonSmall = () => {
+  const adoptAndResetButtonSmall = useCallback(() => {
     return (
-      <div className="flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] bg-neutralWhiteBg border-0 border-t border-solid border-neutralDivider ">
+      <div
+        className={clsx(
+          'flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] border-0 border-t border-solid',
+          theme === 'dark' ? 'bg-pixelsPageBg border-pixelsBorder' : 'bg-neutralWhiteBg border-neutralDivider',
+        )}>
         {showAdopt && (
           <Button
             type="default"
-            className="!rounded-lg flex-1"
+            className={clsx('!rounded-lg flex-1', theme === 'dark' && 'default-button-dark')}
             size="large"
             onClick={() => onAdoptNextGeneration(false)}>
             Adopt Next-Gen
@@ -292,7 +296,7 @@ export default function DetailPage() {
         {showAdoptDirectly && (
           <Button
             type="primary"
-            className="!rounded-lg flex-1 ml-[16px]"
+            className={clsx('!rounded-lg flex-1 ml-[16px]', theme === 'dark' && '!primary-button-dark')}
             size="large"
             onClick={() => onAdoptNextGeneration(true)}>
             Instant GEN9
@@ -305,8 +309,9 @@ export default function DetailPage() {
           <Button
             type="default"
             className={clsx(
-              '!rounded-lg !border-brandDefault !text-brandDefault ml-[16px] w-[100px]',
+              'ml-[16px] w-[100px]',
               isInTG && 'flex-1',
+              theme === 'dark' ? '!default-button-dark' : '!rounded-lg !border-brandDefault !text-brandDefault',
             )}
             size="large"
             onClick={onReset}>
@@ -314,15 +319,22 @@ export default function DetailPage() {
           </Button>
         )}
         {showTrade && (
-          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
-            <Button type="primary" className="!rounded-lg ml-[16px] !px-7" size="large">
+          <Dropdown
+            menu={{ items }}
+            placement="topRight"
+            overlayClassName={clsx(styles.dropdown, theme === 'dark' && styles['dropdown-dark'])}>
+            <Button
+              type="primary"
+              className={clsx('!rounded-lg ml-[16px] !px-7', theme === 'dark' && '!primary-button-dark')}
+              size="large">
               Trade
             </Button>
           </Dropdown>
         )}
       </div>
     );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cmsInfo?.adoptDirectlyNew, isInTG, items, showAdopt, showAdoptDirectly, showReset, showTrade, theme]);
 
   const onTrade = useCallback(() => {
     if (!schrodingerDetail) return;

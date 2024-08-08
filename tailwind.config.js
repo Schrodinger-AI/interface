@@ -10,9 +10,10 @@ const rotateY = plugin(function ({ addUtilities }) {
       backgroundColor: 'var(--pixels-card-bg)',
       border: '1px dashed var(--pixels-primary-text-purple)',
       borderRadius: '0',
+      color: 'var(--pixels-white-bg)',
       boxShadow: '4px 4px 4px 0 #262284',
     },
-    '.primary-default-dark': {
+    '.default-button-dark': {
       backgroundColor: 'var(--pixels-page-bg)',
       border: '1px dashed var(--pixels-primary-text-purple)',
       borderRadius: '0',
