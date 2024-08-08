@@ -73,7 +73,7 @@ function ScrollContent(props: IContentProps) {
       />
       {loadingMore ? (
         <div className="w-full flex justify-center items-center">
-          <Loading size="middle" />
+          <Loading size="middle" color={theme === 'dark' ? 'purple' : 'blue'} />
         </div>
       ) : null}
     </div>

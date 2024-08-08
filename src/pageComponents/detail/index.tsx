@@ -302,7 +302,11 @@ export default function DetailPage() {
         {showAdoptDirectly && (
           <Button
             type="primary"
-            className={clsx('!rounded-lg flex-1 ml-[16px]', theme === 'dark' && '!primary-button-dark')}
+            className={clsx(
+              '!rounded-lg flex-1',
+              showAdopt ? 'ml-[16px]' : 'ml-0',
+              theme === 'dark' && '!primary-button-dark',
+            )}
             size="large"
             onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9

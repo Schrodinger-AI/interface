@@ -8,6 +8,7 @@ import { singleMessage } from '@portkey/did-ui-react';
 import styles from './index.module.css';
 import clsx from 'clsx';
 import { joinContent, joinTitle } from 'constants/joinMessage';
+import useTelegram from 'hooks/useTelegram';
 
 interface IProps {
   buttonInfo?: {
@@ -21,6 +22,7 @@ interface IProps {
 function JoinModal({ buttonInfo, onCancel }: IProps) {
   const modal = useModal();
   const { isLG } = useResponsive();
+  const { isInTG } = useTelegram();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -56,22 +58,26 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
             type="primary"
             size="ultra"
             loading={loading}
-            className={`${isLG ? 'w-full' : '!w-[256px]'}`}
+            className={clsx(isLG ? 'w-full' : '!w-[256px]', isInTG && '!primary-button-dark')}
             onClick={onClick}>
             {buttonInfo?.btnText || 'Join'}
           </Button>
         </div>
       </div>
     );
-  }, [buttonInfo?.btnText, isLG, loading, onClick]);
+  }, [buttonInfo?.btnText, isLG, loading, onClick, isInTG]);
 
   return (
     <CommonModal
       title={
         <p className="flex flex-nowrap">
-          <span className="text-neutralTitle font-semibold text-xl lg:text-2xl">{joinTitle}</span>
+          <span
+            className={clsx('font-semibold text-xl lg:text-2xl', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            {joinTitle}
+          </span>
         </p>
       }
+      theme={isInTG ? 'dark' : 'light'}
       width={500}
       disableMobileLayout={true}
       open={modal.visible}
@@ -79,7 +85,9 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       onCancel={onCancel || modal.hide}
       afterClose={modal.remove}
       footer={modalFooter}>
-      <div className="w-full h-full flex flex-col">{joinContent}</div>
+      <div className={clsx('w-full h-full flex flex-col', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+        {joinContent}
+      </div>
     </CommonModal>
   );
 }
