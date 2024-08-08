@@ -17,6 +17,12 @@
         @apply text-brandDefault;
       }
     }
+    .tag-item-dark:hover {
+      @apply bg-pixelsModalBg;
+      .tag-close {
+        @apply text-pixelsDivider;
+      }
+    }
     .tag-item:last-child {
       @apply !mr-0;
     }

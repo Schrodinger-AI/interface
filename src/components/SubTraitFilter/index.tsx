@@ -139,7 +139,7 @@ export const SubTraitFilter = forwardRef(
     }, [list, searchValue, theme]);
 
     return (
-      <div className={styles.subTraitFilter}>
+      <div className={clsx(styles.subTraitFilter, theme === 'dark' && styles['subTraitFilter-dark'])}>
         <div className={styles.searchWrapper}>
           <CommonSearch size="small" value={searchValue} theme={theme} placeholder="Search" onChange={onSearchChange} />
         </div>

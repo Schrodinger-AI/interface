@@ -81,6 +81,7 @@ function FilterTags({
               key={`${tag.label}_${index}`}
               className={clsx(
                 styles['tag-item'],
+                isDark && styles['tag-item-dark'],
                 isDark ? 'rounded-none bg-pixelsModalBg' : 'rounded-lg bg-neutralDefaultBg',
               )}>
               {tag.type === SEARCH_TAG_ITEM_TYPE ? (

@@ -4,7 +4,7 @@ import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
 import { Breadcrumb, message } from 'antd';
-import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
+// import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';

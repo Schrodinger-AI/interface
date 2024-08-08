@@ -54,3 +54,9 @@
   }
 
 }
+
+.subTraitFilter-dark {
+  :global(.aelfd-checkbox-group-item) {
+    @apply hover:bg-pixelsModalBg active:bg-pixelsModalBg;
+  }
+}
