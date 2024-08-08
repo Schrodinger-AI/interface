@@ -145,7 +145,7 @@ function CardResultModal({
               type="primary"
               size="ultra"
               loading={loading}
-              className={clsx(isLG ? 'w-full' : '!w-[256px]', isDark ? 'primary-button-dark' : '')}
+              className={clsx(isLG ? 'w-full' : '!w-[256px]', isDark ? '!primary-button-dark' : '')}
               onClick={onClick}>
               {buttonInfo?.btnText || 'View'}
             </Button>
@@ -207,7 +207,8 @@ function CardResultModal({
                   rarity={info?.levelInfo?.describe}
                   img={image}
                   rank={info?.rank}
-                  className="w-[180px] h-[180px]"
+                  className={clsx('w-[180px] h-[180px]', isDark && '!rounded-none')}
+                  imageClassName={isDark ? '!rounded-none' : ''}
                 />
               ) : null}
             </div>

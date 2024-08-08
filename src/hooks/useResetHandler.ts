@@ -8,7 +8,7 @@ import { AELF_TOKEN_INFO } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import useLoading from './useLoading';
 import { rerollSGR } from 'contract/schrodinger';
-import ResultModal, { Status } from 'components/ResultModal';
+import { Status } from 'components/ResultModal';
 import { resetSGRMessage } from 'constants/promptMessage';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PromptModal from 'components/PromptModal';
@@ -23,10 +23,13 @@ import { getAdoptErrorMessage } from './Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import { AdTracker } from 'utils/ad';
 import { renameSymbol } from 'utils/renameSymbol';
+import { TModalTheme } from 'components/CommonModal';
+import CardResultModal from 'components/CardResultModal';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
-  const resultModal = useModal(ResultModal);
+  const cardResultModal = useModal(CardResultModal);
+
   const promptModal = useModal(PromptModal);
   const getAllBalance = useGetAllBalance();
   const { tokenPrice: elfTokenPrice } = useTokenPrice();
@@ -41,7 +44,17 @@ export const useResetHandler = () => {
   const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const approveReset = useCallback(
-    async (parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo): Promise<void> =>
+    async ({
+      parentItemInfo,
+      amount,
+      rankInfo,
+      theme = 'light',
+    }: {
+      parentItemInfo: TSGRToken;
+      amount: string;
+      rankInfo?: IRankInfo;
+      theme?: TModalTheme;
+    }): Promise<void> =>
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
@@ -51,6 +64,7 @@ export const useResetHandler = () => {
             subName: parentItemInfo.symbol,
             rank: rankInfo?.rank,
           },
+          theme,
           title: 'Pending Approval',
           content: {
             title: 'Go to your wallet',
@@ -94,47 +108,73 @@ export const useResetHandler = () => {
   );
 
   const showResultModal = useCallback(
-    (status: Status, parentItemInfo: TSGRToken, amount: string, rankInfo?: IRankInfo) => {
+    ({
+      status,
+      parentItemInfo,
+      amount,
+      rankInfo,
+      theme = 'light',
+    }: {
+      status: Status;
+      parentItemInfo: TSGRToken;
+      amount: string;
+      rankInfo?: IRankInfo;
+      theme?: TModalTheme;
+    }) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
       const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
 
-      resultModal.show({
+      cardResultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
+        theme,
         info: {
           name: parentItemInfo.tokenName,
-          logo: parentItemInfo.inscriptionImageUri,
-          subName: renameSymbol(parentItemInfo.symbol),
-          tag: `GEN ${parentItemInfo.generation}`,
-          rank: rankInfo?.rank,
+          symbol: renameSymbol(parentItemInfo.symbol),
+          generation: parentItemInfo.generation,
         },
+        image: parentItemInfo.inscriptionImageUri,
         id: 'sgr-reset-modal',
         status: status,
         description: status === Status.ERROR ? resetSGRMessage.error.description : resetSGRMessage.success.description,
         onCancel: () => {
-          resultModal.hide();
+          cardResultModal.hide();
         },
         buttonInfo: {
           btnText: status === Status.ERROR ? resetSGRMessage.error.button : successBtnText,
           openLoading: true,
           onConfirm: async () => {
             if (status === Status.ERROR) {
-              resultModal.hide();
+              cardResultModal.hide();
               try {
-                await approveReset(parentItemInfo, amount);
+                await approveReset({
+                  parentItemInfo,
+                  amount,
+                  theme,
+                });
                 promptModal.hide();
-                showResultModal(Status.SUCCESS, parentItemInfo, amount);
+                showResultModal({
+                  status: Status.SUCCESS,
+                  parentItemInfo,
+                  amount,
+                  theme,
+                });
               } catch (error) {
                 promptModal.hide();
                 const _error = getAdoptErrorMessage(error);
                 singleMessage.error(_error);
 
-                showResultModal(Status.ERROR, parentItemInfo, amount);
+                showResultModal({
+                  status: Status.ERROR,
+                  parentItemInfo,
+                  amount,
+                  theme,
+                });
               }
             } else {
               if (originSymbol) {
                 await intervalFetch.start(originSymbol);
                 intervalFetch.remove();
-                resultModal.hide();
+                cardResultModal.hide();
                 router.replace(`/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}`);
               } else {
                 router.replace('/');
@@ -144,11 +184,21 @@ export const useResetHandler = () => {
         },
       });
     },
-    [approveReset, intervalFetch, promptModal, resultModal, router],
+    [cardResultModal, approveReset, promptModal, intervalFetch, router, wallet.address, source],
   );
 
   return useCallback(
-    async (parentItemInfo: TSGRToken, account: string, rankInfo?: IRankInfo) => {
+    async ({
+      parentItemInfo,
+      account,
+      rankInfo,
+      theme,
+    }: {
+      parentItemInfo: TSGRToken;
+      account: string;
+      rankInfo?: IRankInfo;
+      theme?: TModalTheme;
+    }) => {
       showLoading();
       let parentPrice: string | undefined = undefined;
       try {
@@ -163,6 +213,7 @@ export const useResetHandler = () => {
         resetModal.show({
           isReset: true,
           modalTitle: 'Reroll Cat',
+          theme,
           info: {
             logo: parentItemInfo.inscriptionImageUri,
             name: parentItemInfo.tokenName,
@@ -192,12 +243,29 @@ export const useResetHandler = () => {
               generation: parentItemInfo.generation,
             });
             try {
-              await approveReset(parentItemInfo, amount, rankInfo);
+              await approveReset({
+                parentItemInfo,
+                amount,
+                rankInfo,
+                theme,
+              });
               promptModal.hide();
-              showResultModal(Status.SUCCESS, parentItemInfo, amount, rankInfo);
+              showResultModal({
+                status: Status.SUCCESS,
+                parentItemInfo,
+                amount,
+                rankInfo,
+                theme,
+              });
             } catch (error) {
               promptModal.hide();
-              showResultModal(Status.ERROR, parentItemInfo, amount, rankInfo);
+              showResultModal({
+                status: Status.ERROR,
+                parentItemInfo,
+                amount,
+                rankInfo,
+                theme,
+              });
             }
           },
         });

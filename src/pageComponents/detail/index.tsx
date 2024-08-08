@@ -125,19 +125,25 @@ export default function DetailPage() {
     }
   }, [closeLoading, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
 
-  const onAdoptNextGeneration = (isDirect: boolean) => {
+  const onAdoptNextGeneration = (isDirect: boolean, theme: TModalTheme) => {
     if (!schrodingerDetail) return;
     adoptHandler({
       parentItemInfo: schrodingerDetail,
       account: wallet.address,
       isDirect,
       rankInfo,
+      theme,
     });
   };
 
-  const onReset = () => {
+  const onReset = (theme: TModalTheme) => {
     if (!schrodingerDetail) return;
-    resetHandler(schrodingerDetail, wallet.address, rankInfo);
+    resetHandler({
+      parentItemInfo: schrodingerDetail,
+      account: wallet.address,
+      rankInfo,
+      theme,
+    });
   };
 
   const onBack = useCallback(() => {
@@ -241,7 +247,7 @@ export default function DetailPage() {
             type="primary"
             className="!rounded-lg mr-[12px] w-[240px]"
             size="large"
-            onClick={() => onAdoptNextGeneration(true)}>
+            onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
@@ -253,7 +259,7 @@ export default function DetailPage() {
             type="default"
             className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px] w-[240px]"
             size="large"
-            onClick={() => onAdoptNextGeneration(false)}>
+            onClick={() => onAdoptNextGeneration(false, theme)}>
             Adopt Next-Gen
           </Button>
         )}
@@ -262,7 +268,7 @@ export default function DetailPage() {
             type="default"
             className="!rounded-lg !border-brandDefault !text-brandDefault mr-[12px]"
             size="large"
-            onClick={onReset}>
+            onClick={() => onReset(theme)}>
             Reroll
           </Button>
         )}
@@ -289,7 +295,7 @@ export default function DetailPage() {
             type="default"
             className={clsx('!rounded-lg flex-1', theme === 'dark' && 'default-button-dark')}
             size="large"
-            onClick={() => onAdoptNextGeneration(false)}>
+            onClick={() => onAdoptNextGeneration(false, theme)}>
             Adopt Next-Gen
           </Button>
         )}
@@ -298,7 +304,7 @@ export default function DetailPage() {
             type="primary"
             className={clsx('!rounded-lg flex-1 ml-[16px]', theme === 'dark' && '!primary-button-dark')}
             size="large"
-            onClick={() => onAdoptNextGeneration(true)}>
+            onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
@@ -314,7 +320,7 @@ export default function DetailPage() {
               theme === 'dark' ? '!default-button-dark' : '!rounded-lg !border-brandDefault !text-brandDefault',
             )}
             size="large"
-            onClick={onReset}>
+            onClick={() => onReset(theme)}>
             Reroll
           </Button>
         )}
@@ -421,7 +427,7 @@ export default function DetailPage() {
               showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
-              onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
+              onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
             />
           )}
         </div>
@@ -468,7 +474,7 @@ export default function DetailPage() {
             rankInfo={rankInfo}
             source={isInTG ? 'telegram' : ''}
             theme={theme}
-            onAdoptNextGeneration={() => onAdoptNextGeneration(false)}
+            onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
           />
         )}
         {adoptAndResetButtonSmall()}

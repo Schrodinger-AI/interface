@@ -13,6 +13,13 @@ const rotateY = plugin(function ({ addUtilities }) {
       color: 'var(--pixels-white-bg)',
       boxShadow: '4px 4px 4px 0 #262284',
     },
+    '.primary-button-disabled-dark': {
+      backgroundColor: 'var(--pixels-card-bg)',
+      border: '1px dashed var(--pixels-primary-text-purple)',
+      borderRadius: '0',
+      color: 'rgb(255 255 255 / 30%)',
+      boxShadow: '4px 4px 4px 0 #262284',
+    },
     '.default-button-dark': {
       backgroundColor: 'var(--pixels-page-bg)',
       border: '1px dashed var(--pixels-primary-text-purple)',

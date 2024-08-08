@@ -151,7 +151,7 @@ const Layout = dynamic(async () => {
             </div>
           </AntdLayout>
         ) : (
-          <>{children}</>
+          <div className={clsx(isInTG && 'h-full overflow-scroll min-w-[360px] bg-pixelsPageBg')}>{children}</div>
         )}
         <div
           className={clsx(

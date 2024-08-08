@@ -69,7 +69,7 @@
             @apply text-pixelsWhiteBg;
 
             .ant-select-dropdown {
-              @apply bg-pixelsModalBg border-pixelsBorder rounded-none;
+              @apply bg-pixelsModalBg !border-pixelsBorder rounded-none;
 
               .ant-select-item {
                 @apply text-pixelsWhiteBg;

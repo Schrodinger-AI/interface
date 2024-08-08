@@ -83,18 +83,18 @@
                   }
                 }
 
-                .RangeSelect-module_range-wrapper__so5Vh {
+                .range-wrapper {
                   > span {
                     @apply text-pixelsBorder;
                   }
-                  .RangeSelect-module_pricing__dqmVH {
+                  .pricing {
                     @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder tg-card-shadow;
-                    .RangeSelect-module_pricing__text__ykFAI {
+                    .pricing__text {
                       @apply text-pixelsWhiteBg;
                     }
                   }
                   
-                  .RangeSelect-module_range-input__p0f0E {
+                  .range-input {
                     @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder !tg-card-shadow text-pixelsWhiteBg;
 
                     &.ant-input-status-error {
@@ -103,12 +103,16 @@
                   }
                 }
 
-                .RangeSelect-module_range-button__iYmrK {
+                .range-button {
                   .ant-btn-default {
                     @apply !default-button-dark;
                   }
                   .ant-btn-primary {
+                    &[disabled]:disabled {
+                      @apply !primary-button-disabled-dark;
+                    }
                     @apply !primary-button-dark;
+                    
                   }
                 }
               }
