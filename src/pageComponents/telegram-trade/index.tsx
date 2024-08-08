@@ -9,7 +9,7 @@ export default function TradePage() {
 
   return (
     <div>
-      <BackCom className="py-4 px-4" theme="dark" />
+      <BackCom className="py-4 px-4" />
       <Collection nftCollectionId={cId} />
     </div>
   );
