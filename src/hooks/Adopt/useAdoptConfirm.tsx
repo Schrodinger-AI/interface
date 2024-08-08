@@ -36,6 +36,7 @@ import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -150,6 +151,7 @@ export const useAdoptConfirm = () => {
         signature: string;
       },
       parentItemInfo: TSGRToken,
+      theme?: TModalTheme,
     ): Promise<{
       txResult: ISendResult;
       image: string;
@@ -184,6 +186,7 @@ export const useAdoptConfirm = () => {
 
           cardResultModal.show({
             modalTitle: 'You have failed minted!',
+            theme,
             amount: divDecimals(confirmParams.outputAmount, parentItemInfo.decimals).toFixed(),
             status: Status.ERROR,
             buttonInfo: {
@@ -203,7 +206,10 @@ export const useAdoptConfirm = () => {
               <span className="font-medium text-neutralSecondary text-sm">
                 Adopt failed, you can re-adopt from &nbsp;
                 <span
-                  className="text-brandDefault cursor-pointer"
+                  className={clsx(
+                    'cursor-pointer',
+                    theme === 'dark' ? 'text-pixelsPrimaryTextPurple' : 'text-brandDefault',
+                  )}
                   onClick={() => {
                     cardResultModal.hide();
                     router.push('/stray-cats');
@@ -318,7 +324,7 @@ export const useAdoptConfirm = () => {
             content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams, parentItemInfo);
+            const result = await retryAdoptConfirm(confirmParams, parentItemInfo, theme);
             resolve(result);
           },
           onClose: () => {

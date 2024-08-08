@@ -5,6 +5,7 @@ import { useResponsive } from 'hooks/useResponsive';
 import { Button } from 'aelf-design';
 import { ReactComponent as SuccessIcon } from 'assets/img/icons/success.svg';
 import { ReactComponent as FailedIcon } from 'assets/img/icons/failed.svg';
+import { ReactComponent as FailedDarkIcon } from 'assets/img/icons/failed-dark.svg';
 import { ReactComponent as ExportOutlined } from 'assets/img/icons/exportOutlined.svg';
 import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
@@ -64,6 +65,7 @@ interface IProps {
     points?: string;
     levelInfo?: ILevelInfo;
   };
+  symbol?: string;
   showScrap?: boolean;
   showLight?: boolean;
   link?: {
@@ -83,6 +85,7 @@ function CardResultModal({
   hideButton = false,
   image,
   info,
+  symbol,
   link,
   showScrap = false,
   showLight = false,
@@ -93,6 +96,7 @@ function CardResultModal({
   const { isLG } = useResponsive();
   const cmsInfo = useCmsInfo();
   const { jumpToPage } = useJumpToPage();
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [animationEnds, setAnimationEnds] = useState<boolean>(false);
@@ -124,17 +128,20 @@ function CardResultModal({
 
   const Icon = useMemo(() => {
     return {
-      [Status.ERROR]: <FailedIcon className="w-[32px] h-[32px]" />,
+      [Status.ERROR]: isDark ? (
+        <FailedDarkIcon className="w-[32px] h-[32px]" />
+      ) : (
+        <FailedIcon className="w-[32px] h-[32px]" />
+      ),
       [Status.SUCCESS]: <SuccessIcon className="w-[32px] h-[32px]" />,
       [Status.WARNING]: '',
       [Status.INFO]: '',
     }[status];
-  }, [status]);
+  }, [status, isDark]);
 
   const aProps = useMemo(() => (isMobile ? {} : { target: '_blank', rel: 'noreferrer' }), []);
 
   const { isInTelegram } = useTelegram();
-  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const modalFooter = useMemo(() => {
     return (
@@ -251,6 +258,7 @@ function CardResultModal({
                   </span>
                 </div>
               )}
+              {!!symbol && <CardList title="Symbol" value={symbol} isDark={isDark} />}
             </div>
           ) : null}
         </div>

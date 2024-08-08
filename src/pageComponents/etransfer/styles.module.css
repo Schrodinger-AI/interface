@@ -10,7 +10,7 @@
 }
 
 .etransfer-deposit-wrap-dark {
-  @apply bg-pixelsModalBg;
+  @apply bg-pixelsPageBg;
 
   :global {
     .etransfer-ui-deposit-select-token-network {
@@ -23,6 +23,20 @@
       .etransfer-ui-flex-row-center.etransfer-ui-select-network-value-selected {
         .primary {
           @apply text-pixelsWhiteBg;
+        }
+      }
+
+      .etransfer-ui-select-network-not-selected {
+        .select-network-value-placeholder {
+          @apply text-pixelsPrimaryTextPurple;
+        }
+        .etransfer-ui-common-svg.add-icon {
+          svg rect {
+            @apply fill-pixelsSecondaryTextPurple;
+          }
+          svg rect:nth-child(1) {
+            @apply fill-pixelsTertiaryTextPurple;
+          }
         }
       }
 
@@ -51,7 +65,7 @@
       .select-chain {
         @apply text-pixelsWhiteBg;
       }
-
+      
       .etransfer-ui-flex-row-center.select-token-value-selected {
         .primary {
           @apply text-pixelsWhiteBg;
@@ -66,6 +80,13 @@
           @apply fill-pixelsDivider;
         }
       }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-mobile-select-chain-trigger-container.select-chain-container {
+        .select-chain-content {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
     }
 
     .etransfer-ui-deposit-detail-for-mobile-next-button-wrapper.etransfer-ui-deposit-detail-for-mobile-next-button-wrapper-safe-area {

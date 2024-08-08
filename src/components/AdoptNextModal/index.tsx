@@ -200,8 +200,8 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
         </DescriptionItem>
 
         {isDirect ? null : (
-          <DescriptionItem title="Traits">
-            <TraitsList data={allTraits} />
+          <DescriptionItem title="Traits" theme={theme}>
+            <TraitsList data={allTraits} theme={theme} />
           </DescriptionItem>
         )}
 

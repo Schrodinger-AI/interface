@@ -132,6 +132,7 @@ export const useResetHandler = () => {
           symbol: renameSymbol(parentItemInfo.symbol),
           generation: parentItemInfo.generation,
         },
+        symbol: renameSymbol(parentItemInfo.symbol),
         image: parentItemInfo.inscriptionImageUri,
         id: 'sgr-reset-modal',
         status: status,

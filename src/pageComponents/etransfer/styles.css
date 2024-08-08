@@ -1,6 +1,7 @@
+/* stylelint-disable no-descending-specificity */
 .etransfer-ui-common-drawer {
   .etransfer-ant-drawer-content {
-    @apply bg-pixelsModalBg;
+    @apply !bg-pixelsModalBg !rounded-none;
 
     .etransfer-ant-drawer-wrapper-body {
       .etransfer-ant-drawer-header {
@@ -91,6 +92,51 @@
           }
           
         }
+
+        .etransfer-ui-network-select {
+          .etransfer-ui-network-select-tip-wrapper.etransfer-ui-network-select-tip-wrapper-deposit {
+            .network-select-tip {
+              @apply rounded-none bg-pixelsPageBg;
+
+              .etransfer-ui-common-svg.info-icon.network-select-tip-icon {
+                svg * {
+                  @apply fill-pixelsSecondaryTextPurple;
+                }
+              }
+
+              .network-select-tip-text {
+                @apply text-pixelsDivider;
+              }
+            }
+            
+          }
+          .network-select-list {
+            .etransfer-ui-network-card-for-mobile {
+              @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder;
+
+              .network-card-name {
+                @apply text-pixelsWhiteBg;
+              }
+
+              .network-card-arrival-time, .network-card-confirm-time {
+                @apply text-pixelsDivider;
+                span {
+                  @apply !text-pixelsDivider;
+                }
+              }
+            }
+          }
+        }
+
+        .etransfer-ui-mobile-select-chain-drawer-content {
+          .drawer-item {
+            @apply rounded-none border-pixelsBorder bg-pixelsModalBg text-pixelsWhiteBg;
+          }
+          .drawer-item-selected {
+            @apply border-pixelsSecondaryTextPurple text-pixelsSecondaryTextPurple;  
+          }
+        }
+        
       }
     }
 
@@ -118,4 +164,28 @@
       }
     }
   }
+}
+
+.etransfer-ant-modal-wrap.etransfer-ant-modal-centered {
+  .etransfer-ant-modal-content {
+    @apply bg-pixelsModalBg rounded-none;
+    .etransfer-ui-circle-loading {
+      svg {
+        g {
+          g > path {
+            @apply stroke-pixelsPrimaryTextPurple;
+          }
+          :nth-child(odd) {
+            g > path {
+              @apply !stroke-pixelsTertiaryTextPurple;
+            }
+          }
+        }
+      }
+    }
+    .etransfer-ui-global-loading-modal-text {
+      @apply text-pixelsWhiteBg;
+    }
+  }
+  
 }

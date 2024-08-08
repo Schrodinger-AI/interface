@@ -22,9 +22,7 @@ export default function TraitsList({ data = [], showNew = false, theme = 'light'
   return (
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (
-        <Col span={colSpan} key={index}>
-          <TraitsCard item={item} showNew={showNew} theme={theme} />
-        </Col>
+        <TraitsCard key={index} item={item} showNew={showNew} theme={theme} />
       ))}
     </Row>
   );
