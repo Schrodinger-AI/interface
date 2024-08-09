@@ -192,8 +192,10 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [amount]);
 
   const onAdoptRulesClick = useCallback(() => {
-    adoptRulesModal.show();
-  }, [adoptRulesModal]);
+    adoptRulesModal.show({
+      theme,
+    });
+  }, [adoptRulesModal, theme]);
 
   const renderList = useCallback(
     ({ title, content, children }: { title: string; content?: string; children?: ReactNode }) => {

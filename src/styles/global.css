@@ -68,3 +68,17 @@ code {
 .set-allowance-dapp-info-inner {
   @apply flex items-center;
 }
+
+.dark-message {
+  .dark-message-notice-wrapper {
+    .dark-message-notice-content {
+      @apply bg-pixelsPageBg rounded-none text-pixelsWhiteBg;
+      .dark-message-custom-content {
+        .anticon {
+          @apply bg-pixelsWhiteBg rounded-full;
+        }
+      }
+    }
+  }
+  
+}

@@ -1,14 +1,16 @@
 import { Checkbox, Col, Flex, Row } from 'antd';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxItemType, FilterType, ItemsSelectSourceType, SourceItemType } from 'types/tokensPage';
 import { memo, useCallback, useMemo } from 'react';
 import FilterMenuEmpty from '../FilterMenuEmpty';
 import styles from './style.module.css';
 import { CheckboxChangeEvent, CheckboxProps } from 'antd/es/checkbox';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 
 export interface CheckboxChoiceProps {
   dataSource?: CheckboxItemType;
   defaultValue?: SourceItemType[];
+  theme?: TModalTheme;
   onChange?: (val: ItemsSelectSourceType) => void;
   clearAll?: () => void;
 }
@@ -31,7 +33,7 @@ function CheckBoxItem({ item }: { item: CheckboxProps & SourceItemType }) {
   );
 }
 
-function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoiceProps) {
+function CheckBoxGroups({ dataSource, defaultValue, onChange, theme = 'light' }: CheckboxChoiceProps) {
   const options = useMemo(() => {
     return dataSource?.data || [];
   }, [dataSource?.data]);
@@ -53,7 +55,7 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
   }, [getVal, options]);
 
   const valueChange = useCallback(
-    (value: CheckboxValueType[]) => {
+    (value: (string | number)[]) => {
       if (!dataSource) return;
       const data = dataSource?.data.filter((item) => {
         return value.some((s) => s === item.value);
@@ -91,7 +93,7 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
   return dataSource?.data?.length ? (
     <>
       {allOption && (
-        <Row className={styles.checkbox}>
+        <Row className={clsx(styles.checkbox, theme === 'dark' && styles['checkbox-dark'])}>
           <CheckBoxItem
             item={{
               ...allOption,
@@ -102,7 +104,10 @@ function CheckBoxGroups({ dataSource, defaultValue, onChange }: CheckboxChoicePr
           />
         </Row>
       )}
-      <Checkbox.Group value={getVal} className={styles.checkbox} onChange={valueChange}>
+      <Checkbox.Group
+        value={getVal}
+        className={clsx(styles.checkbox, theme === 'dark' && styles['checkbox-dark'])}
+        onChange={valueChange}>
         <Row>{checkboxItems}</Row>
       </Checkbox.Group>
     </>

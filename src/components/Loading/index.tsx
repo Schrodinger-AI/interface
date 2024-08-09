@@ -4,6 +4,7 @@ import LoadingAnimationBlue from 'assets/img/loading-animation-blue.json';
 import LoadingAnimationPurple from 'assets/img/loading-animation-purple.json';
 import { useMemo } from 'react';
 import React from 'react';
+import useTelegram from 'hooks/useTelegram';
 
 const loadingImg = {
   white: LoadingAnimation,
@@ -23,13 +24,14 @@ interface IProps {
 }
 
 function Loading({ color = 'blue', size = 'default' }: IProps) {
+  const { isInTG } = useTelegram();
   const options = useMemo(() => {
     return {
-      animationData: loadingImg[color],
+      animationData: isInTG ? loadingImg.purple : loadingImg[color],
       loop: true,
       autoplay: true,
     };
-  }, [color]);
+  }, [color, isInTG]);
 
   return <Lottie {...options} className={sizeStyle[size] || 'w-[40px] h-[40px]'} />;
 }

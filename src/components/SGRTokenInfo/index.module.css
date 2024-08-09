@@ -4,11 +4,11 @@
     @apply w-full mt-[12px] first:mt-0 flex overflow-hidden items-center justify-between;
 
     .title {
-      @apply text-base text-neutralSecondary min-w-[128px];
+      @apply text-base min-w-[128px];
     }
 
     .value {
-      @apply text-right flex-1 whitespace-nowrap overflow-hidden text-ellipsis text-base text-neutralTitle font-medium;
+      @apply text-right flex-1 whitespace-nowrap overflow-hidden text-ellipsis text-base font-medium;
     }
   }
 }

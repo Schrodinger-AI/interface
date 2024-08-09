@@ -1,7 +1,7 @@
 import { useWalletService } from 'hooks/useWallet';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Pagination, Table } from 'aelf-design';
+import { Button } from 'aelf-design';
 import { TableColumnsType } from 'antd';
 import TableEmpty from 'components/TableEmpty';
 import { TStrayCats, useGetStrayCats } from 'graphqlServer';
@@ -19,14 +19,19 @@ import { AdoptActionErrorCode } from 'hooks/Adopt/adopt';
 import useLoading from 'hooks/useLoading';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { renameSymbol } from 'utils/renameSymbol';
-import { ListTypeEnum } from 'types';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
+import CommonTable from 'components/CommonTable';
+import CommonPagination from 'components/CommonPagination';
 
 const textStyle =
-  'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm text-neutralTitle font-medium';
+  'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm font-medium';
 
-const amountStyle = 'text-sm text-neutralTitle';
+const amountStyle = 'text-sm';
 
-export default function StrayCatsPage() {
+export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
+  const { theme = 'light' } = props || {};
+
   const { isLogin } = useGetLoginStatus();
 
   const router = useRouter();
@@ -49,14 +54,8 @@ export default function StrayCatsPage() {
     page && setPageNum(page);
   };
 
-  const searchParams = useSearchParams();
   const pathName = usePathname();
   const isTGPage = pathName === '/telegram';
-
-  const pageState: ListTypeEnum = useMemo(
-    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
-    [searchParams],
-  );
 
   const getStrayCatsData = useCallback(async () => {
     try {
@@ -128,8 +127,10 @@ export default function StrayCatsPage() {
     });
   }, [asyncModal]);
 
+  const isDark = useMemo(() => theme === 'dark', [theme]);
+
   const onAdopt = useCallback(
-    async (record: TStrayCats) => {
+    async (record: TStrayCats, theme?: TModalTheme) => {
       try {
         showLoading();
         await checkAIServer();
@@ -144,6 +145,7 @@ export default function StrayCatsPage() {
             inputAmount: record.consumeAmount,
             isDirect: record.directAdoption,
           },
+          theme,
           account: wallet.address,
         });
       } catch (error) {
@@ -167,7 +169,7 @@ export default function StrayCatsPage() {
                 generation={record.gen}
                 img={record.inscriptionImageUri}
               />
-              <span className={textStyle}>{tokenName}</span>
+              <span className={clsx(textStyle, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>{tokenName}</span>
             </div>
           );
         },
@@ -177,7 +179,11 @@ export default function StrayCatsPage() {
         dataIndex: 'symbol',
         key: 'symbol',
         render: (symbol) => {
-          return <span className={textStyle}>{renameSymbol(symbol)}</span>;
+          return (
+            <span className={clsx(textStyle, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {renameSymbol(symbol)}
+            </span>
+          );
         },
       },
       {
@@ -185,7 +191,11 @@ export default function StrayCatsPage() {
         dataIndex: 'consumeAmount',
         key: 'consumeAmount',
         render: (consumeAmount, record) => {
-          return <span className={amountStyle}>{formatTokenAmount(consumeAmount, record.decimals)}</span>;
+          return (
+            <span className={clsx(amountStyle, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {formatTokenAmount(consumeAmount, record.decimals)}
+            </span>
+          );
         },
       },
       {
@@ -193,7 +203,11 @@ export default function StrayCatsPage() {
         dataIndex: 'receivedAmount',
         key: 'receivedAmount',
         render: (receivedAmount, record) => {
-          return <span className={amountStyle}>{formatTokenAmount(receivedAmount, record.decimals)}</span>;
+          return (
+            <span className={clsx(amountStyle, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {formatTokenAmount(receivedAmount, record.decimals)}
+            </span>
+          );
         },
       },
       {
@@ -203,14 +217,18 @@ export default function StrayCatsPage() {
         fixed: 'right',
         render: (_, record) => {
           return (
-            <Button type="primary" size="small" onClick={() => onAdopt(record)}>
+            <Button
+              type="primary"
+              size="small"
+              className={clsx(isDark && '!primary-button-dark')}
+              onClick={() => onAdopt(record, theme)}>
               Operation
             </Button>
           );
         },
       },
     ],
-    [formatTokenAmount, onAdopt, isTGPage],
+    [formatTokenAmount, onAdopt, isTGPage, isDark, theme],
   );
 
   const getColumns = () => {
@@ -234,21 +252,26 @@ export default function StrayCatsPage() {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="w-full max-w-[1360px]">
-        <h1 className="pt-[24px] lg:pt-[48px] pb-[8px] font-semibold text-neutralPrimary text-2xl lg:text-4xl">
+        <h1
+          className={clsx(
+            'pt-[24px] lg:pt-[48px] pb-[8px] font-semibold text-2xl lg:text-4xl',
+            isDark ? 'text-pixelsWhiteBg' : 'text-neutralPrimary',
+          )}>
           Stray Cats
         </h1>
-        <p className="mt-[8px] text-base text-neutralSecondary">
+        <p className={clsx('mt-[8px] text-base', isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
           Here is the list of cats you have consumed, whose next-gen cats are not adopted yet. Click on a cat to
           continue the adoption process.
         </p>
         <div className="w-full mt-[24px] lg:mt-[40px]">
-          <Table
+          <CommonTable
             dataSource={dataSource}
             columns={getColumns()}
             loading={loading}
+            theme={theme}
             pagination={null}
             locale={{
-              emptyText: <TableEmpty title="Phew! There aren't any stray cats in your account." />,
+              emptyText: <TableEmpty title="Phew! There aren't any stray cats in your account." theme={theme} />,
             }}
             scroll={{
               x: 'max-content',
@@ -256,10 +279,11 @@ export default function StrayCatsPage() {
           />
           {!dataSource?.length || totalCount <= pageSize ? null : (
             <div className="py-[22px]">
-              <Pagination
+              <CommonPagination
                 pageSize={pageSize}
                 current={pageNum}
                 showSizeChanger
+                theme={theme}
                 total={totalCount ?? 0}
                 pageChange={(page, pageSize) => handleTableChange({ page, pageSize })}
                 pageSizeChange={(page, pageSize) => handleTableChange({ page, pageSize })}

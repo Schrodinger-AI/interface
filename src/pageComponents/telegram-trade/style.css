@@ -1,0 +1,201 @@
+/* stylelint-disable no-descending-specificity */
+.elf-dropdown-phone-dark {
+  .ant-drawer-content { 
+    @apply !bg-pixelsPageBg !rounded-none;
+  }
+
+  .ant-drawer-wrapper-body {
+    .ant-drawer-header {
+      @apply !bg-pixelsPageBg !pr-[16px] !border-pixelsBorder;
+      .ant-drawer-title {
+        @apply dark-title;
+
+        svg * {
+          @apply !stroke-pixelsDivider;
+        }
+      }
+    }
+
+    .ant-drawer-body {
+      .ant-menu-root {
+        @apply bg-pixelsPageBg;
+        .ant-menu-submenu {
+          @apply border-pixelsBorder;
+          .ant-menu-submenu-title {
+            @apply text-pixelsWhiteBg active:bg-pixelsPageBg hover:bg-pixelsPageBg;
+            .ant-menu-submenu-expand-icon {
+              svg {
+                @apply w-[24px] h-[24px];
+                * {
+                  @apply !stroke-pixelsWhiteBg;
+                }
+              } 
+            }
+          }
+
+          .ant-menu-sub {
+            .ant-menu-item {
+              @apply !bg-pixelsPageBg;
+              .ant-menu-title-content {
+
+                .ant-checkbox-wrapper {
+                  @apply !text-pixelsWhiteBg;
+
+                  .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+                    @apply bg-pixelsSecondaryTextPurple;
+                  }
+
+                }
+
+                .ant-checkbox-group, .ant-checkbox-wrapper {
+                  .ant-checkbox {
+                    &+span {
+                      @apply !text-pixelsWhiteBg;
+                    }
+
+                    .ant-checkbox-inner {
+                      @apply bg-pixelsModalBg border-pixelsBorder border-[2px];
+                    }
+
+                    &.ant-checkbox-checked:not(.ant-checkbox-disabled) {
+                      &::after {
+                        @apply !border-pixelsSecondaryTextPurple;
+                      }
+                      .ant-checkbox-inner {
+                        @apply bg-pixelsSecondaryTextPurple border-pixelsSecondaryTextPurple;
+                      }
+                      
+                    }
+
+                    &.ant-checkbox-checked.ant-checkbox-disabled {
+                      &+span {
+                        @apply !text-pixelsBorder;
+                      }
+
+                      .ant-checkbox-inner {
+                        @apply !border-pixelsBorder;
+                        &::after {
+                          @apply !border-pixelsBorder;
+                        }
+                      }
+                    }
+                    
+                  }
+                }
+
+                .range-wrapper {
+                  > span {
+                    @apply text-pixelsBorder;
+                  }
+                  .pricing {
+                    @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder tg-card-shadow;
+                    .pricing__text {
+                      @apply text-pixelsWhiteBg;
+                    }
+                  }
+                  
+                  .range-input {
+                    @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder !tg-card-shadow text-pixelsWhiteBg;
+
+                    &.ant-input-status-error {
+                      @apply !bg-pixelsModalBg;
+                    }
+                  }
+                }
+
+                .range-button {
+                  .ant-btn-default {
+                    @apply !default-button-dark;
+                  }
+                  .ant-btn-primary {
+                    &[disabled]:disabled {
+                      @apply !primary-button-disabled-dark;
+                    }
+                    @apply !primary-button-dark;
+                    
+                  }
+                }
+              }
+            }
+
+            &.ant-menu-sub.ant-menu-inline {
+              @apply bg-pixelsPageBg;
+              
+              .ant-list-header {
+                .ant-input-affix-wrapper {
+                  @apply bg-pixelsModalBg rounded-none border-pixelsBorder;
+                  .ant-input-prefix {
+                    svg * {
+                      @apply !stroke-pixelsBorder;
+                    }
+                  }
+                  .ant-input {
+                    @apply bg-pixelsModalBg text-pixelsWhiteBg placeholder:text-pixelsBorder;
+                  }
+                }
+              }
+
+              .ant-spin-nested-loading {
+                .ant-list-item {
+                  .ant-list-item-main {
+                    .ant-checkbox-wrapper {
+                      .ant-checkbox {
+                        &+span {
+                          @apply !text-pixelsWhiteBg;
+                        }
+  
+                        .ant-checkbox-inner {
+                          @apply bg-pixelsModalBg border-pixelsBorder border-[2px];
+                        }
+  
+                        &.ant-checkbox-checked:not(.ant-checkbox-disabled) {
+                          &::after {
+                            @apply !border-pixelsSecondaryTextPurple;
+                          }
+                          .ant-checkbox-inner {
+                            @apply bg-pixelsSecondaryTextPurple border-pixelsSecondaryTextPurple;
+                          }
+                          
+                        }
+  
+                        &.ant-checkbox-checked.ant-checkbox-disabled {
+                          &+span {
+                            @apply !text-pixelsBorder;
+                          }
+  
+                          .ant-checkbox-inner {
+                            @apply !border-pixelsBorder;
+                            &::after {
+                              @apply !border-pixelsBorder;
+                            }
+                          }
+                        }
+                        
+                      }
+                      
+                    }
+                  }
+                  .ant-list-item-extra {
+                    @apply text-pixelsWhiteBg;
+                  }
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .ant-drawer-footer {
+      button {
+        &.ant-btn-default {
+          @apply !default-button-dark;
+        }
+        &.ant-btn-primary {
+          @apply !primary-button-dark;
+        }
+      }
+    }
+  }
+}

@@ -18,6 +18,8 @@ import CommonSearch from 'components/CommonSearch';
 import styles from './style.module.css';
 import { ListTypeEnum } from 'types';
 import { useSearchParams } from 'next/navigation';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -27,6 +29,7 @@ export interface ISubTraitFilterProps {
   traitType: string;
   selectValues?: string[];
   defaultValue?: string[];
+  theme?: TModalTheme;
   onChange?: (checkedValue: string[]) => void;
 }
 
@@ -35,7 +38,7 @@ export interface ISubTraitFilterInstance {
 }
 
 export const SubTraitFilter = forwardRef(
-  ({ traitType, selectValues = [], defaultValue = [], onChange }: ISubTraitFilterProps, ref) => {
+  ({ traitType, selectValues = [], defaultValue = [], theme = 'light', onChange }: ISubTraitFilterProps, ref) => {
     const cmsInfo = useCmsInfo();
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
@@ -122,34 +125,44 @@ export const SubTraitFilter = forwardRef(
         return {
           label: (
             <div className="flex justify-between h-[44px] items-center gap-4">
-              <span className="text-neutralPrimary truncate">{item.value}</span>
-              <span className="text-neutralPrimary flex-none">{item.amount}</span>
+              <span className={clsx('truncate', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+                {item.value}
+              </span>
+              <span className={clsx('flex-none', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+                {item.amount}
+              </span>
             </div>
           ),
           value: item.value,
         };
       });
-    }, [list, searchValue]);
+    }, [list, searchValue, theme]);
 
     return (
-      <div className={styles.subTraitFilter}>
+      <div className={clsx(styles.subTraitFilter, theme === 'dark' && styles['subTraitFilter-dark'])}>
         <div className={styles.searchWrapper}>
-          <CommonSearch size="small" value={searchValue} placeholder="Search" onChange={onSearchChange} />
+          <CommonSearch size="small" value={searchValue} theme={theme} placeholder="Search" onChange={onSearchChange} />
         </div>
 
         <Checkbox.Group
           value={selectValues}
-          className="w-full flex-col"
+          className={clsx('w-full flex-col', theme === 'dark' && styles['checkbox-dark'])}
           onChange={onChange}
           defaultValue={defaultValue}
           options={options}>
           {isLoading ? (
             <div className="h-[184px] flex items-center justify-center w-full">
-              <Loading />
+              <Loading color={theme === 'dark' ? 'purple' : 'blue'} />
             </div>
           ) : (
             !options.length && (
-              <div className="pl-4 pr-5 leading-[44px] text-neutralPrimary">No corresponding results found</div>
+              <div
+                className={clsx(
+                  'pl-4 pr-5 leading-[44px]',
+                  theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralPrimary',
+                )}>
+                No corresponding results found
+              </div>
             )
           )}
         </Checkbox.Group>

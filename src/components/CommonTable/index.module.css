@@ -1,0 +1,39 @@
+.table-dark {
+  @apply bg-pixelsPageBg;
+
+  :global {
+    .aelfd-table {
+      @apply bg-pixelsPageBg;
+
+      .aelfd-table-thead >tr>th {
+        @apply bg-pixelsPageBg text-pixelsBorder border-pixelsBorder;
+
+        &::before {
+          @apply !bg-pixelsPageBg;
+        }
+      }
+
+      .aelfd-table-container table>thead>tr:first-child>*:first-child {
+        @apply rounded-none;
+      }
+
+      .aelfd-table-tbody {
+        >tr >td {
+          @apply border-pixelsBorder;
+
+          &.aelfd-table-cell-row-hover {
+            @apply bg-pixelsPageBg;
+          }
+        }
+        
+        .aelfd-table-cell-fix-right {
+          @apply bg-pixelsPageBg;
+        }
+
+        .aelfd-table-placeholder > .aelfd-table-cell {
+          @apply bg-pixelsPageBg;
+        }
+      }
+    }
+  }
+}
