@@ -13,6 +13,11 @@
   :global {
     .aelfd-collapse-content {
       @apply border-pixelsBorder;
+      .aelfd-collapse-content-box {
+        >div {
+          @apply bg-pixelsPageBg;
+        }
+      }
     }
   }
 }

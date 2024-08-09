@@ -111,6 +111,15 @@
             
           }
           .network-select-list {
+            .etransfer-ui-network-list-skeleton-for-mobile {
+              .skeleton {
+                @apply rounded-none border-pixelsBorder;
+
+                .etransfer-ant-skeleton-input{
+                  @apply bg-[var(--fill-mask-3)];
+                }
+              }
+            }
             .etransfer-ui-network-card-for-mobile {
               @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder;
 

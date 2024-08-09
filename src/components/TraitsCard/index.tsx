@@ -118,7 +118,7 @@ function TraitsCard({
         <div className={clsx('mt-[8px] flex justify-end lg:justify-center font-medium text-base', percentColor)}>
           {`${formatPercent(item.percent)}%`}
         </div>
-        {showNew && <NewIcon className="absolute top-[-3px] right-[-8px]" />}
+        {showNew && <NewIcon className="absolute top-[-3px] right-0" />}
       </div>
     </Col>
   );
