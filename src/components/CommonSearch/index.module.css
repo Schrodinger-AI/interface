@@ -1,0 +1,5 @@
+.dark-input {
+    input::placeholder {
+        @apply text-pixelsDivider;
+    }
+}

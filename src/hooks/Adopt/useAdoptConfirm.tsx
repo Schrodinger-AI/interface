@@ -36,6 +36,7 @@ import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -70,6 +71,7 @@ export const useAdoptConfirm = () => {
       account,
       rankInfo,
       isDirect,
+      theme,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
@@ -77,6 +79,7 @@ export const useAdoptConfirm = () => {
       account: string;
       isDirect?: boolean;
       rankInfo?: IRankInfo;
+      theme?: TModalTheme;
     }): Promise<{
       selectImage: string;
       getWatermarkImage: boolean;
@@ -95,6 +98,7 @@ export const useAdoptConfirm = () => {
           adoptNextModal.show({
             isAcross,
             isDirect,
+            theme,
             data: {
               SGRToken: {
                 tokenName: childrenItemInfo.tokenName,
@@ -147,6 +151,7 @@ export const useAdoptConfirm = () => {
         signature: string;
       },
       parentItemInfo: TSGRToken,
+      theme?: TModalTheme,
     ): Promise<{
       txResult: ISendResult;
       image: string;
@@ -181,6 +186,7 @@ export const useAdoptConfirm = () => {
 
           cardResultModal.show({
             modalTitle: 'You have failed minted!',
+            theme,
             amount: divDecimals(confirmParams.outputAmount, parentItemInfo.decimals).toFixed(),
             status: Status.ERROR,
             buttonInfo: {
@@ -200,7 +206,10 @@ export const useAdoptConfirm = () => {
               <span className="font-medium text-neutralSecondary text-sm">
                 Adopt failed, you can re-adopt from &nbsp;
                 <span
-                  className="text-brandDefault cursor-pointer"
+                  className={clsx(
+                    'cursor-pointer',
+                    theme === 'dark' ? 'text-pixelsPrimaryTextPurple' : 'text-brandDefault',
+                  )}
                   onClick={() => {
                     cardResultModal.hide();
                     router.push('/stray-cats');
@@ -234,6 +243,7 @@ export const useAdoptConfirm = () => {
       rankInfo,
       getWatermarkImage,
       infos,
+      theme = 'light',
     }: {
       childrenItemInfo: IAdoptNextInfo;
       image: string;
@@ -241,6 +251,7 @@ export const useAdoptConfirm = () => {
       rankInfo?: IRankInfo;
       getWatermarkImage?: boolean;
       infos: IAdoptImageInfo;
+      theme?: TModalTheme;
     }): Promise<{
       txResult: ISendResult;
       image: string;
@@ -307,12 +318,13 @@ export const useAdoptConfirm = () => {
             subName: renameSymbol(parentItemInfo.symbol),
           },
           title: 'Pending Approval',
+          theme,
           content: {
             title: 'Go to your wallet',
             content: "You'll be asked to approve this offer from your wallet",
           },
           initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams, parentItemInfo);
+            const result = await retryAdoptConfirm(confirmParams, parentItemInfo, theme);
             resolve(result);
           },
           onClose: () => {
@@ -352,6 +364,7 @@ export const useAdoptConfirm = () => {
       account,
       rankInfo,
       isDirect,
+      theme,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -359,6 +372,7 @@ export const useAdoptConfirm = () => {
       account: string;
       rankInfo?: IRankInfo;
       isDirect?: boolean;
+      theme?: TModalTheme;
     }) => {
       const { selectImage, SGRTokenInfo, getWatermarkImage } = await adoptConfirmInput({
         infos,
@@ -367,6 +381,7 @@ export const useAdoptConfirm = () => {
         account,
         rankInfo,
         isDirect,
+        theme,
       });
 
       const { txResult, imageUri } = await adoptConfirmHandler({
@@ -376,6 +391,7 @@ export const useAdoptConfirm = () => {
         rankInfo,
         getWatermarkImage,
         infos,
+        theme,
       });
       let nextTokenName = '';
       let nextSymbol = '';
@@ -409,6 +425,7 @@ export const useAdoptConfirm = () => {
       SGRTokenInfo,
       inputAmount,
       isDirect = false,
+      theme = 'light',
     }: {
       transactionId: string;
       image: string;
@@ -418,6 +435,7 @@ export const useAdoptConfirm = () => {
       SGRTokenInfo?: ISGRTokenInfoProps;
       inputAmount: number | string;
       isDirect?: boolean;
+      theme?: TModalTheme;
     }) =>
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
@@ -446,6 +464,7 @@ export const useAdoptConfirm = () => {
             : "Congrats! You've got a new cat!",
           amount: SGRTokenInfo?.amount,
           status: Status.SUCCESS,
+          theme,
           link: {
             href: explorerUrl,
           },
@@ -526,11 +545,13 @@ export const useAdoptConfirm = () => {
           parentItemInfo,
           account,
           rankInfo,
+          theme,
           isDirect: childrenItemInfo.isDirect,
         });
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,
           image,
+          theme,
           name: nextTokenName,
           symbol: nextSymbol,
           rankInfo,

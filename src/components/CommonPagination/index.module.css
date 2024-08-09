@@ -1,0 +1,38 @@
+/* stylelint-disable no-duplicate-selectors */
+.pagination-dark {
+  @apply bg-pixelsPageBg;
+
+  :global {
+    .aelfd-pagination-container {
+      .aelfd-pagesize-label {
+        @apply text-pixelsWhiteBg;
+      }
+
+      .aelfd-select {
+        .aelfd-select-selector {
+          @apply bg-pixelsModalBg border-pixelsBorder;
+          .aelfd-select-selection-item {
+            @apply text-pixelsWhiteBg;
+          }
+        }
+        .aelfd-select-arrow {
+          @apply text-pixelsWhiteBg;
+        }
+
+        .aelfd-select-selector {
+          @apply !border-pixelsSecondaryTextPurple rounded-none;
+        }
+      }
+
+      .aelfd-page-container {
+        .aelfd-btn-primary.aelfd-btn-background-ghost:disabled, .aelfd-pageNumber-container {
+          @apply bg-pixelsModalBg border-pixelsModalBg rounded-none text-pixelsBorder;
+        }
+        .aelfd-btn-primary.aelfd-btn-background-ghost:not(.aelfd-btn-primary.aelfd-btn-background-ghost:disabled) {
+          @apply primary-button-dark text-pixelsWhiteBg;
+        }
+      }
+
+    }
+  }
+}

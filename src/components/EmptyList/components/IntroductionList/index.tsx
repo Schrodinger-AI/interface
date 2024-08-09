@@ -1,31 +1,52 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TEmptyChannelIntroductionList } from 'types/misc';
 import SkeletonImage from 'components/SkeletonImage';
 import { useResponsive } from 'hooks/useResponsive';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import clsx from 'clsx';
+import { TModalTheme } from 'components/CommonModal';
 
-function IntroductionList({ title, description, image }: TEmptyChannelIntroductionList) {
+function IntroductionList({
+  title,
+  description,
+  image,
+  imageDark,
+  theme = 'light',
+}: TEmptyChannelIntroductionList & {
+  theme?: TModalTheme;
+}) {
   const { isLG } = useResponsive();
   const { jumpToPage } = useJumpToPage();
 
+  const isDark = useMemo(() => theme === 'dark', [theme]);
+
+  const curImages = useMemo(() => {
+    if (isDark) {
+      return imageDark || image;
+    } else {
+      return image;
+    }
+  }, [image, imageDark, isDark]);
+
   return (
     <div className="mt-[16px] first:mt-0">
-      <p className="text-sm text-neutralPrimary font-medium px-[8px]">{title}</p>
+      <p className={clsx('text-sm font-medium px-[8px]', isDark ? 'text-pixelsBorder' : 'text-neutralPrimary')}>
+        {title}
+      </p>
       {description ? (
         <div className="px-[8px]">
           {description.map((item, index) => {
             return (
-              <span key={index} className="text-neutralSecondary text-sm">
+              <span key={index} className={clsx('text-sm', isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
                 {item}
               </span>
             );
           })}
         </div>
       ) : null}
-      {image && image.length ? (
+      {curImages && curImages.length ? (
         <div className="p-[8px]">
-          {image.map((item, index) => {
+          {curImages.map((item, index) => {
             return (
               <div
                 key={index}
@@ -36,7 +57,7 @@ function IntroductionList({ title, description, image }: TEmptyChannelIntroducti
                 onClick={() => jumpToPage({ link: item?.link, linkType: item?.linkType })}>
                 <SkeletonImage
                   img={isLG ? item.mobile || '' : item.pc || ''}
-                  className="w-full h-auto"
+                  className={clsx('w-full h-auto', isDark && '!rounded-none')}
                   imageClassName="!rounded-none"
                 />
               </div>

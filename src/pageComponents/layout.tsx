@@ -44,7 +44,7 @@ const Layout = dynamic(async () => {
 
     const pathname = usePathname();
 
-    const { isInTelegram } = useTelegram();
+    const { isInTelegram, isInTG } = useTelegram();
 
     console.log('WebLoginInstance.get()', WebLoginInstance.get());
 
@@ -135,6 +135,7 @@ const Layout = dynamic(async () => {
             className={clsx(
               'h-full overflow-scroll min-w-[360px] bg-no-repeat bg-cover bg-center',
               customTheme.layout.backgroundStyle,
+              isInTG && 'bg-pixelsPageBg',
             )}>
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
@@ -150,7 +151,7 @@ const Layout = dynamic(async () => {
             </div>
           </AntdLayout>
         ) : (
-          <>{children}</>
+          <div className={clsx(isInTG && 'h-full overflow-scroll min-w-[360px] bg-pixelsPageBg')}>{children}</div>
         )}
         <div
           className={clsx(

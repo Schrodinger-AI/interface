@@ -1,8 +1,163 @@
+/* stylelint-disable no-descending-specificity */
 .etransfer-deposit-wrap {
   :global {
     .etransfer-ui-common-svg {
       svg {
         @apply !h-auto !w-auto;
+      }
+    }
+  }
+}
+
+.etransfer-deposit-wrap-dark {
+  @apply bg-pixelsPageBg;
+
+  :global {
+    .etransfer-ui-deposit-select-token-network {
+      @apply rounded-none border-pixelsBorder;
+
+      .select-network-label {
+        @apply text-pixelsBorder;
+      }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-select-network-value-selected {
+        .primary {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+      .etransfer-ui-select-network-not-selected {
+        .select-network-value-placeholder {
+          @apply text-pixelsPrimaryTextPurple;
+        }
+        .etransfer-ui-common-svg.add-icon {
+          svg rect {
+            @apply fill-pixelsSecondaryTextPurple;
+          }
+          svg rect:nth-child(1) {
+            @apply fill-pixelsTertiaryTextPurple;
+          }
+        }
+      }
+
+      .etransfer-ui-flex-row-center.select-token-value-selected {
+        .primary {
+          @apply text-pixelsWhiteBg;
+        }
+        .secondary {
+          @apply text-pixelsBorder;
+        }
+      }
+
+      .etransfer-ui-common-svg.down-icon.etransfer-ui-dynamic-arrow-icon {
+        svg {
+          @apply fill-pixelsDivider;
+        }
+      }
+    }
+    .etransfer-ui-deposit-select-token-chain {
+      @apply rounded-none border-pixelsBorder;
+
+      .select-chain-label {
+        @apply text-pixelsBorder;
+      }
+
+      .select-chain {
+        @apply text-pixelsWhiteBg;
+      }
+      
+      .etransfer-ui-flex-row-center.select-token-value-selected {
+        .primary {
+          @apply text-pixelsWhiteBg;
+        }
+        .secondary {
+          @apply text-pixelsBorder;
+        }
+      }
+
+      .etransfer-ui-common-sv.down-icon.etransfer-ui-dynamic-arrow-icon {
+        svg {
+          @apply fill-pixelsDivider;
+        }
+      }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-mobile-select-chain-trigger-container.select-chain-container {
+        .select-chain-content {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+    }
+
+    .etransfer-ui-deposit-detail-for-mobile-next-button-wrapper.etransfer-ui-deposit-detail-for-mobile-next-button-wrapper-safe-area {
+      @apply bg-pixelsModalBg;
+
+      .etransfer-ant-btn.etransfer-ant-btn-default {
+        @apply rounded-none bg-pixelsCardBg border border-dashed border-pixelsPrimaryTextPurple;
+
+        box-shadow: 4px 4px 4px 0 #262284;
+      }
+    }
+
+    .etransfer-ui-flex-row-between.etransfer-ui-exchange-rate {
+      .etransfer-ui-flex-row-center {
+        .value {
+          @apply text-pixelsDivider;
+        }
+        .etransfer-ui-common-svg.time-icon {
+          svg {
+            @apply fill-pixelsDivider;
+          }
+        }
+        .count-time {
+          @apply text-pixelsDivider;
+        }
+      }
+    }
+    
+    .etransfer-ui-calculator {
+      @apply bg-pixelsPageBg;
+    }
+
+    .etransfer-ui-calculator-header {
+      .calculator-icon {
+        svg {
+          path {
+            @apply stroke-pixelsWhiteBg;
+          }
+        }
+      }
+      .calculator-header-title {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
+    .etransfer-ui-flex-row-start.etransfer-ui-calculator-content {
+      @apply flex-col;
+
+      .etransfer-ui-flex-1 {
+        @apply w-full;
+        .label, .min-receive-amount {
+          @apply text-pixelsBorder;
+        }
+
+        .receive-amount {
+          @apply text-pixelsWhiteBg;
+        }
+
+        .etransfer-ui-flex-row-center.you-pay-main {
+          @apply bg-pixelsPageBg rounded-none border-pixelsBorder;
+
+          .pay-input {
+            @apply text-pixelsWhiteBg;
+          }
+          .dividing-line {
+            @apply bg-pixelsBorder;
+          }
+          .unit {
+            @apply text-pixelsBorder;
+          }
+        }
       }
     }
   }

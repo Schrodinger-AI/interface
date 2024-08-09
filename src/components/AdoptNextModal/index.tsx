@@ -3,7 +3,7 @@ import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { Button } from 'aelf-design';
 import { Tooltip } from 'antd';
 import Balance from 'components/Balance';
-import CommonModal from 'components/CommonModal';
+import CommonModal, { TModalTheme } from 'components/CommonModal';
 import TransactionFee from 'components/TransactionFee';
 import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo, { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
@@ -16,20 +16,24 @@ import { getRarity } from 'utils/trait';
 import SkeletonImage from 'components/SkeletonImage';
 import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
+import clsx from 'clsx';
 
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
+  theme?: TModalTheme;
   tip?: string | React.ReactNode;
 }
 
-function DescriptionItem({ title, tip, children }: IDescriptionItemProps) {
+function DescriptionItem({ title, tip, children, theme }: IDescriptionItemProps) {
   return (
     <div className="flex flex-col gap-[16px]">
       <div className="flex items-center gap-2">
-        <div className="text-lg font-medium">{title}</div>
+        <div className={clsx('text-lg font-medium', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+          {title}
+        </div>
         {tip && (
           <Tooltip title={tip}>
-            <QuestionSVG />
+            <QuestionSVG className="fill-pixelsWhiteBg" />
           </Tooltip>
         )}
       </div>
@@ -43,16 +47,19 @@ interface IAdoptNextModal {
   isDirect?: boolean;
   data: IAdoptNextData;
   adoptId: string;
+  theme?: TModalTheme;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId }: IAdoptNextModal) {
+function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId, theme }: IAdoptNextModal) {
   const modal = useModal();
   const cancelAdoptModal = useModal(CancelAdoptModal);
   const [loading, setLoading] = useState<boolean>(false);
   const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
   const [selectImage, setSelectImage] = useState<number>(images.length > 1 ? -1 : 0);
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const onSelect = useCallback((index: number) => {
     setSelectImage(index);
@@ -70,8 +77,9 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
       tokenName: SGRToken.tokenName,
       amount: SGRToken.amount,
       adoptId,
+      theme,
     });
-  }, [SGRToken.amount, SGRToken.tokenName, adoptId, cancelAdoptModal, images, selectImage]);
+  }, [SGRToken.amount, theme, SGRToken.tokenName, adoptId, cancelAdoptModal, images, selectImage]);
 
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
@@ -83,7 +91,9 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
   const title = useMemo(() => {
     return (
       <div className="font-semibold">
-        <div className="text-neutralTitle">{isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat'}</div>
+        <div className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+          {isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat'}
+        </div>
         {isAcross && !isDirect && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
@@ -92,7 +102,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
         )}
       </div>
     );
-  }, [isAcross, isDirect]);
+  }, [isAcross, isDirect, isDark]);
 
   const newTraitsList = useMemo(() => {
     const inheritedMap: Record<string, string> = {};
@@ -118,13 +128,17 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
       closable={true}
       open={modal.visible}
       onCancel={onCancel}
+      theme={theme}
       afterClose={modal.remove}
       footer={
         <div className="flex w-full justify-center">
           {images.length > 1 ? null : (
             <Button
               loading={loading}
-              className="flex-1 lg:flex-none lg:w-[356px] mr-[16px] !rounded-lg border-brandDefault text-brandDefault"
+              className={clsx(
+                'flex-1 lg:flex-none lg:w-[356px] mr-[16px]',
+                theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
+              )}
               onClick={onReroll}
               type="default">
               Reroll
@@ -132,7 +146,10 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
           )}
           <Button
             loading={loading}
-            className="flex-1 lg:flex-none lg:w-[356px] !rounded-lg"
+            className={clsx(
+              'flex-1 lg:flex-none lg:w-[356px]',
+              theme === 'dark' ? '!primary-button-dark' : '!rounded-lg',
+            )}
             disabled={selectImage < 0}
             onClick={onClick}
             type="primary">
@@ -141,8 +158,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
         </div>
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
-        {/* <NoticeBar text="Please don't close this window until you complete the adoption." /> */}
-        <NoticeBar text="Congratulations! Your Cat is ready for adoption." type="success" />
+        <NoticeBar text="Congratulations! Your Cat is ready for adoption." type="success" theme={theme} />
         {images.length > 1 ? (
           <DescriptionItem title="Select the Cat You Prefer">
             <span className="text-functionalWarning text-base">
@@ -164,12 +180,15 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
           </div>
         )}
 
-        <SGRTokenInfo {...SGRToken} />
+        <SGRTokenInfo {...SGRToken} theme={theme} />
         <DescriptionItem
           title="Newly Generated Trait"
+          theme={theme}
           tip={
             <>
-              <div>During adoption, AI will randomly give your cat a new trait.</div>
+              <div className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                During adoption, AI will randomly give your cat a new trait.
+              </div>
               <br />
               <div>
                 {`If your cat acquires two traits simultaneously, congratulations! You've experienced a rare cross-level
@@ -177,16 +196,16 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
               </div>
             </>
           }>
-          <TraitsList data={newTraitsList} showNew />
+          <TraitsList data={newTraitsList} showNew theme={theme} />
         </DescriptionItem>
 
         {isDirect ? null : (
-          <DescriptionItem title="Traits">
-            <TraitsList data={allTraits} />
+          <DescriptionItem title="Traits" theme={theme}>
+            <TraitsList data={allTraits} theme={theme} />
           </DescriptionItem>
         )}
 
-        <TransactionFee {...transaction} />
+        <TransactionFee {...transaction} theme={theme} />
         <Balance
           items={[
             {
@@ -194,6 +213,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId 
               usd: `${ELFBalance?.usd ?? '--'}`,
             },
           ]}
+          theme={theme}
         />
       </div>
     </CommonModal>

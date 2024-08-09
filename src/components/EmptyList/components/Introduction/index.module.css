@@ -14,3 +14,11 @@
     }
   }
 }
+
+.empty-introduction-dark {
+  :global {
+    .aelfd-collapse-header:hover {
+      @apply !bg-transparent;
+    }
+  }
+}

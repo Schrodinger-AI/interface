@@ -18,14 +18,18 @@ const useBackToHomeByRoute = () => {
     try {
       const firstPathName = '/' + pathname.split('/')[1];
       if ((isInTG ? TG_NEED_LOGIN_PAGE : NEED_LOGIN_PAGE).includes(firstPathName)) {
-        router.push('/');
+        if (isInTG) {
+          router.replace('/telegram/home');
+        } else {
+          router.replace('/');
+        }
       } else if (pathname === '/' && Number(searchParams.get('pageState')) === ListTypeEnum.My) {
         router.push('/');
       }
     } catch (e) {
       console.log(e);
     }
-  }, [pathname, router, searchParams]);
+  }, [isInTG, pathname, router, searchParams]);
 
   return backToHomeByRoute;
 };

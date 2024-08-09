@@ -1,5 +1,5 @@
 import { Collapse } from 'aelf-design';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { TEmptyChannelIntroduction } from 'types/misc';
 import clsx from 'clsx';
@@ -8,13 +8,23 @@ import { Col, Row } from 'antd';
 import { useResponsive } from 'hooks/useResponsive';
 import StepCard from '../StepCard';
 import IntroductionList from '../IntroductionList';
+import { TModalTheme } from 'components/CommonModal';
 
-function Introduction({ title, step, list }: TEmptyChannelIntroduction) {
+function Introduction({
+  title,
+  step,
+  list,
+  theme = 'light',
+}: TEmptyChannelIntroduction & {
+  theme?: TModalTheme;
+}) {
   const [rotate, setRotate] = useState<boolean>(false);
   const { isLG } = useResponsive();
 
+  const isDark = useMemo(() => theme === 'dark', [theme]);
+
   return (
-    <div className={clsx(styles['empty-introduction'])}>
+    <div className={clsx(styles['empty-introduction'], isDark && styles['empty-introduction-dark'])}>
       <Collapse
         ghost
         onChange={(open) => {
@@ -28,10 +38,18 @@ function Introduction({ title, step, list }: TEmptyChannelIntroduction) {
           {
             key: title,
             label: (
-              <span className="text-brandDefault text-xs font-medium flex items-center">
+              <span
+                className={clsx(
+                  'text-xs font-medium flex items-center',
+                  isDark ? 'text-pixelsPrimaryTextPurple' : 'text-brandDefault',
+                )}>
                 {title}
                 <ArrowDownIcon
-                  className={clsx('fill-brandDefault w-[12px] h-[12px] ml-[8px]', rotate ? 'rotate-180' : '')}
+                  className={clsx(
+                    'w-[12px] h-[12px] ml-[8px]',
+                    rotate ? 'rotate-180' : '',
+                    isDark ? 'fill-pixelsPrimaryTextPurple' : 'fill-brandDefault',
+                  )}
                 />
               </span>
             ),
@@ -51,7 +69,7 @@ function Introduction({ title, step, list }: TEmptyChannelIntroduction) {
                 {list && list.length ? (
                   <div className={clsx(step && step.length ? 'mt-[16px]' : '')}>
                     {list.map((info, index) => {
-                      return <IntroductionList key={index} {...info} />;
+                      return <IntroductionList key={index} {...info} theme={theme} />;
                     })}
                   </div>
                 ) : null}
