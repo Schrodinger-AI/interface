@@ -69,8 +69,12 @@
   .modal-full-screen:global(.aelfd-modal) {
     @apply overflow-hidden m-0 !w-screen h-full p-0 max-w-[100vw];
 
+    >div:nth-child(2) {
+      @apply h-full overflow-hidden flex flex-col;
+    }
+
     :global(.aelfd-modal-content) {
-      @apply w-screen h-screen max-h-full rounded-none;
+      @apply w-full !h-full !max-h-full flex-1 rounded-none;
 
       :global(.aelfd-modal-header) {
         @apply border-0 border-b border-solid border-neutralBorder;
