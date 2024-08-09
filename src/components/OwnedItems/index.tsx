@@ -271,13 +271,13 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
 
   const filterChange = useCallback(
     (val: ItemsSelectSourceType) => {
-      const newFilterSelect = { ...filterSelect, ...val };
+      const newFilterSelect = { ...tempFilterSelect, ...val };
       setTempFilterSelect(newFilterSelect);
       if (!isMobile || !collapsed) {
         applyFilter(newFilterSelect);
       }
     },
-    [filterSelect, isMobile, collapsed, applyFilter],
+    [tempFilterSelect, isMobile, collapsed, applyFilter],
   );
 
   const compChildRefs = useMemo(() => {

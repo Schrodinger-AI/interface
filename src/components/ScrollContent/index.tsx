@@ -63,7 +63,14 @@ function ScrollContent(props: IContentProps) {
         locale={{
           emptyText,
         }}
-        loading={loading}
+        loading={{
+          indicator: (
+            <div>
+              <Loading size="middle" color={theme === 'dark' ? 'purple' : 'blue'} />
+            </div>
+          ),
+          spinning: loading,
+        }}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
             <ItemCard type={type} item={item} onPress={onPress} theme={theme} />

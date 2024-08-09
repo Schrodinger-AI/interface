@@ -146,7 +146,7 @@ export const SubTraitFilter = forwardRef(
 
         <Checkbox.Group
           value={selectValues}
-          className={clsx('w-full flex-col', styles['checkbox-dark'])}
+          className={clsx('w-full flex-col', theme === 'dark' && styles['checkbox-dark'])}
           onChange={onChange}
           defaultValue={defaultValue}
           options={options}>
