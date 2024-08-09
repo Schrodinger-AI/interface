@@ -4,25 +4,26 @@
 
   :global {
     .ant-tabs {
+      .ant-tabs-nav {
+        @apply bg-pixelsPageBg;
+        &::before {
+          @apply border-0 border-pixelsBorder border-b border-solid z-[1];
+        }
+      }
       .ant-tabs-nav-wrap {
         @apply bg-pixelsPageBg;
-        .ant-tabs-nav {
-          &::before {
-            @apply border-pixelsBorder;
+        .ant-tabs-nav-list {
+          .ant-tabs-tab {
+            @apply px-0 font-semibold;
           }
-          
-          .ant-tabs-nav-wrap {
-            .ant-tabs-nav-list {
-              .ant-tabs-tab {
-                @apply px-0 font-semibold;
-    
-                .ant-tabs-ink-bar {
-                  @apply h-[4px];
-                }
-              }
+          .ant-tabs-tab-active {
+            .ant-tabs-tab-btn {
+              @apply text-pixelsWhiteBg;
             }
           }
-          
+          .ant-tabs-ink-bar {
+            @apply !bg-pixelsDashPurple;
+          }
         }
       }
     }

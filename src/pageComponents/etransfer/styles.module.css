@@ -137,7 +137,7 @@
 
       .etransfer-ui-flex-1 {
         @apply w-full;
-        .label {
+        .label, .min-receive-amount {
           @apply text-pixelsBorder;
         }
 

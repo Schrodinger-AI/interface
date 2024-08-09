@@ -80,6 +80,15 @@
         @apply border-0 border-b border-solid border-neutralBorder;
       }
     }
+
+    :global(.aelfd-modal-close) {
+      svg > path {
+        @apply !stroke-pixelsDivider;
+      }
+      :global(.aelfd-modal-close-x) {
+        @apply !text-pixelsDivider;
+      }
+    }
   }
 
   .modal-mobile-dark {

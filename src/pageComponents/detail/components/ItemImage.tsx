@@ -32,7 +32,7 @@ export default function ItemImage({
         tagPosition="large"
         rank={rank}
         imageClassName={theme === 'dark' ? 'rounded-none' : 'rounded-lg'}
-        className={clsx('w-full')}
+        className={clsx('w-full', theme === 'dark' ? 'rounded-none' : 'rounded-lg')}
       />
     </div>
   );

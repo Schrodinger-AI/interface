@@ -21,6 +21,8 @@ export const themeDarkTabsConfig: ThemeConfig = {
       inkBarColor: 'var(--pixels-dash-purple)',
       itemSelectedColor: 'var(--pixels-white-bg)',
       itemColor: 'var(--pixels-border)',
+      itemActiveColor: 'var(--pixels-white-bg)',
+      itemHoverColor: 'var(--pixels-white-bg)',
     },
   },
 };

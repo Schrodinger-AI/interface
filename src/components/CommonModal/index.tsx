@@ -2,7 +2,6 @@ import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
 import { ReactComponent as Close } from 'assets/img/clear.svg';
-import { ReactComponent as PixelsClose } from 'assets/img/pixelsIcon/closeIcon.svg';
 import useResponsive from 'hooks/useResponsive';
 import clsx from 'clsx';
 
@@ -32,7 +31,7 @@ function CommonModal(props: ModalProps) {
       keyboard={false}
       maskClosable={false}
       destroyOnClose={true}
-      closeIcon={theme === 'dark' ? <PixelsClose width={14} height={14} /> : <Close width={24} height={24} />}
+      closeIcon={<Close width={24} height={24} />}
       width={width}
       centered
       footer={null}
