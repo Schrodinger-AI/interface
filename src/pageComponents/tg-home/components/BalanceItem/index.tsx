@@ -1,4 +1,5 @@
 import { Flex } from 'antd';
+import clsx from 'clsx';
 import { useMemo } from 'react';
 import { formatNumber } from 'utils/format';
 
@@ -27,7 +28,12 @@ export default function BalanceItem({ symbol, amount, onBuy }: IBalanceItemProps
       <Flex
         justify="center"
         align="center"
-        className="w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple active:bg-pixelsCardBg bg-pixelsPageBg tg-card-shadow"
+        className={clsx(
+          'w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple tg-card-shadow',
+          symbol === 'SGR'
+            ? 'active:bg-pixelsDashPurple bg-pixelsCardBg'
+            : 'active:bg-pixelsDashPurple bg-pixelsPageBg',
+        )}
         onClick={onBuy}>
         {buyText}
       </Flex>

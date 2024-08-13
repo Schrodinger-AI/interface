@@ -1,0 +1,24 @@
+.common-tabs {
+  :global {
+    .aelfd-tabs-nav {
+      @apply mb-0;
+
+      &::before {
+        @apply border-pixelsBorder;
+      }
+      
+      .aelfd-tabs-nav-wrap {
+        .aelfd-tabs-nav-list {
+          .aelfd-tabs-tab {
+            @apply px-0 font-semibold;
+
+            .aelfd-tabs-ink-bar {
+              @apply h-[4px];
+            }
+          }
+        }
+      }
+      
+    }
+  }
+}

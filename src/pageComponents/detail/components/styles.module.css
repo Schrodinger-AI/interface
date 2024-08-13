@@ -2,10 +2,10 @@
   @apply flex-1 max-w-max overflow-hidden h-full flex flex-col justify-between;
 
   .title {
-    @apply text-sm lg:text-lg text-neutralDisable font-medium;
+    @apply text-sm lg:text-lg font-medium;
   }
 
   .value {
-    @apply text-sm lg:text-xl text-neutralTitle font-semibold whitespace-nowrap overflow-hidden w-full text-ellipsis;
+    @apply text-sm lg:text-xl font-semibold whitespace-nowrap overflow-hidden w-full text-ellipsis;
   }
 }

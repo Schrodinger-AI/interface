@@ -31,6 +31,12 @@ export type TEmptyChannelIntroductionList = {
     link?: string;
     linkType?: TLinkType;
   }[];
+  imageDark?: {
+    pc: string;
+    mobile: string;
+    link?: string;
+    linkType?: TLinkType;
+  }[];
 };
 
 export type TEmptyChannelIntroduction = {

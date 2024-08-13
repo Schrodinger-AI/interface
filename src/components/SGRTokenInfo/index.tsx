@@ -1,34 +1,48 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './index.module.css';
 import { getRankInfoToShow } from 'utils/formatTraits';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 export interface ISGRTokenInfoProps {
   tokenName?: string;
   symbol?: string;
   amount?: string | number;
   rankInfo?: IRankInfo;
+  theme?: TModalTheme;
 }
 
-function SGRTokenInfo({ tokenName, symbol, amount, rankInfo }: ISGRTokenInfoProps) {
+function SGRTokenInfo({ tokenName, symbol, amount, rankInfo, theme }: ISGRTokenInfoProps) {
+  const isDark = useMemo(() => theme === 'dark', [theme]);
   return (
     <div className={styles['token-info']}>
-      <div className="text-lg font-medium text-neutralTitle">Info</div>
+      <div className={clsx('text-lg font-medium text-neutralTitle', isDark && 'dark-title')}>Info</div>
       <div className="mt-[16px]">
         <div className={styles.item}>
-          <span className={styles.title}>Name</span>
-          <span className={styles.value}>{tokenName ?? '--'}</span>
+          <span className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>Name</span>
+          <span className={clsx(styles.value, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            {tokenName ?? '--'}
+          </span>
         </div>
         <div className={styles.item}>
-          <span className={styles.title}>Symbol</span>
-          <span className={styles.value}>{symbol ?? '--'}</span>
+          <span className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>Symbol</span>
+          <span className={clsx(styles.value, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            {symbol ?? '--'}
+          </span>
         </div>
         <div className={styles.item}>
-          <span className={styles.title}>Amount Owned</span>
-          <span className={styles.value}>{amount ?? '--'}</span>
+          <span className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+            Amount Owned
+          </span>
+          <span className={clsx(styles.value, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            {amount ?? '--'}
+          </span>
         </div>
         {rankInfo?.rank ? (
           <div className={styles.item}>
-            <span className={styles.title}>Rank</span>
-            <span className={styles.value}>{getRankInfoToShow(rankInfo)}</span>
+            <span className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>Rank</span>
+            <span className={clsx(styles.value, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              {getRankInfoToShow(rankInfo)}
+            </span>
           </div>
         ) : null}
       </div>

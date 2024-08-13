@@ -36,6 +36,9 @@ export default function NoticeBar({ text, theme = 'light', type = 'warning' }: I
         }
         return 'bg-functionalWarningBg';
       case 'success':
+        if (theme === 'dark') {
+          return 'bg-pixelsPageBg';
+        }
         return 'bg-brandBg';
     }
   }, [theme, type]);
@@ -48,6 +51,9 @@ export default function NoticeBar({ text, theme = 'light', type = 'warning' }: I
         }
         return 'text-sm text-neutralSecondary';
       case 'success':
+        if (theme === 'dark') {
+          return 'text-sm text-pixelsDivider';
+        }
         return 'text-base font-semibold text-neutralTitle';
     }
   }, [theme, type]);

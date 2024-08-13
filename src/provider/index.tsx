@@ -18,14 +18,14 @@ import { AELFDProviderCustomToken, AELFDProviderTheme } from './config';
 import BigNumber from 'bignumber.js';
 import { useEffectOnce } from 'react-use';
 import { NotFoundType } from 'constants/index';
-import Loading from 'components/PageLoading/index';
+import PageLoading from 'components/PageLoading/index';
 import { usePathname } from 'next/navigation';
 import { forbidScale } from 'utils/common';
 import dynamic from 'next/dynamic';
 import { useRequestCms } from 'redux/hooks';
 import ETransferLayout from './ETransferLayout';
 import ConnectEvmWalletProvider from './ConnectEvmWalletProvider';
-import { Trade, Collection, ForestProvider, useForestStore, Store } from 'forest-ui-react';
+import { ForestProvider } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
 import Wrapper from './ForestInitWrapper';
 
@@ -100,7 +100,7 @@ function Provider({ children }: { children: React.ReactNode }) {
                 autoInsertSpace: false,
               }}>
               {loading ? (
-                <Loading content="Enrollment in progress"></Loading>
+                <PageLoading content="Enrollment in progress"></PageLoading>
               ) : isCorrectDomain ? (
                 <WebLoginProvider>
                   <ETransferLayout>

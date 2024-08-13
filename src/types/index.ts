@@ -129,3 +129,17 @@ export enum ListTypeEnum {
   RARE = 3,
   Stray = 4,
 }
+
+export type FormatListingType = {
+  price: number;
+  quantity: number;
+  expiration: string;
+  fromName: string;
+  ownerAddress: string;
+  whitelistHash: string | null;
+  purchaseToken: { symbol: string };
+  key: string;
+  decimals: number;
+  startTime: number;
+  endTime: number;
+};

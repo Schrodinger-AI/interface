@@ -8,17 +8,20 @@ import { divDecimals } from 'utils/calculate';
 import styles from './style.module.css';
 import { ReactComponent as XIcon } from 'assets/img/x.svg';
 import useTelegram from 'hooks/useTelegram';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 export enum CardType {
   MY = 'my',
   LATEST = 'latest',
 }
 interface IItemCard {
   item: TSGRItem;
+  theme?: TModalTheme;
   onPress: (item: TSGRItem) => void;
   type: CardType;
 }
 
-export default function ItemCard({ item, onPress, type }: IItemCard) {
+export default function ItemCard({ item, onPress, type, theme = 'light' }: IItemCard) {
   const {
     inscriptionImageUri,
     generation = '1',
@@ -69,16 +72,21 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
   }, [item, onPress]);
 
   const adoptTimeStr = useMemo(() => formatTimeByDayjs(adoptTime), [adoptTime]);
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   return (
     <div
-      className="w-full overflow-hidden border border-neutralBorder border-solid rounded-lg cursor-pointer"
+      className={clsx(
+        'w-full overflow-hidden border border-solid cursor-pointer',
+        isDark ? 'border-pixelsBorder bg-pixelsModalBg rounded-none' : 'border-neutralBorder rounded-lg',
+      )}
       onClick={onCardClick}>
       <div>
         <div className={styles['item-card-img-wrap']}>
           <SkeletonImage
             img={inscriptionImageUri}
             imageSizeType="contain"
+            imageClassName={clsx(isDark && '!rounded-none')}
             rank={rank}
             level={level}
             generation={generation}
@@ -92,13 +100,18 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
                   }
                 : undefined
             }
-            className={`${styles['item-card-img']} w-full h-auto aspect-square object-contain rounded-b-none`}
+            className={`${styles['item-card-img']} w-full h-auto aspect-square object-contain ${
+              isDark ? '!rounded-none' : 'rounded-b-none'
+            }`}
           />
         </div>
 
         <div className="px-4 py-4 flex flex-col">
-          <div className="flex  flex-col text-lg leading-6 font-medium max-w-xs whitespace-nowrap">
-            <span className="text-sm text-neutralPrimary font-medium truncate">{tokenName || '--'}</span>
+          <div className="flex flex-col text-lg leading-6 font-medium max-w-xs whitespace-nowrap">
+            <span
+              className={clsx('text-sm font-medium truncate', isDark ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+              {tokenName || '--'}
+            </span>
           </div>
           {type === CardType.LATEST && (
             <div className="flex flex-col pt-1">
@@ -123,8 +136,11 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
           {type === CardType.MY && (
             <div>
               <div className="flex flex-row items-center pt-1">
-                <XIcon className="fill-neutralDisable" />
-                <div className="ml-1 text-xs text-neutralPrimary font-medium">{transformedAmount}</div>
+                <XIcon className={clsx(isDark ? 'fill-pixelsDivider' : 'fill-neutralDisable')} />
+                <div
+                  className={clsx('ml-1 text-xs font-medium', isDark ? 'text-pixelsDivider' : 'text-neutralPrimary')}>
+                  {transformedAmount}
+                </div>
               </div>
               {!isInTG && (
                 <div className="flex flex-row items-center">
@@ -140,11 +156,19 @@ export default function ItemCard({ item, onPress, type }: IItemCard) {
               )}
               {isInTG && (
                 <>
-                  <div className="flex flex-row items-center justify-between text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                  <div
+                    className={clsx(
+                      'flex flex-row items-center justify-between text-[10px] h-[18px] leading-[18px] font-medium',
+                      isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+                    )}>
                     <span>Listing Price</span>
                     <span>{listingPriceDisplay}</span>
                   </div>
-                  <div className="flex flex-row items-center justify-between text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                  <div
+                    className={clsx(
+                      'flex flex-row items-center justify-between h-[18px] font-normal text-[10px] leading-[18px]',
+                      isDark ? 'text-pixelsDivider' : 'text-neutralSecondary',
+                    )}>
                     {awakenPriceDisplay && <span>SPR</span>}
                     <span>{awakenPriceDisplay}</span>
                   </div>

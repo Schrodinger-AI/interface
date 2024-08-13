@@ -12,6 +12,16 @@ import { useTimeoutFn } from 'react-use';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
+import useTelegram from 'hooks/useTelegram';
+import dynamic from 'next/dynamic';
+
+const DarkModal = dynamic(
+  async () => {
+    const modal = await import('./darkModal').then((module) => module);
+    return modal;
+  },
+  { ssr: false },
+) as any;
 
 export default function ETransfer() {
   const { isMD, isLG } = useResponsive();
@@ -19,6 +29,7 @@ export default function ETransfer() {
   const searchParams = useSearchParams();
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
+  const { isInTG } = useTelegram();
 
   const defaultParams = useMemo(() => {
     return {
@@ -50,9 +61,11 @@ export default function ETransfer() {
 
   useTimeoutFn(() => {
     if (!isLogin) {
-      router.replace('/');
+      if (!isInTG) {
+        router.replace('/');
+      }
     }
-  }, 3000);
+  }, 4000);
 
   useEffect(() => {
     ETransferConfig.setConfig({
@@ -68,8 +81,14 @@ export default function ETransfer() {
   if (visible || !isLogin) return null;
 
   return (
-    <div className={clsx('m-auto max-w-[1024px]', styles['etransfer-deposit-wrap'])}>
-      {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" /> : null}
+    <div
+      className={clsx(
+        'm-auto max-w-[1024px]',
+        styles['etransfer-deposit-wrap'],
+        isInTG && styles['etransfer-deposit-wrap-dark'],
+      )}>
+      {isInTG && <DarkModal />}
+      {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" theme={isInTG ? 'dark' : 'light'} /> : null}
       <ETransferDepositProvider>
         <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
       </ETransferDepositProvider>
