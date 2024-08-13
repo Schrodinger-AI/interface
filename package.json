@@ -8,6 +8,8 @@
     "dev:testWithCert": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next dev --experimental-https --experimental-https-key localhost+1-key.pem --experimental-https-cert localhost+1.pem",
     "build:dev": "NEXT_PUBLIC_APP_ENV=development next build",
     "build:test": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next build",
+    "build:test-stable": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next build",
+    "build:pro": "NEXT_PUBLIC_APP_ENV=production NODE_ENV=production next build",
     "build": "NEXT_PUBLIC_APP_ENV=production NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
