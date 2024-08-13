@@ -1,5 +1,5 @@
 import { Flex } from 'antd';
-import { ReactComponent as TipSVG } from 'assets/img/telegram/tip-icon.svg';
+import { ReactComponent as TrophiesSVG } from 'assets/img/telegram/trophies.svg';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
@@ -18,11 +18,10 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
           <span className="font-medium">Balance:</span>
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
-        <Link href="/telegram/rules">
-          <Flex gap={8} align="center" className="cursor-pointer w-fit text-neutralWhiteBg">
-            Rule
-            <TipSVG className="w-[14px] h-[14px]" />
-          </Flex>
+        <Link href="/tg-weekly-activity-rankings">
+          <div className="px-[8px]">
+            <TrophiesSVG className="w-[24px] h-[24px]" />
+          </div>
         </Link>
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">

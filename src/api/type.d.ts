@@ -72,6 +72,8 @@ interface IPointItem {
 }
 
 interface IGetPointsData {
+  totalScore?: string;
+  totalReward?: string;
   pointDetails: Array<IPointItem>;
   hasBoundAddress: boolean;
   evmAddress?: string;

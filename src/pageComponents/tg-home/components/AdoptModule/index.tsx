@@ -1,22 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button } from 'aelf-design';
 import { Flex } from 'antd';
 import Link from 'next/link';
-import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+import clsx from 'clsx';
 
-export default function AdoptModule({ onAdopt, cId }: { onAdopt: () => void; cId: string }) {
-  const { isLogin } = useGetLoginStatus();
-
+export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
   return (
     <Flex
       className="p-4 border-[2px] border-dashed border-pixelsPrimaryTextPurple bg-pixelsModalBg tg-card-shadow z-10 relative"
       vertical
       gap={16}>
-      <img
-        src={require('assets/img/telegram/adopt-text.png').default.src}
-        alt=""
-        className="w-[143px] h-9 object-contain"
-      />
+      <div className="w-full flex justify-between items-center">
+        <span className={clsx('dark-title text-2xl font-semibold')}>Adopt a cat</span>
+        <Link href="/telegram/rules">
+          <Flex gap={8} align="center" className="cursor-pointer w-fit text-neutralWhiteBg">
+            Rule
+            <QuestionSVG className="fill-pixelsWhiteBg" />
+          </Flex>
+        </Link>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((item, index) => {
           return (
@@ -30,23 +33,6 @@ export default function AdoptModule({ onAdopt, cId }: { onAdopt: () => void; cId
           );
         })}
       </div>
-      <Flex gap={16}>
-        <Link href={isLogin ? '/telegram?pageState=1' : ''} className="flex-1">
-          <Button
-            size="medium"
-            className="!w-full !bg-pixelsPageBg !border-dashed !border-[1px] !border-pixelsPrimaryTextPurple !tg-card-shadow !rounded-none !text-pixelsWhiteBg !text-sm !font-medium">
-            My Cats
-          </Button>
-        </Link>
-        <Link href={`/telegram/forest/trade?cId=${cId}`} className="flex-1">
-          <Button
-            size="medium"
-            type="primary"
-            className="!w-full !primary-button-dark !text-pixelsWhiteBg !text-sm !font-medium">
-            Trade
-          </Button>
-        </Link>
-      </Flex>
     </Flex>
   );
 }

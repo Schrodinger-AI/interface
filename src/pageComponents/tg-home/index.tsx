@@ -10,7 +10,6 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { TSGRTokenInfo } from 'types/tokens';
 import styles from './style.module.css';
 import BalanceModule from './components/BalanceModule';
-import IntroText from './components/IntroText';
 import AdoptModule from './components/AdoptModule';
 import { DIRECT_ADOPT_GEN9_MIN, GEN0_SYMBOL } from 'constants/common';
 import { divDecimals } from 'utils/calculate';
@@ -18,6 +17,10 @@ import { useModal } from '@ebay/nice-modal-react';
 import TipsModal from 'components/TipsModal';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { BUY_SGR_URL } from 'constants/router';
+import { AdTracker } from 'utils/ad';
+import moment from 'moment';
+import FooterButtons from './components/FooterButtons';
+import FloatingButton from './components/FloatingButton';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -69,19 +72,48 @@ export default function TgHome() {
     });
   }, [adoptHandler, jumpToPage, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
 
+  const sendAdTrack = (address: string) => {
+    const tg_user_click_daily: {
+      address: string;
+      time: string;
+    } = JSON.parse(localStorage.getItem('tg_user_click_daily') || '{}');
+
+    const curTime = moment().utc().format('YYYY/MM/DD');
+
+    if (tg_user_click_daily.address !== address || tg_user_click_daily.time !== curTime) {
+      localStorage.setItem(
+        'tg_user_click_daily',
+        JSON.stringify({
+          address,
+          time: curTime,
+        }),
+      );
+
+      AdTracker.trackEvent('tg_user_click_daily', {
+        address,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!wallet.address) return;
+    sendAdTrack(wallet?.address);
+  }, [wallet?.address]);
+
   useEffect(() => {
     getDetail();
   }, [getDetail]);
 
   return (
-    <div className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6', styles.pageContainer)}>
+    <div
+      className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
       <BalanceModule onSgrBalanceChange={onBalanceChange} />
       <div className="mt-10">
-        <IntroText />
+        <AdoptModule onAdopt={OpenAdoptModal} />
       </div>
-      <div className="mt-10">
-        <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
-      </div>
+
+      <FooterButtons cId={schrodingerDetail?.collectionId || ''} />
+      <FloatingButton />
     </div>
   );
 }

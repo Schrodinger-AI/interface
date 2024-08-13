@@ -37,11 +37,14 @@ import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
+import { AdTracker } from 'utils/ad';
+import useTelegram from 'hooks/useTelegram';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
   const adoptNextModal = useModal(AdoptNextModal);
   const cardResultModal = useModal(CardResultModal);
+  const { isInTG } = useTelegram();
 
   const { txFee: commonTxFee } = useTxFee();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
@@ -548,6 +551,12 @@ export const useAdoptConfirm = () => {
           theme,
           isDirect: childrenItemInfo.isDirect,
         });
+        AdTracker.trackEvent('adopt', {
+          generation: parentItemInfo?.generation,
+          address: wallet.address,
+          source: isInTG ? 'telegram' : '',
+        });
+
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,
           image,

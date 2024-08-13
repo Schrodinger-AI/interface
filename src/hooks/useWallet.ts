@@ -31,12 +31,14 @@ import { setLoginStatus } from 'redux/reducer/loginStatus';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { AdTracker } from 'utils/ad';
 import { resetAccount } from 'utils/resetAccount';
+import useTelegram from './useTelegram';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
 
   const { getToken } = useGetToken();
   const { wallet, walletType } = useWebLogin();
+  const { isInTG } = useTelegram();
 
   const backToHomeByRoute = useBackToHomeByRoute();
 
@@ -50,6 +52,7 @@ export const useWalletInit = () => {
       if (state === WebLoginState.logined) {
         AdTracker.trackEvent('connect_wallet', {
           address: wallet?.address,
+          source: isInTG ? 'telegram' : '',
         });
 
         const walletInfo: WalletInfoType = {
