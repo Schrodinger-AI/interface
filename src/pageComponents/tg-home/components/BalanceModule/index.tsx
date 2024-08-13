@@ -18,7 +18,8 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
           <span className="font-medium">Balance:</span>
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
-        <Link href="/tg-weekly-activity-rankings">
+        {/* <Link href="/tg-weekly-activity-rankings"> */}
+        <Link href="">
           <div className="px-[8px]">
             <TrophiesSVG className="w-[24px] h-[24px]" />
           </div>
