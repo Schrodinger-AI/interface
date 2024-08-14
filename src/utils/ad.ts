@@ -41,7 +41,7 @@ export class AdTracker {
         this.gtm.push({ event, ...this.adInfo, ...payload });
       } else {
         const eventName = `${event}_test`;
-        console.log('=====this.gtm', eventName, payload);
+        console.log('=====this.gtm', this.gtm, eventName, payload);
         this.gtm.push({ eventName, ...this.adInfo, ...payload });
       }
     } catch (error) {

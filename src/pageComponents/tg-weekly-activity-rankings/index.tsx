@@ -1,105 +1,169 @@
 'use client';
 
-import { getCatsRankList, getRankConfig } from 'api/request';
+import { fetchActivityBotRank } from 'api/request';
 import clsx from 'clsx';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
-import CustomTable from 'components/CustomTable';
-import MobileBackNav from 'components/MobileBackNav';
-import SkeletonImage from 'components/SkeletonImage';
-import useResponsive from 'hooks/useResponsive';
-import { renderDescription } from 'pageComponents/events-detail/components/EventsDetailsList';
-import { IEventsDetailListTable, IRankConfigData, RankType } from 'pageComponents/events-detail/types/type';
-import { useEffect, useMemo, useState } from 'react';
-import useEffectOnce from 'react-use/lib/useEffectOnce';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CommonSegmented from 'components/CommonSegmented';
+import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
+import styles from './style.module.css';
+import CommonTabs from 'components/CommonTabs';
+import { TabsProps } from 'antd';
+import { TgWeeklyActivityRankTime, TgWeeklyActivityRankType } from './types/type';
+import RankList from './components/RankList';
+import useLoading from 'hooks/useLoading';
+import { useWalletService } from 'hooks/useWallet';
+import TableEmpty from 'components/TableEmpty';
 
-const tab: ICommonRadioTabButton<RankType>[] = [
+const tabsType: TabsProps['items'] = [
   {
-    value: RankType.HOLDER,
-    label: 'Holder Rank',
+    key: `${TgWeeklyActivityRankType.ADOPT}`,
+    label: 'Cat Adoption',
   },
   {
-    value: RankType.COLLECTOR,
-    label: 'Collector Rank',
+    key: `${TgWeeklyActivityRankType.TRADE}`,
+    label: 'NFT Trading',
   },
 ];
 
-export default function CatsLeaderBoard() {
-  const { isLG } = useResponsive();
+const tabsTime: ICommonRadioTabButton<TgWeeklyActivityRankTime>[] = [
+  {
+    value: TgWeeklyActivityRankTime.lastWeek,
+    label: 'Last Week',
+  },
+  {
+    value: TgWeeklyActivityRankTime.thisWeek,
+    label: 'Current Week',
+  },
+];
+
+export default function TgWeeklyActivityRankings() {
   const searchParams = useSearchParams();
-  const tabValue: RankType = useMemo(() => (searchParams.get('tab') as RankType) || RankType.HOLDER, [searchParams]);
-  const [rankConfig, setRankConfig] = useState<IRankConfigData>();
-  const [dataSource, setDataSource] = useState<IEventsDetailListTable['data']>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const tabTypeValue: TgWeeklyActivityRankType = useMemo(
+    () => (Number(searchParams.get('type')) as TgWeeklyActivityRankType) || TgWeeklyActivityRankType.ADOPT,
+    [searchParams],
+  );
+  const tabTimeValue: TgWeeklyActivityRankTime = useMemo(
+    () => (searchParams.get('time') as TgWeeklyActivityRankTime) || TgWeeklyActivityRankTime.thisWeek,
+    [searchParams],
+  );
+
+  const { wallet } = useWalletService();
+
+  const { showLoading, closeLoading, visible } = useLoading();
+
+  const [dataSource, setDataSource] = useState<IActivityBotRankData['data']>([]);
+  const [myData, setMyData] = useState<IActivityBotRankDataItem>();
 
   const router = useRouter();
 
-  const getRankConfigInfo = async () => {
-    try {
-      const { data } = await getRankConfig();
-      setRankConfig(data);
-    } catch (error) {
-      /* empty */
-    }
+  const getActivityBotRank = useCallback(
+    async (tabTypeValue: TgWeeklyActivityRankType, tabTimeValue: TgWeeklyActivityRankTime) => {
+      try {
+        showLoading();
+        setDataSource([]);
+        const { data, myRank, myReward, myScore } = await fetchActivityBotRank({
+          tab: tabTypeValue,
+          address: wallet.address,
+          isCurrent: tabTimeValue === TgWeeklyActivityRankTime.lastWeek ? false : true,
+        });
+
+        setDataSource(data);
+        setMyData({
+          address: wallet.address,
+          scores: myScore ? String(myScore) : '',
+          reward: myReward ? String(myReward) : '',
+          rank: myRank,
+        });
+      } finally {
+        closeLoading();
+      }
+    },
+    [closeLoading, showLoading, wallet.address],
+  );
+
+  const onTabsChange = ({ type, time }: { type: TgWeeklyActivityRankType; time: TgWeeklyActivityRankTime }) => {
+    router.replace(`/tg-weekly-activity-rankings/?type=${type}&time=${time}`);
   };
 
-  const getCatsRankListInfo = async (server: string) => {
-    try {
-      if (server) {
-        setLoading(true);
-        const { items } = await getCatsRankList(server);
-        setDataSource(items);
+  const pointsTitle = useMemo(() => {
+    if (tabTimeValue === TgWeeklyActivityRankTime.lastWeek) {
+      return '';
+    } else {
+      if (tabTypeValue === TgWeeklyActivityRankType.ADOPT) {
+        return 'XPSGR-5';
+      } else {
+        return 'Trading Scores';
       }
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [tabTimeValue, tabTypeValue]);
 
   useEffect(() => {
-    const server = rankConfig?.[tabValue].server;
-    if (server) {
-      getCatsRankListInfo(server);
-    }
-  }, [rankConfig, tabValue]);
-
-  useEffectOnce(() => {
-    getRankConfigInfo();
-  });
+    getActivityBotRank(tabTypeValue, tabTimeValue);
+  }, [tabTypeValue, tabTimeValue, getActivityBotRank, wallet.address]);
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-[1360px]">
-        {isLG ? <MobileBackNav /> : null}
+    <div className={clsx(styles['tg-weekly-activity-rankings-wrap'])}>
+      <BackCom
+        theme="dark"
+        title="Weekly Leaderboard"
+        className="w-full"
+        tips={{
+          show: true,
+          link: '/tg-weekly-activity-rules',
+        }}
+      />
 
-        {rankConfig?.banner ? (
-          <div className={clsx('flex w-full h-auto mt-[8px] overflow-hidden mb-[24px]')}>
-            <SkeletonImage
-              img={isLG ? rankConfig.banner.mobile : rankConfig.banner.pc}
-              className={clsx('w-full h-full')}
-              imageClassName="!rounded-none"
-            />
-          </div>
-        ) : null}
+      <CommonTabs
+        options={tabsType}
+        activeKey={`${tabTypeValue}`}
+        onTabsChange={(value) =>
+          onTabsChange({
+            type: Number(value) as TgWeeklyActivityRankType,
+            time: tabTimeValue,
+          })
+        }
+        theme="dark"
+        className={clsx('my-[16px] w-full', styles['rankings-type'])}
+      />
 
+      <div className="flex w-full justify-center items-center">
         <CommonSegmented
-          options={tab}
-          value={tabValue}
-          onSegmentedChange={(value) => {
-            router.replace(`/cats-leader-board?tab=${value}`);
-          }}
-          className="w-full lg:w-[310px]"
+          options={tabsTime}
+          value={tabTimeValue}
+          onSegmentedChange={(value) =>
+            onTabsChange({
+              type: tabTypeValue,
+              time: value as TgWeeklyActivityRankTime,
+            })
+          }
+          theme="dark"
+          className="!w-[240px]"
         />
-
-        {rankConfig?.[tabValue].description ? (
-          <div className="mt-[16px]">{renderDescription(rankConfig[tabValue].description)}</div>
-        ) : null}
-        {rankConfig?.[tabValue].header?.length || rankConfig?.[tabValue].server ? (
-          <div className="mt-[16px]">
-            <CustomTable header={rankConfig[tabValue].header} dataSource={dataSource} loading={loading} />
-          </div>
-        ) : null}
       </div>
+
+      <div className="mt-[16px]">
+        {dataSource?.map((item, index) => {
+          return (
+            <RankList key={index} index={`${index + 1}`} value={item} type={tabTimeValue} pointsTitle={pointsTitle} />
+          );
+        })}
+      </div>
+
+      {!dataSource.length && !visible ? <TableEmpty theme="dark" description="No data yet." /> : null}
+
+      {myData && wallet.address && dataSource.length ? (
+        <div className="fixed bottom-0 left-0 w-full px-[16px] bg-pixelsCardBg">
+          <RankList
+            theme="blue"
+            index={myData?.rank ? `${myData?.rank}` : '> 20'}
+            value={myData}
+            type={tabTimeValue}
+            pointsTitle={pointsTitle}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

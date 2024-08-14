@@ -353,3 +353,24 @@ interface INftSaleInfoParams {
   id: string;
   excludedAddress?: string;
 }
+
+interface IActivityBotRankParams {
+  tab: number; // 1:adopt 2:trade 3:invite
+  address: string;
+  isCurrent: boolean;
+}
+
+interface IActivityBotRankDataItem {
+  address: string;
+  scores: string;
+  reward: string;
+  updateTime?: string;
+  rank?: number;
+}
+
+interface IActivityBotRankData {
+  data: IActivityBotRankDataItem[];
+  myScore: number;
+  myReward: number;
+  myRank: number;
+}

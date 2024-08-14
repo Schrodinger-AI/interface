@@ -5,11 +5,13 @@ import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
+import { useCmsInfo } from 'redux/hooks';
 
 export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
   const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
     onSgrBalanceChange,
   });
+  const cmsInfo = useCmsInfo();
 
   return (
     <>
@@ -18,12 +20,13 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
           <span className="font-medium">Balance:</span>
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
-        {/* <Link href="/tg-weekly-activity-rankings"> */}
-        <Link href="">
-          <div className="px-[8px]">
-            <TrophiesSVG className="w-[24px] h-[24px]" />
-          </div>
-        </Link>
+        {cmsInfo?.weeklyActivityRankingsEntrance ? (
+          <Link href="/tg-weekly-activity-rankings">
+            <div className="px-[8px]">
+              <TrophiesSVG className="w-[24px] h-[24px]" />
+            </div>
+          </Link>
+        ) : null}
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">
         {balanceData.map((item, index) => {
