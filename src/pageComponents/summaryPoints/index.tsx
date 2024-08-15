@@ -4,6 +4,8 @@ import styles from './style.module.css';
 import useGetPointsData from 'pageComponents/points/hooks/useGetPointsData';
 import TokenEarnCard from 'pageComponents/points/components/TokenEarnCard';
 import { useCmsInfo } from 'redux/hooks';
+import { formatNumber, formatTokenPrice } from 'utils/format';
+import BigNumber from 'bignumber.js';
 
 export default function SummaryPoints() {
   const { data } = useGetPointsData();
@@ -18,7 +20,21 @@ export default function SummaryPoints() {
           <div className={clsx(styles['card-title'])}>My Points</div>
           <div className="flex gap-[16px]">
             <div className={clsx(styles['summary-card'])}>
-              <span className={clsx(styles['summary-value'])}>{data?.totalReward || '--'}</span>
+              <span className={clsx(styles['summary-value'])}>
+                {data?.totalScore
+                  ? formatNumber(
+                      BigNumber(data?.totalScore)
+                        .dividedBy(10 ** 8)
+                        .toNumber(),
+                    )
+                  : '--'}
+              </span>
+              <span className={clsx(styles['summary-title'])}>Total Points</span>
+            </div>
+            <div className={clsx(styles['summary-card'])}>
+              <span className={clsx(styles['summary-value'])}>
+                {data?.totalReward ? formatTokenPrice(data.totalReward) : '--'}
+              </span>
               <span className={clsx(styles['summary-title'])}>Estimated $SGR Reward</span>
             </div>
           </div>

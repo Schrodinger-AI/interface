@@ -3,7 +3,7 @@ import { useWalletService } from './useWallet';
 import { SignatureParams, useWebLogin, WalletType } from 'aelf-web-login';
 import { did } from '@portkey/did-ui-react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { ETransferConfig, etransferCore } from '@etransfer/ui-react';
+import { ETransferConfig, etransferCore, getETransferReCaptcha } from '@etransfer/ui-react';
 import { AuthTokenSource, PortkeyVersion } from '@etransfer/types';
 import { getCaInfo } from 'utils/getCaInfo';
 import { getETransferJWT, recoverPubKeyBySignature } from '@etransfer/utils';
@@ -127,12 +127,12 @@ export function useETransferAuthToken() {
     try {
       const managerAddress = wallet.address;
       let authToken;
-      const jwtData = await getETransferJWT(asyncStorage, `nightelf${managerAddress}`);
+      const jwtData = await getETransferJWT(asyncStorage, `nightElf${managerAddress}`);
       if (jwtData) {
         authToken = `${jwtData.token_type} ${jwtData.access_token}`;
       } else {
         const { pubkey, signature, plainText } = await getUserInfo({ managerAddress });
-        const recaptchaToken = await etransferCore.getReCaptcha(wallet.address);
+        const reCaptchaToken = await getETransferReCaptcha(wallet.address);
         const params = {
           pubkey,
           signature,
@@ -140,7 +140,7 @@ export function useETransferAuthToken() {
           managerAddress: wallet.address,
           version: PortkeyVersion.v2,
           source: AuthTokenSource.NightElf,
-          recaptchaToken: recaptchaToken,
+          recaptchaToken: reCaptchaToken,
         };
         authToken = await etransferCore.getAuthToken(params);
       }
