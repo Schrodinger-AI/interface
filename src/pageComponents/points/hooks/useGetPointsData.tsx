@@ -4,14 +4,16 @@ import { getDomain } from 'utils';
 import { getPoints } from 'api/request';
 import { useRequest } from 'ahooks';
 import { useWalletService } from 'hooks/useWallet';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 
 export default function useGetPointsData() {
   const { showLoading, closeLoading } = useLoading();
   const { wallet } = useWalletService();
+  const { isLogin } = useGetLoginStatus();
 
   const getPointsData = useCallback(
     async (address: string, callback?: (response: IGetPointsData) => void) => {
-      if (!address) return;
+      if (!address || !isLogin) return;
       showLoading();
       const response = await getPoints({
         domain: getDomain(),
@@ -21,12 +23,12 @@ export default function useGetPointsData() {
       closeLoading();
       return response;
     },
-    [closeLoading, showLoading],
+    [closeLoading, isLogin, showLoading],
   );
 
   const { data, loading } = useRequest(() => getPointsData(wallet.address), {
     pollingInterval: 1000 * 60,
-    refreshDeps: [wallet.address],
+    refreshDeps: [wallet.address, isLogin],
     onError: (err) => {
       console.error('getPointsDataError', err);
     },
