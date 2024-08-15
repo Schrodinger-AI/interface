@@ -44,7 +44,7 @@ function EventsTable({
         setHeader(header);
         setDataSource(data);
 
-        if (address) {
+        if (address && data) {
           let currentShowValue = '-';
           if (params.isCurrent) {
             currentShowValue = myScore ? formatTokenPrice(myScore) : '-';

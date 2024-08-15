@@ -69,13 +69,18 @@ export default function TgWeeklyActivityRankings() {
           isCurrent: tabTimeValue === TgWeeklyActivityRankTime.lastWeek ? false : true,
         });
 
-        setDataSource(data);
-        setMyData({
-          address: wallet.address,
-          scores: myScore ? String(myScore) : '',
-          reward: myReward ? String(myReward) : '',
-          rank: myRank,
-        });
+        setDataSource(data || []);
+
+        if (data) {
+          setMyData({
+            address: wallet.address,
+            scores: myScore ? String(myScore) : '',
+            reward: myReward ? String(myReward) : '',
+            rank: myRank,
+          });
+        } else {
+          setMyData(undefined);
+        }
       } finally {
         closeLoading();
       }
