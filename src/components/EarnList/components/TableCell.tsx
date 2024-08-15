@@ -14,9 +14,13 @@ function TableCell({
   theme?: TModalTheme;
 }) {
   return (
-    <div className={clsx('inline-block text-sm font-medium', theme ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+    <div
+      className={clsx(
+        'inline-block text-sm font-medium',
+        theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary',
+      )}>
       {typeof value === 'string' ? (
-        <span className={clsx('text-sm font-medium', theme ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+        <span className={clsx('text-sm font-medium', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
           {value}
         </span>
       ) : (

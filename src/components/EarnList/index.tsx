@@ -75,6 +75,7 @@ export function TokenEarnList({
           if (record.action === 'SelfIncrease') {
             return (
               <TableCell
+                theme={theme}
                 value={
                   record.amount ? (
                     <>
@@ -90,6 +91,7 @@ export function TokenEarnList({
           }
           return (
             <TableCell
+              theme={theme}
               value={
                 amount
                   ? `${formatTokenPrice(
@@ -115,7 +117,7 @@ export function TokenEarnList({
         key: 'ecoEarnReward',
         width: isLG ? 300 : 'max-content',
         render: (ecoEarnReward: string) => {
-          return <TableCell value={ecoEarnReward || '--'} />;
+          return <TableCell theme={theme} value={ecoEarnReward || '--'} />;
         },
       },
       {
