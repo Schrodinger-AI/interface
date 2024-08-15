@@ -1,7 +1,7 @@
 export enum TgWeeklyActivityRankType {
-  'ADOPT',
-  'TRADE',
-  'INVITE',
+  'ADOPT' = 1,
+  'TRADE' = 2,
+  'INVITE' = 3,
 }
 
 export enum TgWeeklyActivityRankTime {

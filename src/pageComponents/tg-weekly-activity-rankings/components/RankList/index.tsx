@@ -4,8 +4,9 @@ import { ReactComponent as RankThreeIcon } from 'assets/img/telegram/rank/rank_3
 import clsx from 'clsx';
 import CommonCopy from 'components/CommonCopy';
 import { TgWeeklyActivityRankTime } from 'pageComponents/tg-weekly-activity-rankings/types/type';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
+import { formatTokenPrice } from 'utils/format';
 
 const rankIcon: Record<string, ReactNode> = {
   1: <RankOneIcon />,
@@ -26,6 +27,14 @@ export default function RankList({
   type: TgWeeklyActivityRankTime;
   pointsTitle?: string;
 }) {
+  const currentShowValue = useMemo(() => {
+    if (type === TgWeeklyActivityRankTime.thisWeek) {
+      return value.scores ? formatTokenPrice(value.scores) : '-';
+    } else {
+      return value.reward ? `${value.reward} SGR` : '-';
+    }
+  }, [type, value.reward, value.scores]);
+
   return (
     <div className="border-0 border-b border-solid border-pixelsBorder py-[16px] flex justify-between items-center">
       <div className="w-[160px]">
@@ -35,13 +44,7 @@ export default function RankList({
         </CommonCopy>
       </div>
       <div className="flex-1 flex flex-col justify-center items-end">
-        <span className="text-pixelsWhiteBg text-sm font-semibold">
-          {type === TgWeeklyActivityRankTime.thisWeek
-            ? value.scores || '-'
-            : value.reward
-            ? `${value.reward} SGR`
-            : '-'}
-        </span>
+        <span className="text-pixelsWhiteBg text-sm font-semibold">{currentShowValue}</span>
         {pointsTitle ? (
           <span className={clsx('text-xs mt-[4px]', theme === 'blue' ? 'text-pixelsDivider' : 'text-pixelsBorder')}>
             {pointsTitle}
