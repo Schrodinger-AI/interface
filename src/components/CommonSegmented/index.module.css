@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .common-segmented {
   :global {
     .aelfd-segmented {
@@ -22,4 +23,39 @@
       }
     }
   }
+}
+
+.common-segmented-dark {
+  :global {
+    .aelfd-segmented {
+      @apply bg-pixelsPageBg rounded-none tg-card-shadow p-0;
+
+      .aelfd-segmented-group {
+        @apply gap-0;
+      }
+  
+      .aelfd-segmented-item {
+        @apply rounded-none border border-solid border-pixelsBorder;
+
+        &:hover:not(.aelfd-segmented-item-selected, .aelfd-segmented-item-disabled) {
+          @apply bg-pixelsPageBg;
+          &::after {
+            @apply bg-pixelsPageBg;
+          }
+        }
+      }
+  
+      .aelfd-segmented-item-label {
+        @apply text-pixelsWhiteBg font-medium;
+      }
+  
+      .aelfd-segmented-item-selected {
+        .aelfd-segmented-item-label {
+          @apply text-pixelsWhiteBg border border-dashed border-pixelsDashPurple bg-pixelsCardBg;
+        }
+      }
+    }
+
+  }
+  
 }

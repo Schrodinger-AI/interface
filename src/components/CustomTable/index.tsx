@@ -1,24 +1,31 @@
 import React, { useCallback, useMemo } from 'react';
 import styles from './style.module.css';
 import clsx from 'clsx';
-import { Table, ToolTip } from 'aelf-design';
+import { ToolTip } from 'aelf-design';
 import Loading from 'components/Loading';
 import { TableColumnsType } from 'antd';
 import CommonCopy from 'components/CommonCopy';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
+import { ReactComponent as MeBlueIcon } from 'assets/img/me-blue.svg';
 import { useResponsive } from 'hooks/useResponsive';
 import { formatTokenPrice } from 'utils/format';
 import { IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
+import CommonTable from 'components/CommonTable';
 
-interface IProps {
+export interface ICustomTableProps {
   loading?: boolean;
   dataSource?: IEventsDetailListTable['data'];
   header?: IEventsDetailListTable['header'];
+  myData?: {
+    rank: string;
+    value: string;
+    address: string;
+  };
 }
 
-const renderCell = (value: string) => {
-  return <span className="text-neutralTitle font-medium text-sm">{value}</span>;
+const renderCell = (value: string, addressClassName?: string) => {
+  return <span className={clsx('text-neutralTitle font-medium text-sm', addressClassName)}>{value}</span>;
 };
 
 const renderTitle = (value: string, tooltip?: string[]) => {
@@ -43,18 +50,18 @@ const renderTitle = (value: string, tooltip?: string[]) => {
   );
 };
 
-function CustomTable({ loading = false, dataSource = [], header = [] }: IProps) {
+function CustomTable({ loading = false, dataSource = [], header = [], myData }: ICustomTableProps) {
   const { isLG } = useResponsive();
 
   const renderAddress = useCallback(
-    (address: string) => {
+    (address: string, addressClassName?: string) => {
       return (
         <CommonCopy toCopy={addPrefixSuffix(address)}>
           {isLG ? (
-            renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))
+            renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS), addressClassName)
           ) : (
             <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
-              {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS))}
+              {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS), addressClassName)}
             </ToolTip>
           )}
         </CommonCopy>
@@ -97,15 +104,29 @@ function CustomTable({ loading = false, dataSource = [], header = [] }: IProps) 
           <Loading />
         </div>
       ) : (
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          pagination={null}
-          loading={loading}
-          scroll={{
-            x: 'max-content',
-          }}
-        />
+        <>
+          <CommonTable
+            dataSource={dataSource}
+            columns={columns}
+            pagination={null}
+            loading={loading}
+            scroll={{
+              x: 'max-content',
+            }}
+          />
+          {myData ? (
+            <div className="w-full h-[88px] flex flex-col justify-center bg-brandBg rounded-lg px-[16px]">
+              <span className="flex text-base text-neutralTitle font-semibold ">
+                <MeBlueIcon className="mr-[8px]" />
+                {myData.rank}
+              </span>
+              <div className="flex justify-between items-center text-base text-neutralTitle font-semibold mt-[8px]">
+                {renderAddress(myData.address, '!text-base !font-medium !text-neutralPrimary')}
+                <span>{myData.value}</span>
+              </div>
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );

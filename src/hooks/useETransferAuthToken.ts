@@ -11,6 +11,7 @@ import { getETransferJWT, recoverPubKeyBySignature } from '@etransfer/utils';
 import useDiscoverProvider from './useDiscoverProvider';
 import { asyncStorage } from 'utils/lib';
 import AElf from 'aelf-sdk';
+import { appName } from 'constants/common';
 
 export function useETransferAuthToken() {
   const { wallet, walletType } = useWalletService();
@@ -96,7 +97,7 @@ export function useETransferAuthToken() {
       address = wallet.address || '';
     }
     const result = await getSignature({
-      appName: 'Hamster Woods',
+      appName: appName,
       address,
       signInfo,
     });
@@ -126,7 +127,7 @@ export function useETransferAuthToken() {
     try {
       const managerAddress = wallet.address;
       let authToken;
-      const jwtData = await getETransferJWT(asyncStorage, `nightelf${managerAddress}`);
+      const jwtData = await getETransferJWT(asyncStorage, `nightElf${managerAddress}`);
       if (jwtData) {
         authToken = `${jwtData.token_type} ${jwtData.access_token}`;
       } else {

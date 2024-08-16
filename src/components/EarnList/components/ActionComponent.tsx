@@ -12,6 +12,18 @@ import React from 'react';
 import { openExternalLink } from 'utils/openlink';
 import { OmittedType, getOmittedStr } from 'utils/addressFormatting';
 import CommonCopy from 'components/CommonCopy';
+import { TCustomizationItemType, TGlobalConfigType } from 'redux/types/reducerTypes';
+import useTelegram from 'hooks/useTelegram';
+
+export const jumpToEcoEarn = (params?: {
+  isInTG?: boolean;
+  cmsInfo?: (TCustomizationItemType & TGlobalConfigType) | undefined;
+}) => {
+  const { cmsInfo, isInTG = false } = params || {};
+  const link = (isInTG ? cmsInfo?.ecoEarnTg : cmsInfo?.ecoEarn) || cmsInfo?.gitbookEcoEarn;
+  if (!link) return;
+  openExternalLink(link, '_blank');
+};
 
 function ActionComponent({
   data,
@@ -32,6 +44,7 @@ function ActionComponent({
   const [bindLoading, setBindLoading] = useState<boolean>(false);
   const cmsInfo = useCmsInfo();
   const { isLG } = useResponsive();
+  const { isInTG } = useTelegram();
 
   const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();
@@ -42,12 +55,6 @@ function ActionComponent({
     setConnected(account.isConnected);
     setEvmAddress(account.address || '');
   }, [account]);
-
-  const jumpToEcoEarn = () => {
-    const link = cmsInfo?.ecoEarn || cmsInfo?.gitbookEcoEarn;
-    if (!link) return;
-    openExternalLink(link, '_blank');
-  };
 
   const sign = useCallback(async () => {
     try {
@@ -120,7 +127,14 @@ function ActionComponent({
           </ToolTip>
         </CommonCopy>
       ) : null}
-      <div className="w-max flex items-center cursor-pointer" onClick={jumpToEcoEarn}>
+      <div
+        className="w-max flex items-center cursor-pointer"
+        onClick={() =>
+          jumpToEcoEarn({
+            cmsInfo,
+            isInTG,
+          })
+        }>
         <span className="text-xs font-medium text-brandDefault">Details</span>
         <ArrowIcon className="fill-brandDefault scale-75 ml-[8px]" />
       </div>

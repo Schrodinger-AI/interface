@@ -216,3 +216,7 @@ export const fetchNftSalesInfo = async (params: INftSaleInfoParams) => {
     baseURL: `${forestUrl}/api/`,
   });
 };
+
+export const fetchActivityBotRank = async (data: IActivityBotRankParams): Promise<IActivityBotRankData> => {
+  return request.post('/app/activity/bot-rank', data);
+};
