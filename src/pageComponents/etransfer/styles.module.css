@@ -160,5 +160,71 @@
         }
       }
     }
+
+    
+
+    .etransfer-ui-deposit-detail-for-mobile {
+
+      .etransfer-ui-flex-row-center.etransfer-ui-deposit-tip {
+        @apply rounded-none bg-pixelsModalBg border-pixelsPageBg;
+  
+        .text {
+          @apply text-pixelsBorder;
+  
+          .token {
+            @apply text-pixelsDivider;
+          }
+        }
+      }
+
+      .deposit-address {
+        @apply rounded-none border-pixelsBorder bg-pixelsModalBg;
+        
+        .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
+          .address-text-title {
+            @apply text-pixelsBorder;
+          }
+          .etransfer-ui-flex-row-center {
+            .address-text-content {
+              @apply text-pixelsTertiaryTextPurple;
+            }
+            
+          }
+        }
+      }
+
+      .etransfer-ui-deposit-info {
+        .info-line {
+          .info-title {
+            @apply text-pixelsBorder;
+          }
+          .info-value {
+            @apply text-pixelsWhiteBg;
+          }
+          .info-exhibit {
+            @apply text-pixelsBorder;
+          }
+          .etransfer-ui-text-underline-none {
+            @apply text-pixelsWhiteBg;
+          }
+          .question-mark-icon {
+            .questionmark-icon {
+              svg path {
+                @apply stroke-pixelsWhiteBg;
+              }
+            }
+          }
+        }
+      }
+      .etransfer-ui-description-wrapper {
+        @apply bg-pixelsModalBg rounded-none;
+        >p {
+          @apply text-pixelsBorder;
+        }
+      }
+
+    }
+
+    
   }
 }
