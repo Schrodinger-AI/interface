@@ -16,3 +16,14 @@
     }
   }
 }
+
+.earn-list-dark {
+  :global {
+    .aelfd-table-thead {
+      @apply bg-pixelsPageBg;
+    }
+  }
+}
+
+
+

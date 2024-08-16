@@ -1,11 +1,31 @@
 import React, { ReactElement } from 'react';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
 import { ToolTip } from 'aelf-design';
+import clsx from 'clsx';
+import { TModalTheme } from 'components/CommonModal';
 
-function TableCell({ value, tooltip }: { value: string | ReactElement; tooltip?: string[] }) {
+function TableCell({
+  value,
+  tooltip,
+  theme = 'light',
+}: {
+  value: string | ReactElement;
+  tooltip?: string[];
+  theme?: TModalTheme;
+}) {
   return (
-    <div className="inline-block text-sm text-neutralPrimary font-medium">
-      {typeof value === 'string' ? <span className="text-sm text-neutralPrimary font-medium">{value}</span> : value}
+    <div
+      className={clsx(
+        'inline-block text-sm font-medium',
+        theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary',
+      )}>
+      {typeof value === 'string' ? (
+        <span className={clsx('text-sm font-medium', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+          {value}
+        </span>
+      ) : (
+        value
+      )}
       {tooltip && tooltip.length ? (
         <ToolTip
           title={

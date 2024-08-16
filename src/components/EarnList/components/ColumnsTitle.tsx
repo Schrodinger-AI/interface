@@ -1,8 +1,10 @@
 import React from 'react';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
 import { ToolTip } from 'aelf-design';
+import { TModalTheme } from 'components/CommonModal';
+import clsx from 'clsx';
 
-function ColumnsTitle({ title, tooltip }: { title: string; tooltip?: string[] }) {
+function ColumnsTitle({ title, tooltip, theme = 'light' }: { title: string; tooltip?: string[]; theme?: TModalTheme }) {
   return (
     <div className="flex items-center">
       {tooltip && tooltip.length ? (
@@ -19,7 +21,9 @@ function ColumnsTitle({ title, tooltip }: { title: string; tooltip?: string[] })
         </ToolTip>
       ) : null}
 
-      <span className="text-sm text-neutralDisable font-medium">{title}</span>
+      <span className={clsx('text-sm font-medium', theme === 'dark' ? 'text-pixelsBorder' : 'text-neutralDisable')}>
+        {title}
+      </span>
     </div>
   );
 }

@@ -195,6 +195,22 @@
     .etransfer-ui-global-loading-modal-text {
       @apply text-pixelsWhiteBg;
     }
+
+    .etransfer-ant-modal-body {
+      .etransfer-ui-view-contract-address-modal-body {
+        .view-contract-address-modal-title {
+          @apply text-pixelsBorder;
+        }
+        .view-contract-address-modal-contract {
+          @apply text-pixelsTertiaryTextPurple;
+        }
+      }
+      .etransfer-ui-footer.etransfer-ui-common-modal-tips-footer.etransfer-ui-view-contract-address-modal-footer {
+        > button {
+          @apply !primary-button-dark;
+        } 
+      }
+    }
   }
   
 }

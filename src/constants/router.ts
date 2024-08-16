@@ -11,7 +11,7 @@ export const NEED_LOGIN_PAGE = [
   '/?pageState=1',
 ];
 
-export const TG_NEED_LOGIN_PAGE = ['/points', '/stray-cats', '/assets', '/referral', '/my-cats', '/?pageState=1'];
+export const TG_NEED_LOGIN_PAGE = ['/stray-cats', '/assets', '/referral', '/my-cats', '/?pageState=1'];
 
 export const NOT_NEED_AUTO_JOIN_PAGE = ['/invitee'];
 

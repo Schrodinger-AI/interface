@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatTokenPrice } from 'utils/format';
+import { formatNumber } from 'utils/format';
 import BigNumber from 'bignumber.js';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
@@ -44,5 +44,11 @@ export function EarnAmountCount(props: IEarnAmountCountProps) {
     cancel();
   });
 
-  return <>{formatTokenPrice(count)}</>;
+  return (
+    <>
+      {formatNumber(count, {
+        minFormat: 1000,
+      })}
+    </>
+  );
 }
