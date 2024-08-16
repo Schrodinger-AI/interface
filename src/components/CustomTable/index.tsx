@@ -7,6 +7,7 @@ import { TableColumnsType } from 'antd';
 import CommonCopy from 'components/CommonCopy';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
+import { ReactComponent as MeBlueIcon } from 'assets/img/me-blue.svg';
 import { useResponsive } from 'hooks/useResponsive';
 import { formatTokenPrice } from 'utils/format';
 import { IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
@@ -115,11 +116,14 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData }: 
           />
           {myData ? (
             <div className="w-full h-[88px] flex flex-col justify-center bg-brandBg rounded-lg px-[16px]">
+              <span className="flex text-base text-neutralTitle font-semibold ">
+                <MeBlueIcon className="mr-[8px]" />
+                {myData.rank}
+              </span>
               <div className="flex justify-between items-center text-base text-neutralTitle font-semibold">
-                <span>{myData.rank}</span>
+                {renderAddress(myData.address, '!text-base !font-medium !text-neutralPrimary')}
                 <span>{myData.value}</span>
               </div>
-              {renderAddress(myData.address, '!text-base !font-medium !text-neutralPrimary')}
             </div>
           ) : null}
         </>

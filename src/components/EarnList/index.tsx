@@ -1,4 +1,4 @@
-import { formatTokenPrice } from 'utils/format';
+import { formatNumber } from 'utils/format';
 import { EarnAmountCount } from './components/EarnAmountCount';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
@@ -94,7 +94,7 @@ export function TokenEarnList({
               theme={theme}
               value={
                 amount
-                  ? `${formatTokenPrice(
+                  ? `${formatNumber(
                       BigNumber(amount)
                         .dividedBy(10 ** 8)
                         .toNumber(),

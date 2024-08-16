@@ -1610,47 +1610,47 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
-"@etransfer/core@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.2.1-alpha.3.tgz#f76c4137a140cee76c05bd4c460685c715143ec0"
-  integrity sha512-ZIcsNu4F3VsidHlOWemqcrHz3r9O06CNnYJ0TS4e30hEp0RUUdIjuaDxnH2y+3+AwaFfQXhduc1X7TJyTd/Axw==
+"@etransfer/core@^1.2.1-alpha.5", "@etransfer/core@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/core/-/core-1.3.0.tgz#98e98f3999c9946dc71dd6430450036c0f17a398"
+  integrity sha512-x96seNkzN9Hilx81+UJmDvCjHopxlPTeNCVa7q4SXzNnzfYF7Pi+q47FLX44Hs3UlBBJsubwZijwDUqyMcU5WQ==
   dependencies:
-    "@etransfer/services" "^1.2.1-alpha.3"
-    "@etransfer/types" "^1.2.1-alpha.3"
-    "@etransfer/utils" "^1.2.1-alpha.3"
+    "@etransfer/services" "^1.3.0"
+    "@etransfer/types" "^1.3.0"
+    "@etransfer/utils" "^1.3.0"
 
-"@etransfer/request@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.2.1-alpha.3.tgz#d951b37f48e320d2c504f41776acf72f14924c9a"
-  integrity sha512-grW55/FYF+N1QLtVdbzjIRBb/zFQG9e//GCBUUH3E6+Qpom52F/TDY+b9U0lSTARXcrrW9waAqUXzNhkW6vlvQ==
+"@etransfer/request@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/request/-/request-1.3.0.tgz#0a804e403b52ce514dca0a22d4931c88f62935eb"
+  integrity sha512-hzAnTTbpzLuZYAWjHFdvkJOEAMOaiJ/pf5vQGIpA4FC2LhRNTXoVLU7sQYSup6LyYby5e0yhosrkepLJLtQskw==
   dependencies:
-    "@etransfer/types" "^1.2.1-alpha.3"
-    "@etransfer/utils" "^1.2.1-alpha.3"
+    "@etransfer/types" "^1.3.0"
+    "@etransfer/utils" "^1.3.0"
     axios "^0.24.0"
 
-"@etransfer/services@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/services/-/services-1.2.1-alpha.3.tgz#2ea8fd5620c710ee3226d619686c6193369b1b39"
-  integrity sha512-S1SsSGtVRTpWVqnMM8nNSkxWpe51JTzC/nvLLuKhDm7KYVAhfCATe5HlICB5R1Hubmtkcm6V47TtdvdyGqbE2Q==
+"@etransfer/services@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/services/-/services-1.3.0.tgz#c5dba51a0f452f3cf589e20c09fb7ccdff7f9be6"
+  integrity sha512-0wn8teOKfJfNQUPqk8y5LlyvDVmxbujE6hsomNE3zXcY2OsSCj6KJrMa65vYbd7xT/dYJVVbwGpuRbC/Frmb5Q==
   dependencies:
-    "@etransfer/request" "^1.2.1-alpha.3"
-    "@etransfer/types" "^1.2.1-alpha.3"
-    "@etransfer/utils" "^1.2.1-alpha.3"
+    "@etransfer/request" "^1.3.0"
+    "@etransfer/types" "^1.3.0"
+    "@etransfer/utils" "^1.3.0"
     "@portkey/types" "2.6.6"
 
-"@etransfer/types@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.2.1-alpha.3.tgz#f87626406babc0805759c42bef91d6585a195154"
-  integrity sha512-IaOsNHjwyo2gAdTS/EzVmD0LS6f9ntty0Ldvbd0oqkHrNdVl2DcpuNOP/4Kw2LEx5ihoF3P/URoqGux8rQk2rQ==
+"@etransfer/types@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/types/-/types-1.3.0.tgz#abb9757f3664e9d26fd585e1063dd70354741d83"
+  integrity sha512-/1VwRrJkI6xzHx8F7DoVXlAX4f8U3xbVdRfv99Tk1VGdSwHmGkGgNGuOqby5zBWqVn4k7HPYAb+VXq6y1dxcsA==
 
-"@etransfer/ui-react@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/ui-react/-/ui-react-1.2.1-alpha.3.tgz#1bf55eb4a6c567bfc07cb6152e9ae876fe70597e"
-  integrity sha512-uMoZrQYUClHKdSeASRhUFHHXJOVrkdcoFV+EEaczF8IKFf6GcILLJ3aTMf9TAQ889zlXXtMjxZjvMUKGiyJquw==
+"@etransfer/ui-react@^1.2.1-alpha.5":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/ui-react/-/ui-react-1.3.0.tgz#b86dd58c4a07e120bb325aade36a561a72408560"
+  integrity sha512-MKvzEiLlVY8BtCkU4TNHONyYUPuCI8ieltpSrxreaqE3stwkw8q0ggPsIBlNc+qkM6RldHedWxVRBMboMgeBzQ==
   dependencies:
-    "@etransfer/core" "^1.2.1-alpha.3"
-    "@etransfer/types" "^1.2.1-alpha.3"
-    "@etransfer/utils" "^1.2.1-alpha.3"
+    "@etransfer/core" "^1.3.0"
+    "@etransfer/types" "^1.3.0"
+    "@etransfer/utils" "^1.3.0"
     "@portkey/types" "2.6.6"
     "@portkey/utils" "2.6.6"
     antd "4.24.14"
@@ -1663,13 +1663,13 @@
     react-use "^17.4.0"
     uuid "^8.3.2"
 
-"@etransfer/utils@^1.2.1-alpha.3":
-  version "1.2.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/@etransfer/utils/-/utils-1.2.1-alpha.3.tgz#3c423b523dd0b63516b0fd43182e6f492f612809"
-  integrity sha512-T/rXrYC/suOfCD2Gu3jE2OAGvFSwz80+SFFXGQpyvkyYvnhVaTzVUNs68CmyW5q/QuaNImICQaZ/+27h/cUupQ==
+"@etransfer/utils@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@etransfer/utils/-/utils-1.3.0.tgz#169d355d5ebc3e6ddf00e93c67cf9609a4ce87e7"
+  integrity sha512-9I7FhCD40g9L0+cFPXT9SoV7yW9hj1CDmMmAGWtQmcljcj5MRDjv9N2yqESD6kz0ihjp/szEscIr2rrFE3OAWA==
   dependencies:
-    "@etransfer/services" "^1.2.1-alpha.3"
-    "@etransfer/types" "^1.2.1-alpha.3"
+    "@etransfer/services" "^1.3.0"
+    "@etransfer/types" "^1.3.0"
 
 "@firebase/analytics-compat@0.2.6":
   version "0.2.6"

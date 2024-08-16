@@ -166,6 +166,7 @@ export default function TgWeeklyActivityRankings() {
             value={myData}
             type={tabTimeValue}
             pointsTitle={pointsTitle}
+            isMine={true}
           />
         </div>
       ) : null}

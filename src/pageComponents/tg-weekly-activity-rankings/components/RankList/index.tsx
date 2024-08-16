@@ -1,6 +1,7 @@
 import { ReactComponent as RankOneIcon } from 'assets/img/telegram/rank/rank_1.svg';
 import { ReactComponent as RankTwoIcon } from 'assets/img/telegram/rank/rank_2.svg';
 import { ReactComponent as RankThreeIcon } from 'assets/img/telegram/rank/rank_3.svg';
+import { ReactComponent as MePurpleIcon } from 'assets/img/me-purple.svg';
 import clsx from 'clsx';
 import CommonCopy from 'components/CommonCopy';
 import { TgWeeklyActivityRankTime } from 'pageComponents/tg-weekly-activity-rankings/types/type';
@@ -20,12 +21,14 @@ export default function RankList({
   value,
   type,
   pointsTitle,
+  isMine = false,
 }: {
   theme?: 'blue' | 'default';
   index: string;
   value: IActivityBotRankDataItem;
   type: TgWeeklyActivityRankTime;
   pointsTitle?: string;
+  isMine?: boolean;
 }) {
   const currentShowValue = useMemo(() => {
     if (type === TgWeeklyActivityRankTime.thisWeek) {
@@ -38,7 +41,14 @@ export default function RankList({
   return (
     <div className="border-0 border-b border-solid border-pixelsBorder py-[16px] flex justify-between items-center">
       <div className="w-[160px]">
-        <div className="text-pixelsWhiteBg flex items-center">{rankIcon[`${index}`] || index}</div>
+        <div className="text-pixelsWhiteBg flex items-center">
+          {rankIcon[`${index}`] || (
+            <div className="flex items-center">
+              {isMine ? <MePurpleIcon className="mr-[8px]" /> : null}
+              {index}
+            </div>
+          )}
+        </div>
         <CommonCopy toCopy={addPrefixSuffix(value.address)} className="mt-[4px] text-pixelsWhiteBg text-xs font-medium">
           {getOmittedStr(addPrefixSuffix(value.address), OmittedType.ADDRESS)}
         </CommonCopy>
