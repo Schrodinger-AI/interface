@@ -44,5 +44,11 @@ export function EarnAmountCount(props: IEarnAmountCountProps) {
     cancel();
   });
 
-  return <>{formatNumber(count)}</>;
+  return (
+    <>
+      {formatNumber(count, {
+        minFormat: 1000,
+      })}
+    </>
+  );
 }

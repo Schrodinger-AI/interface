@@ -98,6 +98,9 @@ export function TokenEarnList({
                       BigNumber(amount)
                         .dividedBy(10 ** 8)
                         .toNumber(),
+                      {
+                        minFormat: 1000,
+                      },
                     )} ${record.symbol}`
                   : '--'
               }

@@ -1,11 +1,12 @@
 import { Flex } from 'antd';
-import { ReactComponent as TrophiesSVG } from 'assets/img/telegram/trophies.svg';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
+import Lottie from 'lottie-react';
+import trophy from 'assets/lottie/trophy.json';
 
 export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
   const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
@@ -23,7 +24,7 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
         {cmsInfo?.weeklyActivityRankingsEntrance ? (
           <Link href="/tg-weekly-activity-rankings">
             <div className="px-[8px]">
-              <TrophiesSVG className="w-[24px] h-[24px]" />
+              <Lottie animationData={trophy} autoPlay={true} loop={true} className="w-[24px] h-[24px]" />
             </div>
           </Link>
         ) : null}
