@@ -158,6 +158,7 @@ export type TGlobalConfigType = {
   }>;
   forestActivity?: string;
   ecoEarn?: string;
+  ecoEarnTg?: string;
   gitbookEcoEarn?: string;
   pixiePoints?: string;
   showNftQuantity?: number;

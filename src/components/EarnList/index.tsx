@@ -131,7 +131,14 @@ export function TokenEarnList({
         fixed: isLG ? 'right' : false,
         render: (_: null, record: IPointItem) => {
           return isInTG ? (
-            <div className="w-max flex items-center cursor-pointer" onClick={() => jumpToEcoEarn(cmsInfo)}>
+            <div
+              className="w-max flex items-center cursor-pointer"
+              onClick={() =>
+                jumpToEcoEarn({
+                  cmsInfo,
+                  isInTG,
+                })
+              }>
               <span
                 className={clsx(
                   'text-xs font-medium',
