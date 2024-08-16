@@ -95,6 +95,7 @@
           @apply !bg-pixelsPageBg;
 
           .ant-spin-container {
+            @apply overflow-hidden;
             .ant-row > div{
               .items-card-wrapper {
                 @apply bg-pixelsPageBg border border-solid !border-pixelsBorder rounded-none;

@@ -1,26 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 import { Flex } from 'antd';
 import { useCmsInfo } from 'redux/hooks';
-import { ReactComponent as ReturnSVG } from 'assets/img/telegram/return.svg';
 import styles from './style.module.css';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 
 export default function RulesPage() {
   const { tgRulesText, twitterUrlInTgRules } = useCmsInfo() || {};
-  const router = useRouter();
-
-  const onBack = useCallback(() => {
-    router.back();
-  }, [router]);
 
   return (
     <section className={clsx('max-w-[2560px] w-full min-h-screen px-4 py-6', styles.rulesPageContainer)}>
-      <Flex align="center" gap={8} className="w-fit cursor-pointer" onClick={onBack}>
-        <ReturnSVG />
-        <span className="text-sm font-normal text-pixelsWhiteBg">Back</span>
-      </Flex>
+      <BackCom className="w-full" theme="dark" />
       <img
         src={require('assets/img/telegram/rules-text.png').default.src}
         alt=""

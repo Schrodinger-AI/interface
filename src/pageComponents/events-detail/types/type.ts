@@ -12,6 +12,9 @@ export interface IEventsDetailListTable {
     fixed?: 'right' | 'left';
     type?: 'address' | 'number' | 'text';
   }[];
+  myRank: number;
+  myReward: number;
+  myScore: number;
 }
 
 export interface IEventsDetailListLink {

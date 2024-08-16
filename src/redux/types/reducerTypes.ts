@@ -158,6 +158,7 @@ export type TGlobalConfigType = {
   }>;
   forestActivity?: string;
   ecoEarn?: string;
+  ecoEarnTg?: string;
   gitbookEcoEarn?: string;
   pixiePoints?: string;
   showNftQuantity?: number;
@@ -174,6 +175,12 @@ export type TGlobalConfigType = {
     title: string;
     content: Array<string> | string;
   }>;
+  tgWeeklyActivityRulesText: Array<{
+    title: string;
+    content: Array<string> | string;
+  }>;
+  weeklyActivityRankingsEntrance?: boolean;
+  hideTgSummaryPoints?: boolean;
   tgCommunityUrl: string;
   twitterUrlInTgRules: string;
   [key: string]: any;

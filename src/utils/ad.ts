@@ -1,5 +1,22 @@
 import { ENVIRONMENT } from 'constants/url';
-export type AdEvent = 'adopt' | 'reroll' | 'connect_wallet' | 'user_click_etransfer_noneSGR';
+export type AdEvent =
+  | 'adopt'
+  | 'reroll'
+  | 'connect_wallet'
+  | 'user_click_etransfer_noneSGR'
+  | 'tg_adopt'
+  | 'tg_connect_wallet'
+  | 'tg_user_click_daily';
+
+export type AdEventTest =
+  | 'adopt_test'
+  | 'reroll_test'
+  | 'connect_wallet_test'
+  | 'user_click_etransfer_noneSGR_test'
+  | 'tg_adopt_test'
+  | 'tg_connect_wallet_test'
+  | 'tg_user_click_daily_test';
+
 import { store } from 'redux/store';
 
 export class AdTracker {

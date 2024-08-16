@@ -25,6 +25,7 @@ import { AdTracker } from 'utils/ad';
 import { renameSymbol } from 'utils/renameSymbol';
 import { TModalTheme } from 'components/CommonModal';
 import CardResultModal from 'components/CardResultModal';
+import useTelegram from './useTelegram';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -37,6 +38,7 @@ export const useResetHandler = () => {
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const { wallet } = useWalletService();
+  const { isInTG } = useTelegram();
 
   const searchParams = useSearchParams();
   const source = searchParams.get('source');
@@ -123,6 +125,14 @@ export const useResetHandler = () => {
     }) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
       const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
+
+      if (status === Status.SUCCESS) {
+        AdTracker.trackEvent('reroll', {
+          generation: parentItemInfo.generation,
+          address: wallet.address,
+          source: isInTG ? 'telegram' : '',
+        });
+      }
 
       cardResultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
@@ -240,9 +250,6 @@ export const useResetHandler = () => {
           ],
           onConfirm: async (amount: string) => {
             resetModal.hide();
-            AdTracker.trackEvent('reroll', {
-              generation: parentItemInfo.generation,
-            });
             try {
               await approveReset({
                 parentItemInfo,

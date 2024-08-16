@@ -41,7 +41,6 @@ export const infoSlice = createSlice({
       state.isMobile = action.payload;
     },
     setItemsFromLocal(state, action) {
-      // console.log('action',action)
       state.itemsFromLocal = action.payload;
     },
     setCmsInfo(state, action) {
