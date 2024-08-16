@@ -120,7 +120,7 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData }: 
                 <MeBlueIcon className="mr-[8px]" />
                 {myData.rank}
               </span>
-              <div className="flex justify-between items-center text-base text-neutralTitle font-semibold">
+              <div className="flex justify-between items-center text-base text-neutralTitle font-semibold mt-[8px]">
                 {renderAddress(myData.address, '!text-base !font-medium !text-neutralPrimary')}
                 <span>{myData.value}</span>
               </div>
