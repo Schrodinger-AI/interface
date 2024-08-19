@@ -216,6 +216,7 @@ const useAdoptHandler = () => {
       rankInfo,
       disableInput = false,
       theme = 'light',
+      prePage,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -223,6 +224,7 @@ const useAdoptHandler = () => {
       rankInfo?: IRankInfo;
       disableInput?: boolean;
       theme?: TModalTheme;
+      prePage?: string;
     }) => {
       try {
         showLoading();
@@ -252,6 +254,7 @@ const useAdoptHandler = () => {
           childrenItemInfo: { adoptId, symbol, outputAmount, inputAmount, tokenName, isDirect, transactionHash },
           account,
           theme,
+          prePage,
         });
       } catch (error) {
         console.log(error, 'error==');
