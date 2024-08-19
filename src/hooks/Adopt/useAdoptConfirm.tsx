@@ -504,7 +504,7 @@ export const useAdoptConfirm = () => {
           },
         });
       }),
-    [cardResultModal, intervalFetch, router, wallet.address],
+    [cardResultModal, intervalFetch, router, source, wallet.address],
   );
 
   const getRankInfo = useCallback(
