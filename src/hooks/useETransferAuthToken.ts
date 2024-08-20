@@ -18,6 +18,7 @@ export function useETransferAuthToken() {
   const { isLogin } = useGetLoginStatus();
   const { discoverProvider } = useDiscoverProvider();
   const { getSignature: getSignatureWeb } = useWebLogin();
+  // const { getSignInfo } = useGetSignature();
 
   const getManagerAddress = useCallback(async () => {
     let managerAddress;

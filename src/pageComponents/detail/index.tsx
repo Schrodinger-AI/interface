@@ -389,7 +389,6 @@ export default function DetailPage() {
         case 'adoptModal':
           return '/telegram/home';
         case 'rerollModal':
-          alert('rerollModal');
           return '/telegram?pageState=1';
         default:
           return undefined;

@@ -3,8 +3,7 @@ import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
 import { message } from 'antd';
 import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
-import useLoading from 'hooks/useLoading';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
@@ -14,6 +13,7 @@ import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import useTelegram from 'hooks/useTelegram';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 const DarkModal = dynamic(
   async () => {
@@ -39,19 +39,19 @@ export default function ETransfer() {
     };
   }, [searchParams]);
 
-  const { showLoading, closeLoading, visible } = useLoading();
+  const [loading, setLoading] = useState(false);
   const { getETransferAuthToken } = useETransferAuthToken();
 
   const getAuthToken = useCallback(async () => {
     try {
-      showLoading();
+      setLoading(true);
       await getETransferAuthToken();
     } catch (error) {
       message.error(error as string);
     } finally {
-      closeLoading();
+      setLoading(false);
     }
-  }, [closeLoading, getETransferAuthToken, showLoading]);
+  }, [getETransferAuthToken]);
 
   useEffect(() => {
     if (!isLogin) return;
@@ -78,7 +78,7 @@ export default function ETransfer() {
     });
   }, [cmsInfo?.curChain, defaultParams]);
 
-  if (visible || !isLogin) return null;
+  if (loading || !isLogin) return null;
 
   return (
     <div
@@ -87,6 +87,7 @@ export default function ETransfer() {
         styles['etransfer-deposit-wrap'],
         isInTG && styles['etransfer-deposit-wrap-dark'],
       )}>
+      <Link href={'/etransfer-history'}>history</Link>
       {isInTG && <DarkModal />}
       {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" theme={isInTG ? 'dark' : 'light'} /> : null}
       <ETransferDepositProvider>

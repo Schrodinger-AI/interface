@@ -6,6 +6,7 @@ import { themeDarkSegmentedConfig, themeSegmentedConfig } from './config';
 import { SegmentedValue } from 'antd/es/segmented';
 import { ListTypeEnum } from 'types';
 import { TModalTheme } from 'components/CommonModal';
+import { useResponsive } from 'hooks/useResponsive';
 
 interface IProps {
   options: SegmentedProps['options'];
@@ -16,11 +17,13 @@ interface IProps {
 }
 
 function CommonSegmented({ onSegmentedChange, value, className, options, theme }: IProps) {
+  const { isLG } = useResponsive();
   return (
     <ConfigProvider theme={theme === 'dark' ? themeDarkSegmentedConfig : themeSegmentedConfig}>
       <div
         className={clsx(
           styles['common-segmented'],
+          isLG && styles['common-segmented-mobile'],
           theme === 'dark' && styles['common-segmented-dark'],
           'h-[48px] w-full',
           className,
