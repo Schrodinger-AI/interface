@@ -52,8 +52,12 @@ export const useWalletInit = () => {
       if (state === WebLoginState.logined) {
         AdTracker.trackEvent('connect_wallet', {
           address: wallet?.address,
-          source: isInTG ? 'telegram' : '',
         });
+        if (isInTG) {
+          AdTracker.trackEvent('tg_connect_wallet', {
+            address: wallet?.address,
+          });
+        }
 
         const walletInfo: WalletInfoType = {
           address: wallet?.address || '',

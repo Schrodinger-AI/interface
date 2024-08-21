@@ -5,6 +5,7 @@ export type AdEvent =
   | 'connect_wallet'
   | 'user_click_etransfer_noneSGR'
   | 'tg_adopt'
+  | 'tg_reroll'
   | 'tg_connect_wallet'
   | 'tg_user_click_daily';
 
@@ -14,6 +15,7 @@ export type AdEventTest =
   | 'connect_wallet_test'
   | 'user_click_etransfer_noneSGR_test'
   | 'tg_adopt_test'
+  | 'tg_reroll_test'
   | 'tg_connect_wallet_test'
   | 'tg_user_click_daily_test';
 
@@ -39,6 +41,10 @@ export class AdTracker {
       if (env === 'production') {
         console.log('=====this.gtm', event);
         this.gtm.push({ event, ...this.adInfo, ...payload });
+      } else {
+        const eventName = `${event}_test`;
+        console.log('=====this.gtm', eventName, payload);
+        this.gtm.push({ eventName, ...this.adInfo, ...payload });
       }
     } catch (error) {
       console.error('track error:', error);

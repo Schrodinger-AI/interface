@@ -130,10 +130,15 @@ export const useResetHandler = () => {
 
       if (status === Status.SUCCESS) {
         AdTracker.trackEvent('reroll', {
-          generation: parentItemInfo.generation,
+          generation: parentItemInfo.tokenName,
           address: wallet.address,
-          source: isInTG ? 'telegram' : '',
         });
+        if (isInTG) {
+          AdTracker.trackEvent('tg_reroll', {
+            generation: parentItemInfo.tokenName,
+            address: wallet.address,
+          });
+        }
       }
 
       cardResultModal.show({

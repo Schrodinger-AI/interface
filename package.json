@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_APP_ENV=development NODE_ENV=development next dev",
+    "dev": "NEXT_PUBLIC_APP_ENV=production NODE_ENV=development next dev",
     "dev:test": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next dev",
     "dev:testWithCert": "NEXT_PUBLIC_APP_ENV=test NODE_ENV=test next dev --experimental-https --experimental-https-key localhost+1-key.pem --experimental-https-cert localhost+1.pem",
     "build:dev": "NEXT_PUBLIC_APP_ENV=development next build",
