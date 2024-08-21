@@ -7,6 +7,10 @@
       }
     }
 
+    .etransfer-ui-deposit-for-mobile {
+      @apply pt-0 px-0;
+    }
+
     #etransfer-ui-deposit-select-token-result .etransfer-ui-dynamic-arrow,
     .etransfer-ui-deposit-select-token-chain,
     .etransfer-ui-description-wrapper {
@@ -39,7 +43,7 @@
 }
 
 .etransfer-deposit-wrap-dark {
-  @apply bg-pixelsPageBg;
+  @apply bg-pixelsPageBg px-[16px];
 
   :global {
     .etransfer-ui-deposit-select-token-network {

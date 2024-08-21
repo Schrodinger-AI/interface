@@ -192,11 +192,21 @@
         }
       }
     }
+
+    .etransfer-ant-modal-header {
+      @apply rounded-none bg-pixelsModalBg;
+
+      .etransfer-ant-modal-title {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
     .etransfer-ui-global-loading-modal-text {
       @apply text-pixelsWhiteBg;
     }
 
     .etransfer-ant-modal-body {
+      @apply text-pixelsBorder;
       .etransfer-ui-view-contract-address-modal-body {
         .view-contract-address-modal-title {
           @apply text-pixelsBorder;
@@ -210,7 +220,124 @@
           @apply !primary-button-dark;
         } 
       }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-footer {
+        button.etransfer-ui-common-button-primary {
+          @apply !primary-button-dark;
+        }
+      }
     }
   }
   
+}
+
+/* stylelint-disable-next-line selector-id-pattern */
+#etransferHistoryMobileFilterDrawer {
+  .etransfer-ant-drawer-body {
+    @apply border-pixelsBorder;
+    .etransfer-ui-history-mobile-filter-drawer-content {
+      .etransfer-ui-history-mobile-filter-drawer-label {
+        @apply text-pixelsBorder;
+      }
+      .etransfer-ant-select-selector {
+        @apply bg-pixelsPageBg border-pixelsBorder !rounded-none;
+
+        .etransfer-ant-select-selection-search {
+          input {
+            @apply placeholder:text-pixelsBorder text-pixelsWhiteBg;
+          }
+        }
+
+        .etransfer-ant-select-selection-item {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+      .etransfer-ui-history-mobile-records-range-picker {
+        @apply bg-pixelsPageBg border-pixelsBorder rounded-none;
+
+        .etransfer-ant-picker-input {
+          input {
+            @apply placeholder:text-pixelsBorder text-pixelsWhiteBg;
+          }
+        }
+      }
+    }
+    
+  }
+  .etransfer-ant-drawer-footer {
+    .etransfer-ui-history-mobile-cancel-button {
+      @apply !default-button-dark;
+    }
+    .etransfer-ui-history-mobile-ok-button {
+      @apply !primary-button-dark;
+    }
+  }
+}
+
+.etransfer-ant-picker-dropdown.etransfer-ant-picker-dropdown-placement-bottomLeft {
+  .etransfer-ant-picker-panel-container {
+    @apply bg-pixelsModalBg border border-solid border-pixelsBorder rounded-none;
+
+    .etransfer-ant-picker-panel {
+      @apply border-0;
+    }
+
+    .etransfer-ant-picker-header {
+      @apply text-pixelsWhiteBg border-pixelsBorder;
+
+      button {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
+    .etransfer-ant-picker-body {
+      .etransfer-ant-picker-content {
+        th {
+          @apply text-pixelsWhiteBg;
+        }
+        tbody {
+          @apply text-pixelsWhiteBg;
+          .etransfer-ant-picker-cell {
+            @apply text-pixelsBorder;
+
+            &.etransfer-ant-picker-cell-in-view {
+              @apply text-pixelsWhiteBg;
+            }
+
+            &.etransfer-ant-picker-cell-selected {
+              .etransfer-ant-picker-cell-inner {
+                @apply bg-pixelsSecondaryTextPurple;
+              }
+            }
+            &.etransfer-ant-picker-cell-today {
+              .etransfer-ant-picker-cell-inner::before {
+                @apply border-pixelsSecondaryTextPurple;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .etransfer-ant-picker-footer {
+      @apply border-pixelsBorder border-0 border-t;
+
+      .etransfer-ant-picker-today-btn {
+        @apply text-pixelsSecondaryTextPurple;
+      }
+    }
+  }
+}
+
+.etransfer-ant-select-dropdown.etransfer-ant-select-dropdown-placement-bottomLeft {
+  @apply border border-solid border-pixelsBorder bg-pixelsModalBg;
+
+  .etransfer-ant-select-item.etransfer-ant-select-item-option {
+    @apply text-pixelsWhiteBg;
+
+    &.etransfer-ant-select-item-option-active, &.etransfer-ant-select-item-option-selected {
+      @apply !text-pixelsSecondaryTextPurple;
+    }
+  }
 }

@@ -1,259 +1,142 @@
 /* stylelint-disable no-descending-specificity */
-.etransfer-deposit-wrap {
+.etransfer-history-wrap {
   :global {
-    .etransfer-ui-common-svg {
-      svg {
-        @apply !h-auto !w-auto;
-      }
+    .etransfer-ant-divider.etransfer-ant-divider-horizontal.etransfer-ui-history-mobile-divider {
+      @apply m-0;
     }
-
-    #etransfer-ui-deposit-select-token-result .etransfer-ui-dynamic-arrow,
-    .etransfer-ui-deposit-select-token-chain,
-    .etransfer-ui-description-wrapper {
-      display: none !important;
+    .etransfer-ant-divider.etransfer-ant-divider-horizontal {
+      @apply bg-white;
     }
-
-    .etransfer-ui-deposit-for-web {
-      .etransfer-ui-selected-data-wrapper {
-        @apply mb-[24px];
-        .space {
-          display: none !important;
-        }
-        .etransfer-ui-selected-token-wrapper:last-child {
-          display: none !important;
-        }
-
-        &.etransfer-ui-selected-row-2 {
-          .etransfer-ui-selected-chain-wrapper:last-child {
-            display: none !important;
+    .etransfer-ui-history-mobile-infinite-list {
+      .infinite-scroll-component__outerdiv {
+        @apply border rounded-lg border-solid border-neutralBorder;
+        .etransfer-ui-history-mobile-infinite-item-line {
+          .etransfer-ui-history-address-box-word {
+            @apply text-brandDefault;
+          }
+          .etransfer-ui-history-tx-hash-box-value.etransfer-ui-history-tx-hash-box-mobile-font {
+            @apply text-brandDefault;
           }
         }
       }
-
-      .etransfer-ui-arrow-right {
-        display: none !important;
+    }
+    .etransfer-ui-history-web-filter-search-wrapper {
+      .etransfer-ui-history-web-filter-reset-button {
+        .etransfer-ui-history-web-filter-reset-icon {
+          svg > g > path {
+            @apply fill-brandDefault;
+          }
+        }
+        .etransfer-ui-history-web-filter-reset-word {
+          @apply text-brandDefault;
+        }
       }
     }
+    .etransfer-ui-history-mobile-filter-wrapper {
+      .etransfer-ui-history-mobile-filter-item {
+        @apply bg-neutralHoverBg text-neutralTitle;
+      }
 
+      .etransfer-ui-history-mobile-filter-reset {
+        @apply text-brandDefault;
+      }
+    }
+    .etransfer-ui-history-web-table-wrapper {
+      .etransfer-ui-history-address-box-word, .etransfer-ui-history-tx-hash-box-value.etransfer-ui-history-tx-hash-box-web-font {
+        @apply text-brandDefault;
+      }
+    }
   }
 }
 
-.etransfer-deposit-wrap-dark {
-  @apply bg-pixelsPageBg;
+.etransfer-history-wrap-dark {
+  @apply bg-pixelsPageBg px-[16px];
 
   :global {
-    .etransfer-ui-deposit-select-token-network {
-      @apply rounded-none border-pixelsBorder;
-
-      .select-network-label {
-        @apply text-pixelsBorder;
-      }
-
-      .etransfer-ui-flex-row-center.etransfer-ui-select-network-value-selected {
-        .primary {
-          @apply text-pixelsWhiteBg;
-        }
-      }
-
-      .etransfer-ui-select-network-not-selected {
-        .select-network-value-placeholder {
-          @apply text-pixelsPrimaryTextPurple;
-        }
-        .etransfer-ui-common-svg.add-icon {
-          svg rect {
-            @apply fill-pixelsSecondaryTextPurple;
-          }
-          svg rect:nth-child(1) {
-            @apply fill-pixelsTertiaryTextPurple;
-          }
-        }
-      }
-
-      .etransfer-ui-flex-row-center.select-token-value-selected {
-        .primary {
-          @apply text-pixelsWhiteBg;
-        }
-        .secondary {
-          @apply text-pixelsBorder;
-        }
-      }
-
-      .etransfer-ui-common-svg.down-icon.etransfer-ui-dynamic-arrow-icon {
-        svg {
-          @apply fill-pixelsDivider;
-        }
-      }
+    .etransfer-ant-divider.etransfer-ant-divider-horizontal {
+      @apply bg-transparent;
     }
-    .etransfer-ui-deposit-select-token-chain {
-      @apply rounded-none border-pixelsBorder;
-
-      .select-chain-label {
-        @apply text-pixelsBorder;
-      }
-
-      .select-chain {
-        @apply text-pixelsWhiteBg;
-      }
-      
-      .etransfer-ui-flex-row-center.select-token-value-selected {
-        .primary {
-          @apply text-pixelsWhiteBg;
-        }
-        .secondary {
-          @apply text-pixelsBorder;
-        }
-      }
-
-      .etransfer-ui-common-sv.down-icon.etransfer-ui-dynamic-arrow-icon {
-        svg {
-          @apply fill-pixelsDivider;
-        }
-      }
-
-      .etransfer-ui-flex-row-center.etransfer-ui-mobile-select-chain-trigger-container.select-chain-container {
-        .select-chain-content {
-          @apply text-pixelsWhiteBg;
-        }
-      }
-
-    }
-
-    .etransfer-ui-deposit-detail-for-mobile-next-button-wrapper.etransfer-ui-deposit-detail-for-mobile-next-button-wrapper-safe-area {
-      @apply bg-pixelsModalBg;
-
-      .etransfer-ant-btn.etransfer-ant-btn-default {
-        @apply rounded-none bg-pixelsCardBg border border-dashed border-pixelsPrimaryTextPurple;
-
-        box-shadow: 4px 4px 4px 0 #262284;
-      }
-    }
-
-    .etransfer-ui-flex-row-between.etransfer-ui-exchange-rate {
-      .etransfer-ui-flex-row-center {
-        .value {
-          @apply text-pixelsDivider;
-        }
-        .etransfer-ui-common-svg.time-icon {
-          svg {
-            @apply fill-pixelsDivider;
-          }
-        }
-        .count-time {
-          @apply text-pixelsDivider;
-        }
-      }
-    }
-    
-    .etransfer-ui-calculator {
-      @apply bg-pixelsPageBg;
-    }
-
-    .etransfer-ui-calculator-header {
-      .calculator-icon {
-        svg {
-          path {
-            @apply stroke-pixelsWhiteBg;
-          }
-        }
-      }
-      .calculator-header-title {
-        @apply text-pixelsWhiteBg;
-      }
-    }
-
-    .etransfer-ui-flex-row-start.etransfer-ui-calculator-content {
-      @apply flex-col;
-
-      .etransfer-ui-flex-1 {
-        @apply w-full;
-        .label, .min-receive-amount {
-          @apply text-pixelsBorder;
-        }
-
-        .receive-amount {
-          @apply text-pixelsWhiteBg;
-        }
-
-        .etransfer-ui-flex-row-center.you-pay-main {
-          @apply bg-pixelsPageBg rounded-none border-pixelsBorder;
-
-          .pay-input {
-            @apply text-pixelsWhiteBg;
-          }
-          .dividing-line {
-            @apply bg-pixelsBorder;
-          }
-          .unit {
-            @apply text-pixelsBorder;
-          }
-        }
-      }
-    }
-
-    
-
-    .etransfer-ui-deposit-detail-for-mobile {
-
-      .etransfer-ui-flex-row-center.etransfer-ui-deposit-tip {
-        @apply rounded-none bg-pixelsModalBg border-pixelsPageBg;
   
-        .text {
-          @apply text-pixelsBorder;
-  
-          .token {
-            @apply text-pixelsDivider;
-          }
+    .etransfer-ui-history-mobile-filter-wrapper {
+      .etransfer-ui-history-mobile-filter-icon {
+        svg g path {
+          @apply fill-pixelsWhiteBg;
         }
       }
 
-      .deposit-address {
-        @apply rounded-none border-pixelsBorder bg-pixelsModalBg;
-        
-        .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
-          .address-text-title {
-            @apply text-pixelsBorder;
-          }
-          .etransfer-ui-flex-row-center {
-            .address-text-content {
-              @apply text-pixelsTertiaryTextPurple;
-            }
-            
-          }
-        }
+      .etransfer-ui-history-mobile-filter-item {
+        @apply bg-pixelsModalBg text-pixelsDivider;
       }
 
-      .etransfer-ui-deposit-info {
-        .info-line {
-          .info-title {
-            @apply text-pixelsBorder;
-          }
-          .info-value {
+      .etransfer-ui-history-mobile-filter-reset {
+        @apply text-pixelsSecondaryTextPurple;
+      }
+    }
+    .etransfer-ui-history-mobile-infinite-list {
+      .etransfer-ui-history-mobile-infinite-item-header {
+        @apply border-0 border-b border-solid border-pixelsBorder m-0 pb-[12px];
+        .etransfer-ui-history-status-box-wrapper {
+          .etransfer-ui-history-status-box {
             @apply text-pixelsWhiteBg;
-          }
-          .info-exhibit {
-            @apply text-pixelsBorder;
-          }
-          .etransfer-ui-text-underline-none {
-            @apply text-pixelsWhiteBg;
-          }
-          .question-mark-icon {
-            .questionmark-icon {
+
+            .etransfer-ui-common-svg.timefilled-icon {
               svg path {
-                @apply stroke-pixelsWhiteBg;
+                @apply fill-pixelsSecondaryTextPurple;
               }
             }
           }
         }
-      }
-      .etransfer-ui-description-wrapper {
-        @apply bg-pixelsModalBg rounded-none;
-        >p {
-          @apply text-pixelsBorder;
+        .etransfer-ui-history-mobile-infinite-item-order-type {
+          @apply text-pixelsWhiteBg;
         }
       }
-
+      .infinite-scroll-component__outerdiv {
+        @apply !border-none rounded-none bg-pixelsModalBg;
+        .etransfer-ui-history-mobile-infinite-item-line, .etransfer-ui-history-mobile-infinite-item-fee {
+          .etransfer-ui-history-mobile-infinite-item-label {
+            @apply text-pixelsBorder;
+          }
+          .etransfer-ui-history-arrival-time-box.etransfer-ui-history-mobile-arrival-time-box,
+          .etransfer-ui-history-amount-box.etransfer-ui-history-mobile-amount-box,
+          .etransfer-ui-history-fee-info-wrapper {
+            @apply text-pixelsWhiteBg;
+          }
+          
+          .etransfer-ui-history-address-box-word {
+            @apply text-pixelsSecondaryTextPurple;
+          }
+          .etransfer-ui-history-tx-hash-box-value.etransfer-ui-history-tx-hash-box-mobile-font {
+            @apply text-pixelsSecondaryTextPurple;
+          }
+        }
+      }
     }
 
-    
+    .etransfer-ui-empty-data {
+      @apply text-pixelsBorder;
+      .etransfer-ui-common-svg.emptybox-icon {
+        svg > g {
+          > path:first-child {
+            @apply fill-pixelsSecondaryTextPurple;
+          }
+          > path:nth-child(2) {
+            @apply !fill-pixelsPrimaryTextPurple;
+          }
+          > g path {
+            @apply fill-pixelsTertiaryTextPurple;
+          }
+        }
+      }
+    }
+
+    .etransfer-ui-history-mobile-infinite-list-loader-message {
+      @apply text-pixelsBorder;
+    }
+
+
+
+
   }
+
+  
 }

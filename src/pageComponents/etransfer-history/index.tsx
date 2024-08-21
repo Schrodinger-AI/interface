@@ -1,7 +1,7 @@
-import { History, ComponentStyle, CommonSpace } from '@etransfer/ui-react';
+import { History, ComponentStyle } from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
-import { message } from 'antd';
+import { Breadcrumb, message } from 'antd';
 import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
 import { useCallback, useEffect } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -11,6 +11,15 @@ import styles from './styles.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import useTelegram from 'hooks/useTelegram';
+import dynamic from 'next/dynamic';
+
+const DarkModal = dynamic(
+  async () => {
+    const modal = await import('../etransfer/darkModal').then((module) => module);
+    return modal;
+  },
+  { ssr: false },
+) as any;
 
 export default function ETransferHistory() {
   const { isMD, isLG } = useResponsive();
@@ -45,9 +54,35 @@ export default function ETransferHistory() {
   if (!isLogin) return null;
 
   return (
-    <div className={clsx('m-auto', styles['etransfer-deposit-wrap'], isInTG && styles['etransfer-deposit-wrap-dark'])}>
-      {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" theme={isInTG ? 'dark' : 'light'} /> : null}
-      <CommonSpace direction={'vertical'} size={24} />
+    <div className={clsx('m-auto', styles['etransfer-history-wrap'], isInTG && styles['etransfer-history-wrap-dark'])}>
+      {isLG ? (
+        <BackCom className="mt-6 m-4 ml-0 mb-0" theme={isInTG ? 'dark' : 'light'} />
+      ) : (
+        <div className="px-[32px] mb-[24px]">
+          <Breadcrumb
+            items={[
+              {
+                title: (
+                  <span className=" cursor-pointer" onClick={() => router.replace(isInTG ? '/telegram/home' : '/')}>
+                    Schrodinger
+                  </span>
+                ),
+              },
+              {
+                title: (
+                  <span className=" cursor-pointer" onClick={() => router.back()}>
+                    Deposit Assets
+                  </span>
+                ),
+              },
+              {
+                title: <div>History</div>,
+              },
+            ]}
+          />
+        </div>
+      )}
+      {isInTG && <DarkModal />}
       <History componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} isUnreadHistory={false} />
     </div>
   );
