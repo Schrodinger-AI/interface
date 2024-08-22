@@ -39,6 +39,10 @@
 
       .etransfer-ui-history-mobile-filter-reset {
         @apply text-brandDefault;
+
+        &:hover {
+          @apply cursor-pointer;
+        }
       }
     }
     .etransfer-ui-history-web-table-wrapper {

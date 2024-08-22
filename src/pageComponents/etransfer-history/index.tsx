@@ -3,7 +3,7 @@ import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
 import { Breadcrumb, message } from 'antd';
 import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter } from 'next/navigation';
 import { useTimeoutFn } from 'react-use';
@@ -26,14 +26,18 @@ export default function ETransferHistory() {
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
   const { isInTG } = useTelegram();
+  const [loading, setLoading] = useState(false);
 
   const { getETransferAuthToken } = useETransferAuthToken();
 
   const getAuthToken = useCallback(async () => {
     try {
+      setLoading(true);
       await getETransferAuthToken();
     } catch (error) {
       message.error(error as string);
+    } finally {
+      setLoading(false);
     }
   }, [getETransferAuthToken]);
 
@@ -51,7 +55,7 @@ export default function ETransferHistory() {
     }
   }, 4000);
 
-  if (!isLogin) return null;
+  if (loading || !isLogin) return null;
 
   return (
     <div className={clsx('m-auto', styles['etransfer-history-wrap'], isInTG && styles['etransfer-history-wrap-dark'])}>

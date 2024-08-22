@@ -133,6 +133,7 @@
     }
 
     .etransfer-ui-flex-row-between.etransfer-ui-exchange-rate {
+      @apply text-pixelsDivider;
       .etransfer-ui-flex-row-center {
         .value {
           @apply text-pixelsDivider;

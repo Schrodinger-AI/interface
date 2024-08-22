@@ -226,6 +226,10 @@
           @apply !primary-button-dark;
         }
       }
+      
+      .etransfer-ui-simple-modal-body {
+        @apply text-pixelsDivider;
+      }
     }
   }
   
@@ -275,9 +279,9 @@
   }
 }
 
-.etransfer-ant-picker-dropdown.etransfer-ant-picker-dropdown-placement-bottomLeft {
+.etransfer-ant-picker-dropdown {
   .etransfer-ant-picker-panel-container {
-    @apply bg-pixelsModalBg border border-solid border-pixelsBorder rounded-none;
+    @apply bg-pixelsModalBg border border-solid border-pixelsBorder rounded-none shadow-darkPixelsShadow;
 
     .etransfer-ant-picker-panel {
       @apply border-0;
@@ -301,6 +305,12 @@
           .etransfer-ant-picker-cell {
             @apply text-pixelsBorder;
 
+            &:not(.etransfer-ant-picker-cell-selected):hover {
+              .etransfer-ant-picker-cell-inner {
+                @apply !bg-pixelsHover;
+              }
+            }
+            
             &.etransfer-ant-picker-cell-in-view {
               @apply text-pixelsWhiteBg;
             }
@@ -331,12 +341,12 @@
 }
 
 .etransfer-ant-select-dropdown.etransfer-ant-select-dropdown-placement-bottomLeft {
-  @apply border border-solid border-pixelsBorder bg-pixelsModalBg;
+  @apply border border-solid border-pixelsBorder bg-pixelsModalBg shadow-darkPixelsShadow;
 
   .etransfer-ant-select-item.etransfer-ant-select-item-option {
-    @apply text-pixelsWhiteBg;
+    @apply text-pixelsWhiteBg hover:!bg-pixelsHover;
 
-    &.etransfer-ant-select-item-option-active, &.etransfer-ant-select-item-option-selected {
+    &.etransfer-ant-select-item-option-selected {
       @apply !text-pixelsSecondaryTextPurple;
     }
   }
