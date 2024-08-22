@@ -116,22 +116,29 @@ export const useResetHandler = () => {
       amount,
       rankInfo,
       theme = 'light',
+      prePage,
     }: {
       status: Status;
       parentItemInfo: TSGRToken;
       amount: string;
       rankInfo?: IRankInfo;
       theme?: TModalTheme;
+      prePage?: string;
     }) => {
       const originSymbol = getOriginSymbol(parentItemInfo.symbol);
       const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
 
       if (status === Status.SUCCESS) {
         AdTracker.trackEvent('reroll', {
-          generation: parentItemInfo.generation,
+          generation: parentItemInfo.tokenName,
           address: wallet.address,
-          source: isInTG ? 'telegram' : '',
         });
+        if (isInTG) {
+          AdTracker.trackEvent('tg_reroll', {
+            generation: parentItemInfo.tokenName,
+            address: wallet.address,
+          });
+        }
       }
 
       cardResultModal.show({
@@ -168,6 +175,7 @@ export const useResetHandler = () => {
                   parentItemInfo,
                   amount,
                   theme,
+                  prePage,
                 });
               } catch (error) {
                 promptModal.hide();
@@ -179,6 +187,7 @@ export const useResetHandler = () => {
                   parentItemInfo,
                   amount,
                   theme,
+                  prePage,
                 });
               }
             } else {
@@ -186,7 +195,9 @@ export const useResetHandler = () => {
                 await intervalFetch.start(originSymbol);
                 intervalFetch.remove();
                 cardResultModal.hide();
-                router.replace(`/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}`);
+                router.replace(
+                  `/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+                );
               } else {
                 router.replace('/');
               }
@@ -195,7 +206,7 @@ export const useResetHandler = () => {
         },
       });
     },
-    [cardResultModal, approveReset, promptModal, intervalFetch, router, wallet.address, source],
+    [cardResultModal, wallet.address, isInTG, approveReset, promptModal, intervalFetch, router, source],
   );
 
   return useCallback(
@@ -204,11 +215,13 @@ export const useResetHandler = () => {
       account,
       rankInfo,
       theme,
+      prePage,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
       rankInfo?: IRankInfo;
       theme?: TModalTheme;
+      prePage?: string;
     }) => {
       showLoading();
       let parentPrice: string | undefined = undefined;
@@ -264,6 +277,7 @@ export const useResetHandler = () => {
                 amount,
                 rankInfo,
                 theme,
+                prePage,
               });
             } catch (error) {
               promptModal.hide();
@@ -273,6 +287,7 @@ export const useResetHandler = () => {
                 amount,
                 rankInfo,
                 theme,
+                prePage,
               });
             }
           },

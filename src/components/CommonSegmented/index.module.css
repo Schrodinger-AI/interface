@@ -59,3 +59,20 @@
   }
   
 }
+
+.common-segmented-mobile {
+  &:not(.common-segmented-dark) {
+    :global {
+      .aelfd-segmented {
+        .aelfd-segmented-item {
+          &:hover:not(.aelfd-segmented-item-selected, .aelfd-segmented-item-disabled) {
+            @apply bg-neutralHoverBg;
+            &::after {
+              @apply bg-neutralHoverBg;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,9 @@
 import { Deposit, ETransferDepositProvider, ComponentStyle, ETransferConfig } from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
-import { message } from 'antd';
+import { Breadcrumb, message } from 'antd';
 import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
-import useLoading from 'hooks/useLoading';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
@@ -14,6 +13,9 @@ import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import useTelegram from 'hooks/useTelegram';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { ReactComponent as HistoryFilled } from 'assets/img/icons/history-filled.svg';
+import { ReactComponent as HistoryOutlined } from 'assets/img/icons/history-outlined.svg';
 
 const DarkModal = dynamic(
   async () => {
@@ -39,19 +41,19 @@ export default function ETransfer() {
     };
   }, [searchParams]);
 
-  const { showLoading, closeLoading, visible } = useLoading();
+  const [loading, setLoading] = useState(false);
   const { getETransferAuthToken } = useETransferAuthToken();
 
   const getAuthToken = useCallback(async () => {
     try {
-      showLoading();
+      setLoading(true);
       await getETransferAuthToken();
     } catch (error) {
       message.error(error as string);
     } finally {
-      closeLoading();
+      setLoading(false);
     }
-  }, [closeLoading, getETransferAuthToken, showLoading]);
+  }, [getETransferAuthToken]);
 
   useEffect(() => {
     if (!isLogin) return;
@@ -78,17 +80,59 @@ export default function ETransfer() {
     });
   }, [cmsInfo?.curChain, defaultParams]);
 
-  if (visible || !isLogin) return null;
+  const onBack = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  if (loading || !isLogin) return null;
 
   return (
     <div
       className={clsx(
-        'm-auto max-w-[1024px]',
+        'm-auto max-w-[1024px] relative',
         styles['etransfer-deposit-wrap'],
         isInTG && styles['etransfer-deposit-wrap-dark'],
       )}>
+      {isLG ? null : (
+        <Link
+          href={'/etransfer-history'}
+          className="absolute top-[46px] right-[32px] h-[40px] rounded-lg bg-brandBg px-[16px] flex justify-center items-center">
+          <HistoryFilled className="mr-[8px]" />
+          <span className="text-base font-medium text-brandDefault">history</span>
+        </Link>
+      )}
+
       {isInTG && <DarkModal />}
-      {isLG ? <BackCom className="mt-6 m-4 ml-4 lg:ml-10" theme={isInTG ? 'dark' : 'light'} /> : null}
+      {isLG ? (
+        <div className="mb-[16px]">
+          <BackCom className="mt-6 m-4 ml-0 lg:ml-10" theme={isInTG ? 'dark' : 'light'} />
+          <div className="w-full flex justify-between items-center">
+            <span className={clsx('text-lg font-semibold', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+              Deposit Assets
+            </span>
+            <Link href={'/etransfer-history'} className="pl-[16px]">
+              <HistoryOutlined className={clsx(isInTG ? 'fill-pixelsTertiaryTextPurple' : 'fill-brandDefault')} />
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="px-[32px] mb-[24px]">
+          <Breadcrumb
+            items={[
+              {
+                title: (
+                  <span className=" cursor-pointer" onClick={onBack}>
+                    Schrodinger
+                  </span>
+                ),
+              },
+              {
+                title: <div>Deposit Assets</div>,
+              },
+            ]}
+          />
+        </div>
+      )}
       <ETransferDepositProvider>
         <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
       </ETransferDepositProvider>

@@ -429,6 +429,7 @@ export const useAdoptConfirm = () => {
       inputAmount,
       isDirect = false,
       theme = 'light',
+      prePage,
     }: {
       transactionId: string;
       image: string;
@@ -439,6 +440,7 @@ export const useAdoptConfirm = () => {
       inputAmount: number | string;
       isDirect?: boolean;
       theme?: TModalTheme;
+      prePage?: string;
     }) =>
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
@@ -480,7 +482,9 @@ export const useAdoptConfirm = () => {
               await intervalFetch.start(symbol);
               intervalFetch.remove();
               cardResultModal.hide();
-              router.replace(`/detail?symbol=${symbol}&from=my&address=${wallet.address}&source=${source}`);
+              router.replace(
+                `/detail?symbol=${symbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+              );
             },
           },
           hideButton: false,
@@ -500,7 +504,7 @@ export const useAdoptConfirm = () => {
           },
         });
       }),
-    [cardResultModal, intervalFetch, router, wallet.address],
+    [cardResultModal, intervalFetch, router, source, wallet.address],
   );
 
   const getRankInfo = useCallback(
@@ -527,11 +531,13 @@ export const useAdoptConfirm = () => {
       childrenItemInfo,
       account,
       theme = 'light',
+      prePage,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
       account: string;
       theme?: TModalTheme;
+      prePage?: string;
     }) => {
       try {
         const infos = await fetchImages({
@@ -551,12 +557,6 @@ export const useAdoptConfirm = () => {
           theme,
           isDirect: childrenItemInfo.isDirect,
         });
-        AdTracker.trackEvent('adopt', {
-          generation: parentItemInfo?.generation,
-          address: wallet.address,
-          source: isInTG ? 'telegram' : '',
-        });
-
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,
           image,
@@ -567,6 +567,7 @@ export const useAdoptConfirm = () => {
           SGRTokenInfo,
           isDirect: childrenItemInfo.isDirect,
           inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
+          prePage,
         });
       } catch (error) {
         if (error === AdoptActionErrorCode.cancel) {

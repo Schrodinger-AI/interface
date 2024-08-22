@@ -34,6 +34,7 @@ export default function BackCom({
         align="center"
         gap={8}
         onClick={() => {
+          console.log('=====url', url);
           if (url) {
             router.replace(url);
             return;

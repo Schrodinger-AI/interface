@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .table-dark {
   @apply bg-pixelsPageBg;
 
@@ -36,4 +37,14 @@
       }
     }
   }
+
+  &.common-table-scrollbar * {
+    scrollbar-width: 6px !important;
+    scrollbar-color: var(--pixels-border) var(--pixels-modal-bg) !important; 
+  }
+}
+
+.common-table-scrollbar * {
+  scrollbar-width: 6px !important;
+  scrollbar-color: var(--neutral-border) #fff !important; 
 }
