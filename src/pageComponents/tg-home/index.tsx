@@ -69,6 +69,7 @@ export default function TgHome() {
       account: wallet.address,
       isDirect: true,
       theme: 'dark',
+      prePage: 'adoptModal',
     });
   }, [adoptHandler, jumpToPage, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
 

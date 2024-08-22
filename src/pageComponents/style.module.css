@@ -5,3 +5,13 @@
 .schrodinger-mobile-content {
   min-height: calc(100% - 98px);
 }
+
+.scrollbar {
+  scrollbar-width: 6px !important;
+  scrollbar-color: var(--neutral-border) #fff !important; 
+}
+
+.scrollbar-dark {
+  scrollbar-width: 6px !important;
+  scrollbar-color: var(--pixels-border) var(--pixels-modal-bg) !important; 
+}

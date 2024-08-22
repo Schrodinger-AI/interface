@@ -29,7 +29,7 @@ export default function BalanceItem({ symbol, amount, onBuy }: IBalanceItemProps
         justify="center"
         align="center"
         className={clsx(
-          'w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple tg-card-shadow',
+          'w-[71px] text-xs text-neutralWhiteBg font-medium border-[1px] border-dashed border-pixelsDashPurple tg-card-shadow cursor-pointer',
           symbol === 'SGR'
             ? 'active:bg-pixelsDashPurple bg-pixelsCardBg'
             : 'active:bg-pixelsDashPurple bg-pixelsPageBg',

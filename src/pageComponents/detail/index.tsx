@@ -44,6 +44,8 @@ export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
+  const prePage = searchParams.get('prePage') || '';
+
   const callbackPath = searchParams.get('callbackPath') || '';
   const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
@@ -143,6 +145,7 @@ export default function DetailPage() {
       account: wallet.address,
       rankInfo,
       theme,
+      prePage: 'rerollModal',
     });
   };
 
@@ -380,6 +383,20 @@ export default function DetailPage() {
 
   useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
 
+  const backUrl = useMemo(() => {
+    if (isInTG && prePage) {
+      switch (prePage) {
+        case 'adoptModal':
+          return '/telegram/home';
+        case 'rerollModal':
+          return '/telegram?pageState=1';
+        default:
+          return undefined;
+      }
+    }
+    return undefined;
+  }, [isInTG, prePage]);
+
   return (
     <section
       className={clsx(
@@ -438,7 +455,7 @@ export default function DetailPage() {
       </div>
 
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
-        <BackCom className="w-full" theme={theme} />
+        <BackCom className="w-full" theme={theme} url={backUrl} />
         <div className="mt-[16px]" />
         {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} theme={theme} />}
         {schrodingerDetail && (

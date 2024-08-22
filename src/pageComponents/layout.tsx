@@ -136,6 +136,7 @@ const Layout = dynamic(async () => {
               'h-full overflow-scroll min-w-[360px] bg-no-repeat bg-cover bg-center',
               customTheme.layout.backgroundStyle,
               isInTG && 'bg-pixelsPageBg',
+              isInTG ? styles['scrollbar-dark'] : styles['scrollbar'],
             )}>
             {!isHiddenHeader && <Header />}
             <div id={PAGE_CONTAINER_ID} className="flex-1 overflow-scroll">
@@ -151,7 +152,13 @@ const Layout = dynamic(async () => {
             </div>
           </AntdLayout>
         ) : (
-          <div className={clsx(isInTG && 'h-full overflow-scroll min-w-[360px] bg-pixelsPageBg')}>{children}</div>
+          <div
+            className={clsx(
+              isInTG && 'h-full overflow-scroll min-w-[360px] bg-pixelsPageBg',
+              isInTG ? styles['scrollbar-dark'] : styles['scrollbar'],
+            )}>
+            {children}
+          </div>
         )}
         <div
           className={clsx(

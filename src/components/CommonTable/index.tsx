@@ -12,7 +12,7 @@ export default function CommonTable<T extends AnyObject>(
 ) {
   return (
     <Table
-      rootClassName={clsx(props.theme === 'dark' && styles['table-dark'])}
+      rootClassName={clsx(styles['common-table-scrollbar'], props.theme === 'dark' && styles['table-dark'])}
       {...props}
       loading={{
         indicator: (

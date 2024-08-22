@@ -97,6 +97,7 @@ module.exports = {
         pixelsPaleYellow: 'var(--pixels-pale-yellow)',
         pixelsDashPurple: 'var(--pixels-dash-purple)',
         pixelsWhiteBg: 'var(--pixels-white-bg)',
+        pixelsHover: 'var(--pixels-hover)',
       },
       fontSize: {
         xxs: ['10px', '16px'],

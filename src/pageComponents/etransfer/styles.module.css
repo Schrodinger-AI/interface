@@ -7,6 +7,10 @@
       }
     }
 
+    .etransfer-ui-deposit-for-mobile {
+      @apply pt-0 px-0;
+    }
+
     #etransfer-ui-deposit-select-token-result .etransfer-ui-dynamic-arrow,
     .etransfer-ui-deposit-select-token-chain,
     .etransfer-ui-description-wrapper {
@@ -39,7 +43,7 @@
 }
 
 .etransfer-deposit-wrap-dark {
-  @apply bg-pixelsPageBg;
+  @apply bg-pixelsPageBg px-[16px];
 
   :global {
     .etransfer-ui-deposit-select-token-network {
@@ -71,7 +75,7 @@
 
       .etransfer-ui-flex-row-center.select-token-value-selected {
         .primary {
-          @apply text-pixelsWhiteBg;
+          @apply !text-pixelsWhiteBg;
         }
         .secondary {
           @apply text-pixelsBorder;
@@ -97,7 +101,7 @@
       
       .etransfer-ui-flex-row-center.select-token-value-selected {
         .primary {
-          @apply text-pixelsWhiteBg;
+          @apply !text-pixelsWhiteBg;
         }
         .secondary {
           @apply text-pixelsBorder;
@@ -129,6 +133,7 @@
     }
 
     .etransfer-ui-flex-row-between.etransfer-ui-exchange-rate {
+      @apply text-pixelsDivider;
       .etransfer-ui-flex-row-center {
         .value {
           @apply text-pixelsDivider;
@@ -145,7 +150,7 @@
     }
     
     .etransfer-ui-calculator {
-      @apply bg-pixelsPageBg;
+      @apply bg-pixelsModalBg rounded-none;
     }
 
     .etransfer-ui-calculator-header {
@@ -207,7 +212,7 @@
       }
 
       .deposit-address {
-        @apply rounded-none border-pixelsBorder bg-pixelsModalBg;
+        @apply rounded-none border-none bg-pixelsModalBg;
         
         .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
           .address-text-title {
