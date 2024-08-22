@@ -75,7 +75,7 @@
 
       .etransfer-ui-flex-row-center.select-token-value-selected {
         .primary {
-          @apply text-pixelsWhiteBg;
+          @apply !text-pixelsWhiteBg;
         }
         .secondary {
           @apply text-pixelsBorder;
@@ -101,7 +101,7 @@
       
       .etransfer-ui-flex-row-center.select-token-value-selected {
         .primary {
-          @apply text-pixelsWhiteBg;
+          @apply !text-pixelsWhiteBg;
         }
         .secondary {
           @apply text-pixelsBorder;
