@@ -557,16 +557,6 @@ export const useAdoptConfirm = () => {
           theme,
           isDirect: childrenItemInfo.isDirect,
         });
-        AdTracker.trackEvent('adopt', {
-          generation: nextTokenName,
-          address: wallet.address,
-        });
-        if (isInTG) {
-          AdTracker.trackEvent('tg_adopt', {
-            generation: nextTokenName,
-            address: wallet.address,
-          });
-        }
         await adoptConfirmSuccess({
           transactionId: txResult.TransactionId,
           image,

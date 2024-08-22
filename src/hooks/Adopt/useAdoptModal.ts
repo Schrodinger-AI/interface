@@ -21,6 +21,8 @@ import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formatError';
 import { renameSymbol } from 'utils/renameSymbol';
 import { TModalTheme } from 'components/CommonModal';
+import { AdTracker } from 'utils/ad';
+import useTelegram from 'hooks/useTelegram';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
@@ -30,6 +32,7 @@ const useAdoptHandler = () => {
   const { showLoading, closeLoading } = useLoading();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
   const asyncModal = useModal(SyncAdoptModal);
+  const { isInTG } = useTelegram();
 
   const adoptConfirm = useAdoptConfirm();
 
@@ -166,6 +169,18 @@ const useAdoptHandler = () => {
                 address: account,
                 decimals: parentItemInfo.decimals,
               });
+
+              AdTracker.trackEvent('adopt', {
+                generation: adoptedInfo.tokenName,
+                address: account,
+              });
+              if (isInTG) {
+                AdTracker.trackEvent('tg_adopt', {
+                  generation: adoptedInfo.tokenName,
+                  address: account,
+                });
+              }
+
               promptModal.hide();
               resolve(adoptedInfo);
             } catch (error) {

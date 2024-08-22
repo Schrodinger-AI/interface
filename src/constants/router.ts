@@ -8,6 +8,7 @@ export const NEED_LOGIN_PAGE = [
   '/referral',
   '/my-cats',
   '/etransfer',
+  '/etransfer-history',
   '/?pageState=1',
 ];
 

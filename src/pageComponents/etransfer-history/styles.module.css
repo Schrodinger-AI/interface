@@ -113,6 +113,10 @@
             @apply text-pixelsSecondaryTextPurple;
           }
         }
+
+        .etransfer-ant-divider.etransfer-ant-divider-horizontal {
+          @apply bg-pixelsPageBg;
+        }
       }
     }
 
