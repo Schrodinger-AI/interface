@@ -60,7 +60,7 @@ export default function ETransferHistory() {
   return (
     <div className={clsx('m-auto', styles['etransfer-history-wrap'], isInTG && styles['etransfer-history-wrap-dark'])}>
       {isLG ? (
-        <BackCom className="mt-6 m-4 ml-0 mb-0" theme={isInTG ? 'dark' : 'light'} />
+        <BackCom className="mt-6 mr-4 ml-4 mb-0" theme={isInTG ? 'dark' : 'light'} />
       ) : (
         <div className="px-[32px] mb-[24px]">
           <Breadcrumb

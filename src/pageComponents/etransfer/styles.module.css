@@ -150,7 +150,7 @@
     }
     
     .etransfer-ui-calculator {
-      @apply bg-pixelsPageBg;
+      @apply bg-pixelsModalBg rounded-none;
     }
 
     .etransfer-ui-calculator-header {
@@ -212,7 +212,7 @@
       }
 
       .deposit-address {
-        @apply rounded-none border-pixelsBorder bg-pixelsModalBg;
+        @apply rounded-none border-none bg-pixelsModalBg;
         
         .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
           .address-text-title {

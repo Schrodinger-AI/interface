@@ -244,7 +244,7 @@
         @apply text-pixelsBorder;
       }
       .etransfer-ant-select-selector {
-        @apply bg-pixelsPageBg border-pixelsBorder !rounded-none;
+        @apply bg-pixelsModalBg border-pixelsBorder !rounded-none;
 
         .etransfer-ant-select-selection-search {
           input {
@@ -257,12 +257,20 @@
         }
       }
 
+      .etransfer-ant-select-arrow {
+        @apply text-pixelsDivider;
+      }
+      
       .etransfer-ui-history-mobile-records-range-picker {
-        @apply bg-pixelsPageBg border-pixelsBorder rounded-none;
+        @apply bg-pixelsModalBg border-pixelsBorder rounded-none;
 
         .etransfer-ant-picker-input {
           input {
             @apply placeholder:text-pixelsBorder text-pixelsWhiteBg;
+          }
+
+          .etransfer-ant-picker-suffix {
+            @apply text-pixelsDivider;
           }
         }
       }

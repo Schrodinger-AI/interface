@@ -9,7 +9,16 @@
     }
     .etransfer-ui-history-mobile-infinite-list {
       .infinite-scroll-component__outerdiv {
-        @apply border rounded-lg border-solid border-neutralBorder;
+        @apply rounded-lg;
+
+        .etransfer-ui-history-mobile-infinite-item-wrapper {
+          @apply p-[16px] border rounded-lg border-solid border-neutralBorder mb-[16px];
+
+          .etransfer-ant-divider.etransfer-ant-divider-horizontal.etransfer-ui-history-mobile-infinite-list-divider-style {
+            @apply last:h-0;
+          }
+        }
+
         .etransfer-ui-history-mobile-infinite-item-line {
           .etransfer-ui-history-address-box-word {
             @apply text-brandDefault;
@@ -54,7 +63,7 @@
 }
 
 .etransfer-history-wrap-dark {
-  @apply bg-pixelsPageBg px-[16px];
+  @apply bg-pixelsPageBg;
 
   :global {
     .etransfer-ant-divider.etransfer-ant-divider-horizontal {
@@ -78,7 +87,7 @@
     }
     .etransfer-ui-history-mobile-infinite-list {
       .etransfer-ui-history-mobile-infinite-item-header {
-        @apply border-0 border-b border-solid border-pixelsBorder m-0 pb-[12px];
+        @apply border-0 border-b border-solid border-pixelsBorder m-0 pb-[16px];
         .etransfer-ui-history-status-box-wrapper {
           .etransfer-ui-history-status-box {
             @apply text-pixelsWhiteBg;
@@ -96,6 +105,15 @@
       }
       .infinite-scroll-component__outerdiv {
         @apply !border-none rounded-none bg-pixelsModalBg;
+
+        .etransfer-ui-history-mobile-infinite-item-wrapper {
+          @apply pb-0 border-none rounded-none mb-0;
+
+          .etransfer-ant-divider.etransfer-ant-divider-horizontal.etransfer-ui-history-mobile-infinite-list-divider-style {
+            @apply last:h-[16px];
+          }
+        }
+
         .etransfer-ui-history-mobile-infinite-item-line, .etransfer-ui-history-mobile-infinite-item-fee {
           .etransfer-ui-history-mobile-infinite-item-label {
             @apply text-pixelsBorder;
@@ -121,7 +139,7 @@
     }
 
     .etransfer-ui-empty-data {
-      @apply text-pixelsBorder;
+      @apply text-pixelsBorder pt-[40px];
       .etransfer-ui-common-svg.emptybox-icon {
         svg > g {
           > path:first-child {
