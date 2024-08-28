@@ -17,7 +17,6 @@ import styles from './style.module.css';
 import { ReactComponent as InviteFriends } from 'assets/img/telegram/referral/invite-friends.svg';
 import { ReactComponent as ReferralIcon } from 'assets/img/telegram/referral/icon-referral.svg';
 import Link from 'next/link';
-import { TelegramPlatform } from '@portkey/did-ui-react';
 
 function TgReferral() {
   const { wallet } = useWalletService();
@@ -44,7 +43,7 @@ function TgReferral() {
   }, [closeLoading, router, wallet.address]);
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${TgPrimaryDomainName}/?referrer=${wallet.address}`,
+    () => `https://t.me/share/url?url=${TgPrimaryDomainName}/?startapp=${wallet.address}`,
     [wallet.address],
   );
 
@@ -53,13 +52,16 @@ function TgReferral() {
     message.success('Copied');
   }, [setCopied, shareLink]);
 
-  const onInvite = useCallback(() => {
-    try {
-      TelegramPlatform.openLink(shareLink);
-    } catch (error) {
-      onCopy();
-    }
-  }, [onCopy, shareLink]);
+  // const onInvite = useCallback(() => {
+  //   try {
+  //     // appEnvironmentShare({
+  //     //   shareContent: shareLink,
+  //     // });
+  //     shareLink
+  //   } catch (error) {
+  //     onCopy();
+  //   }
+  // }, [onCopy, shareLink]);
 
   useEffect(() => {
     showLoading();
@@ -124,11 +126,11 @@ function TgReferral() {
               <img src={require('assets/img/copy.svg').default} alt="copy" className="w-[16px] h-[16px]" />
             </div>
           </div>
-          <div
-            onClick={onInvite}
+          <Link
+            href={shareLink}
             className="mt-[16px] h-[48px] flex justify-center items-center w-full !rounded-lg bg-pixelsWhiteBg text-pixelsPageBg font-semibold">
             Invite Friends
-          </div>
+          </Link>
         </div>
       </div>
     </div>

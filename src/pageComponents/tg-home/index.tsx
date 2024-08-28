@@ -23,6 +23,8 @@ import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
 import { useSearchParams } from 'next/navigation';
 import { TelegramPlatform } from '@portkey/did-ui-react';
+import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
+import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -33,6 +35,8 @@ export default function TgHome() {
   const { jumpToPage } = useJumpToPage();
   const tipsModal = useModal(TipsModal);
   const [sgrBalance, setSgrBalance] = useState('0');
+  const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
+  const { getNoticeData } = useGetNoticeData();
 
   const searchParams = useSearchParams();
 
@@ -53,6 +57,17 @@ export default function TgHome() {
       /* empty */
     }
   }, [cmsInfo?.curChain, isLogin, wallet.address]);
+
+  const getNotice = useCallback(async () => {
+    try {
+      const res = await getNoticeData({
+        theme: 'dark',
+      });
+      setNoticeData(res);
+    } catch (error) {
+      setNoticeData([]);
+    }
+  }, [getNoticeData]);
 
   const OpenAdoptModal = useCallback(() => {
     if (!wallet.address || !schrodingerDetail) return;
@@ -101,10 +116,8 @@ export default function TgHome() {
   };
 
   useEffect(() => {
-    const referrerAddress = searchParams.get('referrer') || '';
-    const initData = JSON.stringify(TelegramPlatform.getInitData());
+    const referrerAddress = TelegramPlatform.getInitData()?.start_param;
     alert(`referrerAddress: ${referrerAddress}`);
-    alert(`initData: ${initData}`);
   }, [searchParams]);
 
   useEffect(() => {
@@ -116,9 +129,18 @@ export default function TgHome() {
     getDetail();
   }, [getDetail]);
 
+  useEffect(() => {
+    getNotice();
+  }, [getNotice]);
+
   return (
     <div
       className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
+      {noticeData && noticeData?.length ? (
+        <div className="w-full h-[48px] overflow-hidden mb-[8px] rounded-md">
+          <ScrollAlert data={noticeData} type="notice" theme="dark" />
+        </div>
+      ) : null}
       <BalanceModule onSgrBalanceChange={onBalanceChange} />
       <div className="mt-10">
         <AdoptModule onAdopt={OpenAdoptModal} />
