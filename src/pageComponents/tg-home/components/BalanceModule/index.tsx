@@ -1,12 +1,12 @@
 import { Flex } from 'antd';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
+import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
+import { ReactComponent as InviteSVG } from 'assets/img/telegram/icon-invite.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
-import Lottie from 'lottie-react';
-import trophy from 'assets/lottie/trophy.json';
 
 export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
   const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
@@ -16,18 +16,25 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="text-neutralWhiteBg text-sm font-normal">
+      <Flex justify="space-between" align="center" className="w-full text-neutralWhiteBg text-sm font-normal">
         <Flex align="center" gap={8}>
           <span className="font-medium">Balance:</span>
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
-        {cmsInfo?.weeklyActivityRankingsEntrance ? (
-          <Link href="/tg-weekly-activity-rankings">
+        <div className="flex items-center">
+          {cmsInfo?.weeklyActivityRankingsEntrance ? (
+            <Link href="/tg-weekly-activity-rankings">
+              <div className="px-[8px]">
+                <LeaderBoardSVG className="w-[30px] h-[30px]" />
+              </div>
+            </Link>
+          ) : null}
+          <Link href="/tg-referral" className="ml-[16px]">
             <div className="px-[8px]">
-              <Lottie animationData={trophy} autoPlay={true} loop={true} className="w-[24px] h-[24px]" />
+              <InviteSVG className="w-[30px] h-[30px]" />
             </div>
           </Link>
-        ) : null}
+        </div>
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">
         {balanceData.map((item, index) => {

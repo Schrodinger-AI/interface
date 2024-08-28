@@ -120,6 +120,7 @@ export type TCustomizationItemType = {
   needBindEvm?: string[];
   eventHot?: boolean;
   adoptDirectlyNew?: boolean;
+  referralRulesList?: string[];
   [key: string]: any;
 };
 
