@@ -21,6 +21,7 @@ import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
+import { useSearchParams } from 'next/navigation';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -31,6 +32,8 @@ export default function TgHome() {
   const { jumpToPage } = useJumpToPage();
   const tipsModal = useModal(TipsModal);
   const [sgrBalance, setSgrBalance] = useState('0');
+
+  const searchParams = useSearchParams();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
@@ -95,6 +98,11 @@ export default function TgHome() {
       });
     }
   };
+
+  useEffect(() => {
+    const referrerAddress = searchParams.get('referrer') || '';
+    alert(`referrerAddress: ${referrerAddress}`);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!wallet.address) return;
