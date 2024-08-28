@@ -41,7 +41,7 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
           return <BalanceItem key={index} {...item} onBuy={item.onBuy} />;
         })}
       </Flex>
-      <Flex className="text-sm font-medium text-neutralWhiteBg mt-4" align="center">
+      <Flex className="w-full text-sm font-medium text-neutralWhiteBg mt-4" align="center">
         <span>Address:</span>
         <CommonCopy toCopy={fullAddress} className="text-pixelsTertiaryTextPurple ml-4" size="large">
           {formatAddress}

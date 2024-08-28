@@ -22,6 +22,7 @@ import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
 import { useSearchParams } from 'next/navigation';
+import { TelegramPlatform } from '@portkey/did-ui-react';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -101,7 +102,9 @@ export default function TgHome() {
 
   useEffect(() => {
     const referrerAddress = searchParams.get('referrer') || '';
+    const initData = JSON.stringify(TelegramPlatform.getInitData());
     alert(`referrerAddress: ${referrerAddress}`);
+    alert(`initData: ${initData}`);
   }, [searchParams]);
 
   useEffect(() => {

@@ -83,7 +83,7 @@ export default function RankList({
 
       <div
         className={clsx(
-          'relative z-10 w-full h-full py-[12px] pl-[6px] pr-[3px] rounded-md flex justify-between items-center',
+          'relative z-10 w-full h-full py-[12px] pl-[10px] pr-[7px] rounded-md flex justify-between items-center',
           backgroundColor[0],
         )}>
         <div className="flex items-center">
