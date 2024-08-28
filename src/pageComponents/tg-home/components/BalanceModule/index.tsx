@@ -6,13 +6,14 @@ import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
-import { useCmsInfo } from 'redux/hooks';
+import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 
 export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
   const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
     onSgrBalanceChange,
   });
   const cmsInfo = useCmsInfo();
+  const isJoin = useJoinStatus();
 
   return (
     <>
@@ -29,11 +30,13 @@ export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChan
               </div>
             </Link>
           ) : null}
-          <Link href="/tg-referral" className="ml-[16px]">
-            <div className="px-[8px]">
-              <InviteSVG className="w-[30px] h-[30px]" />
-            </div>
-          </Link>
+          {isJoin ? (
+            <Link href="/tg-referral" className="ml-[16px]">
+              <div className="px-[8px]">
+                <InviteSVG className="w-[30px] h-[30px]" />
+              </div>
+            </Link>
+          ) : null}
         </div>
       </Flex>
       <Flex gap={16} className="mt-2" wrap="wrap">

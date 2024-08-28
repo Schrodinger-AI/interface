@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useState } from 'react';
-import { useCmsInfo } from 'redux/hooks';
+import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { TSGRTokenInfo } from 'types/tokens';
 import styles from './style.module.css';
@@ -21,10 +21,10 @@ import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
-import { useSearchParams } from 'next/navigation';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
+import { AcceptReferral } from 'contract/schrodinger';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -37,8 +37,7 @@ export default function TgHome() {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
   const { getNoticeData } = useGetNoticeData();
-
-  const searchParams = useSearchParams();
+  const isJoin = useJoinStatus();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
@@ -115,15 +114,29 @@ export default function TgHome() {
     }
   };
 
-  useEffect(() => {
-    const referrerAddress = TelegramPlatform.getInitData()?.start_param;
-    alert(`referrerAddress: ${referrerAddress}`);
-  }, [searchParams]);
+  const acceptReferral = async (referrerAddress: string) => {
+    try {
+      await AcceptReferral({
+        referrer: referrerAddress,
+      });
+    } catch (error) {
+      /* empty */
+    }
+  };
 
   useEffect(() => {
     if (!wallet.address) return;
     sendAdTrack(wallet?.address);
   }, [wallet?.address]);
+
+  useEffect(() => {
+    if (isLogin && !isJoin) {
+      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+      if (referrerAddress) {
+        acceptReferral(referrerAddress);
+      }
+    }
+  }, [isLogin, isJoin]);
 
   useEffect(() => {
     getDetail();
