@@ -100,9 +100,7 @@ function TgReferral() {
 
       <div className="w-full px-[16px] mt-[32px]">
         <div className="w-full rounded-[16px] p-[16px] bg-pixelsPrimaryTextPurple">
-          <p className="w-full text-sm font-semibold text-pixelsWhiteBg text-center">
-            Referral QR Code & Referral Link
-          </p>
+          <p className="w-full text-sm font-semibold text-pixelsWhiteBg text-center">QR Code & Invite Link</p>
           <div className="w-full flex justify-center items-center mt-[16px]">
             <div className="rounded-md overflow-hidden">
               <QRCode
