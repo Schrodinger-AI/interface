@@ -7,16 +7,13 @@ import useLoading from 'hooks/useLoading';
 import { useCopyToClipboard } from 'react-use';
 import { message } from 'antd';
 import { QRCode } from 'react-qrcode-logo';
-import { Button } from 'aelf-design';
-import { PrimaryDomainName, TgPrimaryDomainName } from 'constants/common';
+import { TgPrimaryDomainName } from 'constants/common';
 import clsx from 'clsx';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
-import { appEnvironmentShare } from 'utils/appEnvironmentShare';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import styles from './style.module.css';
 import { ReactComponent as InviteFriends } from 'assets/img/telegram/referral/invite-friends.svg';
 import { ReactComponent as ReferralIcon } from 'assets/img/telegram/referral/icon-referral.svg';
-import Link from 'next/link';
 
 function TgReferral() {
   const { wallet } = useWalletService();
@@ -42,26 +39,27 @@ function TgReferral() {
     !isJoin && router.replace('/');
   }, [closeLoading, router, wallet.address]);
 
+  const copyLink = useMemo(() => `${TgPrimaryDomainName}/?startapp=${wallet.address}`, [wallet.address]);
+
   const shareLink = useMemo(
     () => `https://t.me/share/url?url=${TgPrimaryDomainName}/?startapp=${wallet.address}`,
     [wallet.address],
   );
 
   const onCopy = useCallback(() => {
-    setCopied(shareLink);
+    setCopied(copyLink);
     message.success('Copied');
-  }, [setCopied, shareLink]);
+  }, [setCopied, copyLink]);
 
-  // const onInvite = useCallback(() => {
-  //   try {
-  //     // appEnvironmentShare({
-  //     //   shareContent: shareLink,
-  //     // });
-  //     shareLink
-  //   } catch (error) {
-  //     onCopy();
-  //   }
-  // }, [onCopy, shareLink]);
+  const onInvite = useCallback(() => {
+    try {
+      if (window?.Telegram?.WebApp?.openTelegramLink) {
+        window?.Telegram?.WebApp?.openTelegramLink(shareLink);
+      }
+    } catch (error) {
+      onCopy();
+    }
+  }, [onCopy, shareLink]);
 
   useEffect(() => {
     showLoading();
@@ -90,7 +88,7 @@ function TgReferral() {
           <div className="w-full bg-pixelsModalBg rounded-[16px] p-[12px]">
             {cmsInfo.referralRulesList.map((item, index) => {
               return (
-                <p key={index} className="flex text-xs text-pixelsTertiaryTextPurple font-medium">
+                <p key={index} className="flex text-sm text-pixelsWhiteBg font-medium">
                   <span className="mr-[8px]">•</span>
                   <span>{item}</span>
                 </p>
@@ -108,7 +106,7 @@ function TgReferral() {
           <div className="w-full flex justify-center items-center mt-[16px]">
             <div className="rounded-md overflow-hidden">
               <QRCode
-                value={shareLink}
+                value={copyLink}
                 size={160}
                 quietZone={8}
                 logoImage={require('assets/img/schrodingerLogo.png').default.src}
@@ -120,17 +118,17 @@ function TgReferral() {
           </div>
           <div className="w-full mt-[16px] flex items-center rounded-lg bg-[#6724D4]">
             <span className="flex-1 text-sm text-pixelsWhiteBg truncate py-[16px] pl-[16px] pr-[4px] font-medium">
-              {shareLink}
+              {copyLink}
             </span>
             <div className="h-full flex items-center justify-center pr-[16px] pl-[4px] cursor-pointer" onClick={onCopy}>
               <img src={require('assets/img/copy.svg').default} alt="copy" className="w-[16px] h-[16px]" />
             </div>
           </div>
-          <Link
-            href={shareLink}
-            className="mt-[16px] h-[48px] flex justify-center items-center w-full !rounded-lg bg-pixelsWhiteBg text-pixelsPageBg font-semibold">
+          <div
+            onClick={onInvite}
+            className="mt-[16px] h-[48px] flex justify-center items-center w-full !rounded-lg bg-pixelsWhiteBg text-pixelsPageBg font-semibold cursor-pointer">
             Invite Friends
-          </Link>
+          </div>
         </div>
       </div>
     </div>
