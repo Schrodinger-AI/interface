@@ -152,17 +152,20 @@ export default function TgWeeklyActivityRankings() {
               !dataSource.length && 'flex justify-center items-center',
             )}>
             <div className={clsx(styles['rank-list-card-blur'])} />
-            {dataSource?.map((item, index) => {
-              return (
-                <RankList
-                  key={index}
-                  index={`${index + 1}`}
-                  value={item}
-                  type={tabTimeValue}
-                  isMine={item.address === wallet.address}
-                />
-              );
-            })}
+            <div className="relative z-20">
+              {dataSource?.map((item, index) => {
+                return (
+                  <RankList
+                    key={index}
+                    index={`${index + 1}`}
+                    value={item}
+                    type={tabTimeValue}
+                    isMine={item.address === wallet.address}
+                  />
+                );
+              })}
+            </div>
+
             {!dataSource.length && !visible ? <TableEmpty theme="transparent" description="No data yet." /> : null}
           </div>
         </div>

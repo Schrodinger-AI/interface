@@ -23,18 +23,18 @@ const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 const explorerUrls = {
   [ENVIRONMENT.TEST]: {
     AELF: 'https://testnet.aelfscan.io/',
-    TDVV: 'https://testnet.aelfscan.io/tDVW',
-    TDVW: 'https://testnet.aelfscan.io/tDVW',
+    TDVV: 'https://testnet.aelfscan.io/tDVW/',
+    TDVW: 'https://testnet.aelfscan.io/tDVW/',
   },
   [ENVIRONMENT.DEVELOPMENT]: {
     AELF: 'https://aelfscan.io/',
-    TDVV: 'https://aelfscan.io/tDVV',
-    TDVW: 'https://aelfscan.io/tDVV',
+    TDVV: 'https://aelfscan.io/tDVV/',
+    TDVW: 'https://aelfscan.io/tDVV/',
   },
   [ENVIRONMENT.PRODUCTION]: {
     AELF: 'https://aelfscan.io/',
-    TDVV: 'https://aelfscan.io/tDVV',
-    TDVW: 'https://aelfscan.io/tDVV',
+    TDVV: 'https://aelfscan.io/tDVV/',
+    TDVW: 'https://aelfscan.io/tDVV/',
   },
 };
 
