@@ -14,6 +14,7 @@ import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import styles from './style.module.css';
 import { ReactComponent as InviteFriends } from 'assets/img/telegram/referral/invite-friends.svg';
 import { ReactComponent as ReferralIcon } from 'assets/img/telegram/referral/icon-referral.svg';
+import { ReactComponent as CopyIcon } from 'assets/img/copy.svg';
 
 function TgReferral() {
   const { wallet } = useWalletService();
@@ -119,7 +120,7 @@ function TgReferral() {
               {copyLink}
             </span>
             <div className="h-full flex items-center justify-center pr-[16px] pl-[4px] cursor-pointer" onClick={onCopy}>
-              <img src={require('assets/img/copy.svg').default} alt="copy" className="w-[16px] h-[16px]" />
+              <CopyIcon className="fill-pixelsWhiteBg scale-[1.142]" />
             </div>
           </div>
           <div
