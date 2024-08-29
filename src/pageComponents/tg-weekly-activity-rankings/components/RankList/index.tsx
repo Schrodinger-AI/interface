@@ -61,6 +61,9 @@ export default function RankList({
   }, [type, value.reward, value.scores]);
 
   const backgroundColor = useMemo(() => {
+    if (bottom) {
+      return rankStyle.my.backgroundColor;
+    }
     if (rankStyle[`${index}`]) {
       return rankStyle[`${index}`].backgroundColor;
     }
@@ -68,7 +71,7 @@ export default function RankList({
       return rankStyle.my.backgroundColor;
     }
     return rankStyle.default.backgroundColor;
-  }, [index, isMine]);
+  }, [index, isMine, bottom]);
 
   return (
     <div
