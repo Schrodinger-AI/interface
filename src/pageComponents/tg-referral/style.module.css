@@ -1,0 +1,5 @@
+.referral-container {
+  @apply bg-[url('../../assets/img/telegram/referral/referral-bg.png')] bg-no-repeat;
+
+  background-size: 100% auto;
+}

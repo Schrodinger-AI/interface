@@ -1,4 +1,5 @@
 'use client';
+import { TModalTheme } from 'components/CommonModal';
 import { IScrollAlertItem } from 'components/ScrollAlert';
 import { TNftActivityListByConditionData } from 'graphqlServer';
 import { useNftActivityListByCondition } from 'graphqlServer/hooks';
@@ -20,47 +21,54 @@ export default function useGetNoticeData() {
     openExternalLink(forestActivity, '_blank');
   };
 
-  const getNoticeData: () => Promise<IScrollAlertItem[]> = useCallback(async () => {
-    const { nftActivityListFilter, showNftQuantity } = cmsInfo || {};
-    const timestampMax = nftActivityListFilter?.timestampMax || new Date().getTime();
-    try {
-      const { data } = await getNftActivityListByCondition({
-        input: {
-          skipCount: 0,
-          maxResultCount: nftActivityListFilter?.maxResultCount || 5,
-          sortType: nftActivityListFilter?.sortType || 'DESC',
-          abovePrice: nftActivityListFilter?.abovePrice || 20,
-          filterSymbol: nftActivityListFilter?.filterSymbol || 'SGR',
-          timestampMin: nftActivityListFilter?.timestampMin || 1710892800000,
-          timestampMax,
-          types: nftActivityListFilter?.types || [3],
-        },
-      });
+  const getNoticeData: (params?: { theme?: TModalTheme }) => Promise<IScrollAlertItem[]> = useCallback(
+    async (params) => {
+      const { theme = 'light' } = params || {};
+      const { nftActivityListFilter, showNftQuantity } = cmsInfo || {};
+      const timestampMax = nftActivityListFilter?.timestampMax || new Date().getTime();
+      try {
+        const { data } = await getNftActivityListByCondition({
+          input: {
+            skipCount: 0,
+            maxResultCount: nftActivityListFilter?.maxResultCount || 5,
+            sortType: nftActivityListFilter?.sortType || 'DESC',
+            abovePrice: nftActivityListFilter?.abovePrice || 20,
+            filterSymbol: nftActivityListFilter?.filterSymbol || 'SGR',
+            timestampMin: nftActivityListFilter?.timestampMin || 1710892800000,
+            timestampMax,
+            types: nftActivityListFilter?.types || [3],
+          },
+        });
 
-      let result = [];
+        let result = [];
 
-      if (data?.nftActivityListByCondition.data) {
-        result = data?.nftActivityListByCondition.data.slice(0, showNftQuantity || 5);
-      } else {
+        if (data?.nftActivityListByCondition.data) {
+          result = data?.nftActivityListByCondition.data.slice(0, showNftQuantity || 5);
+        } else {
+          return [];
+        }
+
+        return result?.map((item: TNftActivityListByConditionData) => {
+          const symbol = item?.nftInfoId?.replace(`${cmsInfo?.curChain}-`, '');
+          return {
+            text: (
+              <span>
+                {symbol} purchased for{' '}
+                <span className={theme === 'dark' ? 'text-pixelsPrimaryTextPurple' : 'text-warning600'}>
+                  {formatTokenPrice(item.price)} ELF
+                </span>{' '}
+                by {getOmittedStr(addPrefixSuffix(item.to), OmittedType.ADDRESS)}
+              </span>
+            ),
+            handle: () => onJump(cmsInfo),
+          };
+        });
+      } catch (error) {
         return [];
       }
-
-      return result?.map((item: TNftActivityListByConditionData) => {
-        const symbol = item?.nftInfoId?.replace(`${cmsInfo?.curChain}-`, '');
-        return {
-          text: (
-            <span>
-              {symbol} purchased for <span className="text-warning600">{formatTokenPrice(item.price)} ELF</span> by{' '}
-              {getOmittedStr(addPrefixSuffix(item.to), OmittedType.ADDRESS)}
-            </span>
-          ),
-          handle: () => onJump(cmsInfo),
-        };
-      });
-    } catch (error) {
-      return [];
-    }
-  }, [cmsInfo, getNftActivityListByCondition]);
+    },
+    [cmsInfo, getNftActivityListByCondition],
+  );
 
   return {
     getNoticeData,

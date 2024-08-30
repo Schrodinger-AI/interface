@@ -120,6 +120,7 @@ export type TCustomizationItemType = {
   needBindEvm?: string[];
   eventHot?: boolean;
   adoptDirectlyNew?: boolean;
+  referralRulesList?: string[];
   [key: string]: any;
 };
 
@@ -152,6 +153,7 @@ export type TGlobalConfigType = {
       color?: string;
     };
   };
+  tgWebAppUrl?: string;
   rarityFilterItems: Array<{
     label: string;
     value: string;

@@ -15,6 +15,8 @@ import RankList from './components/RankList';
 import useLoading from 'hooks/useLoading';
 import { useWalletService } from 'hooks/useWallet';
 import TableEmpty from 'components/TableEmpty';
+import trophies from 'assets/img/telegram/rank/trophies.png';
+import Image from 'next/image';
 
 const tabsType: TabsProps['items'] = [
   {
@@ -92,28 +94,17 @@ export default function TgWeeklyActivityRankings() {
     router.replace(`/tg-weekly-activity-rankings/?type=${type}&time=${time}`);
   };
 
-  const pointsTitle = useMemo(() => {
-    if (tabTimeValue === TgWeeklyActivityRankTime.lastWeek) {
-      return '';
-    } else {
-      if (tabTypeValue === TgWeeklyActivityRankType.ADOPT) {
-        return 'XPSGR-5';
-      } else {
-        return 'Trading Scores';
-      }
-    }
-  }, [tabTimeValue, tabTypeValue]);
-
   useEffect(() => {
     getActivityBotRank(tabTypeValue, tabTimeValue);
   }, [tabTypeValue, tabTimeValue, getActivityBotRank, wallet.address]);
 
   return (
     <div className={clsx(styles['tg-weekly-activity-rankings-wrap'])}>
+      <div className={clsx(styles['rankings-bg'])} />
       <BackCom
         theme="dark"
         title="Weekly Leaderboard"
-        className="w-full"
+        className="relative z-10 w-full px-4"
         tips={{
           show: true,
           link: '/tg-weekly-activity-rules',
@@ -130,10 +121,10 @@ export default function TgWeeklyActivityRankings() {
           })
         }
         theme="dark"
-        className={clsx('my-[16px] w-full', styles['rankings-type'])}
+        className={clsx('relative z-10 my-[16px] w-full px-4 !h-[38px]', styles['rankings-type'])}
       />
 
-      <div className="flex w-full justify-center items-center">
+      <div className="relative z-10 flex w-full justify-center items-center">
         <CommonSegmented
           options={tabsTime}
           value={tabTimeValue}
@@ -144,29 +135,50 @@ export default function TgWeeklyActivityRankings() {
             })
           }
           theme="dark"
-          className="!w-[240px]"
+          segmentedSize="middle"
+          className={clsx('!w-[240px] !h-[38px]', styles['rankings-time'])}
         />
       </div>
 
-      <div className="mt-[16px]">
-        {dataSource?.map((item, index) => {
-          return (
-            <RankList key={index} index={`${index + 1}`} value={item} type={tabTimeValue} pointsTitle={pointsTitle} />
-          );
-        })}
+      <div className="w-full h-[102px] flex justify-center items-start mt-[16px] relative z-10 ">
+        <Image src={trophies} alt="" width={686} height={308} className="w-[343px] h-[154px] shrink-0" />
       </div>
 
-      {!dataSource.length && !visible ? <TableEmpty theme="dark" description="No data yet." /> : null}
+      <div className={clsx(styles['rank-list-wrap'])}>
+        <div className={clsx(styles['rank-list-card'])}>
+          <div
+            className={clsx(
+              'relative p-4 pb-[80px] min-h-full',
+              !dataSource.length && 'flex justify-center items-center',
+            )}>
+            <div className={clsx(styles['rank-list-card-blur'])} />
+            <div className="relative z-20">
+              {dataSource?.map((item, index) => {
+                return (
+                  <RankList
+                    key={index}
+                    index={`${index + 1}`}
+                    value={item}
+                    type={tabTimeValue}
+                    isMine={item.address === wallet.address}
+                  />
+                );
+              })}
+            </div>
+
+            {!dataSource.length && !visible ? <TableEmpty theme="transparent" description="No data yet." /> : null}
+          </div>
+        </div>
+      </div>
 
       {myData && wallet.address && dataSource.length ? (
-        <div className="fixed bottom-0 left-0 w-full px-[16px] bg-pixelsCardBg">
+        <div className="fixed bottom-0 h-[70px] left-0 w-full px-[10px] bg-pixelsCardBg z-20 flex items-center">
           <RankList
-            theme="blue"
-            index={myData?.rank ? `${myData?.rank}` : '> 20'}
+            index={myData?.rank ? `${myData?.rank}` : '-'}
             value={myData}
             type={tabTimeValue}
-            pointsTitle={pointsTitle}
             isMine={true}
+            bottom={true}
           />
         </div>
       ) : null}
