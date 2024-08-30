@@ -122,6 +122,12 @@
           .etransfer-ui-history-amount-box.etransfer-ui-history-mobile-amount-box,
           .etransfer-ui-history-fee-info-wrapper {
             @apply text-pixelsWhiteBg;
+
+            &.etransfer-ui-history-mobile-fee-info-wrapper {
+              .etransfer-ui-history-fee-info-item-wrapper {
+                @apply text-pixelsWhiteBg;
+              }
+            }
           }
           
           .etransfer-ui-history-address-box-word {

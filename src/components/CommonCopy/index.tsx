@@ -9,11 +9,13 @@ export default function CommonCopy({
   children,
   className,
   size = 'small',
+  iconStyle,
 }: {
   toCopy: string;
   children?: React.ReactNode;
   className?: string;
   size?: 'small' | 'large';
+  iconStyle?: string;
 }) {
   const [, setCopied] = useCopyToClipboard();
   return (
@@ -26,7 +28,7 @@ export default function CommonCopy({
           setCopied(toCopy);
           message.success('Copied');
         }}>
-        {size === 'small' ? <CopyIcon /> : <CopyIconLarge />}
+        {size === 'small' ? <CopyIcon className={clsx(iconStyle)} /> : <CopyIconLarge className={clsx(iconStyle)} />}
       </span>
     </span>
   );

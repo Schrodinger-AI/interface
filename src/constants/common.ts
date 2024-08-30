@@ -16,6 +16,9 @@ const env = process.env.NEXT_PUBLIC_APP_ENV;
 export const PrimaryDomainName =
   env === ENVIRONMENT.TEST ? 'https://cat.schrodingerai.com' : 'https://cat.schrodingernft.ai';
 
+export const TgPrimaryDomainName =
+  env === ENVIRONMENT.TEST ? 'https://t.me/scat_game_dev_bot' : 'https://t.me/scat_game_bot';
+
 export const MAIN_DOMAIN = [
   'schrodingerai.com',
   'schrodingernft.ai',

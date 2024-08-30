@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useState } from 'react';
-import { useCmsInfo } from 'redux/hooks';
+import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { TSGRTokenInfo } from 'types/tokens';
 import styles from './style.module.css';
@@ -21,6 +21,12 @@ import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
+import { TelegramPlatform } from '@portkey/did-ui-react';
+import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
+import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
+import { AcceptReferral } from 'contract/schrodinger';
+import { store } from 'redux/store';
+import { setIsJoin } from 'redux/reducer/info';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -31,6 +37,9 @@ export default function TgHome() {
   const { jumpToPage } = useJumpToPage();
   const tipsModal = useModal(TipsModal);
   const [sgrBalance, setSgrBalance] = useState('0');
+  const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
+  const { getNoticeData } = useGetNoticeData();
+  const isJoin = useJoinStatus();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
@@ -49,6 +58,17 @@ export default function TgHome() {
       /* empty */
     }
   }, [cmsInfo?.curChain, isLogin, wallet.address]);
+
+  const getNotice = useCallback(async () => {
+    try {
+      const res = await getNoticeData({
+        theme: 'dark',
+      });
+      setNoticeData(res);
+    } catch (error) {
+      setNoticeData([]);
+    }
+  }, [getNoticeData]);
 
   const OpenAdoptModal = useCallback(() => {
     if (!wallet.address || !schrodingerDetail) return;
@@ -96,18 +116,48 @@ export default function TgHome() {
     }
   };
 
+  const acceptReferral = async (referrerAddress: string) => {
+    try {
+      await AcceptReferral({
+        referrer: referrerAddress,
+      });
+
+      store.dispatch(setIsJoin(true));
+    } catch (error) {
+      /* empty */
+    }
+  };
+
   useEffect(() => {
     if (!wallet.address) return;
     sendAdTrack(wallet?.address);
   }, [wallet?.address]);
 
   useEffect(() => {
+    if (isLogin && !isJoin) {
+      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+      if (referrerAddress) {
+        acceptReferral(referrerAddress);
+      }
+    }
+  }, [isLogin, isJoin]);
+
+  useEffect(() => {
     getDetail();
   }, [getDetail]);
+
+  useEffect(() => {
+    getNotice();
+  }, [getNotice]);
 
   return (
     <div
       className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
+      {noticeData && noticeData?.length ? (
+        <div className="w-full h-[48px] overflow-hidden mb-[8px] rounded-md">
+          <ScrollAlert data={noticeData} type="notice" theme="dark" />
+        </div>
+      ) : null}
       <BalanceModule onSgrBalanceChange={onBalanceChange} />
       <div className="mt-10">
         <AdoptModule onAdopt={OpenAdoptModal} />

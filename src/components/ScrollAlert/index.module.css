@@ -5,3 +5,18 @@
         @apply bg-functionalWarningBg border-warning100 rounded-none lg:rounded-md;
     }
 }
+
+.scroll-alert-dark {
+    &.alert-notice {
+        @apply bg-pixelsPaleYellow border-pixelsPaleYellow;
+    }
+
+    :global {
+        .aelfd-alert-icon {
+            path {
+                @apply fill-pixelsPrimaryTextPurple;
+            }
+            
+        }
+    }
+}
