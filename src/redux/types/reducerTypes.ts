@@ -153,6 +153,7 @@ export type TGlobalConfigType = {
       color?: string;
     };
   };
+  tgWebAppUrl?: string;
   rarityFilterItems: Array<{
     label: string;
     value: string;

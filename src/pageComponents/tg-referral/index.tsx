@@ -7,7 +7,6 @@ import useLoading from 'hooks/useLoading';
 import { useCopyToClipboard } from 'react-use';
 import { message } from 'antd';
 import { QRCode } from 'react-qrcode-logo';
-import { TgPrimaryDomainName } from 'constants/common';
 import clsx from 'clsx';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
@@ -40,10 +39,10 @@ function TgReferral() {
     !isJoin && router.replace('/');
   }, [closeLoading, router, wallet.address]);
 
-  const copyLink = useMemo(() => `${TgPrimaryDomainName}/?startapp=${wallet.address}`, [wallet.address]);
+  const copyLink = useMemo(() => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`, [wallet.address]);
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${TgPrimaryDomainName}/?startapp=${wallet.address}`,
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
     [wallet.address],
   );
 
