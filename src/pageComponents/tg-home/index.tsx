@@ -25,6 +25,8 @@ import { TelegramPlatform } from '@portkey/did-ui-react';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 import { AcceptReferral } from 'contract/schrodinger';
+import { store } from 'redux/store';
+import { setIsJoin } from 'redux/reducer/info';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -119,6 +121,8 @@ export default function TgHome() {
       await AcceptReferral({
         referrer: referrerAddress,
       });
+
+      store.dispatch(setIsJoin(true));
     } catch (error) {
       /* empty */
     }
