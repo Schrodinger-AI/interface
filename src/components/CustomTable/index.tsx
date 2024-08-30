@@ -22,6 +22,7 @@ export interface ICustomTableProps {
     value: string;
     address: string;
   };
+  numberDecimal?: number;
 }
 
 const renderCell = (value: string, addressClassName?: string) => {
@@ -50,7 +51,7 @@ const renderTitle = (value: string, tooltip?: string[]) => {
   );
 };
 
-function CustomTable({ loading = false, dataSource = [], header = [], myData }: ICustomTableProps) {
+function CustomTable({ loading = false, dataSource = [], header = [], myData, numberDecimal = 4 }: ICustomTableProps) {
   const { isLG } = useResponsive();
 
   const renderAddress = useCallback(
@@ -85,7 +86,13 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData }: 
                 if (!value || value === '-') return '-';
                 return renderAddress(value);
               case 'number':
-                return !value && value !== 0 ? '-' : renderCell(formatTokenPrice(value));
+                return !value && value !== 0
+                  ? '-'
+                  : renderCell(
+                      formatTokenPrice(value, {
+                        decimalPlaces: numberDecimal,
+                      }),
+                    );
               default:
                 return renderCell(item.key === 'index' ? `${index + 1}` : value);
             }
@@ -95,7 +102,7 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData }: 
     } else {
       return [];
     }
-  }, [header, renderAddress]);
+  }, [header, numberDecimal, renderAddress]);
 
   return (
     <div className={clsx('mt-[8px] mb-[16px] w-full overflow-x-auto', styles['custom-table'])}>

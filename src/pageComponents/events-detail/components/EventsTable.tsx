@@ -74,7 +74,7 @@ function EventsTable({
     }
   }, [getTableDataSource, server]);
 
-  return <CustomTable header={header} dataSource={dataSource} loading={loading} myData={myData} />;
+  return <CustomTable header={header} dataSource={dataSource} loading={loading} myData={myData} numberDecimal={1} />;
 }
 
 export default React.memo(EventsTable);

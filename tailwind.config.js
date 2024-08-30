@@ -31,6 +31,10 @@ const rotateY = plugin(function ({ addUtilities }) {
       color: 'var(--pixels-white-bg)',
       textShadow: '2px 2px 0 var(--pixels-primary-text-pink)',
     },
+    '.dark-sub-title': {
+      color: 'var(--pixels-white-bg)',
+      textShadow: '2px 2px 0 var(--pixels-dash-purple)',
+    },
     '.tg-card-shadow': {
       boxShadow: '4px 4px 4px 0 #262284',
     },
@@ -79,6 +83,10 @@ module.exports = {
         warning100: 'var(--warning-100)',
         warning500: 'var(--warning-500)',
         warning600: 'var(--warning-600)',
+
+        transparentWhite30: 'var(--transparent-white-30)',
+        transparentWhite20: 'var(--transparent-white-20)',
+        transparentWhite10: 'var(--transparent-white-10)',
 
         pixelsModalBg: 'var(--pixels-modal-bg)',
         pixelsPrimaryTextPurple: 'var(--pixels-primary-text-purple)',

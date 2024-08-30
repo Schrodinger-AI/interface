@@ -10,6 +10,7 @@ import useAutoJoin from './useAutoJoin';
 import { useWebLogin } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
+import { TelegramPlatform } from '@portkey/did-ui-react';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
@@ -18,6 +19,10 @@ export const useCheckJoined = () => {
 
   const toJoin = useCallback(async () => {
     return new Promise((resolve) => {
+      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+
+      if (referrerAddress) return;
+
       JoinModalInit.show({
         buttonInfo: {
           openLoading: true,

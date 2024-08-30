@@ -7,6 +7,7 @@ import { SegmentedValue } from 'antd/es/segmented';
 import { ListTypeEnum } from 'types';
 import { TModalTheme } from 'components/CommonModal';
 import { useResponsive } from 'hooks/useResponsive';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 interface IProps {
   options: SegmentedProps['options'];
@@ -14,9 +15,10 @@ interface IProps {
   theme?: TModalTheme;
   onSegmentedChange?: (value?: SegmentedValue | ListTypeEnum) => void;
   className?: string;
+  segmentedSize?: SizeType;
 }
 
-function CommonSegmented({ onSegmentedChange, value, className, options, theme }: IProps) {
+function CommonSegmented({ onSegmentedChange, value, className, options, theme, segmentedSize = 'large' }: IProps) {
   const { isLG } = useResponsive();
   return (
     <ConfigProvider theme={theme === 'dark' ? themeDarkSegmentedConfig : themeSegmentedConfig}>
@@ -32,7 +34,7 @@ function CommonSegmented({ onSegmentedChange, value, className, options, theme }
           block
           onChange={(value) => onSegmentedChange && onSegmentedChange(value)}
           value={value}
-          size="large"
+          size={segmentedSize}
           options={options}
         />
       </div>

@@ -1,16 +1,77 @@
 .tg-weekly-activity-rankings-wrap {
-  @apply flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[100px];
+  @apply flex flex-col max-w-[2560px] w-full h-screen py-6 pb-[24px] overflow-hidden relative ;
+
+  background: radial-gradient(74.34% 40.95% at 50% 50%, #DD9354 0%, #211104 66%);
+
+  .rankings-bg {
+    @apply w-full h-[694px] absolute top-[24px] left-0 overflow-hidden flex justify-center items-center z-0;
+
+    background-image: url('../../assets/img/telegram/rank/light-bg.png');
+    background-size: auto 100%;
+    background-position-x: center;
+  }
+  
+  .rank-list-wrap {
+    @apply relative z-10 mt-[16px] flex-1 overflow-hidden px-4;
+
+    .rank-list-card {
+      @apply relative w-full h-full z-[12] border border-solid border-[#CF9C6D] rounded-md overflow-y-auto overflow-x-hidden;
+
+      background: linear-gradient(180deg, rgb(255 255 255 / 15%) 0%, rgb(255 255 255 / 5%) 100%);
+
+      .rank-list-card-blur {
+        @apply absolute z-[11] bottom-0 left-0 w-full h-full blur;
+      }
+    }
+  }
+
 
   .rankings-type {
     :global {
+
+      .aelfd-tabs-nav {
+        @apply before:border-transparent;
+      }
+
       .aelfd-tabs-nav-list {
-        @apply !w-full flex;
+        @apply !w-full flex justify-center items-center;
 
         .aelfd-tabs-tab {
-          @apply flex-1 flex justify-center items-center !m-0;
-          
           .aelfd-tabs-tab-btn {
-            @apply w-full flex justify-center items-center !m-0;
+            @apply !px-[10px] text-[var(--transparent-white-30)];
+          }
+
+          &.aelfd-tabs-tab-active {
+            .aelfd-tabs-tab-btn {
+              @apply text-pixelsWhiteBg;
+            }
+          }
+        }
+
+        .aelfd-tabs-ink-bar {
+          @apply h-[3px];
+        }
+      }
+    }
+  }
+
+  .rankings-time {
+    :global {
+      .aelfd-segmented {
+        @apply rounded-md bg-transparent border border-solid border-[var(--transparent-white-20)] shadow-none p-[4px];
+        .aelfd-segmented-item {
+          @apply rounded-[4px] border-none;
+
+          &:hover:not(.aelfd-segmented-item-selected, .aelfd-segmented-item-disabled) {
+            @apply bg-transparent;
+            &::after {
+              @apply bg-transparent;
+            }
+          }
+        }
+        .aelfd-segmented-item-selected {
+          .aelfd-segmented-item-label {
+            @apply rounded-[4px] bg-pixelsCardBg text-pixelsWhiteBg border-none;
           }
         }
       }

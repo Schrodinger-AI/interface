@@ -5,6 +5,7 @@ import styles from './index.module.css';
 import { ReactComponent as NoticeIcon } from 'assets/img/icons/notice.svg';
 import Marquee from 'react-fast-marquee';
 import useResponsive from 'hooks/useResponsive';
+import { TModalTheme } from 'components/CommonModal';
 
 export interface IScrollAlertItem {
   text: string | ReactNode;
@@ -29,10 +30,11 @@ export type TScrollAlertType = 'info' | 'warning' | 'success' | 'error' | 'notic
 type TProps = Omit<AlertProps, 'type'> & {
   data: IScrollAlertItem[];
   type?: TScrollAlertType;
+  theme?: TModalTheme;
 };
 
 function ScrollAlert(props: TProps) {
-  const { data, type = 'warning' } = props;
+  const { data, type = 'warning', theme = 'light' } = props;
   const { isLG, isMD } = useResponsive();
 
   const [contentWidth, setContentWidth] = useState<number>(0);
@@ -55,7 +57,11 @@ function ScrollAlert(props: TProps) {
 
   return (
     <Alert
-      className={clsx(styles['scroll-alert'], customizeAlertStyle?.[type] && customizeAlertStyle[type].styles)}
+      className={clsx(
+        styles['scroll-alert'],
+        theme === 'dark' && styles['scroll-alert-dark'],
+        customizeAlertStyle?.[type] && customizeAlertStyle[type].styles,
+      )}
       message={
         <Marquee pauseOnHover={isLG ? false : true} gradient={false} speed={isLG ? 40 : 50}>
           {data.map((item, index) => {
@@ -64,8 +70,9 @@ function ScrollAlert(props: TProps) {
                 key={index}
                 onClick={() => item?.handle && item.handle()}
                 className={clsx(
-                  'text-sm lg:text-base text-neutralPrimary font-semibold min-w-max mr-[80px] whitespace-nowrap',
+                  'text-sm lg:text-base font-semibold min-w-max mr-[80px] whitespace-nowrap',
                   item.handle ? 'cursor-pointer' : 'cursor-default',
+                  theme === 'dark' ? 'text-pixelsPageBg' : 'text-neutralPrimary',
                 )}
                 style={{
                   width: isMD ? 'max-content' : `${contentWidth}px`,
