@@ -38,7 +38,6 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             NEXT_PUBLIC_APP_ENV=test
-            NODE_ENV=test
             BUILD_ENV=test
   dispatch:
     runs-on: schrodinger-runner

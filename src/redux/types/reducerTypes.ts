@@ -1,6 +1,7 @@
 import { NetworkType } from '@etransfer/ui-react';
 import { ICompassProps } from 'components/Header/type';
 import { TNftActivityListByConditionInput } from 'graphqlServer';
+import { TBuyType } from 'hooks/useBuyToken';
 import { TEmptyChannelGroup } from 'types/misc';
 
 export enum ThemeType {
@@ -63,7 +64,8 @@ export type TBannerConfigButton = {
   buttonType?: 'default' | 'primary';
   link?: string;
   needLogin?: boolean;
-  linkType?: TLinkType;
+  buyType?: TBuyType;
+  linkType?: TLinkType | 'buyModal';
 };
 
 export type TBannerConfigItem = {

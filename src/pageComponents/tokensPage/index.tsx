@@ -16,6 +16,9 @@ import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
+import { useBuyToken } from 'hooks/useBuyToken';
+import { TBannerConfigButton } from 'redux/types/reducerTypes';
+import { ENVIRONMENT } from 'constants/url';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -43,6 +46,7 @@ export default function TokensPage() {
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
   const { closeLoading } = useLoading();
+  const { checkBalanceAndJump, loading: buyTokenLoading } = useBuyToken();
 
   const cmsInfo = useCmsInfo();
   const { jumpToPage } = useJumpToPage();
@@ -83,6 +87,24 @@ export default function TokensPage() {
     }
   }, 3000);
 
+  const onOperationButtonClick = (item: TBannerConfigButton) => {
+    // TODO: test
+    const env_NEXT_PUBLIC_APP_ENV = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+    console.log('=====env', env_NEXT_PUBLIC_APP_ENV);
+    if (item.linkType === 'buyModal') {
+      checkBalanceAndJump({
+        type: item.buyType || 'buySGR',
+        theme: 'light',
+      });
+    } else {
+      jumpToPage({
+        link: item.link,
+        linkType: item.linkType,
+        needLogin: item.needLogin,
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col max-w-[2560px] w-full">
       {cmsInfo?.bannerConfig ? <TopBanner /> : null}
@@ -113,18 +135,13 @@ export default function TokensPage() {
                 <Button
                   key={index}
                   type={item.buttonType}
+                  loading={item.linkType === 'buyModal' && buyTokenLoading}
                   className={clsx(
                     '!rounded-lg flex-1 overflow-hidden lg:flex-none',
                     index === 0 ? '' : 'ml-[16px]',
                     item?.buttonType === 'default' ? 'border-brandDefault text-brandDefault' : '',
                   )}
-                  onClick={() => {
-                    jumpToPage({
-                      link: item.link,
-                      linkType: item.linkType,
-                      needLogin: item.needLogin,
-                    });
-                  }}>
+                  onClick={() => onOperationButtonClick(item)}>
                   {item.text}
                 </Button>
               );

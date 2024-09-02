@@ -9,6 +9,7 @@ export const NEED_LOGIN_PAGE = [
   '/my-cats',
   '/etransfer',
   '/etransfer-history',
+  '/awaken-swap',
   '/?pageState=1',
 ];
 
@@ -22,3 +23,5 @@ export const HIDE_MAIN_PADDING = ['/', '/rare-cats', '/my-cats'];
 
 export const BUY_SGR_URL = '/etransfer?type=Deposit&tokenSymbol=USDT&depositToToken=SGR-1&depositFromNetwork=TRX';
 export const BUY_ELF_URL = '/etransfer?type=Deposit&tokenSymbol=USDT&depositToToken=ELF&depositFromNetwork=TRX';
+export const SWAP_BUY_SGR_URL = '/awaken-swap?selectTokenInSymbol=ELF&selectTokenOutSymbol=SGR-1';
+export const SWAP_BUY_ELF_URL = '/awaken-swap?selectTokenInSymbol=SGR-1&selectTokenOutSymbol=ELF';

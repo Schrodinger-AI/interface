@@ -6,15 +6,15 @@ import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormat
 import { divDecimals } from 'utils/calculate';
 import { IBalanceItemProps } from '../components/BalanceItem';
 import { GEN0_SYMBOL } from 'constants/common';
-import { useJumpToPage } from 'hooks/useJumpToPage';
-import { BUY_ELF_URL, BUY_SGR_URL } from 'constants/router';
+import { useBuyToken } from 'hooks/useBuyToken';
 
-export default function useBalanceService({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
+export default function useBalanceService(params?: { onSgrBalanceChange?: (value: string) => void }) {
+  const { onSgrBalanceChange } = params || {};
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const { wallet } = useWalletService();
   const { showLoading, closeLoading } = useLoading();
-  const { jumpToPage } = useJumpToPage();
+  const { checkBalanceAndJump } = useBuyToken();
 
   const balanceData: Array<IBalanceItemProps> = useMemo(() => {
     return [
@@ -22,18 +22,24 @@ export default function useBalanceService({ onSgrBalanceChange }: { onSgrBalance
         symbol: 'SGR',
         amount: divDecimals(sgrBalance, 8).toString(),
         onBuy: () => {
-          jumpToPage({ link: BUY_SGR_URL, linkType: 'link' });
+          checkBalanceAndJump({
+            type: 'buySGR',
+            theme: 'dark',
+          });
         },
       },
       {
         symbol: 'ELF',
         amount: divDecimals(elfBalance, 8).toString(),
         onBuy: () => {
-          jumpToPage({ link: BUY_ELF_URL, linkType: 'link' });
+          checkBalanceAndJump({
+            type: 'buyELF',
+            theme: 'dark',
+          });
         },
       },
     ];
-  }, [elfBalance, jumpToPage, sgrBalance]);
+  }, [checkBalanceAndJump, elfBalance, sgrBalance]);
 
   const getBalance = useCallback(async () => {
     if (!wallet.address) return;

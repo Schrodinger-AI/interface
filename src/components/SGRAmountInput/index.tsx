@@ -8,9 +8,9 @@ import { ToolTip } from 'aelf-design';
 import { useCmsInfo } from 'redux/hooks';
 import { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
 import { useModal } from '@ebay/nice-modal-react';
 import AdoptActionModal from 'components/AdoptActionModal';
+import { useBuyToken } from 'hooks/useBuyToken';
 
 export interface ISGRAmountInputProps {
   title?: string;
@@ -59,8 +59,8 @@ export const SGRAmountInput = forwardRef(
   ) => {
     const [amount, setAmount] = useState<string>(defaultValue);
     const cmsInfo = useCmsInfo();
-    const router = useRouter();
     const adoptActionModal = useModal(AdoptActionModal);
+    const { checkBalanceAndJump } = useBuyToken();
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
@@ -176,7 +176,10 @@ export const SGRAmountInput = forwardRef(
                 )}
                 onClick={() => {
                   adoptActionModal.hide();
-                  router.push(cmsInfo.buySGRFromETransfer || '');
+                  checkBalanceAndJump({
+                    type: 'buySGR',
+                    theme,
+                  });
                 }}>
                 buy $SGR
               </span>
