@@ -22,22 +22,25 @@ export const useBuyToken = () => {
 
   const buyToken = useCallback(
     async ({ type, theme = 'light' }: { type: TBuyType; theme?: TModalTheme }) => {
-      setLoading(true);
-      const [symbolBalance, elfBalance] = await getAllBalance([GEN0_SYMBOL_INFO, AELF_TOKEN_INFO], wallet.address);
-      console.log('=====balance', symbolBalance, elfBalance);
-      if ((type === 'buySGR' && elfBalance !== '0') || (type === 'buyELF' && symbolBalance !== '0')) {
-        console.log('=====modal');
-        purchaseMethodModal.show({
-          type: type,
-          theme,
-          onConfirmCallback: () => {
-            setLoading(false);
-          },
-        });
-      } else {
-        router.push(type === 'buySGR' ? BUY_SGR_URL : BUY_ELF_URL);
+      try {
+        setLoading(true);
+        const [symbolBalance, elfBalance] = await getAllBalance([GEN0_SYMBOL_INFO, AELF_TOKEN_INFO], wallet.address);
+        if ((type === 'buySGR' && elfBalance !== '0') || (type === 'buyELF' && symbolBalance !== '0')) {
+          purchaseMethodModal.show({
+            type: type,
+            theme,
+            sgrBalance: symbolBalance,
+            elfBalance,
+            onConfirmCallback: () => {
+              setLoading(false);
+            },
+          });
+        } else {
+          router.push(type === 'buySGR' ? BUY_SGR_URL : BUY_ELF_URL);
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [getAllBalance, purchaseMethodModal, router, wallet.address],
   );

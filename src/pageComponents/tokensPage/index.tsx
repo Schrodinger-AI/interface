@@ -18,7 +18,6 @@ import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { TBannerConfigButton } from 'redux/types/reducerTypes';
-import { ENVIRONMENT } from 'constants/url';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   {
@@ -88,9 +87,6 @@ export default function TokensPage() {
   }, 3000);
 
   const onOperationButtonClick = (item: TBannerConfigButton) => {
-    // TODO: test
-    const env_NEXT_PUBLIC_APP_ENV = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
-    console.log('=====env', env_NEXT_PUBLIC_APP_ENV);
     if (item.linkType === 'buyModal') {
       checkBalanceAndJump({
         type: item.buyType || 'buySGR',

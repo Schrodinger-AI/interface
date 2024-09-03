@@ -78,6 +78,15 @@ export type TBannerConfigItem = {
   button?: TBannerConfigButton[];
 };
 
+export type TBuyTokenModalContent = {
+  title: string;
+  description: string[];
+  tutorial: {
+    title: string;
+    rules: string[];
+  };
+};
+
 export type TCustomizationItemType = {
   isShowRampBuy: boolean;
   isShowRampSell: boolean;
@@ -123,6 +132,7 @@ export type TCustomizationItemType = {
   eventHot?: boolean;
   adoptDirectlyNew?: boolean;
   referralRulesList?: string[];
+  buyTokenModal: Record<TBuyType, TBuyTokenModalContent>;
   [key: string]: any;
 };
 
@@ -187,6 +197,8 @@ export type TGlobalConfigType = {
   hideTgSummaryPoints?: boolean;
   tgCommunityUrl: string;
   twitterUrlInTgRules: string;
+  awakenSwapContractAddress?: string;
+  awakenUrl?: string;
   [key: string]: any;
 };
 

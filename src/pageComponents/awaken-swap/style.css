@@ -1,0 +1,46 @@
+/* stylelint-disable no-descending-specificity */
+/* stylelint-disable no-duplicate-selectors */
+.portkey-trade-ant-modal-root {
+  .portkey-trade-ant-modal.transactions-settings-modal,
+  .portkey-trade-ant-modal.swap-confirm-modal,
+  .portkey-trade-ant-modal.tips-modal-m {
+    .portkey-trade-ant-modal-content {
+      @apply rounded-lg;
+    }
+    .portkey-trade-ant-modal-header {
+      @apply rounded-lg;
+      .portkey-trade-ant-modal-title > span {
+        @apply text-2xl font-semibold text-neutralTitle;
+      }
+
+      .portkey-trade-ant-btn.common-button.close-icon-btn:hover {
+        @apply bg-transparent;
+      }
+    }
+
+    .content-wrap {
+      .fee-item {
+        @apply rounded-lg border-neutralDefaultBg bg-neutralDefaultBg text-neutralSecondary;
+
+        &.fee-item-ative {
+          @apply border-brandDefault text-brandDefault bg-white;
+        }
+      }
+      .portkey-trade-ant-input-affix-wrapper {
+        @apply rounded-lg;
+      }
+    }
+
+    .confirm-modal-btnWrap {
+      .portkey-trade-ant-btn.portkey-trade-ant-btn-primary {
+        @apply rounded-lg bg-brandDefault;
+      }
+    }
+
+    .modal-content-wrap {
+      .swap-confirm-modal-btn.portkey-trade-ant-btn-primary {
+        @apply rounded-lg bg-brandDefault;
+      }
+    }
+  }
+}

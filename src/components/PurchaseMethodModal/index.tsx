@@ -6,29 +6,37 @@ import { Button } from 'aelf-design';
 import { TBuyType } from 'hooks/useBuyToken';
 import { useRouter } from 'next/navigation';
 import { BUY_ELF_URL, BUY_SGR_URL, SWAP_BUY_ELF_URL, SWAP_BUY_SGR_URL } from 'constants/router';
+import { useCmsInfo } from 'redux/hooks';
 
-// TODO
 function PurchaseMethodModal({
   type,
-  title = 'Note:',
   closable = true,
-  innerText,
   theme = 'light',
-  btnText,
+  sgrBalance = '',
+  elfBalance = '',
   onCancel,
   onConfirmCallback,
 }: {
   type: TBuyType;
-  title?: string;
   closable?: boolean;
-  innerText?: string;
   theme?: TModalTheme;
-  btnText?: string;
+  sgrBalance?: string;
+  elfBalance?: string;
   onCancel?: () => void;
   onConfirmCallback?: () => void;
 }) {
   const modal = useModal();
   const router = useRouter();
+  const cmsInfo = useCmsInfo();
+
+  const { buyTokenModal } = cmsInfo || {};
+
+  const curText = useMemo(() => {
+    if (buyTokenModal) {
+      return buyTokenModal[type];
+    }
+    return undefined;
+  }, [buyTokenModal, type]);
 
   const onETransferClick = useCallback(() => {
     modal.hide();
@@ -42,24 +50,32 @@ function PurchaseMethodModal({
     onConfirmCallback && onConfirmCallback();
   }, [modal, onConfirmCallback, router, type]);
 
+  const isDark = useMemo(() => theme === 'dark', [theme]);
+
   const confirmBtn = useMemo(
     () => (
-      <div>
+      <div className="w-full flex justify-center">
         <Button
-          className={clsx('w-full lg:w-[356px]', theme === 'dark' ? 'primary-button-dark' : '')}
+          className={clsx(
+            'flex-1 lg:flex-none lg:w-[187px] !rounded-lg mr-[16px] border-brandDefault text-brandDefault',
+            isDark ? 'primary-button-dark !rounded-none' : '',
+          )}
           onClick={onETransferClick}
-          type="primary">
-          etransfer
+          type="default">
+          Buy with USDT
         </Button>
         <Button
-          className={clsx('w-full lg:w-[356px]', theme === 'dark' ? 'primary-button-dark' : '')}
+          className={clsx(
+            'flex-1 lg:flex-none lg:w-[187px] !rounded-lg',
+            isDark ? 'primary-button-dark !rounded-none' : '',
+          )}
           onClick={onSwapClick}
           type="primary">
           Swap
         </Button>
       </div>
     ),
-    [onETransferClick, onSwapClick, theme],
+    [onETransferClick, onSwapClick, isDark],
   );
 
   const onClose = () => {
@@ -80,9 +96,72 @@ function PurchaseMethodModal({
       afterClose={modal.remove}
       theme={theme}
       disableMobileLayout={true}
-      title={title}
+      title={curText?.title}
       footer={confirmBtn}>
-      <div className="flex flex-col gap-6"></div>
+      <div>
+        {curText?.description.length
+          ? curText?.description.map((item, index) => {
+              return (
+                <p
+                  key={index}
+                  className={clsx('text-sm mb-[4px] last:mb-0', isDark ? 'text-pixelsDivider' : 'text-neutralPrimary')}>
+                  {item}
+                </p>
+              );
+            })
+          : null}
+        {curText?.tutorial ? (
+          <div className="mt-[24px]">
+            <p className={clsx('text-sm', isDark ? 'text-pixelsTertiaryTextPurple' : 'text-neutralPrimary')}>
+              {curText.tutorial.title}
+            </p>
+            {curText.tutorial.rules.length ? (
+              <div className="mt-[4px]">
+                {curText.tutorial.rules.map((item, index) => {
+                  return (
+                    <div className="flex" key={index}>
+                      <div className="p-[3px]">
+                        <span
+                          className={clsx(
+                            'flex items-center justify-center text-xs font-semibold w-[16px] h-[16px] rounded-md mr-[10px]',
+                            isDark
+                              ? 'text-pixelsTertiaryTextPurple bg-pixelsPrimaryTextPurple'
+                              : 'text-brandDefault bg-brandBg',
+                          )}>
+                          {index + 1}
+                        </span>
+                      </div>
+
+                      <p
+                        key={index}
+                        className={clsx(
+                          'flex-1 text-sm mb-[4px] last:mb-0',
+                          isDark ? 'text-pixelsTertiaryTextPurple' : 'text-neutralPrimary',
+                        )}>
+                        {item}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div
+          className={clsx(
+            'mt-[24px] p-[16px] flex justify-between text-base font-medium',
+            isDark
+              ? 'rounded-none bg-pixelsPageBg text-pixelsWhiteBg'
+              : 'rounded-lg bg-neutralHoverBg text-neutralTitle',
+          )}>
+          <p>Balance</p>
+          <div>
+            <p className="text-right">{sgrBalance} SGR</p>
+            <p className="mt-[8px] text-right">{elfBalance} ELF</p>
+          </div>
+        </div>
+      </div>
     </CommonModal>
   );
 }

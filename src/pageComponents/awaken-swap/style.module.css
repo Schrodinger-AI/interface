@@ -1,18 +1,309 @@
 /* stylelint-disable no-descending-specificity */
 /* stylelint-disable no-duplicate-selectors */
-.awakenWrap {
+.awaken-wrap {
+  margin-bottom: 24px;
   :global {
-    .swap-input-wrapper .swap-input-row2 {
-      .select-token-wrap,
-      .show-token-wrap {
-        @apply pointer-events-none;
+
+    .swap-input-wrapper {
+      @apply border border-solid border-neutralBorder rounded-lg p-[24px] bg-neutralHoverBg;
+
+      .swap-input-row1 {
+        @apply text-base font-normal text-neutralSecondary;
       }
-      .show-token-wrap {
-        @apply rounded-md;
-        .portkey-swap-common-svg {
-          @apply hidden;
+
+      .swap-input-row2 {
+        .select-token-wrap,
+        .show-token-wrap {
+          @apply pointer-events-none;
+        }
+        .show-token-wrap {
+          @apply bg-neutralDefaultBg rounded-md;
+          .portkey-swap-common-svg {
+            @apply hidden;
+          }
+        }
+        .swap-input-value{
+          @apply text-xl;
+        }
+
+        .select-token-wrap {
+          @apply bg-brandDefault;
+        }
+
+        .show-token-wrap {
+          span {
+            @apply text-xl text-neutralTitle;
+          }
+          .portkey-trade-ant-image{
+            @apply !w-auto !h-auto;
+            .portkey-trade-ant-image-img {
+              @apply !w-7 !h-7 !rounded-[50%];
+            }
+          }
+        }
+      }
+
+      .swap-input-row3 {
+        .usd-suffix-show{
+          span {
+            @apply !text-base !text-functionalError;
+          }
+        }
+        .balance-show, .value-in-usd {
+          @apply text-base text-neutralSecondary font-normal;
+        }
+
+        .show-max {
+          @apply border-brandDefault text-brandDefault rounded-sm px-4 py-1 text-sm font-semibold;
         }
       }
     }
+
+    .swap-btn-wrap {
+      @apply flex justify-center items-center;
+      .common-button {
+        @apply w-[206px] bg-brandDefault text-center text-base text-white rounded-lg;
+  
+        &:hover {
+          @apply bg-brandHover text-white;
+        }
+        &.btn-tip {
+          @apply opacity-100;
+        }
+        &.btn-error, &.btn-tip{
+          @apply bg-neutralDivider text-neutralDisable;
+          &:hover {
+            @apply bg-neutralDivider text-neutralDisable;
+          }
+        }
+      }
+    } 
+
+    .swap-token-switch-wrap{
+      @apply h-2 md:h-4;
+    }
+    
+    
+    .swap-panel-wrapper .swap-token-switch-wrap .swap-token-switch-btn {
+      @apply hidden;
+    }
+    .swap-price-swap{
+      @apply text-sm font-normal text-neutralTitle;
+    }
+    .portkey-swap-common-svg{
+      @apply flex;
+    }
+    .swap-panel-wrapper .swap-price-swap-info .icon-edit-icon {
+      path {
+        @apply fill-brandDefault;
+      }
+      .awk-common-tool-tip {
+        &.ant-tooltip-open {
+          .common-question {
+            @apply bg-none;
+          }
+        }
+      }
+    }
+    .swap-price-swap-info {
+      @apply gap-4;
+      .common-tooltip {
+        padding-bottom: 0;
+
+        .portkey-trade-ant-tooltip-arrow {
+          &::before {
+            @apply text-[var(--fill-mask-2)]
+          }
+        }
+        .portkey-trade-ant-tooltip-inner {
+          @apply text-[var(--fill-mask-2)]
+        }
+      }
+      .price-swap-info-item{
+        .price-swap-info-label{
+          @apply text-sm font-normal text-neutralTertiary;
+        }
+        .icon-question-icon {
+          svg {
+            path{
+              @apply stroke-neutralTertiary;
+            }
+            &:hover{
+              @apply stroke-neutralTertiary;
+            }
+          } 
+          
+        }
+        .price-swap-info-value {
+          @apply text-sm font-medium text-neutralPrimary;
+          span{
+            @apply font-medium text-neutralPrimary;
+          }
+        }
+      }
+    }
+  }
+}
+
+.swap-wrap {
+  .awaken-wrap {
+    :global {
+      .swap-input-wrapper {
+        @apply p-[16px];
+  
+        .swap-input-row1 {
+          @apply text-sm;
+        }
+  
+        .swap-input-row2 {
+          .swap-input-value{
+            @apply text-lg;
+          }
+
+          .show-token-wrap {
+            span {
+              @apply text-lg;
+            }
+            .portkey-trade-ant-image{
+              .portkey-trade-ant-image-img {
+                @apply !w-6 !h-6;
+              }
+            }
+          }
+        }
+  
+        .swap-input-row3 {
+          .usd-suffix-show{
+            span {
+              @apply !text-sm;
+            }
+          }
+          .balance-show, .value-in-usd {
+            @apply text-sm;
+          }
+  
+          .show-max {
+            @apply px-[16px] py-[5px] text-xs;
+          }
+        }
+      }
+      .swap-btn-wrap {
+        .common-button {
+          @apply w-full;
+        }
+      } 
+    }
+  }
+}
+
+.swap-wrap-dark {
+  @apply p-[16px];
+  .awaken-wrap {
+    :global {
+      .swap-input-wrapper {
+        @apply border-pixelsBorder rounded-none bg-pixelsModalBg;
+  
+        .swap-input-row1 {
+          @apply text-neutralSecondary;
+        }
+  
+        .swap-input-row2 {
+          .show-token-wrap {
+            @apply bg-pixelsPageBg rounded-none;
+          }
+          .swap-input-value{
+            @apply text-pixelsBorder;
+          }
+          .select-token-wrap {
+            @apply bg-brandDefault;
+          }
+  
+          .show-token-wrap {
+            span {
+              @apply text-pixelsWhiteBg;
+            }
+          }
+        }
+  
+        .swap-input-row3 {
+          .usd-suffix-show{
+            span {
+              @apply !text-pixelsPrimaryTextPink;
+            }
+          }
+          .balance-show, .value-in-usd {
+            @apply text-pixelsBorder;
+          }
+  
+          .show-max {
+            @apply primary-button-dark;
+          }
+        }
+      }
+  
+      .swap-btn-wrap {
+        .common-button.btn-error, .common-button.btn-tip {
+          @apply !primary-button-disabled-dark;
+        }
+        .common-button {
+          @apply !primary-button-dark;
+          &:hover {
+            @apply bg-pixelsCardBg text-pixelsWhiteBg;
+          }
+          &.btn-error, &.btn-tip{
+            &:hover {
+              @apply bg-[#0F0D2E] text-[#57566D];
+            }
+          }
+        }
+      }
+
+      .swap-price-swap {
+        .single-price-swap {
+          @apply text-pixelsWhiteBg;
+        }
+        .portkey-swap-common-svg.icon-price-switch-icon {
+          >svg {
+            @apply fill-pixelsWhiteBg;
+          }
+        }
+
+        .portkey-swap-common-svg.icon-arrow-up2-icon {
+          svg path {
+            @apply stroke-pixelsWhiteBg;
+          }
+        }
+      }
+
+      .swap-price-swap-info {
+        .price-swap-info-label {
+          @apply text-pixelsBorder;
+        }
+        .portkey-swap-common-svg.icon-question-icon {
+          svg path {
+            @apply stroke-pixelsBorder;
+          }
+        }
+        .price-swap-info-value {
+          @apply text-pixelsWhiteBg;
+
+          span {
+            @apply text-pixelsWhiteBg;
+          }
+
+          .portkey-swap-common-svg.icon-edit-icon {
+            svg path {
+              @apply fill-pixelsSecondaryTextPurple;
+            }
+          }
+          .portkey-swap-common-svg.icon-arrow-up2-icon {
+            svg path {
+              @apply fill-pixelsWhiteBg;
+            }
+          }
+        }
+      }
+    }
+
   }
 }

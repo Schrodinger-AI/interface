@@ -1,7 +1,6 @@
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
-import { Breadcrumb } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
@@ -18,10 +17,11 @@ import { useWalletService } from 'hooks/useWallet';
 import { WalletType } from 'aelf-web-login';
 import useSwapService from './hooks/useSwapService';
 import '@portkey/trader-react-ui/dist/assets/index.css';
+import './style.css';
 
 const DarkModal = dynamic(
   async () => {
-    const modal = await import('pageComponents/etransfer/darkModal').then((module) => module);
+    const modal = await import('./darkModal').then((module) => module);
     return modal;
   },
   { ssr: false },
@@ -64,17 +64,13 @@ export default function AwakenSwap() {
     }
   }, 4000);
 
-  const onBack = useCallback(() => {
-    router.back();
-  }, [router]);
-
   useEffect(() => {
     setLoading(true);
 
     if (!cmsInfo) return;
     const awakenIns = new AwakenSwapper({
       contractConfig: {
-        swapContractAddress: cmsInfo?.awakenSwapContractAddress,
+        swapContractAddress: cmsInfo?.awakenSwapContractAddress || '',
         rpcUrl: getRpcUrls()[cmsInfo.curChain] || '',
       },
       requestDefaults: {
@@ -90,49 +86,30 @@ export default function AwakenSwap() {
   return (
     <div
       className={clsx(
-        'm-auto max-w-[1024px] relative',
-        styles['etransfer-deposit-wrap'],
-        isInTG && styles['etransfer-deposit-wrap-dark'],
+        'm-auto max-w-[668px] relative',
+        isLG && styles['swap-wrap'],
+        isInTG && styles['swap-wrap-dark'],
       )}>
       {isInTG && <DarkModal />}
-      {isLG ? (
-        <div className="mb-[16px]">
-          <BackCom className="mt-6 m-4 ml-0 lg:ml-10" theme={isInTG ? 'dark' : 'light'} />
-          <div className="w-full flex justify-between items-center">
-            <span className={clsx('text-lg font-semibold', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
-              Swap
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="px-[32px] mb-[24px]">
-          <Breadcrumb
-            items={[
-              {
-                title: (
-                  <span className=" cursor-pointer" onClick={onBack}>
-                    Schrodinger
-                  </span>
-                ),
-              },
-              {
-                title: <div>Swap</div>,
-              },
-            ]}
-          />
-        </div>
-      )}
-      <Swap
-        selectTokenInSymbol={defaultParams.selectTokenInSymbol}
-        selectTokenOutSymbol={defaultParams.selectTokenOutSymbol}
-        containerClassName={styles.awakenWrap}
-        componentUiType={isMD ? ComponentType.Mobile : ComponentType.Web}
-        onConfirmSwap={() => {
-          console.log('=====onConfirmSwap');
-        }}
-        chainId={cmsInfo?.curChain}
-        awaken={awakenProps}
-      />
+      <BackCom className="mb-[24px]" theme={isInTG ? 'dark' : 'light'} />
+      <div
+        className={clsx(
+          'w-full',
+          isLG ? 'border-none rounded-none p-0' : 'border border-solid border-neutralBorder rounded-[20px] p-[24px]',
+        )}>
+        <p className={clsx('text-2xl font-semibold !mb-[24px]', isInTG ? 'dark-title' : 'text-neutralTitle')}>Swap</p>
+        <Swap
+          selectTokenInSymbol={defaultParams.selectTokenInSymbol}
+          selectTokenOutSymbol={defaultParams.selectTokenOutSymbol}
+          containerClassName={styles['awaken-wrap']}
+          componentUiType={isMD ? ComponentType.Mobile : ComponentType.Web}
+          onConfirmSwap={() => {
+            console.log('=====onConfirmSwap');
+          }}
+          chainId={cmsInfo?.curChain}
+          awaken={awakenProps}
+        />
+      </div>
     </div>
   );
 }

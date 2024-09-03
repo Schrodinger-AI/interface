@@ -1,0 +1,72 @@
+/* stylelint-disable no-descending-specificity */
+/* stylelint-disable no-duplicate-selectors */
+.portkey-trade-ant-modal-root {
+  .portkey-trade-ant-modal.transactions-settings-modal,
+  .portkey-trade-ant-modal.swap-confirm-modal,
+  .portkey-trade-ant-modal.tips-modal-m {
+    .portkey-trade-ant-modal-content {
+      @apply bg-pixelsModalBg border border-dashed border-pixelsPrimaryTextPurple rounded-none;
+
+      .portkey-trade-ant-modal-header {
+        @apply rounded-none bg-pixelsModalBg;
+        .portkey-trade-ant-modal-title > span {
+          @apply !dark-title;
+        }
+
+        .portkey-trade-ant-btn.common-button.close-icon-btn {
+          .portkey-trade-ant-btn-icon {
+            svg path {
+              @apply fill-pixelsDivider;
+            }
+          }
+        }
+      }
+
+      .content-wrap {
+        .tips-wrap {
+          .price-swap-info-label {
+            @apply text-pixelsDivider;
+          }
+          .portkey-swap-common-svg.icon-question-icon {
+            svg path {
+              @apply stroke-pixelsDivider;
+            }
+          }
+        }
+
+        .fee-item {
+          @apply rounded-none bg-transparent border border-solid border-pixelsBorder text-pixelsWhiteBg;
+  
+          &.fee-item-ative {
+            @apply border-[2px] border-pixelsTertiaryTextPurple text-pixelsTertiaryTextPurple;
+          }
+        }
+        .portkey-trade-ant-input-affix-wrapper {
+          @apply rounded-none border-pixelsBorder text-pixelsWhiteBg;
+        }
+      }
+
+      .confirm-modal-btnWrap {
+        .portkey-trade-ant-btn.portkey-trade-ant-btn-primary {
+          @apply primary-button-dark;
+        }
+      }
+
+      .tips-content {
+        .info-text {
+          @apply text-pixelsBorder;
+        }
+      }
+
+      .portkey-trade-ant-btn.portkey-trade-ant-btn-default.ok-btn {
+        @apply !primary-button-dark;
+      }
+
+      .modal-content-wrap {
+        .swap-confirm-modal-btn.portkey-trade-ant-btn-primary {
+          @apply !primary-button-dark;
+        }
+      }
+    }
+  }
+}
