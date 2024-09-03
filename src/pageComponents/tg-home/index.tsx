@@ -15,8 +15,6 @@ import { DIRECT_ADOPT_GEN9_MIN, GEN0_SYMBOL } from 'constants/common';
 import { divDecimals } from 'utils/calculate';
 import { useModal } from '@ebay/nice-modal-react';
 import TipsModal from 'components/TipsModal';
-import { useJumpToPage } from 'hooks/useJumpToPage';
-import { BUY_SGR_URL } from 'constants/router';
 import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
@@ -34,15 +32,18 @@ export default function TgHome() {
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
-  const { jumpToPage } = useJumpToPage();
   const tipsModal = useModal(TipsModal);
   const [sgrBalance, setSgrBalance] = useState('0');
+  const [elfBalance, setElfBalance] = useState('0');
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
+  }, []);
+  const onElfBalanceChange = useCallback((value: string) => {
+    value && setElfBalance(value);
   }, []);
 
   const getDetail = useCallback(async () => {
@@ -75,12 +76,8 @@ export default function TgHome() {
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
       tipsModal.show({
         innerText: `Insufficient funds, deposit a minimum of ${DIRECT_ADOPT_GEN9_MIN}$SGR to adopt a cat.`,
-        btnText: 'Buy $SGR',
-        onConfirm: () => {
-          jumpToPage({ link: BUY_SGR_URL, linkType: 'link' });
-          tipsModal.hide();
-        },
         theme: 'dark',
+        showSwap: divDecimals(elfBalance, 8).gt(0),
       });
       return;
     }
@@ -91,7 +88,7 @@ export default function TgHome() {
       theme: 'dark',
       prePage: 'adoptModal',
     });
-  }, [adoptHandler, jumpToPage, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
+  }, [adoptHandler, elfBalance, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
 
   const sendAdTrack = (address: string) => {
     const tg_user_click_daily: {
@@ -158,7 +155,7 @@ export default function TgHome() {
           <ScrollAlert data={noticeData} type="notice" theme="dark" />
         </div>
       ) : null}
-      <BalanceModule onSgrBalanceChange={onBalanceChange} />
+      <BalanceModule onSgrBalanceChange={onBalanceChange} onElfBalanceChange={onElfBalanceChange} />
       <div className="mt-10">
         <AdoptModule onAdopt={OpenAdoptModal} />
       </div>

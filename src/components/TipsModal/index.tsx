@@ -1,38 +1,78 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button } from 'aelf-design';
+import { useRouter } from 'next/navigation';
+import { BUY_SGR_URL, SWAP_BUY_SGR_URL } from 'constants/router';
 
 function TipsModal({
   title = 'Note:',
   closable = true,
   innerText,
   theme = 'light',
-  btnText,
+  showSwap = false,
   onCancel,
-  onConfirm,
 }: {
   title?: string;
   closable?: boolean;
   innerText?: string;
   theme?: TModalTheme;
-  btnText?: string;
+  showSwap?: boolean;
   onCancel?: () => void;
-  onConfirm?: () => void;
 }) {
   const modal = useModal();
+  const router = useRouter();
+
+  const onETransferClick = useCallback(() => {
+    modal.hide();
+    router.push(BUY_SGR_URL);
+  }, [modal, router]);
+
+  const onSwapClick = useCallback(() => {
+    modal.hide();
+    router.push(SWAP_BUY_SGR_URL);
+  }, [modal, router]);
 
   const confirmBtn = useMemo(
     () => (
-      <Button
-        className={clsx('w-full lg:w-[356px]', theme === 'dark' ? 'primary-button-dark' : '')}
-        onClick={onConfirm}
-        type="primary">
-        {btnText}
-      </Button>
+      <div className="w-full flex justify-center">
+        {showSwap ? (
+          <Button
+            className={clsx(
+              'flex-1 lg:w-[187px] lg:flex-none mr-[16px]',
+              theme === 'dark' ? 'default-button-dark hover:!bg-pixelsPageBg hover:!text-pixelsWhiteBg' : '',
+            )}
+            onClick={onETransferClick}
+            type="default">
+            Buy with USDT
+          </Button>
+        ) : (
+          <Button
+            className={clsx(
+              'flex-1 lg:w-[187px] lg:flex-none mr-[16px]',
+              theme === 'dark' ? 'primary-button-dark hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg' : '',
+            )}
+            onClick={onETransferClick}
+            type="primary">
+            Buy with USDT
+          </Button>
+        )}
+
+        {showSwap ? (
+          <Button
+            className={clsx(
+              'flex-1 lg:w-[187px] lg:flex-none',
+              theme === 'dark' ? 'primary-button-dark hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg' : '',
+            )}
+            onClick={onSwapClick}
+            type="primary">
+            Swap
+          </Button>
+        ) : null}
+      </div>
     ),
-    [btnText, onConfirm, theme],
+    [onETransferClick, onSwapClick, showSwap, theme],
   );
 
   const onClose = () => {
@@ -54,7 +94,7 @@ function TipsModal({
       theme={theme}
       disableMobileLayout={true}
       title={title}
-      footer={btnText ? confirmBtn : null}>
+      footer={confirmBtn}>
       <div className="flex flex-col gap-6">
         {innerText ? (
           <span

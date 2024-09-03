@@ -70,3 +70,60 @@
     }
   }
 }
+
+.portkey-trade-ant-drawer {
+  .portkey-trade-ant-drawer-content {
+    .portkey-trade-ant-drawer-body {
+      @apply bg-pixelsModalBg;
+      .portkey-trade-ant-modal-header {
+        @apply rounded-none bg-pixelsModalBg;
+        .portkey-trade-ant-modal-title > span {
+          @apply dark-title;
+        }
+        .portkey-trade-ant-btn.common-button.close-icon-btn {
+          .portkey-trade-ant-btn-icon {
+            svg path {
+              @apply fill-pixelsDivider;
+            }
+          }
+        }
+      }
+      .content-wrap {
+        .swap-confirm-modal-content {
+          .swap-confirm-modal-input-wrap {
+            @apply bg-pixelsPageBg border-pixelsBorder rounded-none;
+  
+            .swap-confirm-modal-input-info {
+              span {
+                @apply text-pixelsWhiteBg;
+              }
+  
+              span:last-child, span:first-child {
+                @apply text-pixelsBorder;
+              }
+            }
+          }
+  
+          .swap-confirm-modal-detail {
+            .swap-detail-title {
+              @apply text-pixelsBorder;
+            }
+            .portkey-trade-ant-row.portkey-trade-ant-row-middle {
+              @apply text-pixelsWhiteBg;
+            }
+
+            >.portkey-trade-ant-row.portkey-trade-ant-row-space-between:first-child {
+              .swap-detail-title {
+                @apply text-pixelsWhiteBg;
+              }
+            }
+          }
+        }
+      }
+  
+      .portkey-trade-ant-btn.portkey-trade-ant-btn-primary.swap-confirm-modal-btn {
+        @apply !primary-button-dark;
+      }
+    }
+  }
+}

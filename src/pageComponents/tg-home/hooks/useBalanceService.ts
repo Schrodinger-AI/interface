@@ -8,8 +8,11 @@ import { IBalanceItemProps } from '../components/BalanceItem';
 import { GEN0_SYMBOL } from 'constants/common';
 import { useBuyToken } from 'hooks/useBuyToken';
 
-export default function useBalanceService(params?: { onSgrBalanceChange?: (value: string) => void }) {
-  const { onSgrBalanceChange } = params || {};
+export default function useBalanceService(params?: {
+  onSgrBalanceChange?: (value: string) => void;
+  onElfBalanceChange?: (value: string) => void;
+}) {
+  const { onSgrBalanceChange, onElfBalanceChange } = params || {};
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const { wallet } = useWalletService();
@@ -57,6 +60,7 @@ export default function useBalanceService(params?: { onSgrBalanceChange?: (value
       ]);
       setSgrBalance(sgrBalanceRes?.balance || '0');
       onSgrBalanceChange && onSgrBalanceChange(sgrBalanceRes?.balance || '0');
+      onElfBalanceChange && onElfBalanceChange(elfBalanceRes?.balance || '0');
       setElfBalance(elfBalanceRes?.balance || '0');
       return {
         sgrBalance: sgrBalanceRes?.balance || '0',
@@ -71,7 +75,7 @@ export default function useBalanceService(params?: { onSgrBalanceChange?: (value
     } finally {
       closeLoading();
     }
-  }, [closeLoading, onSgrBalanceChange, showLoading, wallet.address]);
+  }, [closeLoading, onElfBalanceChange, onSgrBalanceChange, showLoading, wallet.address]);
 
   useEffect(() => {
     getBalance();
