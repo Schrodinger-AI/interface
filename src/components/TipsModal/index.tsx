@@ -11,14 +11,12 @@ function TipsModal({
   closable = true,
   innerText,
   theme = 'light',
-  showSwap = false,
   onCancel,
 }: {
   title?: string;
   closable?: boolean;
   innerText?: string;
   theme?: TModalTheme;
-  showSwap?: boolean;
   onCancel?: () => void;
 }) {
   const modal = useModal();
@@ -37,42 +35,20 @@ function TipsModal({
   const confirmBtn = useMemo(
     () => (
       <div className="w-full flex justify-center">
-        {showSwap ? (
-          <Button
-            className={clsx(
-              'flex-1 lg:w-[187px] lg:flex-none mr-[16px]',
-              theme === 'dark' ? 'default-button-dark hover:!bg-pixelsPageBg hover:!text-pixelsWhiteBg' : '',
-            )}
-            onClick={onETransferClick}
-            type="default">
-            Buy with USDT
-          </Button>
-        ) : (
-          <Button
-            className={clsx(
-              'flex-1 lg:w-[187px] lg:flex-none mr-[16px]',
-              theme === 'dark' ? 'primary-button-dark hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg' : '',
-            )}
-            onClick={onETransferClick}
-            type="primary">
-            Buy with USDT
-          </Button>
-        )}
-
-        {showSwap ? (
-          <Button
-            className={clsx(
-              'flex-1 lg:w-[187px] lg:flex-none',
-              theme === 'dark' ? 'primary-button-dark hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg' : '',
-            )}
-            onClick={onSwapClick}
-            type="primary">
-            Swap
-          </Button>
-        ) : null}
+        <Button
+          className={clsx(
+            'flex-1 lg:w-[187px] lg:flex-none mr-[16px]',
+            theme === 'dark'
+              ? 'primary-button-dark hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg active:!bg-pixelsCardBg active:!text-pixelsWhiteBg'
+              : '',
+          )}
+          onClick={onETransferClick}
+          type="primary">
+          Buy with USDT
+        </Button>
       </div>
     ),
-    [onETransferClick, onSwapClick, showSwap, theme],
+    [onETransferClick, onSwapClick, theme],
   );
 
   const onClose = () => {

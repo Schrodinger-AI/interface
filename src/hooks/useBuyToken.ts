@@ -8,6 +8,7 @@ import PurchaseMethodModal from 'components/PurchaseMethodModal';
 import { TModalTheme } from 'components/CommonModal';
 import { useGetAllBalance } from './useGetAllBalance';
 import { AELF_TOKEN_INFO, GEN0_SYMBOL_INFO } from 'constants/assets';
+import { formatTokenPrice } from 'utils/format';
 
 export type TBuyType = 'buySGR' | 'buyELF';
 
@@ -29,8 +30,8 @@ export const useBuyToken = () => {
           purchaseMethodModal.show({
             type: type,
             theme,
-            sgrBalance: symbolBalance,
-            elfBalance,
+            sgrBalance: formatTokenPrice(symbolBalance),
+            elfBalance: formatTokenPrice(elfBalance),
             onConfirmCallback: () => {
               setLoading(false);
             },

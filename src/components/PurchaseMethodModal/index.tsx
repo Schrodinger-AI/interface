@@ -58,7 +58,9 @@ function PurchaseMethodModal({
         <Button
           className={clsx(
             'flex-1 lg:flex-none lg:w-[187px] !rounded-lg mr-[16px] border-brandDefault text-brandDefault',
-            isDark ? 'primary-button-dark !rounded-none' : '',
+            isDark
+              ? 'default-button-dark !rounded-none hover:!bg-pixelsPageBg hover:!text-pixelsWhiteBg hover:!border-pixelsPrimaryTextPurple  active:!bg-pixelsPageBg active:!text-pixelsWhiteBg active:!border-pixelsPrimaryTextPurple'
+              : '',
           )}
           onClick={onETransferClick}
           type="default">
@@ -67,7 +69,9 @@ function PurchaseMethodModal({
         <Button
           className={clsx(
             'flex-1 lg:flex-none lg:w-[187px] !rounded-lg',
-            isDark ? 'primary-button-dark !rounded-none' : '',
+            isDark
+              ? 'primary-button-dark !rounded-none hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg hover:!border-pixelsPrimaryTextPurple active:!bg-pixelsCardBg active:!text-pixelsWhiteBg active:!border-pixelsPrimaryTextPurple'
+              : '',
           )}
           onClick={onSwapClick}
           type="primary">

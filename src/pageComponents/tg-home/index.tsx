@@ -25,6 +25,7 @@ import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 import { AcceptReferral } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
+import { useBuyToken } from 'hooks/useBuyToken';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -38,6 +39,7 @@ export default function TgHome() {
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
+  const { checkBalanceAndJump } = useBuyToken();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
@@ -74,11 +76,18 @@ export default function TgHome() {
   const OpenAdoptModal = useCallback(() => {
     if (!wallet.address || !schrodingerDetail) return;
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
-      tipsModal.show({
-        innerText: `Insufficient funds, deposit a minimum of ${DIRECT_ADOPT_GEN9_MIN}$SGR to adopt a cat.`,
-        theme: 'dark',
-        showSwap: divDecimals(elfBalance, 8).gt(0),
-      });
+      if (divDecimals(elfBalance, 8).gt(0)) {
+        checkBalanceAndJump({
+          type: 'buySGR',
+          theme: 'dark',
+        });
+      } else {
+        tipsModal.show({
+          innerText: `Insufficient funds, deposit a minimum of ${DIRECT_ADOPT_GEN9_MIN}$SGR to adopt a cat.`,
+          theme: 'dark',
+        });
+      }
+
       return;
     }
     adoptHandler({
