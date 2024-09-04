@@ -1,3 +1,4 @@
+import { TBuyType } from 'hooks/useBuyToken';
 import { HandleCardType } from 'redux/types/reducerTypes';
 
 export interface IEventsDetailListTable {
@@ -30,7 +31,8 @@ export interface IEventsDetailListLink {
 
 export interface IEventsDetailListStepsCardImage {
   link?: string;
-  linkType?: TLinkType;
+  linkType?: TLinkType | 'buyModal';
+  buyType?: TBuyType;
   url: string;
   className?: string;
 }
