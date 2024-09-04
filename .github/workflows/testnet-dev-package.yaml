@@ -1,7 +1,7 @@
 name: Build and Push Image
 on:
   push:
-    branches: ['dev', 'feature/*', 'fix/*']
+    branches: ['dev', 'feature/*']
 jobs:
   build-and-push-image:
     runs-on: schrodinger-runner
@@ -37,7 +37,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_APP_ENV=test
             BUILD_ENV=test
   dispatch:
     runs-on: schrodinger-runner

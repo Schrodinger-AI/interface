@@ -1,7 +1,6 @@
 FROM node:18.18.2
 
 ARG web=/opt/workspace/dapp
-
 ARG BUILD_ENV
 
 WORKDIR ${web}
