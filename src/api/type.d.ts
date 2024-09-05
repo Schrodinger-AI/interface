@@ -250,6 +250,8 @@ interface IListingType {
   nftInfo: IListingNftInfo;
   purchaseToken: IPurchaseToken;
   id: string;
+  decimals: number;
+  originQuantity: number;
 }
 
 interface IGetTokenPriceData {

@@ -35,7 +35,7 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
       return {
         key: item.publicTime.toString(),
         purchaseToken: { symbol: item.purchaseToken.symbol.toLocaleUpperCase() },
-        decimals: item.purchaseToken.decimals ?? 8,
+        decimals: item.decimals ?? 8,
         price,
         quantity: item.quantity,
         ownerAddress: item?.ownerAddress || '',
@@ -43,6 +43,7 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
         fromName: item?.owner?.name || '--',
         whitelistHash: item.whitelistId,
         startTime: item.startTime,
+        originQuantity: item.originQuantity,
         endTime: item.endTime,
       };
     });

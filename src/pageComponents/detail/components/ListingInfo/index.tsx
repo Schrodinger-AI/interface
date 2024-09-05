@@ -22,6 +22,7 @@ import { EmptyList } from 'components/EmptyList';
 import Loading from 'components/Loading';
 import { COLLECTION_NAME } from 'constants/common';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
+import { timesDecimals } from 'utils/calculate';
 
 export default function ListingInfo({
   symbol,
@@ -82,12 +83,13 @@ export default function ListingInfo({
             quantity: item.quantity,
             previewImage,
             collectionName: COLLECTION_NAME,
-            nftName: symbol,
-            nftSymbol: tokenName,
-            originQuantity: item.originQuantity,
+            nftName: tokenName,
+            nftSymbol: symbol === 'SGR' ? 'SGR-1' : symbol,
+            originQuantity: timesDecimals(item.originQuantity, item.decimals).toNumber(),
             startTime: item.startTime,
           };
         });
+        console.log('=====list', list);
         await cancelList(list);
       } catch (error) {
         /* empty */

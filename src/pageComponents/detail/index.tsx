@@ -28,7 +28,6 @@ import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
 import useTelegram from 'hooks/useTelegram';
-import useListingsList from 'pageComponents/tg-home/hooks/useListingsList';
 import ListingInfo from './components/ListingInfo';
 import styles from './style.module.css';
 import { useGetListItemsForSale, useSaleInfo } from 'hooks/useSaleService';
