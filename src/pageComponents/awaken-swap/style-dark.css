@@ -66,6 +66,19 @@
         .swap-confirm-modal-btn.portkey-trade-ant-btn-primary {
           @apply !primary-button-dark;
         }
+
+        .swap-order-routing {
+          .swap-order-dot-line {
+            @apply border-pixelsBorder;
+          }
+          
+          .swap-order-route-info {
+            @apply bg-pixelsPageBg rounded-none;
+            >span {
+              @apply !text-pixelsWhiteBg;
+            }
+          }
+        }
       }
     }
   }

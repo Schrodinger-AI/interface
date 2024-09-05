@@ -23,11 +23,11 @@
           }
         }
         .swap-input-value{
-          @apply text-xl;
+          @apply text-xl placeholder:text-xl;
         }
 
         .select-token-wrap {
-          @apply bg-brandDefault;
+          @apply hidden;
         }
 
         .show-token-wrap {
@@ -157,7 +157,7 @@
   
         .swap-input-row2 {
           .swap-input-value{
-            @apply text-lg;
+            @apply text-lg placeholder:text-lg;
           }
 
           .show-token-wrap {
@@ -212,12 +212,9 @@
             @apply bg-pixelsPageBg rounded-none;
           }
           .swap-input-value{
-            @apply text-pixelsBorder;
+            @apply text-pixelsWhiteBg placeholder:text-pixelsBorder;
           }
-          .select-token-wrap {
-            @apply bg-brandDefault;
-          }
-  
+          
           .show-token-wrap {
             span {
               @apply text-pixelsWhiteBg;

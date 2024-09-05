@@ -24,6 +24,9 @@ import { AcceptReferral } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { useBuyToken } from 'hooks/useBuyToken';
+import PurchaseMethodModal from 'components/PurchaseMethodModal';
+import { useModal } from '@ebay/nice-modal-react';
+import { formatTokenPrice } from 'utils/format';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -44,6 +47,7 @@ export default function TgHome() {
   const onElfBalanceChange = useCallback((value: string) => {
     value && setElfBalance(value);
   }, []);
+  const purchaseMethodModal = useModal(PurchaseMethodModal);
 
   const getDetail = useCallback(async () => {
     if (wallet.address && !isLogin) return;
@@ -81,9 +85,11 @@ export default function TgHome() {
           defaultDescription: [description],
         });
       } else {
-        checkBalanceAndJump({
+        purchaseMethodModal.show({
           type: 'buySGR',
           theme: 'dark',
+          sgrBalance: formatTokenPrice(sgrBalance),
+          elfBalance: formatTokenPrice(elfBalance),
           hideSwap: true,
           hideTutorial: true,
           defaultDescription: [description],
