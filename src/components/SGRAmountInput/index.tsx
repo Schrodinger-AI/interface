@@ -179,9 +179,10 @@ export const SGRAmountInput = forwardRef(
                   checkBalanceAndJump({
                     type: 'buySGR',
                     theme,
+                    defaultDescription: ['Insufficient funds, get more $SGR.'],
                   });
                 }}>
-                buy $SGR
+                Get more $SGR
               </span>
             ) : null}
           </span>

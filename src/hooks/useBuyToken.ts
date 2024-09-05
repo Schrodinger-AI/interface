@@ -12,6 +12,14 @@ import { formatTokenPrice } from 'utils/format';
 
 export type TBuyType = 'buySGR' | 'buyELF';
 
+type TProps = {
+  type: TBuyType;
+  theme?: TModalTheme;
+  hideSwap?: boolean;
+  hideTutorial?: boolean;
+  defaultDescription?: string[];
+};
+
 export const useBuyToken = () => {
   const { checkLogin } = useCheckLoginAndToken();
   const { isLogin } = useGetLoginStatus();
@@ -22,7 +30,7 @@ export const useBuyToken = () => {
   const { wallet } = useWalletService();
 
   const buyToken = useCallback(
-    async ({ type, theme = 'light' }: { type: TBuyType; theme?: TModalTheme }) => {
+    async ({ type, theme = 'light', hideSwap = false, hideTutorial = false, defaultDescription }: TProps) => {
       try {
         setLoading(true);
         const [symbolBalance, elfBalance] = await getAllBalance([GEN0_SYMBOL_INFO, AELF_TOKEN_INFO], wallet.address);
@@ -32,6 +40,9 @@ export const useBuyToken = () => {
             theme,
             sgrBalance: formatTokenPrice(symbolBalance),
             elfBalance: formatTokenPrice(elfBalance),
+            hideSwap,
+            hideTutorial,
+            defaultDescription,
             onConfirmCallback: () => {
               setLoading(false);
             },
@@ -47,17 +58,17 @@ export const useBuyToken = () => {
   );
 
   const checkBalanceAndJump = useCallback(
-    ({ type, theme = 'light' }: { type: TBuyType; theme?: TModalTheme }) => {
+    (params: TProps) => {
       if (!isLogin) {
         checkLogin({
           onSuccess: () => {
-            buyToken({ type, theme });
+            buyToken(params);
           },
         });
 
         return;
       }
-      buyToken({ type, theme });
+      buyToken(params);
     },
     [checkLogin, buyToken, isLogin],
   );

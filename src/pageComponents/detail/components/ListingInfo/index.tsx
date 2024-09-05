@@ -124,7 +124,7 @@ export default function ListingInfo({
             <div className={clsx('w-full overflow-hidden', isDark && 'bg-pixelsModalBg')}>
               {!listings.length ? (
                 <div className="mt-[60px]">
-                  <EmptyList theme={theme} />
+                  <EmptyList theme={theme} defaultDescription="No listing found yet ~" />
                 </div>
               ) : null}
 

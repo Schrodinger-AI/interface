@@ -13,8 +13,6 @@ import BalanceModule from './components/BalanceModule';
 import AdoptModule from './components/AdoptModule';
 import { DIRECT_ADOPT_GEN9_MIN, GEN0_SYMBOL } from 'constants/common';
 import { divDecimals } from 'utils/calculate';
-import { useModal } from '@ebay/nice-modal-react';
-import TipsModal from 'components/TipsModal';
 import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
@@ -33,7 +31,6 @@ export default function TgHome() {
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
-  const tipsModal = useModal(TipsModal);
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
@@ -76,15 +73,20 @@ export default function TgHome() {
   const OpenAdoptModal = useCallback(() => {
     if (!wallet.address || !schrodingerDetail) return;
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
+      const description = `Insufficient funds, need more $SGR. The cat adoption costs ${DIRECT_ADOPT_GEN9_MIN} $SGR minimum. `;
       if (divDecimals(elfBalance, 8).gt(0)) {
         checkBalanceAndJump({
           type: 'buySGR',
           theme: 'dark',
+          defaultDescription: [description],
         });
       } else {
-        tipsModal.show({
-          innerText: `Insufficient funds, deposit a minimum of ${DIRECT_ADOPT_GEN9_MIN}$SGR to adopt a cat.`,
+        checkBalanceAndJump({
+          type: 'buySGR',
           theme: 'dark',
+          hideSwap: true,
+          hideTutorial: true,
+          defaultDescription: [description],
         });
       }
 
@@ -97,7 +99,7 @@ export default function TgHome() {
       theme: 'dark',
       prePage: 'adoptModal',
     });
-  }, [adoptHandler, elfBalance, schrodingerDetail, sgrBalance, tipsModal, wallet.address]);
+  }, [adoptHandler, checkBalanceAndJump, elfBalance, schrodingerDetail, sgrBalance, wallet.address]);
 
   const sendAdTrack = (address: string) => {
     const tg_user_click_daily: {

@@ -14,6 +14,9 @@ function PurchaseMethodModal({
   theme = 'light',
   sgrBalance = '',
   elfBalance = '',
+  hideSwap = false,
+  hideTutorial = false,
+  defaultDescription = [],
   onCancel,
   onConfirmCallback,
 }: {
@@ -22,6 +25,9 @@ function PurchaseMethodModal({
   theme?: TModalTheme;
   sgrBalance?: string;
   elfBalance?: string;
+  hideSwap?: boolean;
+  hideTutorial?: boolean;
+  defaultDescription?: string[];
   onCancel?: () => void;
   onConfirmCallback?: () => void;
 }) {
@@ -57,29 +63,31 @@ function PurchaseMethodModal({
       <div className="w-full flex justify-center">
         <Button
           className={clsx(
-            'flex-1 lg:flex-none lg:w-[187px] !rounded-lg mr-[16px] border-brandDefault text-brandDefault',
+            'flex-1 lg:flex-none lg:w-[187px] !rounded-lg border-brandDefault text-brandDefault',
             isDark
               ? 'default-button-dark !rounded-none hover:!bg-pixelsPageBg hover:!text-pixelsWhiteBg hover:!border-pixelsPrimaryTextPurple  active:!bg-pixelsPageBg active:!text-pixelsWhiteBg active:!border-pixelsPrimaryTextPurple'
               : '',
           )}
           onClick={onETransferClick}
           type="default">
-          Buy with USDT
+          Deposit USDT
         </Button>
-        <Button
-          className={clsx(
-            'flex-1 lg:flex-none lg:w-[187px] !rounded-lg',
-            isDark
-              ? 'primary-button-dark !rounded-none hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg hover:!border-pixelsPrimaryTextPurple active:!bg-pixelsCardBg active:!text-pixelsWhiteBg active:!border-pixelsPrimaryTextPurple'
-              : '',
-          )}
-          onClick={onSwapClick}
-          type="primary">
-          Swap
-        </Button>
+        {!hideSwap ? (
+          <Button
+            className={clsx(
+              'flex-1 lg:flex-none lg:w-[187px] !rounded-lg  ml-[16px]',
+              isDark
+                ? 'primary-button-dark !rounded-none hover:!bg-pixelsCardBg hover:!text-pixelsWhiteBg hover:!border-pixelsPrimaryTextPurple active:!bg-pixelsCardBg active:!text-pixelsWhiteBg active:!border-pixelsPrimaryTextPurple'
+                : '',
+            )}
+            onClick={onSwapClick}
+            type="primary">
+            {type === 'buyELF' ? 'Swap from $SGR' : 'Swap from $ELF'}
+          </Button>
+        ) : null}
       </div>
     ),
-    [onETransferClick, onSwapClick, isDark],
+    [hideSwap, isDark, onETransferClick, onSwapClick, type],
   );
 
   const onClose = () => {
@@ -89,6 +97,14 @@ function PurchaseMethodModal({
       modal.hide();
     }
   };
+
+  const description = useMemo(() => {
+    if (defaultDescription && defaultDescription.length) {
+      return defaultDescription;
+    } else {
+      return curText?.description;
+    }
+  }, [curText?.description, defaultDescription]);
 
   return (
     <CommonModal
@@ -103,8 +119,8 @@ function PurchaseMethodModal({
       title={curText?.title}
       footer={confirmBtn}>
       <div>
-        {curText?.description.length
-          ? curText?.description.map((item, index) => {
+        {description?.length
+          ? description.map((item, index) => {
               return (
                 <p
                   key={index}
@@ -114,7 +130,7 @@ function PurchaseMethodModal({
               );
             })
           : null}
-        {curText?.tutorial ? (
+        {!hideTutorial && curText?.tutorial ? (
           <div className="mt-[24px]">
             <p className={clsx('text-sm', isDark ? 'text-pixelsTertiaryTextPurple' : 'text-neutralPrimary')}>
               {curText.tutorial.title}
