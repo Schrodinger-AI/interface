@@ -142,4 +142,16 @@ export type FormatListingType = {
   decimals: number;
   startTime: number;
   endTime: number;
+  originQuantity: number;
+};
+
+export type TCancelListingType = {
+  price: number;
+  quantity: number;
+  previewImage: string;
+  collectionName: string;
+  nftName: string;
+  nftSymbol: string;
+  originQuantity: number;
+  startTime: number;
 };

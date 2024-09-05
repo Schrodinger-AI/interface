@@ -57,17 +57,6 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
-  const {
-    page,
-    pageSize,
-    listings,
-    totalCount,
-    onChange,
-    elfPrice,
-    fetchData: refreshListing,
-  } = useListingsList({
-    symbol: schrodingerDetail?.symbol || '',
-  });
 
   const { listedAmount, fetchData: refreshSaleListedInfo } = useGetListItemsForSale({
     symbol: schrodingerDetail?.symbol || '',
@@ -198,10 +187,9 @@ export default function DetailPage() {
 
   const refreshData = useCallback(() => {
     getDetail();
-    refreshListing();
     refreshSaleListedInfo();
     refreshSaleInfo();
-  }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
+  }, [getDetail, refreshSaleInfo, refreshSaleListedInfo]);
 
   const { buyNow, sell, nftInfo } = useForestSdk({
     symbol: schrodingerDetail?.symbol || '',
@@ -476,16 +464,12 @@ export default function DetailPage() {
             Trade
           </Button>
         )}
-        {isInTG && listings && listings.length > 0 && (
+        {isInTG && (
           <ListingInfo
-            data={listings}
-            page={page}
-            pageSize={pageSize}
-            total={totalCount}
-            onChange={onChange}
-            rate={Number(elfPrice)}
             theme={theme}
+            previewImage={schrodingerDetail?.inscriptionImageUri || ''}
             symbol={schrodingerDetail?.symbol || ''}
+            tokenName={schrodingerDetail?.tokenName || ''}
             onRefresh={refreshData}
           />
         )}

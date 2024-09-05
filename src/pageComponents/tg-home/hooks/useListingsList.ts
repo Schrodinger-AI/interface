@@ -1,5 +1,4 @@
 import { fetchListings, getTokenUsdPrice } from 'api/request';
-import useLoading from 'hooks/useLoading';
 import { useCallback, useEffect, useState } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 import { FormatListingType } from 'types';
@@ -59,28 +58,33 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
 
 export default function useListingsList({ symbol }: { symbol: string }) {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [listings, setListings] = useState<Array<FormatListingType>>([]);
   const [totalCount, setTotalCount] = useState(0);
   const { curChain } = useCmsInfo() || {};
-  const { showLoading, closeLoading } = useLoading();
+  const [loading, setLoading] = useState<boolean>(false);
   const [elfPrice, setElfPrice] = useState('0');
 
-  const fetchData = useCallback(async () => {
-    if (!symbol) return;
-    showLoading();
-    const res = await getListings({
-      page,
-      symbol,
-      chainId: curChain!,
-    });
-    closeLoading();
-    if (res) {
-      const { totalCount, list } = res;
-      setListings(list || []);
-      setTotalCount(totalCount || 0);
-    }
-  }, [closeLoading, curChain, page, showLoading, symbol]);
+  const fetchData = useCallback(
+    async (params?: { address?: string }) => {
+      const { address } = params || {};
+      if (!symbol) return;
+      setLoading(true);
+      const res = await getListings({
+        page,
+        symbol,
+        chainId: curChain!,
+        address: address,
+      });
+      setLoading(false);
+      if (res) {
+        const { totalCount, list } = res;
+        setListings(list || []);
+        setTotalCount(totalCount || 0);
+      }
+    },
+    [curChain, page, symbol],
+  );
 
   useEffect(() => {
     fetchData();
@@ -92,19 +96,15 @@ export default function useListingsList({ symbol }: { symbol: string }) {
 
   const getElfPrice = useCallback(async () => {
     try {
-      showLoading();
       const { price } = await getTokenUsdPrice({
         symbol: 'ELF',
       });
-      closeLoading();
       price && setElfPrice(String(price));
     } catch (error) {
       console.error(error);
       setElfPrice('0');
-    } finally {
-      closeLoading();
     }
-  }, [closeLoading, showLoading]);
+  }, []);
 
   useEffect(() => {
     getElfPrice();
@@ -118,5 +118,6 @@ export default function useListingsList({ symbol }: { symbol: string }) {
     onChange,
     elfPrice,
     fetchData,
+    loading,
   };
 }

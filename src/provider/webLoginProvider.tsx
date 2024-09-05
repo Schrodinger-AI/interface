@@ -50,6 +50,11 @@ const WebLoginProviderDynamic = dynamic(
           recommendIndexes: [0, 1],
           loginMethodsOrder: ['Google', 'Apple', 'Telegram', 'Email'],
         },
+        // TODO
+        referralInfo: {
+          referralCode: 'xxx',
+          projectCode: '13015',
+        },
       },
       aelfReact: {
         appName: APP_NAME,
