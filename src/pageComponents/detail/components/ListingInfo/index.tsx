@@ -21,6 +21,7 @@ import { useCancel } from 'forest-ui-react';
 import { EmptyList } from 'components/EmptyList';
 import Loading from 'components/Loading';
 import { COLLECTION_NAME } from 'constants/common';
+import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
 
 export default function ListingInfo({
   symbol,
@@ -37,10 +38,7 @@ export default function ListingInfo({
 }) {
   const { wallet } = useWalletService();
   const [expend, setExpend] = useState(true);
-  // TODO
-  const { cancel, cancelList } = useCancel({
-    nftInfo: undefined,
-  });
+  const { cancelList } = useCancel({});
 
   const router = useRouter();
 
@@ -98,7 +96,7 @@ export default function ListingInfo({
     [cancelList, previewImage, symbol, tokenName],
   );
 
-  useEffect(() => {
+  const getListingData = useCallback(() => {
     if (listingState === 'all') {
       refreshListing();
     } else {
@@ -106,24 +104,38 @@ export default function ListingInfo({
     }
   }, [listingState, refreshListing, wallet.address]);
 
+  useEffect(() => {
+    getListingData();
+  }, [getListingData]);
+
   const items: CollapseProps['items'] = useMemo(
     () => [
       {
         key: 'content',
         label: (
-          <CommonTabs
-            options={listingStateList}
-            activeKey={listingState}
-            onTabsChange={(value) => !loading && setListingState(value || 'all')}
-            theme="dark"
-            className={styles['listing-state-tab']}
-          />
+          <div className="w-full h-full flex items-center">
+            <CommonTabs
+              options={listingStateList}
+              activeKey={listingState}
+              onTabsChange={(value) => !loading && setListingState(value || 'all')}
+              theme="dark"
+              className={styles['listing-state-tab']}
+            />
+            <div
+              className="p-[16px] cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                getListingData();
+              }}>
+              <RefreshSVG />
+            </div>
+          </div>
         ),
         children: (
           <>
             <div className={clsx('w-full overflow-hidden', isDark && 'bg-pixelsModalBg')}>
-              {!listings.length ? (
-                <div className="mt-[60px]">
+              {!listings.length && !loading ? (
+                <div className="my-[60px]">
                   <EmptyList theme={theme} defaultDescription="No listing found yet ~" />
                 </div>
               ) : null}
@@ -267,12 +279,13 @@ export default function ListingInfo({
       listingState,
       isDark,
       listings,
-      theme,
       loading,
+      theme,
       totalCount,
       pageSize,
       page,
       onChange,
+      getListingData,
       elfPrice,
       wallet.address,
       onClick,

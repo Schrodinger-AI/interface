@@ -13,7 +13,7 @@
   }
 
   .listing-state-tab {
-    @apply !h-full;
+    @apply flex-1 !h-full;
 
     :global {
       .aelfd-tabs-nav {
@@ -28,6 +28,11 @@
 
 .collapse-custom-dark {
   :global {
+    .aelfd-collapse-header {
+      .aelfd-collapse-expand-icon {
+        @apply text-pixelsDivider;
+      }
+    }
     .aelfd-collapse-content {
       @apply border-pixelsBorder;
       .aelfd-collapse-content-box {
