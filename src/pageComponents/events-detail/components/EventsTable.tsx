@@ -47,7 +47,11 @@ function EventsTable({
         if (address && data) {
           let currentShowValue = '-';
           if (params.isCurrent) {
-            currentShowValue = myScore ? formatTokenPrice(myScore) : '-';
+            currentShowValue = myScore
+              ? formatTokenPrice(myScore, {
+                  decimalPlaces: 1,
+                })
+              : '-';
           } else {
             currentShowValue = myReward ? `${myReward} SGR` : '-';
           }

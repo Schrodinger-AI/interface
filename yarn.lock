@@ -7333,10 +7333,10 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.0"
     signal-exit "^4.0.1"
 
-forest-ui-react@^0.0.19:
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/forest-ui-react/-/forest-ui-react-0.0.19.tgz#43bd03ecf03cf8617281a6edc83b546cfb4f3d3d"
-  integrity sha512-WPPoP6N7L5I9rnJeOIMkNl/IlYThSM4d1DMlN9yX7n8MtCuVxOElvo20dZKM75rMjRBM+y8PHYlfMtbLEmgTHQ==
+forest-ui-react@^0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/forest-ui-react/-/forest-ui-react-0.0.20.tgz#6cc8a0867d26c2cf73cb32a6e1d3f23f6f4f4bed"
+  integrity sha512-SyRs5ULDqTQ3A2EKXerjeLkBTXfj2miekqamAtFh4QRNKJ3q/YiaZqw5fznsLfo4JdHkIVoBScAi3mb1GBdiaQ==
   dependencies:
     "@ebay/nice-modal-react" "^1.2.13"
     aelf-sdk "^3.4.14-beta.1"
