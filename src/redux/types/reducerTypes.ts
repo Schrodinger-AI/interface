@@ -121,7 +121,6 @@ export type TCustomizationItemType = {
   };
   gitBookLink: string;
   gitBookDescription: string;
-  adoptRuleUrl: string;
   adoptRuleList: Array<string>;
   blackList: Array<string>;
   emptyChannelGroupList: Array<TEmptyChannelGroup>;

@@ -140,6 +140,15 @@
             @apply font-medium text-neutralPrimary;
           }
         }
+
+        .awk-common-tool-tip {
+          .swap-order-routing {
+            .swap-order-route-info {
+              @apply bg-neutralDefaultBg;
+              
+            }
+          }
+        }
       }
     }
   }

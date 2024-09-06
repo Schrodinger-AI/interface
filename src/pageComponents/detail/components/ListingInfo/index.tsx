@@ -137,13 +137,13 @@ export default function ListingInfo({
           <>
             <div className={clsx('w-full overflow-hidden', isDark && 'bg-pixelsModalBg')}>
               {!listings.length && !loading ? (
-                <div className="my-[60px]">
+                <div className={clsx('py-[60px]', isDark && 'bg-pixelsModalBg')}>
                   <EmptyList theme={theme} defaultDescription="No listing found yet ~" />
                 </div>
               ) : null}
 
               {loading ? (
-                <div className="py-[60px] flex justify-center items-center">
+                <div className={clsx('py-[60px] flex justify-center items-center', isDark && 'bg-pixelsModalBg')}>
                   <Loading color="purple" />
                 </div>
               ) : null}
@@ -157,7 +157,7 @@ export default function ListingInfo({
                         className={clsx(
                           'text-sm font-normal px-[24px] border-solid border border-x-0 border-t-0',
                           index === listings.length - 1 && 'border-none',
-                          isDark ? 'border-pixelsBorder' : 'border-[#EDEDED]',
+                          isDark ? 'border-pixelsBorder bg-pixelsModalBg' : 'border-[#EDEDED]',
                         )}>
                         <div className="py-6">
                           <Flex vertical gap={16}>

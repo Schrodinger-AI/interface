@@ -113,6 +113,7 @@ function PurchaseMethodModal({
       closable={closable}
       maskClosable={true}
       onCancel={onClose}
+      width={438}
       afterClose={modal.remove}
       theme={theme}
       disableMobileLayout={true}
@@ -139,7 +140,7 @@ function PurchaseMethodModal({
               <div className="mt-[4px]">
                 {curText.tutorial.rules.map((item, index) => {
                   return (
-                    <div className="flex" key={index}>
+                    <div className="flex mt-[4px]" key={index}>
                       <div className="p-[3px]">
                         <span
                           className={clsx(

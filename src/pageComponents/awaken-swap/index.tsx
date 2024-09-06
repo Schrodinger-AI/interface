@@ -94,7 +94,7 @@ export default function AwakenSwap() {
       <BackCom className="mb-[24px]" theme={isInTG ? 'dark' : 'light'} />
       <div
         className={clsx(
-          'w-full',
+          'w-full bg-white',
           isLG ? 'border-none rounded-none p-0' : 'border border-solid border-neutralBorder rounded-[20px] p-[24px]',
         )}>
         <p className={clsx('text-2xl font-semibold !mb-[24px]', isInTG ? 'dark-title' : 'text-neutralTitle')}>Swap</p>
