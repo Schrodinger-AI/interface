@@ -59,7 +59,7 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
 
 export default function useListingsList({ symbol }: { symbol: string }) {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [listings, setListings] = useState<Array<FormatListingType>>([]);
   const [totalCount, setTotalCount] = useState(0);
   const { curChain } = useCmsInfo() || {};
@@ -67,13 +67,14 @@ export default function useListingsList({ symbol }: { symbol: string }) {
   const [elfPrice, setElfPrice] = useState('0');
 
   const fetchData = useCallback(
-    async (params?: { address?: string }) => {
-      const { address } = params || {};
+    async ({ address, page }: { address?: string; page: number }) => {
       if (!symbol) return;
       setLoading(true);
+      setPage(page);
       const res = await getListings({
-        page,
+        page: page,
         symbol,
+        pageSize,
         chainId: curChain!,
         address: address,
       });
@@ -84,16 +85,22 @@ export default function useListingsList({ symbol }: { symbol: string }) {
         setTotalCount(totalCount || 0);
       }
     },
-    [curChain, page, symbol],
+    [curChain, pageSize, symbol],
   );
 
   useEffect(() => {
-    fetchData();
+    fetchData({ page: 1 });
   }, [fetchData]);
 
-  const onChange = useCallback((page?: number, pageSize?: number) => {
-    page && setPage(page);
-  }, []);
+  const onChange = useCallback(
+    (page?: number, pageSize?: number) => {
+      page && setPage(page);
+      if (page) {
+        fetchData({ page });
+      }
+    },
+    [fetchData],
+  );
 
   const getElfPrice = useCallback(async () => {
     try {

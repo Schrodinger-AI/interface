@@ -100,9 +100,9 @@ export default function ListingInfo({
 
   const getListingData = useCallback(() => {
     if (listingState === 'all') {
-      refreshListing();
+      refreshListing({ page: 1 });
     } else {
-      refreshListing({ address: wallet.address });
+      refreshListing({ address: wallet.address, page: 1 });
     }
   }, [listingState, refreshListing, wallet.address]);
 
@@ -148,7 +148,7 @@ export default function ListingInfo({
                 </div>
               ) : null}
 
-              {!loading && listings.length
+              {listings.length
                 ? listings?.map((list, index) => {
                     const usdPrice = list?.price * (list?.purchaseToken?.symbol === 'ELF' ? Number(elfPrice) : 1);
                     return (
@@ -230,7 +230,7 @@ export default function ListingInfo({
                                 </Button>
                               </div>
                             )}
-                            {listingState === 'my' ? (
+                            {list.ownerAddress === wallet.address ? (
                               <div className="w-full">
                                 <Button
                                   type="primary"
@@ -269,7 +269,7 @@ export default function ListingInfo({
                   showSizeChanger={false}
                   pageChange={onChange}
                   theme={theme}
-                  hideOnSinglePage
+                  // hideOnSinglePage
                 />
               </div>
             )}
