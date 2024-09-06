@@ -1,6 +1,7 @@
 import { NetworkType } from '@etransfer/ui-react';
 import { ICompassProps } from 'components/Header/type';
 import { TNftActivityListByConditionInput } from 'graphqlServer';
+import { TBuyType } from 'hooks/useBuyToken';
 import { TEmptyChannelGroup } from 'types/misc';
 
 export enum ThemeType {
@@ -63,7 +64,8 @@ export type TBannerConfigButton = {
   buttonType?: 'default' | 'primary';
   link?: string;
   needLogin?: boolean;
-  linkType?: TLinkType;
+  buyType?: TBuyType;
+  linkType?: TLinkType | 'buyModal';
 };
 
 export type TBannerConfigItem = {
@@ -74,6 +76,15 @@ export type TBannerConfigItem = {
   };
   show?: boolean;
   button?: TBannerConfigButton[];
+};
+
+export type TBuyTokenModalContent = {
+  title: string;
+  description: string[];
+  tutorial: {
+    title: string;
+    rules: string[];
+  };
 };
 
 export type TCustomizationItemType = {
@@ -110,7 +121,6 @@ export type TCustomizationItemType = {
   };
   gitBookLink: string;
   gitBookDescription: string;
-  adoptRuleUrl: string;
   adoptRuleList: Array<string>;
   blackList: Array<string>;
   emptyChannelGroupList: Array<TEmptyChannelGroup>;
@@ -121,6 +131,7 @@ export type TCustomizationItemType = {
   eventHot?: boolean;
   adoptDirectlyNew?: boolean;
   referralRulesList?: string[];
+  buyTokenModal: Record<TBuyType, TBuyTokenModalContent>;
   [key: string]: any;
 };
 
@@ -185,6 +196,8 @@ export type TGlobalConfigType = {
   hideTgSummaryPoints?: boolean;
   tgCommunityUrl: string;
   twitterUrlInTgRules: string;
+  awakenSwapContractAddress?: string;
+  awakenUrl?: string;
   [key: string]: any;
 };
 

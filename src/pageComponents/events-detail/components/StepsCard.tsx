@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { Row, Col } from 'antd';
 import { ReactComponent as NextArrow } from 'assets/img/icons/next-arrow.svg';
 import { useJumpToPage } from 'hooks/useJumpToPage';
+import { useBuyToken } from 'hooks/useBuyToken';
 
 function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
   const { isXL } = useResponsive();
@@ -20,6 +21,7 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
   const { jumpToPage } = useJumpToPage();
+  const { checkBalanceAndJump } = useBuyToken();
 
   const jumpTo = useCallback(
     (image?: IEventsDetailListStepsCardImage) => {
@@ -67,6 +69,22 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
     return null;
   };
 
+  const onStepClick = useCallback(
+    (item: Omit<IEventsDetailListStepsCardImage, 'className'>) => {
+      if (item.linkType === 'buyModal') {
+        checkBalanceAndJump({
+          type: item.buyType || 'buySGR',
+          theme: 'light',
+        });
+      } else {
+        jumpToPage({
+          link: item.url,
+          linkType: item.linkType,
+        });
+      }
+    },
+    [checkBalanceAndJump, jumpToPage],
+  );
   const renderLink = (link?: Omit<IEventsDetailListStepsCardImage, 'className'>[]) => {
     if (link && link?.length) {
       return (
@@ -80,12 +98,7 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
                 dangerouslySetInnerHTML={{
                   __html: item.link,
                 }}
-                onClick={() =>
-                  jumpToPage({
-                    link: item.url,
-                    linkType: item.linkType,
-                  })
-                }
+                onClick={() => onStepClick(item)}
               />
             );
           })}

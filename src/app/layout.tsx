@@ -26,6 +26,8 @@ export const viewport = {
   userScalable: 'no',
 };
 
+const mediaId = process.env.NEXT_PUBLIC_APP_ENV === 'production' ? '1831953403874009090' : '';
+
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
@@ -40,6 +42,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           })(window,document,'script','dataLayer','GTM-MSLRBBX2');`,
         }}></Script>
       <Script strategy="afterInteractive" src="https://telegram.org/js/telegram-web-app.js" />
+      <Script src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
       <body>
         <noscript
           dangerouslySetInnerHTML={{

@@ -78,7 +78,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     const amount = sgrAmountInput.getAmount();
 
     if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
-      setErrorMessage('Insufficient cat to consume. ');
+      setErrorMessage('Insufficient funds. ');
       setShowBuy(true);
       return;
     }

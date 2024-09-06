@@ -8,9 +8,16 @@ import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 
-export default function BalanceModule({ onSgrBalanceChange }: { onSgrBalanceChange?: (value: string) => void }) {
+export default function BalanceModule({
+  onSgrBalanceChange,
+  onElfBalanceChange,
+}: {
+  onSgrBalanceChange?: (value: string) => void;
+  onElfBalanceChange?: (value: string) => void;
+}) {
   const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
     onSgrBalanceChange,
+    onElfBalanceChange,
   });
   const cmsInfo = useCmsInfo();
   const isJoin = useJoinStatus();
