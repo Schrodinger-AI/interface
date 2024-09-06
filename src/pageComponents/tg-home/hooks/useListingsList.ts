@@ -1,5 +1,4 @@
 import { fetchListings, getTokenUsdPrice } from 'api/request';
-import useLoading from 'hooks/useLoading';
 import { useCallback, useEffect, useState } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 import { FormatListingType } from 'types';
@@ -36,7 +35,7 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
       return {
         key: item.publicTime.toString(),
         purchaseToken: { symbol: item.purchaseToken.symbol.toLocaleUpperCase() },
-        decimals: item.purchaseToken.decimals ?? 8,
+        decimals: item.decimals ?? 8,
         price,
         quantity: item.quantity,
         ownerAddress: item?.ownerAddress || '',
@@ -44,6 +43,7 @@ const getListings = async ({ page = 1, pageSize = 10, symbol, address, excludedA
         fromName: item?.owner?.name || '--',
         whitelistHash: item.whitelistId,
         startTime: item.startTime,
+        originQuantity: item.originQuantity,
         endTime: item.endTime,
       };
     });
@@ -63,48 +63,56 @@ export default function useListingsList({ symbol }: { symbol: string }) {
   const [listings, setListings] = useState<Array<FormatListingType>>([]);
   const [totalCount, setTotalCount] = useState(0);
   const { curChain } = useCmsInfo() || {};
-  const { showLoading, closeLoading } = useLoading();
+  const [loading, setLoading] = useState<boolean>(false);
   const [elfPrice, setElfPrice] = useState('0');
 
-  const fetchData = useCallback(async () => {
-    if (!symbol) return;
-    showLoading();
-    const res = await getListings({
-      page,
-      symbol,
-      chainId: curChain!,
-    });
-    closeLoading();
-    if (res) {
-      const { totalCount, list } = res;
-      setListings(list || []);
-      setTotalCount(totalCount || 0);
-    }
-  }, [closeLoading, curChain, page, showLoading, symbol]);
+  const fetchData = useCallback(
+    async ({ address, page }: { address?: string; page: number }) => {
+      if (!symbol) return;
+      setLoading(true);
+      setPage(page);
+      const res = await getListings({
+        page: page,
+        symbol,
+        pageSize,
+        chainId: curChain!,
+        address: address,
+      });
+      setLoading(false);
+      if (res) {
+        const { totalCount, list } = res;
+        setListings(list || []);
+        setTotalCount(totalCount || 0);
+      }
+    },
+    [curChain, pageSize, symbol],
+  );
 
   useEffect(() => {
-    fetchData();
+    fetchData({ page: 1 });
   }, [fetchData]);
 
-  const onChange = useCallback((page?: number, pageSize?: number) => {
-    page && setPage(page);
-  }, []);
+  const onChange = useCallback(
+    ({ page, address }: { page?: number; address?: string }) => {
+      page && setPage(page);
+      if (page) {
+        fetchData({ page, address });
+      }
+    },
+    [fetchData],
+  );
 
   const getElfPrice = useCallback(async () => {
     try {
-      showLoading();
       const { price } = await getTokenUsdPrice({
         symbol: 'ELF',
       });
-      closeLoading();
       price && setElfPrice(String(price));
     } catch (error) {
       console.error(error);
       setElfPrice('0');
-    } finally {
-      closeLoading();
     }
-  }, [closeLoading, showLoading]);
+  }, []);
 
   useEffect(() => {
     getElfPrice();
@@ -118,5 +126,6 @@ export default function useListingsList({ symbol }: { symbol: string }) {
     onChange,
     elfPrice,
     fetchData,
+    loading,
   };
 }

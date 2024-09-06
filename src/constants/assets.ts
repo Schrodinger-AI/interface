@@ -1,4 +1,5 @@
 import { TBaseTokenInfo } from 'types';
+import { GEN0_SYMBOL } from './common';
 
 export const DEFAULT_TX_FEE = {
   common: 0.0031,
@@ -12,6 +13,10 @@ export enum TokenType {
 
 export const AELF_TOKEN_INFO: TBaseTokenInfo = {
   symbol: TokenType.ELF,
+  decimals: 8,
+};
+export const GEN0_SYMBOL_INFO: TBaseTokenInfo = {
+  symbol: GEN0_SYMBOL,
   decimals: 8,
 };
 export const DEFAULT_TOKEN_INFO = AELF_TOKEN_INFO;

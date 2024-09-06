@@ -42,7 +42,7 @@ export default function AdoptModule({ onAdopt }: { onAdopt: () => void }) {
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((item, index) => {
+          {Array.from({ length: 6 }).map((_item, index) => {
             return (
               <img
                 onClick={onAdopt}

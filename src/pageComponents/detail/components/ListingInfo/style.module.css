@@ -1,21 +1,62 @@
 .collapse-custom {
   :global {
     .aelfd-collapse-header {
-      @apply !h-[72px] !items-center;
+      @apply !h-[72px] !items-center !p-0;
+
+      .aelfd-collapse-header-text {
+        @apply h-full;
+      }
     }
     .aelfd-collapse-content-box {
       @apply !p-0;
+    }
+  }
+
+  .listing-state-tab {
+    @apply flex-1 !h-full;
+
+    :global {
+      .aelfd-tabs-nav {
+        @apply px-[16px];
+        &::before {
+          @apply !border-transparent;
+        }
+      }
     }
   }
 }
 
 .collapse-custom-dark {
   :global {
+    .aelfd-collapse-header {
+      .aelfd-collapse-expand-icon {
+        @apply text-pixelsDivider;
+      }
+    }
     .aelfd-collapse-content {
       @apply border-pixelsBorder;
       .aelfd-collapse-content-box {
         >div {
           @apply bg-pixelsPageBg;
+        }
+      }
+    }
+  }
+
+  .listing-state-tab {
+    @apply !h-full;
+
+    :global {
+      .aelfd-tabs-nav {
+        .aelfd-tabs-tab {
+          .aelfd-tabs-tab-btn {
+            @apply text-lg text-pixelsBorder font-semibold;
+          }
+          &.aelfd-tabs-tab-active {
+            .aelfd-tabs-tab-btn {
+              @apply dark-title;
+            }
+          }
         }
       }
     }

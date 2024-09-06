@@ -28,7 +28,6 @@ import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
 import TagNewIcon from 'assets/img/event/tag-new.png';
 import useTelegram from 'hooks/useTelegram';
-import useListingsList from 'pageComponents/tg-home/hooks/useListingsList';
 import ListingInfo from './components/ListingInfo';
 import styles from './style.module.css';
 import { useGetListItemsForSale, useSaleInfo } from 'hooks/useSaleService';
@@ -57,17 +56,6 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
-  const {
-    page,
-    pageSize,
-    listings,
-    totalCount,
-    onChange,
-    elfPrice,
-    fetchData: refreshListing,
-  } = useListingsList({
-    symbol: schrodingerDetail?.symbol || '',
-  });
 
   const { listedAmount, fetchData: refreshSaleListedInfo } = useGetListItemsForSale({
     symbol: schrodingerDetail?.symbol || '',
@@ -198,10 +186,9 @@ export default function DetailPage() {
 
   const refreshData = useCallback(() => {
     getDetail();
-    refreshListing();
     refreshSaleListedInfo();
     refreshSaleInfo();
-  }, [getDetail, refreshListing, refreshSaleInfo, refreshSaleListedInfo]);
+  }, [getDetail, refreshSaleInfo, refreshSaleListedInfo]);
 
   const { buyNow, sell, nftInfo } = useForestSdk({
     symbol: schrodingerDetail?.symbol || '',
@@ -476,16 +463,12 @@ export default function DetailPage() {
             Trade
           </Button>
         )}
-        {isInTG && listings && listings.length > 0 && (
+        {isInTG && (
           <ListingInfo
-            data={listings}
-            page={page}
-            pageSize={pageSize}
-            total={totalCount}
-            onChange={onChange}
-            rate={Number(elfPrice)}
             theme={theme}
+            previewImage={schrodingerDetail?.inscriptionImageUri || ''}
             symbol={schrodingerDetail?.symbol || ''}
+            tokenName={schrodingerDetail?.tokenName || ''}
             onRefresh={refreshData}
           />
         )}
