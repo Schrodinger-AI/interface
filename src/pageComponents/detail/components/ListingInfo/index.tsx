@@ -106,6 +106,17 @@ export default function ListingInfo({
     }
   }, [listingState, refreshListing, wallet.address]);
 
+  const onPageChange = useCallback(
+    ({ page }: { page?: number }) => {
+      if (listingState === 'all') {
+        onChange({ page });
+      } else {
+        onChange({ address: wallet.address, page });
+      }
+    },
+    [listingState, onChange, wallet.address],
+  );
+
   useEffect(() => {
     getListingData();
   }, [getListingData]);
@@ -267,7 +278,11 @@ export default function ListingInfo({
                   pageSize={pageSize}
                   total={totalCount}
                   showSizeChanger={false}
-                  pageChange={onChange}
+                  pageChange={(page) =>
+                    onPageChange({
+                      page,
+                    })
+                  }
                   theme={theme}
                   // hideOnSinglePage
                 />
@@ -286,7 +301,7 @@ export default function ListingInfo({
       totalCount,
       pageSize,
       page,
-      onChange,
+      onPageChange,
       getListingData,
       elfPrice,
       wallet.address,

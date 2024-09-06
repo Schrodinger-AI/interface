@@ -93,10 +93,10 @@ export default function useListingsList({ symbol }: { symbol: string }) {
   }, [fetchData]);
 
   const onChange = useCallback(
-    (page?: number, pageSize?: number) => {
+    ({ page, address }: { page?: number; address?: string }) => {
       page && setPage(page);
       if (page) {
-        fetchData({ page });
+        fetchData({ page, address });
       }
     },
     [fetchData],
