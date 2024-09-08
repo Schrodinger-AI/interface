@@ -20,13 +20,17 @@ import { useBuyToken } from 'hooks/useBuyToken';
 import { TBannerConfigButton } from 'redux/types/reducerTypes';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
-  {
-    value: ListTypeEnum.All,
-    label: 'All Cats',
-  },
+  // {
+  //   value: ListTypeEnum.All,
+  //   label: 'All Cats',
+  // },
   {
     value: ListTypeEnum.RARE,
     label: 'Rare Cats',
+  },
+  {
+    value: ListTypeEnum.Blind,
+    label: 'Blind Cats',
   },
   {
     value: ListTypeEnum.My,
@@ -38,7 +42,7 @@ export default function TokensPage() {
   const { getNoticeData } = useGetNoticeData();
   const searchParams = useSearchParams();
   const pageState: ListTypeEnum = useMemo(
-    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.RARE,
     [searchParams],
   );
   const router = useRouter();
@@ -66,7 +70,7 @@ export default function TokensPage() {
   }, [getNotice]);
 
   const onSegmentedChange = (value: ListTypeEnum) => {
-    if (value === ListTypeEnum.My) {
+    if (value === ListTypeEnum.My || value === ListTypeEnum.Blind) {
       if (!isLogin) {
         checkLogin({
           onSuccess: () => {

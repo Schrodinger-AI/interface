@@ -66,7 +66,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
   const [filterList, setFilterList] = useState(getFilterList(curChain));
   const searchParams = useSearchParams();
   const pageState: ListTypeEnum = useMemo(
-    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.RARE,
     [searchParams],
   );
 
@@ -138,12 +138,26 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
       return;
     }
     if (isInTG && requestType === ListTypeEnum.My && !wallet.address) return;
-    const requestCatApi =
-      requestType === ListTypeEnum.My ? (inTG ? catsListBot : catsList) : inTG ? catsListBotAll : catsListAll;
+    let requestCatApi;
+    if (requestType === ListTypeEnum.My) {
+      if (inTG) {
+        requestCatApi = catsListBot;
+      } else {
+        requestCatApi = catsList;
+      }
+    } else if (requestType === ListTypeEnum.Blind) {
+      requestCatApi = catsListAll;
+    } else {
+      if (inTG) {
+        requestCatApi = catsListBotAll;
+      } else {
+        requestCatApi = catsListAll;
+      }
+    }
     try {
       const res = await requestCatApi({ ...params, address: wallet.address });
 
-      const locationState = location.search.split('pageState=')[1] || ListTypeEnum.All;
+      const locationState = location.search.split('pageState=')[1] || ListTypeEnum.RARE;
       if (requestType !== Number(locationState)) return;
 
       const total = res.totalCount ?? 0;
@@ -482,9 +496,10 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
 
   const onPress = useCallback(
     (item: TSGRItem) => {
+      const from = pageState === ListTypeEnum.My ? 'my' : pageState === ListTypeEnum.Blind ? 'blind' : 'all';
       const params = qs.stringify({
         symbol: item.symbol,
-        from: pageState === ListTypeEnum.My ? 'my' : 'all',
+        from: from,
         source: isTGPage ? 'telegram' : undefined,
       });
 
