@@ -21,8 +21,9 @@ const WebLoginProviderDynamic = dynamic(
     const cmsInfo = store.getState().info.cmsInfo;
     const serverV2 = cmsInfo?.portkeyServerV2;
     const connectUrlV2 = cmsInfo?.connectUrlV2;
-    const telegramBotId = cmsInfo?.telegramBotId;
-    // const telegramBotId = '7201394060';
+    // const telegramBotId = cmsInfo?.telegramBotId;
+    // const telegramBotId = '7201394060'; // test
+    const telegramBotId = '7146113674'; // main
 
     const webLogin = await import('aelf-web-login').then((module) => module);
 
