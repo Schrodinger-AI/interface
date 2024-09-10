@@ -40,6 +40,7 @@ import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import CancelAdoptModal from 'components/CancelAdoptModal';
 import { HandleButtonDefault, HandleButtonPrimary } from './components/Button';
 import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
+import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -47,7 +48,9 @@ export default function DetailPage() {
   const symbol = searchParams.get('symbol') || '';
   const prePage = searchParams.get('prePage') || '';
   const pageFrom = searchParams.get('from') || '';
+  const pageSource = searchParams.get('source') || '';
   const getImageAndConfirm = useGetImageAndConfirm();
+  const intervalFetch = useIntervalGetSchrodingerDetail();
 
   const callbackPath = searchParams.get('callbackPath') || '';
   const { isLogin } = useGetLoginStatus();
@@ -93,6 +96,20 @@ export default function DetailPage() {
   const adoptHandler = useAdoptHandler();
   const resetHandler = useResetHandler();
 
+  const onBack = useCallback(() => {
+    if (callbackPath && callbackPath === 'collection') {
+      route.back();
+      return;
+    }
+    const baseUrl = isInTG ? `/telegram` : '';
+    const path = fromListAll
+      ? `${baseUrl}/`
+      : pageFrom === 'blind'
+      ? `${baseUrl}/?pageState=5`
+      : `${baseUrl}/?pageState=1`;
+    route.replace(path);
+  }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
+
   const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
     if (generation !== 9) {
       setRankInfo(undefined);
@@ -119,6 +136,9 @@ export default function DetailPage() {
       result = await getDetail({ symbol, chainId: cmsInfo?.curChain || '', address: wallet.address });
       const generation = result?.generation;
       const traits = result?.traits;
+      if (pageFrom === 'blind' && !result.symbol) {
+        onBack();
+      }
       await generateCatsRankInfo(generation, traits, wallet.address);
     } catch (error) {
       console.log('getDetailInGuestMode-error', error);
@@ -126,7 +146,7 @@ export default function DetailPage() {
       closeLoading();
       setSchrodingerDetail(result);
     }
-  }, [closeLoading, isBlind, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
+  }, [wallet.address, isLogin, showLoading, isBlind, symbol, cmsInfo?.curChain, pageFrom, onBack, closeLoading]);
 
   const onAdoptNextGeneration = (isDirect: boolean, theme: TModalTheme) => {
     if (!schrodingerDetail) return;
@@ -169,7 +189,7 @@ export default function DetailPage() {
     [cancelAdoptModal, isBlind, rankInfo, resetHandler, schrodingerDetail, wallet.address],
   );
 
-  const onConfirm = useCallback(
+  const onView = useCallback(
     async (theme?: TModalTheme) => {
       try {
         if (!schrodingerDetail || !schrodingerDetail.adoptId || !wallet.address || !schrodingerDetail.holderAmount)
@@ -184,6 +204,15 @@ export default function DetailPage() {
             inputAmount: `${schrodingerDetail.consumeAmount}`,
             isDirect: schrodingerDetail.directAdoption,
           },
+          onSuccessModalCloseCallback: async () => {
+            showLoading();
+            await intervalFetch.start(symbol);
+            intervalFetch.remove();
+            closeLoading();
+            route.replace(
+              `/detail?symbol=${schrodingerDetail.symbol}&from=my&address=${wallet.address}&source=${pageSource}&prePage=${prePage}`,
+            );
+          },
           theme,
           adoptOnly: false,
         });
@@ -191,22 +220,19 @@ export default function DetailPage() {
         closeLoading();
       }
     },
-    [closeLoading, getImageAndConfirm, schrodingerDetail, wallet.address],
+    [
+      closeLoading,
+      getImageAndConfirm,
+      intervalFetch,
+      pageSource,
+      prePage,
+      route,
+      schrodingerDetail,
+      showLoading,
+      symbol,
+      wallet.address,
+    ],
   );
-
-  const onBack = useCallback(() => {
-    if (callbackPath && callbackPath === 'collection') {
-      route.back();
-      return;
-    }
-    const baseUrl = isInTG ? `/telegram` : '';
-    const path = fromListAll
-      ? `${baseUrl}/`
-      : pageFrom === 'blind'
-      ? `${baseUrl}/?pageState=5`
-      : `${baseUrl}/?pageState=1`;
-    route.replace(path);
-  }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
 
   const theme: TModalTheme = useMemo(() => {
     if (isInTG) {
@@ -299,10 +325,10 @@ export default function DetailPage() {
       },
       {
         key: 'confirm',
-        label: <div onClick={() => onConfirm(theme)}>Confirm</div>,
+        label: <div onClick={() => onView(theme)}>View</div>,
       },
     ];
-  }, [onConfirm, onReset, theme]);
+  }, [onView, onReset, theme]);
 
   const showRerollAndConfirmButtons = useMemo(
     () => showReset && isBlind && (showAdoptDirectly || showAdopt),
@@ -330,7 +356,7 @@ export default function DetailPage() {
             Reroll
           </HandleButtonDefault>
         )}
-        {showConfirm && <HandleButtonDefault onClick={() => onConfirm(theme)}>Confirm</HandleButtonDefault>}
+        {showConfirm && <HandleButtonDefault onClick={() => onView(theme)}>View</HandleButtonDefault>}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
             <HandleButtonPrimary className="mr-[12px] !px-7">Trade</HandleButtonPrimary>
@@ -371,8 +397,8 @@ export default function DetailPage() {
           </HandleButtonDefault>
         )}
         {!showRerollAndConfirmButtons && showConfirm && (
-          <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onConfirm(theme)}>
-            Confirm
+          <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onView(theme)}>
+            View
           </HandleButtonPrimary>
         )}
         {showTrade && (

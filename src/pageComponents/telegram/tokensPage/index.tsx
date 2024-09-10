@@ -31,7 +31,7 @@ const pageStateList: TabsProps['items'] = [
   },
   {
     key: `${ListTypeEnum.Blind}`,
-    label: 'My Box',
+    label: 'Cat Box',
   },
   {
     key: `${ListTypeEnum.Stray}`,

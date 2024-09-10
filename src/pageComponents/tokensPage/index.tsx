@@ -30,7 +30,7 @@ const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   },
   {
     value: ListTypeEnum.Blind,
-    label: 'Blind Cats',
+    label: 'Cat Box',
   },
   {
     value: ListTypeEnum.My,

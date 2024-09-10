@@ -28,7 +28,6 @@ import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
-import clsx from 'clsx';
 import { checkAIService } from 'api/request';
 import useLoading from 'hooks/useLoading';
 
@@ -264,6 +263,7 @@ export const useGetImageAndConfirm = () => {
       isDirect = false,
       theme = 'light',
       prePage,
+      onSuccessModalCloseCallback,
     }: {
       transactionId: string;
       image: string;
@@ -275,6 +275,7 @@ export const useGetImageAndConfirm = () => {
       isDirect?: boolean;
       theme?: TModalTheme;
       prePage?: string;
+      onSuccessModalCloseCallback?: () => void;
     }) =>
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
@@ -326,6 +327,7 @@ export const useGetImageAndConfirm = () => {
             resolve(true);
             intervalFetch.remove();
             cardResultModal.hide();
+            onSuccessModalCloseCallback && onSuccessModalCloseCallback();
           },
         });
       }),
@@ -375,12 +377,14 @@ export const useGetImageAndConfirm = () => {
       childrenItemInfo,
       theme = 'light',
       prePage,
+      onSuccessModalCloseCallback,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
       adoptOnly?: boolean;
       theme?: TModalTheme;
       prePage?: string;
+      onSuccessModalCloseCallback?: () => void;
     }) => {
       try {
         showLoading();
@@ -421,6 +425,7 @@ export const useGetImageAndConfirm = () => {
           isDirect: childrenItemInfo.isDirect,
           inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
           prePage,
+          onSuccessModalCloseCallback,
         });
       } catch (error) {
         if (error === AdoptActionErrorCode.cancel) {

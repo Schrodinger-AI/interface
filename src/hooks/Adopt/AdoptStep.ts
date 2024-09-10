@@ -141,7 +141,12 @@ export const fetchTraitsAndImages = async (
     return result;
   } catch (error) {
     // Waiting to generate ai picture
-    await sleep(6000);
+    if (adoptOnly) {
+      await sleep(1000);
+    } else {
+      await sleep(3000);
+    }
+
     return fetchTraitsAndImages(adoptId, adoptOnly, transactionHash, count);
   }
 };
