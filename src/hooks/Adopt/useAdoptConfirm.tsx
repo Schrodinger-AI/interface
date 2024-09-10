@@ -132,6 +132,7 @@ export const useAdoptConfirm = () => {
                   SGRTokenInfo,
                 });
               } else {
+                adoptNextModal.hide();
                 getImageAndConfirm({
                   parentItemInfo,
                   childrenItemInfo: {

@@ -19,7 +19,6 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
-import { usePageForm } from './hooks';
 import { getBlindCatDetail, getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
@@ -51,7 +50,6 @@ export default function DetailPage() {
   const getImageAndConfirm = useGetImageAndConfirm();
 
   const callbackPath = searchParams.get('callbackPath') || '';
-  const [fromListAll] = usePageForm();
   const { isLogin } = useGetLoginStatus();
 
   const { wallet } = useWalletService();
@@ -67,6 +65,10 @@ export default function DetailPage() {
     symbol: schrodingerDetail?.symbol || '',
     decimals: schrodingerDetail?.decimals || 8,
   });
+
+  const fromListAll = useMemo(() => {
+    return pageFrom !== 'my' && pageFrom !== 'blind';
+  }, [pageFrom]);
 
   const { maxBuyAmount, fetchData: refreshSaleInfo } = useSaleInfo({ symbol: schrodingerDetail?.symbol || '' });
 
@@ -135,6 +137,7 @@ export default function DetailPage() {
       rankInfo,
       theme,
       isBlind,
+      blindMax: divDecimals(schrodingerDetail.holderAmount, schrodingerDetail.decimals).toString(),
       adoptId: schrodingerDetail.adoptId,
     });
   };
@@ -178,8 +181,8 @@ export default function DetailPage() {
             outputAmount: schrodingerDetail.holderAmount,
             symbol: schrodingerDetail.symbol,
             tokenName: schrodingerDetail.tokenName,
-            inputAmount: schrodingerDetail.amount,
-            isDirect: false,
+            inputAmount: `${schrodingerDetail.consumeAmount}`,
+            isDirect: schrodingerDetail.directAdoption,
           },
           theme,
           adoptOnly: false,
@@ -197,9 +200,13 @@ export default function DetailPage() {
       return;
     }
     const baseUrl = isInTG ? `/telegram` : '';
-    const path = fromListAll ? `${baseUrl}/` : `${baseUrl}/?pageState=1`;
+    const path = fromListAll
+      ? `${baseUrl}/`
+      : pageFrom === 'blind'
+      ? `${baseUrl}/?pageState=5`
+      : `${baseUrl}/?pageState=1`;
     route.replace(path);
-  }, [callbackPath, fromListAll, isInTG, route]);
+  }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
 
   const theme: TModalTheme = useMemo(() => {
     if (isInTG) {

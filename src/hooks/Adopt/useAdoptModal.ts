@@ -55,6 +55,7 @@ const useAdoptHandler = () => {
       disableInput = false,
       theme = 'light',
       isBlind,
+      blindMax,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -64,6 +65,7 @@ const useAdoptHandler = () => {
       disableInput?: boolean;
       theme?: TModalTheme;
       isBlind?: boolean;
+      blindMax?: string;
     }): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         showLoading();
@@ -97,7 +99,7 @@ const useAdoptHandler = () => {
           isBlind,
           inputProps: {
             min: ONE.div(`1e${parentItemInfo.decimals}`).toFixed(),
-            max: symbolBalance,
+            max: isBlind ? blindMax : symbolBalance,
             decimals: parentItemInfo.decimals,
           },
           balanceList: [
@@ -248,6 +250,7 @@ const useAdoptHandler = () => {
       prePage,
       isBlind = false,
       adoptId: blindAdoptId,
+      blindMax,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -258,6 +261,7 @@ const useAdoptHandler = () => {
       prePage?: string;
       isBlind?: boolean;
       adoptId?: string;
+      blindMax?: string;
     }) => {
       try {
         showLoading();
@@ -274,6 +278,7 @@ const useAdoptHandler = () => {
           disableInput,
           theme,
           isBlind,
+          blindMax,
         });
         const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash } = await approveAdopt({
           amount,
