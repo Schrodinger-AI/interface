@@ -38,7 +38,7 @@ import {
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
-import { catsList, catsListAll, catsListBot, catsListBotAll } from 'api/request';
+import { catsBlindListAll, catsList, catsListAll, catsListBot, catsListBotAll } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
@@ -146,7 +146,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
         requestCatApi = catsList;
       }
     } else if (requestType === ListTypeEnum.Blind) {
-      requestCatApi = catsListAll;
+      requestCatApi = catsBlindListAll;
     } else {
       if (inTG) {
         requestCatApi = catsListBotAll;
@@ -643,6 +643,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
             onPress={onPress}
             loadMore={loadMoreData}
             ListProps={{ dataSource }}
+            hideTradePrice={pageState === ListTypeEnum.Blind}
           />
         </Layout>
       </Layout>

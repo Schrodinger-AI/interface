@@ -50,5 +50,6 @@ export type TSGRTokenInfo = GenerateType<
     address?: string;
     holderAmount?: number;
     collectionId?: string;
+    adoptId?: string;
   }
 >;

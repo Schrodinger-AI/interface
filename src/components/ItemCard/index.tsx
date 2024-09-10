@@ -19,9 +19,10 @@ interface IItemCard {
   theme?: TModalTheme;
   onPress: (item: TSGRItem) => void;
   type: CardType;
+  hideTradePrice?: boolean;
 }
 
-export default function ItemCard({ item, onPress, type, theme = 'light' }: IItemCard) {
+export default function ItemCard({ item, onPress, type, theme = 'light', hideTradePrice = false }: IItemCard) {
   const {
     inscriptionImageUri,
     generation = '1',
@@ -142,36 +143,40 @@ export default function ItemCard({ item, onPress, type, theme = 'light' }: IItem
                   {transformedAmount}
                 </div>
               </div>
-              {!isInTG && (
-                <div className="flex flex-row items-center">
-                  <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
-                    {tokenDisplay}
-                  </div>
-                </div>
-              )}
-              {!isInTG && (
-                <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
-                  {awakenPriceDisplay}
-                </div>
-              )}
-              {isInTG && (
+              {hideTradePrice ? null : (
                 <>
-                  <div
-                    className={clsx(
-                      'flex flex-row items-center justify-between text-[10px] h-[18px] leading-[18px] font-medium',
-                      isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
-                    )}>
-                    <span>Listing Price</span>
-                    <span>{listingPriceDisplay}</span>
-                  </div>
-                  <div
-                    className={clsx(
-                      'flex flex-row items-center justify-between h-[18px] font-normal text-[10px] leading-[18px]',
-                      isDark ? 'text-pixelsDivider' : 'text-neutralSecondary',
-                    )}>
-                    {awakenPriceDisplay && <span>SPR</span>}
-                    <span>{awakenPriceDisplay}</span>
-                  </div>
+                  {!isInTG && (
+                    <div className="flex flex-row items-center">
+                      <div className="text-[10px] h-[18px] leading-[18px] text-neutralTitle font-medium">
+                        {tokenDisplay}
+                      </div>
+                    </div>
+                  )}
+                  {!isInTG && (
+                    <div className="text-neutralSecondary h-[18px] font-normal text-[10px] leading-[18px]">
+                      {awakenPriceDisplay}
+                    </div>
+                  )}
+                  {isInTG && (
+                    <>
+                      <div
+                        className={clsx(
+                          'flex flex-row items-center justify-between text-[10px] h-[18px] leading-[18px] font-medium',
+                          isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+                        )}>
+                        <span>Listing Price</span>
+                        <span>{listingPriceDisplay}</span>
+                      </div>
+                      <div
+                        className={clsx(
+                          'flex flex-row items-center justify-between h-[18px] font-normal text-[10px] leading-[18px]',
+                          isDark ? 'text-pixelsDivider' : 'text-neutralSecondary',
+                        )}>
+                        {awakenPriceDisplay && <span>SPR</span>}
+                        <span>{awakenPriceDisplay}</span>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </div>

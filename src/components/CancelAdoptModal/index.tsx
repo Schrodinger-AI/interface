@@ -9,6 +9,7 @@ import { IContractError } from 'types';
 import { RerollAdoption } from 'contract/schrodinger';
 import AdoptNextModal from 'components/AdoptNextModal';
 import clsx from 'clsx';
+import { UserDeniedMessage } from 'utils/formatError';
 
 function CancelAdoptModal({
   title,
@@ -44,7 +45,9 @@ function CancelAdoptModal({
       const resError = error as IContractError;
       setLoading(false);
       modal.hide();
-      adoptNextModal.hide();
+      if (!resError.errorMessage?.message.includes(UserDeniedMessage)) {
+        adoptNextModal.hide();
+      }
       message.error(resError.errorMessage?.message);
     }
   }, [adoptId, adoptNextModal, modal]);

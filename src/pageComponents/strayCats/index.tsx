@@ -146,6 +146,7 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
             isDirect: record.directAdoption,
           },
           theme,
+          adoptOnly: false,
           account: wallet.address,
         });
       } catch (error) {

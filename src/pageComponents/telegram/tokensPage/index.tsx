@@ -21,13 +21,17 @@ import CommonTabs from 'components/CommonTabs';
 import { TabsProps } from 'antd';
 
 const pageStateList: TabsProps['items'] = [
-  {
-    key: `${ListTypeEnum.All}`,
-    label: 'All Cats',
-  },
+  // {
+  //   key: `${ListTypeEnum.All}`,
+  //   label: 'All Cats',
+  // },
   {
     key: `${ListTypeEnum.My}`,
     label: 'My Cats',
+  },
+  {
+    key: `${ListTypeEnum.Blind}`,
+    label: 'My Box',
   },
   {
     key: `${ListTypeEnum.Stray}`,
@@ -39,7 +43,7 @@ export default function TokensPage() {
   const { getNoticeData } = useGetNoticeData();
   const searchParams = useSearchParams();
   const pageState: ListTypeEnum = useMemo(
-    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.My,
     [searchParams],
   );
   const router = useRouter();

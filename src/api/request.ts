@@ -32,12 +32,16 @@ export const fetchToken = async (data: ITokenParams) => {
 export const fetchSchrodingerImagesByAdoptId = async ({
   adoptId,
   transactionHash,
+  adoptOnly = true,
 }: {
   adoptId: string;
   transactionHash?: string;
+  adoptOnly: boolean;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/adoptInfo?adoptId=${adoptId}${transactionHash ? `&transactionHash=${transactionHash}` : ''}`,
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}${
+      transactionHash ? `&transactionHash=${transactionHash}` : ''
+    }`,
   );
 };
 
@@ -69,6 +73,10 @@ export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData>
   return request.post('/app/cat/all', data);
 };
 
+export const catsBlindListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/box-list', data);
+};
+
 export const catsListBotAll = async (data: ICatsListParams): Promise<ICatsListData> => {
   return request.post('/app/cat/bot-all', data);
 };
@@ -91,6 +99,10 @@ export const getIOSCustomization = async (): Promise<{ data: TCustomizationItemT
 
 export const getCatDetail = async (params: ICatDetailParams): Promise<TSGRTokenInfo> => {
   return request.post('/app/cat/detail', params);
+};
+
+export const getBlindCatDetail = async (params: ICatDetailParams): Promise<TSGRTokenInfo> => {
+  return request.post('/app/cat/box-detail', params);
 };
 
 export const getRankList = async (): Promise<{ data: IRankListData }> => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Dropdown } from 'aelf-design';
+import { Dropdown } from 'aelf-design';
 import DetailTitle from './components/DetailTitle';
 import ItemImage from './components/ItemImage';
 import ItemInfo from './components/ItemInfo';
@@ -20,7 +20,7 @@ import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { usePageForm } from './hooks';
-import { getCatDetail } from 'api/request';
+import { getBlindCatDetail, getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
@@ -38,12 +38,17 @@ import useForestSdk from 'hooks/useForestSdk';
 import 'forest-ui-react/dist/assets/index.css';
 import { TModalTheme } from 'components/CommonModal';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
+import CancelAdoptModal from 'components/CancelAdoptModal';
+import { HandleButtonDefault, HandleButtonPrimary } from './components/Button';
+import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 
 export default function DetailPage() {
   const route = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol') || '';
   const prePage = searchParams.get('prePage') || '';
+  const pageFrom = searchParams.get('from') || '';
+  const getImageAndConfirm = useGetImageAndConfirm();
 
   const callbackPath = searchParams.get('callbackPath') || '';
   const [fromListAll] = usePageForm();
@@ -56,6 +61,7 @@ export default function DetailPage() {
   const { jumpToPage } = useJumpToPage();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isInTelegram } = useTelegram();
+  const cancelAdoptModal = useModal(CancelAdoptModal);
 
   const { listedAmount, fetchData: refreshSaleListedInfo } = useGetListItemsForSale({
     symbol: schrodingerDetail?.symbol || '',
@@ -67,6 +73,10 @@ export default function DetailPage() {
   const isInTG = useMemo(() => {
     return isInTelegram();
   }, [isInTelegram]);
+
+  const isBlind = useMemo(() => {
+    return pageFrom === 'blind';
+  }, [pageFrom]);
 
   const isGenZero = useMemo(() => (schrodingerDetail?.generation || 0) === 0, [schrodingerDetail?.generation]);
 
@@ -103,7 +113,8 @@ export default function DetailPage() {
     let result;
     try {
       showLoading();
-      result = await getCatDetail({ symbol, chainId: cmsInfo?.curChain || '', address: wallet.address });
+      const getDetail = isBlind ? getBlindCatDetail : getCatDetail;
+      result = await getDetail({ symbol, chainId: cmsInfo?.curChain || '', address: wallet.address });
       const generation = result?.generation;
       const traits = result?.traits;
       await generateCatsRankInfo(generation, traits, wallet.address);
@@ -113,7 +124,7 @@ export default function DetailPage() {
       closeLoading();
       setSchrodingerDetail(result);
     }
-  }, [closeLoading, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
+  }, [closeLoading, isBlind, cmsInfo?.curChain, isLogin, showLoading, symbol, wallet.address]);
 
   const onAdoptNextGeneration = (isDirect: boolean, theme: TModalTheme) => {
     if (!schrodingerDetail) return;
@@ -123,19 +134,62 @@ export default function DetailPage() {
       isDirect,
       rankInfo,
       theme,
+      isBlind,
+      adoptId: schrodingerDetail.adoptId,
     });
   };
 
-  const onReset = (theme: TModalTheme) => {
-    if (!schrodingerDetail) return;
-    resetHandler({
-      parentItemInfo: schrodingerDetail,
-      account: wallet.address,
-      rankInfo,
-      theme,
-      prePage: 'rerollModal',
-    });
-  };
+  const onReset = useCallback(
+    (theme: TModalTheme) => {
+      if (!schrodingerDetail) return;
+      if (isBlind) {
+        if (!schrodingerDetail.adoptId) return;
+        const amount = divDecimals(schrodingerDetail.amount, schrodingerDetail.decimals).toFixed();
+        cancelAdoptModal.show({
+          title: 'Reroll',
+          nftImage: schrodingerDetail.inscriptionImageUri,
+          tokenName: schrodingerDetail.tokenName,
+          amount: amount,
+          adoptId: schrodingerDetail.adoptId,
+          theme,
+        });
+      } else {
+        resetHandler({
+          parentItemInfo: schrodingerDetail,
+          account: wallet.address,
+          rankInfo,
+          theme,
+          prePage: 'rerollModal',
+        });
+      }
+    },
+    [cancelAdoptModal, isBlind, rankInfo, resetHandler, schrodingerDetail, wallet.address],
+  );
+
+  const onConfirm = useCallback(
+    async (theme?: TModalTheme) => {
+      try {
+        if (!schrodingerDetail || !schrodingerDetail.adoptId || !wallet.address || !schrodingerDetail.holderAmount)
+          return;
+        getImageAndConfirm({
+          parentItemInfo: schrodingerDetail,
+          childrenItemInfo: {
+            adoptId: schrodingerDetail.adoptId,
+            outputAmount: schrodingerDetail.holderAmount,
+            symbol: schrodingerDetail.symbol,
+            tokenName: schrodingerDetail.tokenName,
+            inputAmount: schrodingerDetail.amount,
+            isDirect: false,
+          },
+          theme,
+          adoptOnly: false,
+        });
+      } catch (error) {
+        closeLoading();
+      }
+    },
+    [closeLoading, getImageAndConfirm, schrodingerDetail, wallet.address],
+  );
 
   const onBack = useCallback(() => {
     if (callbackPath && callbackPath === 'collection') {
@@ -167,6 +221,7 @@ export default function DetailPage() {
   );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
+  const showConfirm = useMemo(() => isBlind && isLogin, [isBlind, isLogin]);
 
   const holderAmount = useMemo(() => {
     return divDecimals(schrodingerDetail?.holderAmount, schrodingerDetail?.decimals).toFixed();
@@ -181,8 +236,8 @@ export default function DetailPage() {
   }, [holderAmount, isInTG, listedAmount]);
 
   const showTrade = useMemo(() => {
-    return isInTG && (showSellInTrade || showBuyInTrade) && (isGenNine || isGenZero);
-  }, [isGenNine, isGenZero, isInTG, showBuyInTrade, showSellInTrade]);
+    return isInTG && !isBlind && (showSellInTrade || showBuyInTrade) && (isGenNine || isGenZero);
+  }, [isGenNine, isGenZero, isInTG, isBlind, showBuyInTrade, showSellInTrade]);
 
   const refreshData = useCallback(() => {
     getDetail();
@@ -229,44 +284,49 @@ export default function DetailPage() {
     return tradeItems.filter((i) => i) as ItemType[];
   }, [buyNow, nftInfo, sell, showBuyInTrade, showSellInTrade]);
 
+  const rerollAndConfirmItems: ItemType[] = useMemo(() => {
+    return [
+      {
+        key: 'reroll',
+        label: <div onClick={() => onReset(theme)}>Reroll</div>,
+      },
+      {
+        key: 'confirm',
+        label: <div onClick={() => onConfirm(theme)}>Confirm</div>,
+      },
+    ];
+  }, [onConfirm, onReset, theme]);
+
+  const showRerollAndConfirmButtons = useMemo(
+    () => showReset && isBlind && (showAdoptDirectly || showAdopt),
+    [isBlind, showAdopt, showAdoptDirectly, showReset],
+  );
+
   function adoptAndResetButton() {
     return (
       <div className="flex flex-row">
         {showAdoptDirectly && (
-          <Button
-            type="primary"
-            className="!rounded-lg mr-[12px] w-[240px]"
-            size="large"
-            onClick={() => onAdoptNextGeneration(true, theme)}>
+          <HandleButtonPrimary className="mr-[12px] w-[240px]" onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
-          </Button>
+          </HandleButtonPrimary>
         )}
         {showAdopt && (
-          <Button
-            type="default"
-            className="!rounded-lg relative !border-brandDefault !text-brandDefault mr-[12px] w-[240px]"
-            size="large"
-            onClick={() => onAdoptNextGeneration(false, theme)}>
+          <HandleButtonDefault className="w-[240px] mr-[12px]" onClick={() => onAdoptNextGeneration(false, theme)}>
             Adopt Next-Gen
-          </Button>
+          </HandleButtonDefault>
         )}
         {showReset && (
-          <Button
-            type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault mr-[12px]"
-            size="large"
-            onClick={() => onReset(theme)}>
+          <HandleButtonDefault className="mr-[12px]" onClick={() => onReset(theme)}>
             Reroll
-          </Button>
+          </HandleButtonDefault>
         )}
+        {showConfirm && <HandleButtonDefault onClick={() => onConfirm(theme)}>Confirm</HandleButtonDefault>}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
-            <Button type="primary" className="!rounded-lg mr-[12px] !px-7" size="large">
-              Trade
-            </Button>
+            <HandleButtonPrimary className="mr-[12px] !px-7">Trade</HandleButtonPrimary>
           </Dropdown>
         )}
       </div>
@@ -277,58 +337,43 @@ export default function DetailPage() {
     return (
       <div
         className={clsx(
-          'flex fixed bottom-0 left-0 flex-row w-full justify-end p-[16px] border-0 border-t border-solid',
+          'flex fixed bottom-0 gap-[16px] left-0 flex-row w-full justify-end p-[16px] border-0 border-t border-solid',
           theme === 'dark' ? 'bg-pixelsPageBg border-pixelsBorder' : 'bg-neutralWhiteBg border-neutralDivider',
         )}>
         {showAdopt && (
-          <Button
-            type="default"
-            className={clsx('!rounded-lg flex-1', theme === 'dark' && 'default-button-dark')}
-            size="large"
-            onClick={() => onAdoptNextGeneration(false, theme)}>
+          <HandleButtonDefault className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(false, theme)}>
             Adopt Next-Gen
-          </Button>
+          </HandleButtonDefault>
         )}
         {showAdoptDirectly && (
-          <Button
-            type="primary"
-            className={clsx(
-              '!rounded-lg flex-1',
-              showAdopt ? 'ml-[16px]' : 'ml-0',
-              theme === 'dark' && '!primary-button-dark',
-            )}
-            size="large"
-            onClick={() => onAdoptNextGeneration(true, theme)}>
+          <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
             {cmsInfo?.adoptDirectlyNew ? (
               <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
             ) : null}
-          </Button>
+          </HandleButtonPrimary>
         )}
-        {showReset && (
-          <Button
-            type="default"
-            className={clsx(
-              'ml-[16px] w-[100px]',
-              isInTG && 'flex-1',
-              theme === 'dark' ? '!default-button-dark' : '!rounded-lg !border-brandDefault !text-brandDefault',
-            )}
-            size="large"
-            onClick={() => onReset(theme)}>
+        {showRerollAndConfirmButtons ? (
+          <Dropdown menu={{ items: rerollAndConfirmItems }} placement="topRight" overlayClassName={styles.dropdown}>
+            <HandleButtonDefault>......</HandleButtonDefault>
+          </Dropdown>
+        ) : null}
+        {!showRerollAndConfirmButtons && showReset && (
+          <HandleButtonDefault className={clsx('flex-1')} onClick={() => onReset(theme)}>
             Reroll
-          </Button>
+          </HandleButtonDefault>
+        )}
+        {!showRerollAndConfirmButtons && showConfirm && (
+          <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onConfirm(theme)}>
+            Confirm
+          </HandleButtonPrimary>
         )}
         {showTrade && (
           <Dropdown
             menu={{ items }}
             placement="topRight"
             overlayClassName={clsx(styles.dropdown, theme === 'dark' && styles['dropdown-dark'])}>
-            <Button
-              type="primary"
-              className={clsx('!rounded-lg ml-[16px] !px-7', theme === 'dark' && '!primary-button-dark')}
-              size="large">
-              Trade
-            </Button>
+            <HandleButtonPrimary className={clsx('!px-7')}>Trade</HandleButtonPrimary>
           </Dropdown>
         )}
       </div>
@@ -407,17 +452,11 @@ export default function DetailPage() {
           ]}
         />
         <div className="w-full h-[68px] mt-[40px] overflow-hidden flex flex-row justify-between">
-          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} />}
+          {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} isBlind={isBlind} />}
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {adoptAndResetButton()}
-            {!isInTG && tradeModal?.show && schrodingerDetail && (
-              <Button
-                type="default"
-                className="!rounded-lg !border-brandDefault !text-brandDefault"
-                size="large"
-                onClick={onTrade}>
-                Trade
-              </Button>
+            {!isInTG && tradeModal?.show && schrodingerDetail && !isBlind && (
+              <HandleButtonDefault onClick={onTrade}>Trade</HandleButtonDefault>
             )}
           </div>
         </div>
@@ -444,7 +483,9 @@ export default function DetailPage() {
       <div className="w-full max-w-[1360px] flex flex-col items-center lg:hidden">
         <BackCom className="w-full" theme={theme} url={backUrl} />
         <div className="mt-[16px]" />
-        {schrodingerDetail && <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} theme={theme} />}
+        {schrodingerDetail && (
+          <DetailTitle detail={schrodingerDetail} fromListAll={fromListAll} theme={theme} isBlind={isBlind} />
+        )}
         {schrodingerDetail && (
           <ItemImage
             detail={schrodingerDetail}
@@ -454,14 +495,10 @@ export default function DetailPage() {
             theme={theme}
           />
         )}
-        {!isInTG && tradeModal?.show && schrodingerDetail && (
-          <Button
-            type="default"
-            className="!rounded-lg !border-brandDefault !text-brandDefault h-[48px] w-full mt-[16px]"
-            size="medium"
-            onClick={onTrade}>
+        {!isInTG && tradeModal?.show && schrodingerDetail && !isBlind && (
+          <HandleButtonDefault className="w-full mt-[16px]" onClick={onTrade}>
             Trade
-          </Button>
+          </HandleButtonDefault>
         )}
         {isInTG && (
           <ListingInfo

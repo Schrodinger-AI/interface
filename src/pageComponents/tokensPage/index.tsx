@@ -84,7 +84,11 @@ export default function TokensPage() {
   };
 
   useTimeoutFn(() => {
-    if (!isLogin && Number(searchParams.get('pageState')) === ListTypeEnum.My) {
+    if (
+      !isLogin &&
+      (Number(searchParams.get('pageState')) === ListTypeEnum.My ||
+        Number(searchParams.get('pageState')) === ListTypeEnum.Blind)
+    ) {
       closeLoading();
       router.replace('/');
     }

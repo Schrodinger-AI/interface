@@ -1,7 +1,7 @@
 import { useModal } from '@ebay/nice-modal-react';
 import PromptModal from 'components/PromptModal';
 import { useCallback } from 'react';
-import { IAdoptedLogs, adoptStep1Handler } from './AdoptStep';
+import { IAdoptedLogs, adoptBlindHandler, adoptStep1Handler } from './AdoptStep';
 import AdoptActionModal from 'components/AdoptActionModal';
 import { AdoptActionErrorCode } from './adopt';
 import { getAdoptErrorMessage } from './getErrorMessage';
@@ -54,6 +54,7 @@ const useAdoptHandler = () => {
       rankInfo,
       disableInput = false,
       theme = 'light',
+      isBlind,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -62,6 +63,7 @@ const useAdoptHandler = () => {
       rankInfo?: IRankInfo;
       disableInput?: boolean;
       theme?: TModalTheme;
+      isBlind?: boolean;
     }): Promise<string> => {
       return new Promise(async (resolve, reject) => {
         showLoading();
@@ -92,7 +94,7 @@ const useAdoptHandler = () => {
             subName: renameSymbol(parentItemInfo.symbol),
             rank: rankInfo?.rank,
           },
-
+          isBlind,
           inputProps: {
             min: ONE.div(`1e${parentItemInfo.decimals}`).toFixed(),
             max: symbolBalance,
@@ -133,12 +135,16 @@ const useAdoptHandler = () => {
       account,
       isDirect,
       theme = 'light',
+      isBlind,
+      adoptId,
     }: {
       account: string;
       amount: string;
       isDirect: boolean;
       parentItemInfo: TSGRToken;
       theme?: TModalTheme;
+      isBlind?: boolean;
+      adoptId?: string;
     }): Promise<IAdoptedLogs> =>
       new Promise((resolve, reject) => {
         promptModal.show({
@@ -159,16 +165,24 @@ const useAdoptHandler = () => {
             try {
               const domain = getDomain();
 
-              const adoptedInfo = await adoptStep1Handler({
-                params: {
-                  parent: parentItemInfo.symbol,
-                  amount,
-                  domain,
-                },
-                isDirect,
-                address: account,
-                decimals: parentItemInfo.decimals,
-              });
+              let adoptedInfo;
+
+              if (isBlind && adoptId) {
+                adoptedInfo = await adoptBlindHandler({
+                  adoptId,
+                });
+              } else {
+                adoptedInfo = await adoptStep1Handler({
+                  params: {
+                    parent: parentItemInfo.symbol,
+                    amount,
+                    domain,
+                  },
+                  isDirect,
+                  address: account,
+                  decimals: parentItemInfo.decimals,
+                });
+              }
 
               AdTracker.trackEvent('adopt', {
                 generation: adoptedInfo.tokenName,
@@ -200,7 +214,7 @@ const useAdoptHandler = () => {
           },
         });
       }),
-    [promptModal, walletType],
+    [isInTG, promptModal, walletType],
   );
 
   const checkAIServer = useCallback(async () => {
@@ -232,6 +246,8 @@ const useAdoptHandler = () => {
       disableInput = false,
       theme = 'light',
       prePage,
+      isBlind = false,
+      adoptId: blindAdoptId,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -240,6 +256,8 @@ const useAdoptHandler = () => {
       disableInput?: boolean;
       theme?: TModalTheme;
       prePage?: string;
+      isBlind?: boolean;
+      adoptId?: string;
     }) => {
       try {
         showLoading();
@@ -255,6 +273,7 @@ const useAdoptHandler = () => {
           rankInfo,
           disableInput,
           theme,
+          isBlind,
         });
         const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash } = await approveAdopt({
           amount,
@@ -262,6 +281,8 @@ const useAdoptHandler = () => {
           isDirect,
           parentItemInfo,
           theme,
+          isBlind,
+          adoptId: blindAdoptId,
         });
 
         await adoptConfirm({
