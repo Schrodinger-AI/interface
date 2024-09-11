@@ -173,6 +173,7 @@ const useAdoptHandler = () => {
                 adoptedInfo = await adoptBlindHandler({
                   adoptId,
                 });
+                console.log('=====adoptBlindHandler', adoptedInfo, adoptId);
               } else {
                 adoptedInfo = await adoptStep1Handler({
                   params: {
@@ -189,11 +190,13 @@ const useAdoptHandler = () => {
               AdTracker.trackEvent('adopt', {
                 generation: adoptedInfo.tokenName,
                 address: account,
+                user_id: account,
               });
               if (isInTG) {
                 AdTracker.trackEvent('tg_adopt', {
                   generation: adoptedInfo.tokenName,
                   address: account,
+                  user_id: account,
                 });
               }
 
