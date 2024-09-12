@@ -48,11 +48,21 @@ interface IAdoptNextModal {
   data: IAdoptNextData;
   adoptId: string;
   theme?: TModalTheme;
+  isBlind?: boolean;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId, theme }: IAdoptNextModal) {
+function AdoptNextModal({
+  isAcross,
+  data,
+  isDirect,
+  onConfirm,
+  onClose,
+  adoptId,
+  theme,
+  isBlind = false,
+}: IAdoptNextModal) {
   const modal = useModal();
   const cancelAdoptModal = useModal(CancelAdoptModal);
   const [loading, setLoading] = useState<boolean>(false);
@@ -122,6 +132,30 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
     }
   }, [allTraits]);
 
+  const generation = useMemo(() => {
+    return data?.SGRToken.tokenName?.split('GEN')[1];
+  }, [data?.SGRToken.tokenName]);
+
+  const isRare = useMemo(() => {
+    const describe = data?.SGRToken?.rankInfo?.levelInfo?.describe;
+    const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
+      ? data?.SGRToken?.rankInfo?.levelInfo?.describe.split(',')[0]
+      : '';
+    return describe && describeRarity !== 'Normal';
+  }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
+
+  const noticeText = useMemo(() => {
+    if (isBlind) {
+      if (isRare) {
+        return 'Congrats! You got a Rare Cat Box!';
+      } else {
+        return 'Congrats! You got a Cat Box!';
+      }
+    } else {
+      return 'Congratulations! Your Cat is ready for adoption.';
+    }
+  }, [isBlind, isRare]);
+
   return (
     <CommonModal
       title={title}
@@ -153,12 +187,20 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
             disabled={selectImage < 0}
             onClick={onClick}
             type="primary">
-            Confirm
+            {isBlind ? 'Unbox' : 'Confirm'}
           </Button>
         </div>
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
-        <NoticeBar text="Congratulations! Your Cat is ready for adoption." type="success" theme={theme} />
+        <div>
+          {isBlind ? (
+            <div className="text-sm text-neutralSecondary mb-[16px]">
+              You must "Unbox" it before trading or transferring the cat. This process may take some time.
+            </div>
+          ) : null}
+          <NoticeBar text={noticeText} type="success" theme={theme} />
+        </div>
+
         {images.length > 1 ? (
           <DescriptionItem title="Select the Cat You Prefer">
             <span className="text-functionalWarning text-base">
@@ -172,10 +214,10 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
             <SkeletonImage
               img={images[0]}
               className="w-full lg:w-[180px]"
-              generation={isInTG && isDirect ? '9' : undefined}
-              rank={isInTG ? data?.SGRToken?.rankInfo?.rank : undefined}
-              rarity={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.describe : undefined}
-              level={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.level : undefined}
+              generation={isInTG && isDirect ? '9' : generation}
+              rank={data?.SGRToken?.rankInfo?.rank}
+              rarity={data?.SGRToken?.rankInfo?.levelInfo?.describe}
+              level={data?.SGRToken?.rankInfo?.levelInfo?.level}
             />
           </div>
         )}

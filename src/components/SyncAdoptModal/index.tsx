@@ -28,6 +28,7 @@ function SyncAdoptModal({
       onCancel={onCancel}
       afterClose={modal.remove}
       theme={theme}
+      width={438}
       disableMobileLayout={true}
       title={'Adopt Cats'}
       footer={null}>

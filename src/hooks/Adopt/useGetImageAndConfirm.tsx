@@ -186,7 +186,7 @@ export const useGetImageAndConfirm = () => {
           info: {
             logo: originImage,
             name: childrenItemInfo.tokenName,
-            tag: generation ? `GEN ${parentItemInfo.generation}` : '',
+            tag: generation ? `GEN ${generation}` : '',
             subName: renameSymbol(childrenItemInfo.symbol),
           },
           title: 'Pending Approval',
@@ -289,10 +289,13 @@ export const useGetImageAndConfirm = () => {
             )} XPSGR-5`
           : undefined;
 
+        const describeRarity = rankInfo?.levelInfo?.describe ? rankInfo?.levelInfo?.describe.split(',')[0] : '';
+
         cardResultModal.show({
-          modalTitle: rankInfo?.levelInfo?.describe
-            ? "Congrats! You've got a rare cat!"
-            : "Congrats! You've got a new cat!",
+          modalTitle:
+            rankInfo?.levelInfo?.describe && describeRarity !== 'Normal'
+              ? "Congrats! You've got a rare cat!"
+              : "Congrats! You've got a new cat!",
           amount: SGRTokenInfo?.amount,
           status: Status.SUCCESS,
           theme,
@@ -300,7 +303,7 @@ export const useGetImageAndConfirm = () => {
             href: explorerUrl,
           },
           showScrap: generation === '9',
-          showLight: generation === '9' && rankInfo?.levelInfo?.describe ? true : false,
+          showLight: generation === '9' && rankInfo?.levelInfo?.describe && describeRarity !== 'Normal' ? true : false,
           buttonInfo: {
             btnText: `View Inscription`,
             openLoading: true,

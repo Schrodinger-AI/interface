@@ -100,6 +100,7 @@ export const useAdoptConfirm = () => {
             isAcross,
             isDirect,
             theme,
+            isBlind: adoptOnly,
             data: {
               SGRToken: {
                 tokenName: childrenItemInfo.tokenName,
@@ -141,7 +142,7 @@ export const useAdoptConfirm = () => {
                     symbol: childrenItemInfo.symbol,
                     tokenName: childrenItemInfo.tokenName,
                     inputAmount: childrenItemInfo.inputAmount,
-                    isDirect: false,
+                    isDirect,
                   },
                   theme,
                   adoptOnly: false,
@@ -307,7 +308,7 @@ export const useAdoptConfirm = () => {
             info: {
               logo: originImage,
               name: childrenItemInfo.tokenName,
-              tag: generation ? `GEN ${parentItemInfo.generation}` : '',
+              tag: generation ? `GEN ${generation}` : '',
               subName: renameSymbol(childrenItemInfo.symbol),
             },
             title: 'Pending Approval',
@@ -472,10 +473,13 @@ export const useAdoptConfirm = () => {
             )} XPSGR-5`
           : undefined;
 
+        const describeRarity = rankInfo?.levelInfo?.describe ? rankInfo?.levelInfo?.describe.split(',')[0] : '';
+
         cardResultModal.show({
-          modalTitle: rankInfo?.levelInfo?.describe
-            ? "Congrats! You've got a rare cat!"
-            : "Congrats! You've got a new cat!",
+          modalTitle:
+            rankInfo?.levelInfo?.describe && describeRarity !== 'Normal'
+              ? "Congrats! You've got a rare cat!"
+              : "Congrats! You've got a new cat!",
           amount: SGRTokenInfo?.amount,
           status: Status.SUCCESS,
           theme,
@@ -483,7 +487,7 @@ export const useAdoptConfirm = () => {
             href: explorerUrl,
           },
           showScrap: generation === '9',
-          showLight: generation === '9' && rankInfo?.levelInfo?.describe ? true : false,
+          showLight: generation === '9' && rankInfo?.levelInfo?.describe && describeRarity !== 'Normal' ? true : false,
           buttonInfo: {
             btnText: `View Inscription`,
             openLoading: true,

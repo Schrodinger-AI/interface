@@ -325,7 +325,7 @@ export default function DetailPage() {
       },
       {
         key: 'confirm',
-        label: <div onClick={() => onView(theme)}>View</div>,
+        label: <div onClick={() => onView(theme)}>Unbox</div>,
       },
     ];
   }, [onView, onReset, theme]);
@@ -356,7 +356,7 @@ export default function DetailPage() {
             Reroll
           </HandleButtonDefault>
         )}
-        {showConfirm && <HandleButtonDefault onClick={() => onView(theme)}>View</HandleButtonDefault>}
+        {showConfirm && <HandleButtonDefault onClick={() => onView(theme)}>Unbox</HandleButtonDefault>}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
             <HandleButtonPrimary className="mr-[12px] !px-7">Trade</HandleButtonPrimary>
@@ -398,7 +398,7 @@ export default function DetailPage() {
         )}
         {!showRerollAndConfirmButtons && showConfirm && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onView(theme)}>
-            View
+            Unbox
           </HandleButtonPrimary>
         )}
         {showTrade && (

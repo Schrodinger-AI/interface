@@ -25,6 +25,8 @@ const useBackToHomeByRoute = () => {
         }
       } else if (pathname === '/' && Number(searchParams.get('pageState')) === ListTypeEnum.My) {
         router.push('/');
+      } else if (pathname === '/' && Number(searchParams.get('pageState')) === ListTypeEnum.Blind) {
+        router.push('/');
       }
     } catch (e) {
       console.log(e);
