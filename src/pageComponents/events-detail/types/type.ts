@@ -1,3 +1,4 @@
+import { TStrayCats } from 'graphqlServer';
 import { TBuyType } from 'hooks/useBuyToken';
 import { HandleCardType } from 'redux/types/reducerTypes';
 
@@ -95,4 +96,9 @@ export interface IRankConfigData {
     pc: string;
     mobile: string;
   };
+}
+
+export interface IStrayCatsData {
+  totalCount: number;
+  data: TStrayCats[];
 }

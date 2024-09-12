@@ -42,10 +42,11 @@ export class AdTracker {
         console.log('=====this.gtm', event);
         this.gtm.push({ event, ...this.adInfo, ...payload });
       } else {
-        const eventName = `${event}_test`;
-        console.log('=====this.gtm test', eventName, payload);
-        console.log('=====this.gtm this.gtm', this.gtm);
-        this.gtm.push({ eventName, ...this.adInfo, ...payload });
+        // TODO: testnet
+        // const eventName = `${event}_test`;
+        // console.log('=====this.gtm test', eventName, payload);
+        // console.log('=====this.gtm this.gtm', this.gtm);
+        // this.gtm.push({ event: eventName, ...this.adInfo, ...payload });
       }
     } catch (error) {
       console.error('track error:', error);

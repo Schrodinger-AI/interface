@@ -11,6 +11,7 @@ enum HonourTypeEnum {
   Platinum = 'Platinum',
   Emerald = 'Emerald',
   Diamond = 'Diamond',
+  Normal = 'Normal',
 }
 
 const stylesMap: Record<HonourTypeEnum, string> = {
@@ -20,6 +21,7 @@ const stylesMap: Record<HonourTypeEnum, string> = {
   [HonourTypeEnum.Platinum]: styles.platinum,
   [HonourTypeEnum.Emerald]: styles.halcyon,
   [HonourTypeEnum.Diamond]: styles.diamond,
+  [HonourTypeEnum.Normal]: styles.normal,
 };
 
 export default function HonourLabel({ text, className }: { text: string; className?: string }) {

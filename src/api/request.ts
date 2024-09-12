@@ -12,6 +12,7 @@ import {
   IEventsDetailData,
   IEventsDetailListTable,
   IRankConfigData,
+  IStrayCatsData,
 } from 'pageComponents/events-detail/types/type';
 import { store } from 'redux/store';
 
@@ -231,4 +232,13 @@ export const fetchNftSalesInfo = async (params: INftSaleInfoParams) => {
 
 export const fetchActivityBotRank = async (data: IActivityBotRankParams): Promise<IActivityBotRankData> => {
   return request.post('/app/activity/bot-rank', data);
+};
+
+export const getStrayCats = async (data: {
+  adopter: string;
+  chainId: string;
+  maxResultCount: number;
+  skipCount: number;
+}): Promise<IStrayCatsData> => {
+  return request.post('/app/cat/stray-cats', data);
 };

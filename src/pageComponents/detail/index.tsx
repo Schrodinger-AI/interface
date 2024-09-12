@@ -507,6 +507,7 @@ export default function DetailPage() {
               showAdopt={holderNumberGtZero}
               detail={schrodingerDetail}
               rankInfo={rankInfo}
+              isBlind={isBlind}
               onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
             />
           )}
