@@ -34,13 +34,15 @@ export const fetchSchrodingerImagesByAdoptId = async ({
   adoptId,
   transactionHash,
   adoptOnly = true,
+  address,
 }: {
   adoptId: string;
   transactionHash?: string;
   adoptOnly: boolean;
+  address: string;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}${
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&address=${address}${
       transactionHash ? `&transactionHash=${transactionHash}` : ''
     }`,
   );

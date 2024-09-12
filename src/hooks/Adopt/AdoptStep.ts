@@ -124,12 +124,13 @@ export const fetchWaterImages = async (
 export const fetchTraitsAndImages = async (
   adoptId: string,
   adoptOnly: boolean,
+  address: string,
   transactionHash?: string,
   count = 0,
 ): Promise<IAdoptImageInfo> => {
   count++;
   try {
-    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, transactionHash });
+    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, address, transactionHash });
     if (adoptOnly) {
       if (result?.adoptImageInfo?.boxImage && result?.adoptImageInfo?.attributes) {
         return result;
@@ -147,7 +148,7 @@ export const fetchTraitsAndImages = async (
       await sleep(3000);
     }
 
-    return fetchTraitsAndImages(adoptId, adoptOnly, transactionHash, count);
+    return fetchTraitsAndImages(adoptId, adoptOnly, address, transactionHash, count);
   }
 };
 

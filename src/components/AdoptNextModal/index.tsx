@@ -146,7 +146,7 @@ function AdoptNextModal({
     const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
       ? data?.SGRToken?.rankInfo?.levelInfo?.describe.split(',')[0]
       : '';
-    return describe && describeRarity !== 'Normal';
+    return describe && describeRarity !== 'Common';
   }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
 
   const noticeText = useMemo(() => {

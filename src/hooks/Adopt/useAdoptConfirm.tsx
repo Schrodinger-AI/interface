@@ -364,11 +364,11 @@ export const useAdoptConfirm = () => {
       asyncModal.show({
         theme,
       });
-      const result = await fetchTraitsAndImages(adoptId, adoptOnly, transactionHash);
+      const result = await fetchTraitsAndImages(adoptId, adoptOnly, wallet.address, transactionHash);
       asyncModal.hide();
       return result;
     },
-    [asyncModal],
+    [asyncModal, wallet.address],
   );
 
   const approveAdoptConfirm = useCallback(
@@ -483,7 +483,7 @@ export const useAdoptConfirm = () => {
 
         cardResultModal.show({
           modalTitle:
-            rankInfo?.levelInfo?.describe && describeRarity !== 'Normal'
+            rankInfo?.levelInfo?.describe && describeRarity !== 'Common'
               ? "Congrats! You've got a rare cat!"
               : "Congrats! You've got a new cat!",
           amount: SGRTokenInfo?.amount,
@@ -493,7 +493,7 @@ export const useAdoptConfirm = () => {
             href: explorerUrl,
           },
           showScrap: generation === '9',
-          showLight: generation === '9' && rankInfo?.levelInfo?.describe && describeRarity !== 'Normal' ? true : false,
+          showLight: generation === '9' && rankInfo?.levelInfo?.describe && describeRarity !== 'Common' ? true : false,
           buttonInfo: {
             btnText: `View Inscription`,
             openLoading: true,
