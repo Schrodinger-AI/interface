@@ -110,38 +110,14 @@ export default function TokensPage() {
           theme="dark"
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />
-
-        {!isInTG && cmsInfo?.operationButtons?.length ? (
-          <div
-            className={clsx(
-              'flex justify-end fixed lg:static bottom-0 left-0 z-20 bg-neutralWhiteBg p-[16px] lg:p-0 w-full lg:w-auto border-0 border-t-[1px] border-solid border-neutralDivider lg:border-none',
-            )}>
-            {cmsInfo.operationButtons.map((item, index) => {
-              return (
-                <Button
-                  key={index}
-                  type={item.buttonType}
-                  className={clsx(
-                    '!rounded-lg flex-1 overflow-hidden lg:flex-none',
-                    index === 0 ? '' : 'ml-[16px]',
-                    item?.buttonType === 'default' ? 'border-brandDefault text-brandDefault' : '',
-                  )}
-                  onClick={() => {
-                    jumpToPage({
-                      link: item.link,
-                      linkType: item.linkType,
-                    });
-                  }}>
-                  {item.text}
-                </Button>
-              );
-            })}
-          </div>
-        ) : null}
       </div>
 
       <div className="px-4 lg:px-10">
-        {pageState === ListTypeEnum.Stray ? <StrayCats theme="dark" /> : <OwnedItems theme="dark" />}
+        {pageState === ListTypeEnum.Stray ? (
+          <StrayCats theme="dark" />
+        ) : (
+          <OwnedItems theme="dark" hideFilter={pageState === ListTypeEnum.Blind} />
+        )}
       </div>
     </div>
   );

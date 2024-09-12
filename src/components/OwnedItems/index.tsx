@@ -51,8 +51,8 @@ import useTelegram from 'hooks/useTelegram';
 import { ItemType } from 'antd/es/menu/interface';
 import { TModalTheme } from 'components/CommonModal';
 
-export default function OwnedItems(params?: { theme?: TModalTheme }) {
-  const { theme = 'light' } = params || {};
+export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: boolean }) {
+  const { theme = 'light', hideFilter } = params || {};
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
   const { isLG } = useResponsive();
@@ -541,7 +541,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
         align="center"
         justify="space-between">
         {showTotalAmount && isLG ? renderTotalAmount : null}
-        {isLG ? (
+        {isLG && !hideFilter ? (
           <Flex flex={1} gap={16} className="ml-[8px] flex justify-end">
             <Flex
               className={clsx(
@@ -592,46 +592,53 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
             width={collapsed ? 364 : 0}
             trigger={null}>
             <div className="px-4 mb-[12px]">{renderTotalAmount}</div>
-            {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
+            {hideFilter
+              ? null
+              : collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
           </Layout.Sider>
         )}
 
         <Layout className={clsx('relative', isDark ? 'bg-pixelsPageBg' : '!bg-[var(--bg-page)]')}>
-          <Flex
-            className={clsx(
-              'z-[50] pb-5 pt-6 lg:pt-5',
-              !isLG && 'sticky top-0',
-              isDark ? 'bg-pixelsPageBg' : 'bg-neutralWhiteBg',
-            )}
-            vertical
-            gap={12}>
-            {isLG ? null : (
-              <Flex gap={16}>
-                <Flex
-                  className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
-                  justify="center"
-                  align="center"
-                  onClick={collapsedChange}>
-                  <CollapsedSVG />
+          {hideFilter ? (
+            <div className="h-[20px] " />
+          ) : (
+            <Flex
+              className={clsx(
+                'z-[50] pb-5 pt-6 lg:pt-5',
+                !isLG && 'sticky top-0',
+                isDark ? 'bg-pixelsPageBg' : 'bg-neutralWhiteBg',
+              )}
+              vertical
+              gap={12}>
+              {isLG ? null : (
+                <Flex gap={16}>
+                  <Flex
+                    className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
+                    justify="center"
+                    align="center"
+                    onClick={collapsedChange}>
+                    <CollapsedSVG />
+                  </Flex>
+                  <CommonSearch
+                    placeholder="Search for an inscription symbol or name"
+                    value={searchParam}
+                    onChange={symbolChange}
+                    onPressEnter={symbolChange}
+                  />
                 </Flex>
-                <CommonSearch
-                  placeholder="Search for an inscription symbol or name"
-                  value={searchParam}
-                  onChange={symbolChange}
-                  onPressEnter={symbolChange}
-                />
-              </Flex>
-            )}
+              )}
 
-            <FilterTags
-              tagList={tagList}
-              filterSelect={filterSelect}
-              clearAll={handleTagsClearAll}
-              onchange={filterChange}
-              theme={theme}
-              clearSearchChange={clearSearchChange}
-            />
-          </Flex>
+              <FilterTags
+                tagList={tagList}
+                filterSelect={filterSelect}
+                clearAll={handleTagsClearAll}
+                onchange={filterChange}
+                theme={theme}
+                clearSearchChange={clearSearchChange}
+              />
+            </Flex>
+          )}
+
           <ScrollContent
             type={CardType.MY}
             loadingMore={loadingMore}

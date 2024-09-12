@@ -155,7 +155,7 @@ export default function TokensPage() {
       </div>
 
       <div className="px-4 lg:px-10">
-        <OwnedItems />
+        <OwnedItems hideFilter={pageState === ListTypeEnum.Blind} />
       </div>
     </div>
   );
