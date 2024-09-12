@@ -18,6 +18,11 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
 
+const boxRare = 'Congrats! You got a Rare Cat Box!';
+const boxNormal = 'Congrats! You got a Cat Box!';
+const isAcrossBoxRare = 'Congrats! You got a Rare Cat Box that evolved 2-Gen at a time!';
+const isAcrossBoxNormal = 'Congrats! You got a Common Cat Box that evolved 2-Gen at a time!';
+
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
   theme?: TModalTheme;
@@ -104,7 +109,7 @@ function AdoptNextModal({
         <div className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
           {isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat'}
         </div>
-        {isAcross && !isDirect && (
+        {isAcross && !isDirect && !isBlind && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
             adoption and your cat will gain multiple traits in this adoption.
@@ -112,7 +117,7 @@ function AdoptNextModal({
         )}
       </div>
     );
-  }, [isAcross, isDirect, isDark]);
+  }, [isAcross, isDirect, isDark, isBlind]);
 
   const newTraitsList = useMemo(() => {
     const inheritedMap: Record<string, string> = {};
@@ -145,16 +150,18 @@ function AdoptNextModal({
   }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
 
   const noticeText = useMemo(() => {
+    const showAcross = isAcross && !isDirect;
+
     if (isBlind) {
       if (isRare) {
-        return 'Congrats! You got a Rare Cat Box!';
+        return showAcross ? isAcrossBoxRare : boxRare;
       } else {
-        return 'Congrats! You got a Cat Box!';
+        return showAcross ? isAcrossBoxNormal : boxNormal;
       }
     } else {
       return 'Congratulations! Your Cat is ready for adoption.';
     }
-  }, [isBlind, isRare]);
+  }, [isAcross, isBlind, isDirect, isRare]);
 
   return (
     <CommonModal
@@ -194,8 +201,13 @@ function AdoptNextModal({
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
         <div>
           {isBlind ? (
-            <div className="text-sm text-neutralSecondary mb-[16px]">
-              You must "Unbox" it before trading or transferring the cat. This process may take some time.
+            <div
+              className={clsx('text-sm mb-[16px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+              <p>
+                You can tap "Unbox" to reveal your cat now, which may take some time; or tap "X" in the top right corner
+                and find it on the "Cat Box" page to reveal it later.
+              </p>
+              <p>Note: the cat cannot be traded or transferred until it is unboxed.</p>
             </div>
           ) : null}
           <NoticeBar text={noticeText} type="success" theme={theme} />

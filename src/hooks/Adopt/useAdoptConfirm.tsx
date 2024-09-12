@@ -248,6 +248,7 @@ export const useAdoptConfirm = () => {
       infos,
       theme = 'light',
       isDirect,
+      prePage,
     }: {
       childrenItemInfo: IAdoptNextInfo;
       image: string;
@@ -257,6 +258,7 @@ export const useAdoptConfirm = () => {
       infos: IAdoptImageInfo;
       theme?: TModalTheme;
       isDirect?: boolean;
+      prePage?: string;
     }): Promise<{
       txResult: ISendResult;
       image: string;
@@ -337,6 +339,7 @@ export const useAdoptConfirm = () => {
               inputAmount: childrenItemInfo.inputAmount,
               isDirect,
             },
+            prePage,
             theme,
             adoptOnly: false,
           });
@@ -378,6 +381,7 @@ export const useAdoptConfirm = () => {
       isDirect,
       theme,
       adoptOnly,
+      prePage,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -387,6 +391,7 @@ export const useAdoptConfirm = () => {
       isDirect?: boolean;
       theme?: TModalTheme;
       adoptOnly?: boolean;
+      prePage?: string;
     }) => {
       const params = await adoptConfirmInput({
         infos,
@@ -411,6 +416,7 @@ export const useAdoptConfirm = () => {
           infos,
           theme,
           isDirect,
+          prePage,
         });
         let nextTokenName = '';
         let nextSymbol = '';
@@ -573,6 +579,7 @@ export const useAdoptConfirm = () => {
           theme,
           adoptOnly,
           isDirect: childrenItemInfo.isDirect,
+          prePage,
         });
 
         if (result) {

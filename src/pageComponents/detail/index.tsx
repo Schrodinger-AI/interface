@@ -167,7 +167,7 @@ export default function DetailPage() {
       if (!schrodingerDetail) return;
       if (isBlind) {
         if (!schrodingerDetail.adoptId) return;
-        const amount = divDecimals(schrodingerDetail.amount, schrodingerDetail.decimals).toFixed();
+        const amount = divDecimals(schrodingerDetail.holderAmount, schrodingerDetail.decimals).toFixed();
         cancelAdoptModal.show({
           title: 'Reroll',
           nftImage: schrodingerDetail.inscriptionImageUri,
@@ -204,13 +204,14 @@ export default function DetailPage() {
             inputAmount: `${schrodingerDetail.consumeAmount}`,
             isDirect: schrodingerDetail.directAdoption,
           },
+          prePage: 'unbox',
           onSuccessModalCloseCallback: async () => {
             showLoading();
             await intervalFetch.start(symbol);
             intervalFetch.remove();
             closeLoading();
             route.replace(
-              `/detail?symbol=${schrodingerDetail.symbol}&from=my&address=${wallet.address}&source=${pageSource}&prePage=${prePage}`,
+              `/detail?symbol=${schrodingerDetail.symbol}&from=my&address=${wallet.address}&source=${pageSource}&prePage=unbox`,
             );
           },
           theme,
@@ -225,7 +226,6 @@ export default function DetailPage() {
       getImageAndConfirm,
       intervalFetch,
       pageSource,
-      prePage,
       route,
       schrodingerDetail,
       showLoading,
@@ -453,10 +453,8 @@ export default function DetailPage() {
       switch (prePage) {
         case 'adoptModal':
           return '/telegram/home';
-        case 'rerollModal':
-          return '/telegram?pageState=1';
         default:
-          return undefined;
+          return '/telegram?pageState=1';
       }
     }
     return undefined;
