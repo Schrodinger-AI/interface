@@ -16,6 +16,8 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ReactComponent as HistoryFilled } from 'assets/img/icons/history-filled.svg';
 import { ReactComponent as HistoryOutlined } from 'assets/img/icons/history-outlined.svg';
+import { Button } from 'aelf-design';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
 
 const DarkModal = dynamic(
   async () => {
@@ -32,6 +34,8 @@ export default function ETransfer() {
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
   const { isInTG } = useTelegram();
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const { checkLogin } = useCheckLoginAndToken();
 
   const defaultParams = useMemo(() => {
     return {
@@ -64,10 +68,16 @@ export default function ETransfer() {
   useTimeoutFn(() => {
     if (!isLogin) {
       if (!isInTG) {
-        router.replace('/');
+        setShowLogin(true);
       }
     }
   }, 4000);
+
+  useEffect(() => {
+    if (isLogin) {
+      setShowLogin(false);
+    }
+  }, [isLogin]);
 
   useEffect(() => {
     ETransferConfig.setConfig({
@@ -84,7 +94,7 @@ export default function ETransfer() {
     router.back();
   }, [router]);
 
-  if (loading || !isLogin) return null;
+  if (loading) return null;
 
   return (
     <div
@@ -93,7 +103,7 @@ export default function ETransfer() {
         styles['etransfer-deposit-wrap'],
         isInTG && styles['etransfer-deposit-wrap-dark'],
       )}>
-      {isLG ? null : (
+      {isLG || !isLogin ? null : (
         <Link
           href={'/etransfer-history'}
           className="absolute top-[46px] right-[32px] h-[40px] rounded-lg bg-brandBg px-[16px] flex justify-center items-center">
@@ -110,9 +120,11 @@ export default function ETransfer() {
             <span className={clsx('text-lg font-semibold', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
               Deposit Assets
             </span>
-            <Link href={'/etransfer-history'} className="pl-[16px]">
-              <HistoryOutlined className={clsx(isInTG ? 'fill-pixelsTertiaryTextPurple' : 'fill-brandDefault')} />
-            </Link>
+            {isLogin ? (
+              <Link href={'/etransfer-history'} className="pl-[16px]">
+                <HistoryOutlined className={clsx(isInTG ? 'fill-pixelsTertiaryTextPurple' : 'fill-brandDefault')} />
+              </Link>
+            ) : null}
           </div>
         </div>
       ) : (
@@ -133,9 +145,19 @@ export default function ETransfer() {
           />
         </div>
       )}
-      <ETransferDepositProvider>
-        <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
-      </ETransferDepositProvider>
+      {showLogin && !isLogin ? (
+        <div className="w-full flex flex-col justify-center items-center h-[300px] lg:h-[600px]">
+          <div className="text-3xl lg:text-4xl text-neutralPrimary font-semibold">Log in Etransfer</div>
+          <Button type="primary" className="w-[206px] !rounded-lg mt-[32px]" onClick={() => checkLogin()}>
+            Login
+          </Button>
+        </div>
+      ) : null}
+      {isLogin ? (
+        <ETransferDepositProvider>
+          <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
+        </ETransferDepositProvider>
+      ) : null}
     </div>
   );
 }
