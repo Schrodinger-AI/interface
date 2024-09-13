@@ -344,8 +344,18 @@ export default function DetailPage() {
           </HandleButtonPrimary>
         )}
         {showTrade && (
-          <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
-            <HandleButtonPrimary className="mr-[12px] !px-7">Trade</HandleButtonPrimary>
+          <Dropdown
+            menu={{ items }}
+            placement="topRight"
+            trigger={['click']}
+            overlayClassName={clsx(styles.dropdown, theme === 'dark' && styles['dropdown-dark'])}>
+            <div
+              className={clsx(
+                '!px-7 h-[48px] flex justify-center items-center font-medium text-base text-white',
+                theme === 'dark' ? '!primary-button-dark !rounded-none' : '!rounded-lg bg-brandDefault',
+              )}>
+              Trade
+            </div>
           </Dropdown>
         )}
       </div>
@@ -386,8 +396,15 @@ export default function DetailPage() {
           <Dropdown
             menu={{ items }}
             placement="topRight"
+            trigger={['click']}
             overlayClassName={clsx(styles.dropdown, theme === 'dark' && styles['dropdown-dark'])}>
-            <HandleButtonPrimary className={clsx('!px-7')}>Trade</HandleButtonPrimary>
+            <div
+              className={clsx(
+                '!px-7 h-[48px] flex justify-center items-center font-medium text-base text-white',
+                theme === 'dark' ? '!primary-button-dark !rounded-none' : '!rounded-lg bg-brandDefault',
+              )}>
+              Trade
+            </div>
           </Dropdown>
         )}
       </div>
