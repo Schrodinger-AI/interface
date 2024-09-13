@@ -204,10 +204,9 @@ function AdoptNextModal({
             <div
               className={clsx('text-sm mb-[16px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
               <p>
-                You can tap "Unbox" to reveal your cat now, which may take some time; or tap "X" in the top right corner
-                and find it on the "Cat Box" page to reveal it later.
+                Tap "Unbox" to reveal now or "X" in the top right corner to reveal later. The cat cannot be traded or
+                transferred until it is unboxed.
               </p>
-              <p>Note: the cat cannot be traded or transferred until it is unboxed.</p>
             </div>
           ) : null}
           <NoticeBar text={noticeText} type="success" theme={theme} />
