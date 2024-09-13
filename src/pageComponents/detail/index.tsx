@@ -254,7 +254,7 @@ export default function DetailPage() {
   );
 
   const showReset = useMemo(() => holderNumberGtZero && genGtZero, [genGtZero, holderNumberGtZero]);
-  const showConfirm = useMemo(() => isBlind && isLogin, [isBlind, isLogin]);
+  const showConfirm = useMemo(() => isBlind && isLogin && schrodingerDetail, [isBlind, isLogin, schrodingerDetail]);
 
   const holderAmount = useMemo(() => {
     return divDecimals(schrodingerDetail?.holderAmount, schrodingerDetail?.decimals).toFixed();
@@ -317,24 +317,6 @@ export default function DetailPage() {
     return tradeItems.filter((i) => i) as ItemType[];
   }, [buyNow, nftInfo, sell, showBuyInTrade, showSellInTrade]);
 
-  const rerollAndConfirmItems: ItemType[] = useMemo(() => {
-    return [
-      {
-        key: 'reroll',
-        label: <div onClick={() => onReset(theme)}>Reroll</div>,
-      },
-      {
-        key: 'confirm',
-        label: <div onClick={() => onView(theme)}>Unbox</div>,
-      },
-    ];
-  }, [onView, onReset, theme]);
-
-  const showRerollAndConfirmButtons = useMemo(
-    () => showReset && isBlind && (showAdoptDirectly || showAdopt),
-    [isBlind, showAdopt, showAdoptDirectly, showReset],
-  );
-
   function adoptAndResetButton() {
     return (
       <div className="flex flex-row">
@@ -347,16 +329,20 @@ export default function DetailPage() {
           </HandleButtonPrimary>
         )}
         {showAdopt && (
-          <HandleButtonDefault className="w-[240px] mr-[12px]" onClick={() => onAdoptNextGeneration(false, theme)}>
-            Adopt Next-Gen
+          <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onAdoptNextGeneration(false, theme)}>
+            Next-Gen
           </HandleButtonDefault>
         )}
         {showReset && (
-          <HandleButtonDefault className="mr-[12px]" onClick={() => onReset(theme)}>
+          <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onReset(theme)}>
             Reroll
           </HandleButtonDefault>
         )}
-        {showConfirm && <HandleButtonDefault onClick={() => onView(theme)}>Unbox</HandleButtonDefault>}
+        {showConfirm && (
+          <HandleButtonPrimary className="w-[200px]" onClick={() => onView(theme)}>
+            Unbox
+          </HandleButtonPrimary>
+        )}
         {showTrade && (
           <Dropdown menu={{ items }} placement="topRight" overlayClassName={styles.dropdown}>
             <HandleButtonPrimary className="mr-[12px] !px-7">Trade</HandleButtonPrimary>
@@ -375,7 +361,7 @@ export default function DetailPage() {
         )}>
         {showAdopt && (
           <HandleButtonDefault className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(false, theme)}>
-            Adopt Next-Gen
+            Next-Gen
           </HandleButtonDefault>
         )}
         {showAdoptDirectly && (
@@ -386,17 +372,12 @@ export default function DetailPage() {
             ) : null}
           </HandleButtonPrimary>
         )}
-        {showRerollAndConfirmButtons ? (
-          <Dropdown menu={{ items: rerollAndConfirmItems }} placement="topRight" overlayClassName={styles.dropdown}>
-            <HandleButtonDefault>......</HandleButtonDefault>
-          </Dropdown>
-        ) : null}
-        {!showRerollAndConfirmButtons && showReset && (
+        {showReset && (
           <HandleButtonDefault className={clsx('flex-1')} onClick={() => onReset(theme)}>
             Reroll
           </HandleButtonDefault>
         )}
-        {!showRerollAndConfirmButtons && showConfirm && (
+        {showConfirm && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onView(theme)}>
             Unbox
           </HandleButtonPrimary>
@@ -487,7 +468,9 @@ export default function DetailPage() {
           <div className="h-full flex-1 min-w-max flex flex-row justify-end items-end">
             {adoptAndResetButton()}
             {!isInTG && tradeModal?.show && schrodingerDetail && !isBlind && (
-              <HandleButtonDefault onClick={onTrade}>Trade</HandleButtonDefault>
+              <HandleButtonDefault className="w-[200px]" onClick={onTrade}>
+                Trade
+              </HandleButtonDefault>
             )}
           </div>
         </div>
@@ -532,7 +515,7 @@ export default function DetailPage() {
             Trade
           </HandleButtonDefault>
         )}
-        {isInTG && (
+        {isInTG && !isBlind && schrodingerDetail && (
           <ListingInfo
             theme={theme}
             previewImage={schrodingerDetail?.inscriptionImageUri || ''}

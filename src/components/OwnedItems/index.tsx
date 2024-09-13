@@ -488,7 +488,11 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
     return (
       dataSource && (
         <Flex className="pt-0 lg:pt-6" justify="center" align="center">
-          <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" theme={theme} />
+          <EmptyList
+            isChannelShow={!ownedTotal && pageState !== ListTypeEnum.Blind}
+            defaultDescription="No inscriptions found"
+            theme={theme}
+          />
         </Flex>
       )
     );

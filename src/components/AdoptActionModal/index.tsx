@@ -161,7 +161,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [info.name, isReset]);
 
   const inputPlaceholder = useMemo(() => {
-    if (isReset) return 'Consume Amount';
+    if (isReset) return 'Reroll Amount';
     return 'Consume Amount';
   }, [isReset]);
 
