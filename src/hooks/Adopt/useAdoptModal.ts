@@ -104,7 +104,7 @@ const useAdoptHandler = () => {
           },
           balanceList: [
             {
-              amount: symbolBalance,
+              amount: isBlind ? blindMax || '0' : symbolBalance,
               suffix: renameSymbol(parentItemInfo.symbol) || '',
               usd: `${symbolBalance && parentPrice ? ZERO.plus(symbolBalance).times(parentPrice).toFixed(2) : '--'}`,
             },

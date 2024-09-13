@@ -146,8 +146,11 @@ export default function ETransfer() {
         </div>
       )}
       {showLogin && !isLogin ? (
-        <div className="w-full flex flex-col justify-center items-center h-[300px] lg:h-[600px]">
-          <div className="text-3xl lg:text-4xl text-neutralPrimary font-semibold">Log in Etransfer</div>
+        <div className="w-full flex flex-col justify-center items-center h-[300px] mt-[40px] lg:mt-0 lg:h-[600px]">
+          <div className="text-3xl lg:text-4xl text-neutralPrimary font-semibold">Login Schrodinger</div>
+          <div className="text-base lg:text-lg text-neutralSecondary mt-[16px] text-center">
+            Log in Schrodinger with your wallet, and authorize the USDT deposit via Etransfer.
+          </div>
           <Button type="primary" className="w-[206px] !rounded-lg mt-[32px]" onClick={() => checkLogin()}>
             Login
           </Button>
