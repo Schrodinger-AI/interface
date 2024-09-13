@@ -1,6 +1,6 @@
 import { sleep } from '@portkey/utils';
 import { fetchSchrodingerImagesByAdoptId, fetchWaterImageRequest } from 'api/request';
-import { Adopt, AdoptMaxGen, confirmAdopt } from 'contract/schrodinger';
+import { Adopt, AdoptMaxGen, confirmAdopt, UpdateAdoption } from 'contract/schrodinger';
 import { store } from 'redux/store';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { timesDecimals } from 'utils/calculate';
@@ -82,6 +82,23 @@ export const adoptStep1Handler = async ({
   return { ...logs, transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId };
 };
 
+export const adoptBlindHandler = async ({ adoptId }: { adoptId: string }) => {
+  const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState()?.info.cmsInfo || {};
+  if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
+
+  const result = await UpdateAdoption(adoptId);
+
+  const TransactionResult = result.TransactionResult;
+
+  const logs = await ProtoInstance.getLogEventResult<IAdoptedLogs>({
+    contractAddress,
+    logsName: 'AdoptionUpdated',
+    TransactionResult,
+  });
+  if (!logs) throw AdoptActionErrorCode.adoptFailed;
+  return { ...logs, transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId };
+};
+
 export const fetchWaterImages = async (
   params: IWaterImageRequest,
   count = 0,
@@ -106,18 +123,32 @@ export const fetchWaterImages = async (
 
 export const fetchTraitsAndImages = async (
   adoptId: string,
+  adoptOnly: boolean,
+  address: string,
   transactionHash?: string,
   count = 0,
 ): Promise<IAdoptImageInfo> => {
   count++;
   try {
-    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, transactionHash });
-    if (!result || !result.adoptImageInfo?.images?.length) throw 'Waiting...';
+    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, address, transactionHash });
+    if (adoptOnly) {
+      if (result?.adoptImageInfo?.boxImage && result?.adoptImageInfo?.attributes) {
+        return result;
+      } else {
+        throw 'Waiting...';
+      }
+    }
+    if (!result || !result.imageUri) throw 'Waiting...';
     return result;
   } catch (error) {
     // Waiting to generate ai picture
-    await sleep(6000);
-    return fetchTraitsAndImages(adoptId, transactionHash, count);
+    if (adoptOnly) {
+      await sleep(1000);
+    } else {
+      await sleep(3000);
+    }
+
+    return fetchTraitsAndImages(adoptId, adoptOnly, address, transactionHash, count);
   }
 };
 

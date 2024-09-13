@@ -22,7 +22,7 @@ import { singleMessage } from '@portkey/did-ui-react';
 import useIntervalGetSchrodingerDetail from './useIntervalGetSchrodingerDetail';
 import { getExploreLink } from 'utils';
 import { store } from 'redux/store';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { divDecimals } from 'utils/calculate';
 import { message } from 'antd';
 import { DEFAULT_ERROR, formatErrorMsg } from 'utils/formatError';
@@ -36,15 +36,12 @@ import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
-import clsx from 'clsx';
-import { AdTracker } from 'utils/ad';
-import useTelegram from 'hooks/useTelegram';
+import { useGetImageAndConfirm } from './useGetImageAndConfirm';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
   const adoptNextModal = useModal(AdoptNextModal);
   const cardResultModal = useModal(CardResultModal);
-  const { isInTG } = useTelegram();
 
   const { txFee: commonTxFee } = useTxFee();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
@@ -52,9 +49,8 @@ export const useAdoptConfirm = () => {
   const intervalFetch = useIntervalGetSchrodingerDetail();
   const router = useRouter();
   const { wallet } = useWalletService();
-  const pathName = usePathname();
+  const getImageAndConfirm = useGetImageAndConfirm();
 
-  const isTGPage = pathName === '/telegram';
   const searchParams = useSearchParams();
   const source = searchParams.get('source');
 
@@ -75,6 +71,7 @@ export const useAdoptConfirm = () => {
       rankInfo,
       isDirect,
       theme,
+      adoptOnly = false,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
@@ -83,6 +80,7 @@ export const useAdoptConfirm = () => {
       isDirect?: boolean;
       rankInfo?: IRankInfo;
       theme?: TModalTheme;
+      adoptOnly?: boolean;
     }): Promise<{
       selectImage: string;
       getWatermarkImage: boolean;
@@ -102,6 +100,7 @@ export const useAdoptConfirm = () => {
             isAcross,
             isDirect,
             theme,
+            isBlind: adoptOnly,
             data: {
               SGRToken: {
                 tokenName: childrenItemInfo.tokenName,
@@ -110,7 +109,7 @@ export const useAdoptConfirm = () => {
                 rankInfo: rankInfo,
               },
               allTraits: infos.adoptImageInfo.attributes,
-              images: infos.adoptImageInfo.images,
+              images: adoptOnly ? [infos.adoptImageInfo.boxImage] : [infos.imageUri],
               inheritedTraits: parentItemInfo.traits,
               transaction: {
                 txFee: ZERO.plus(commonTxFee).toFixed(),
@@ -126,12 +125,29 @@ export const useAdoptConfirm = () => {
               adoptNextModal.hide();
               reject(AdoptActionErrorCode.cancel);
             },
-            onConfirm: (selectImage, getWatermarkImage, SGRTokenInfo) => {
-              resolve({
-                selectImage,
-                getWatermarkImage,
-                SGRTokenInfo,
-              });
+            onConfirm: async (selectImage, getWatermarkImage, SGRTokenInfo) => {
+              if (getWatermarkImage) {
+                resolve({
+                  selectImage: selectImage,
+                  getWatermarkImage,
+                  SGRTokenInfo,
+                });
+              } else {
+                adoptNextModal.hide();
+                getImageAndConfirm({
+                  parentItemInfo,
+                  childrenItemInfo: {
+                    adoptId: childrenItemInfo.adoptId,
+                    outputAmount: childrenItemInfo.outputAmount,
+                    symbol: childrenItemInfo.symbol,
+                    tokenName: childrenItemInfo.tokenName,
+                    inputAmount: childrenItemInfo.inputAmount,
+                    isDirect,
+                  },
+                  theme,
+                  adoptOnly: false,
+                });
+              }
             },
           });
         } catch (error) {
@@ -139,7 +155,7 @@ export const useAdoptConfirm = () => {
         }
       });
     },
-    [ELFPrice, adoptNextModal, commonTxFee, getParentBalance],
+    [ELFPrice, adoptNextModal, commonTxFee, getImageAndConfirm, getParentBalance],
   );
 
   const retryAdoptConfirm = useCallback(
@@ -205,22 +221,6 @@ export const useAdoptConfirm = () => {
                 cardResultModal.hide();
               },
             },
-            description: (
-              <span className="font-medium text-neutralSecondary text-sm">
-                Adopt failed, you can re-adopt from &nbsp;
-                <span
-                  className={clsx(
-                    'cursor-pointer',
-                    theme === 'dark' ? 'text-pixelsPrimaryTextPurple' : 'text-brandDefault',
-                  )}
-                  onClick={() => {
-                    cardResultModal.hide();
-                    router.push('/stray-cats');
-                  }}>
-                  stray cats
-                </span>
-              </span>
-            ),
             hideButton: false,
             image: confirmParams.image,
             info: {
@@ -235,7 +235,7 @@ export const useAdoptConfirm = () => {
           });
         }
       }),
-    [cardResultModal, promptModal, router],
+    [cardResultModal, promptModal],
   );
 
   const adoptConfirmHandler = useCallback(
@@ -247,6 +247,8 @@ export const useAdoptConfirm = () => {
       getWatermarkImage,
       infos,
       theme = 'light',
+      isDirect,
+      prePage,
     }: {
       childrenItemInfo: IAdoptNextInfo;
       image: string;
@@ -255,13 +257,14 @@ export const useAdoptConfirm = () => {
       getWatermarkImage?: boolean;
       infos: IAdoptImageInfo;
       theme?: TModalTheme;
+      isDirect?: boolean;
+      prePage?: string;
     }): Promise<{
       txResult: ISendResult;
       image: string;
       imageUri: string;
     }> => {
       return new Promise(async (resolve, reject) => {
-        let confirmParams;
         if (getWatermarkImage) {
           // showLoading();
           const imageSignature = await fetchWaterImages({
@@ -291,7 +294,7 @@ export const useAdoptConfirm = () => {
           const image = imageSignature.image;
           const imageUri = imageSignature.imageUri;
 
-          confirmParams = {
+          const confirmParams = {
             adoptId: childrenItemInfo.adoptId,
             outputAmount: childrenItemInfo.outputAmount,
             symbol: childrenItemInfo.symbol,
@@ -300,63 +303,72 @@ export const useAdoptConfirm = () => {
             imageUri: imageUri,
             signature: Buffer.from(signature, 'hex').toString('base64'),
           };
+
+          const generation = childrenItemInfo?.tokenName?.split('GEN')[1];
+
+          promptModal.show({
+            info: {
+              logo: originImage,
+              name: childrenItemInfo.tokenName,
+              tag: generation ? `GEN ${generation}` : '',
+              subName: renameSymbol(childrenItemInfo.symbol),
+            },
+            title: 'Pending Approval',
+            theme,
+            content: {
+              title: 'Go to your wallet',
+              content: "You'll be asked to approve this offer from your wallet",
+            },
+            initialization: async () => {
+              const result = await retryAdoptConfirm(confirmParams, parentItemInfo, theme);
+              resolve(result);
+            },
+            onClose: () => {
+              promptModal.hide();
+            },
+          });
         } else {
           adoptNextModal.hide();
-          confirmParams = {
-            adoptId: childrenItemInfo.adoptId,
-            outputAmount: childrenItemInfo.outputAmount,
-            symbol: childrenItemInfo.symbol,
-            tokenName: childrenItemInfo.tokenName,
-            image: infos.image,
-            imageUri: infos.imageUri,
-            signature: Buffer.from(infos.signature, 'hex').toString('base64'),
-          };
+          getImageAndConfirm({
+            parentItemInfo: parentItemInfo,
+            childrenItemInfo: {
+              adoptId: childrenItemInfo.adoptId,
+              outputAmount: childrenItemInfo.outputAmount,
+              symbol: childrenItemInfo.symbol,
+              tokenName: childrenItemInfo.tokenName,
+              inputAmount: childrenItemInfo.inputAmount,
+              isDirect,
+            },
+            prePage,
+            theme,
+            adoptOnly: false,
+          });
         }
-
-        promptModal.show({
-          info: {
-            logo: parentItemInfo.inscriptionImageUri,
-            name: parentItemInfo.tokenName,
-            tag: parentItemInfo.generation ? `GEN ${parentItemInfo.generation}` : '',
-            subName: renameSymbol(parentItemInfo.symbol),
-          },
-          title: 'Pending Approval',
-          theme,
-          content: {
-            title: 'Go to your wallet',
-            content: "You'll be asked to approve this offer from your wallet",
-          },
-          initialization: async () => {
-            const result = await retryAdoptConfirm(confirmParams, parentItemInfo, theme);
-            resolve(result);
-          },
-          onClose: () => {
-            promptModal.hide();
-          },
-        });
       });
     },
-    [adoptNextModal, promptModal, retryAdoptConfirm],
+    [adoptNextModal, getImageAndConfirm, promptModal, retryAdoptConfirm],
   );
 
   const fetchImages = useCallback(
     async ({
       adoptId,
+      adoptOnly,
       transactionHash,
       theme = 'light',
     }: {
       adoptId: string;
+      adoptOnly: boolean;
       transactionHash?: string;
       theme?: TModalTheme;
     }) => {
       asyncModal.show({
         theme,
       });
-      const result = await fetchTraitsAndImages(adoptId, transactionHash);
+      const result = await fetchTraitsAndImages(adoptId, adoptOnly, wallet.address, transactionHash);
       asyncModal.hide();
       return result;
     },
-    [asyncModal],
+    [asyncModal, wallet.address],
   );
 
   const approveAdoptConfirm = useCallback(
@@ -368,6 +380,8 @@ export const useAdoptConfirm = () => {
       rankInfo,
       isDirect,
       theme,
+      adoptOnly,
+      prePage,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -376,8 +390,10 @@ export const useAdoptConfirm = () => {
       rankInfo?: IRankInfo;
       isDirect?: boolean;
       theme?: TModalTheme;
+      adoptOnly?: boolean;
+      prePage?: string;
     }) => {
-      const { selectImage, SGRTokenInfo, getWatermarkImage } = await adoptConfirmInput({
+      const params = await adoptConfirmInput({
         infos,
         parentItemInfo,
         childrenItemInfo,
@@ -385,35 +401,44 @@ export const useAdoptConfirm = () => {
         rankInfo,
         isDirect,
         theme,
+        adoptOnly,
       });
 
-      const { txResult, imageUri } = await adoptConfirmHandler({
-        image: selectImage,
-        parentItemInfo,
-        childrenItemInfo,
-        rankInfo,
-        getWatermarkImage,
-        infos,
-        theme,
-      });
-      let nextTokenName = '';
-      let nextSymbol = '';
+      if (params) {
+        const { selectImage, SGRTokenInfo, getWatermarkImage } = params;
 
-      try {
-        const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
-        nextTokenName = tokenName;
-        nextSymbol = symbol;
-      } catch (error) {
-        //
+        const { txResult, imageUri } = await adoptConfirmHandler({
+          image: selectImage,
+          parentItemInfo,
+          childrenItemInfo,
+          rankInfo,
+          getWatermarkImage,
+          infos,
+          theme,
+          isDirect,
+          prePage,
+        });
+        let nextTokenName = '';
+        let nextSymbol = '';
+
+        try {
+          const { tokenName, symbol } = await getAdoptConfirmEventLogs(txResult.TransactionResult);
+          nextTokenName = tokenName;
+          nextSymbol = symbol;
+        } catch (error) {
+          //
+        }
+        // Get next gen symbol
+        return {
+          image: imageUri,
+          txResult,
+          nextTokenName,
+          nextSymbol,
+          SGRTokenInfo,
+        };
+      } else {
+        return undefined;
       }
-      // Get next gen symbol
-      return {
-        image: imageUri,
-        txResult,
-        nextTokenName,
-        nextSymbol,
-        SGRTokenInfo,
-      };
     },
     [adoptConfirmHandler, adoptConfirmInput],
   );
@@ -445,15 +470,6 @@ export const useAdoptConfirm = () => {
       new Promise((resolve) => {
         const cmsInfo = store.getState().info.cmsInfo;
         const explorerUrl = getExploreLink(transactionId, 'transaction', cmsInfo?.curChain);
-        console.log(
-          '=====adoptConfirmSuccess',
-          explorerUrl,
-          transactionId,
-          cmsInfo?.curChain,
-          image,
-          rankInfo,
-          inputAmount,
-        );
         const generation = name.split('GEN')[1];
         const points = inputAmount
           ? `${formatTokenPrice(
@@ -463,10 +479,13 @@ export const useAdoptConfirm = () => {
             )} XPSGR-5`
           : undefined;
 
+        const describeRarity = rankInfo?.levelInfo?.describe ? rankInfo?.levelInfo?.describe.split(',')[0] : '';
+
         cardResultModal.show({
-          modalTitle: rankInfo?.levelInfo?.describe
-            ? "Congrats! You've got a rare cat!"
-            : "Congrats! You've got a new cat!",
+          modalTitle:
+            rankInfo?.levelInfo?.describe && describeRarity !== 'Common'
+              ? "Congrats! You've got a rare cat!"
+              : "Congrats! You've got a new cat!",
           amount: SGRTokenInfo?.amount,
           status: Status.SUCCESS,
           theme,
@@ -474,7 +493,7 @@ export const useAdoptConfirm = () => {
             href: explorerUrl,
           },
           showScrap: generation === '9',
-          showLight: generation === '9' && rankInfo?.levelInfo?.describe ? true : false,
+          showLight: generation === '9' && rankInfo?.levelInfo?.describe && describeRarity !== 'Common' ? true : false,
           buttonInfo: {
             btnText: `View Inscription`,
             openLoading: true,
@@ -525,50 +544,59 @@ export const useAdoptConfirm = () => {
     [wallet.address],
   );
 
-  return useCallback(
+  const adoptConfirm = useCallback(
     async ({
       parentItemInfo,
       childrenItemInfo,
       account,
       theme = 'light',
+      adoptOnly = true,
       prePage,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
       account: string;
+      adoptOnly?: boolean;
       theme?: TModalTheme;
       prePage?: string;
     }) => {
       try {
         const infos = await fetchImages({
           adoptId: childrenItemInfo.adoptId,
+          adoptOnly,
           transactionHash: childrenItemInfo.transactionHash,
           theme,
         });
 
         const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
 
-        const { txResult, image, nextTokenName, nextSymbol, SGRTokenInfo } = await approveAdoptConfirm({
+        const result = await approveAdoptConfirm({
           infos,
           childrenItemInfo,
           parentItemInfo,
           account,
           rankInfo,
           theme,
+          adoptOnly,
           isDirect: childrenItemInfo.isDirect,
-        });
-        await adoptConfirmSuccess({
-          transactionId: txResult.TransactionId,
-          image,
-          theme,
-          name: nextTokenName,
-          symbol: nextSymbol,
-          rankInfo,
-          SGRTokenInfo,
-          isDirect: childrenItemInfo.isDirect,
-          inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
           prePage,
         });
+
+        if (result) {
+          const { txResult, image, nextTokenName, nextSymbol, SGRTokenInfo } = result;
+          await adoptConfirmSuccess({
+            transactionId: txResult.TransactionId,
+            image,
+            theme,
+            name: nextTokenName,
+            symbol: nextSymbol,
+            rankInfo,
+            SGRTokenInfo,
+            isDirect: childrenItemInfo.isDirect,
+            inputAmount: divDecimals(childrenItemInfo.inputAmount, parentItemInfo.decimals).toFixed(),
+            prePage,
+          });
+        }
       } catch (error) {
         if (error === AdoptActionErrorCode.cancel) {
           return;
@@ -582,4 +610,6 @@ export const useAdoptConfirm = () => {
     },
     [adoptConfirmSuccess, approveAdoptConfirm, fetchImages, getRankInfo],
   );
+
+  return adoptConfirm;
 };

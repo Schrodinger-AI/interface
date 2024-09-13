@@ -4,14 +4,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from 'aelf-design';
 import { TableColumnsType } from 'antd';
 import TableEmpty from 'components/TableEmpty';
-import { TStrayCats, useGetStrayCats } from 'graphqlServer';
+import { TStrayCats } from 'graphqlServer';
 import SkeletonImage from 'components/SkeletonImage';
 import { divDecimals } from 'utils/calculate';
 import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
 import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
 import { useTimeoutFn } from 'react-use';
-import { checkAIService } from 'api/request';
+import { checkAIService, getStrayCats } from 'api/request';
 import { useModal } from '@ebay/nice-modal-react';
 import SyncAdoptModal from 'components/SyncAdoptModal';
 import { AIServerError } from 'utils/formatError';
@@ -47,8 +47,6 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
 
   const adoptConfirm = useAdoptConfirm();
 
-  const getStrayCats = useGetStrayCats();
-
   const handleTableChange = ({ pageSize, page }: { page: number; pageSize?: number }) => {
     pageSize && setPageSize(pageSize);
     page && setPageNum(page);
@@ -61,15 +59,11 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
     try {
       if (!wallet.address) return;
       setLoading(true);
-      const {
-        data: { getStrayCats: res },
-      } = await getStrayCats({
-        input: {
-          chainId: cmsInfo?.curChain || '',
-          adopter: wallet.address,
-          skipCount: (pageNum - 1) * pageSize,
-          maxResultCount: pageSize,
-        },
+      const res = await getStrayCats({
+        chainId: cmsInfo?.curChain || '',
+        adopter: wallet.address,
+        skipCount: (pageNum - 1) * pageSize,
+        maxResultCount: pageSize,
       });
       setDataSource(res.data || []);
       setTotalCount(res.totalCount ?? 0);
@@ -146,6 +140,7 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
             isDirect: record.directAdoption,
           },
           theme,
+          adoptOnly: false,
           account: wallet.address,
         });
       } catch (error) {

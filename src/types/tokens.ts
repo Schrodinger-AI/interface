@@ -49,6 +49,9 @@ export type TSGRTokenInfo = GenerateType<
   TSGRToken & {
     address?: string;
     holderAmount?: number;
+    consumeAmount?: number;
+    directAdoption?: boolean;
     collectionId?: string;
+    adoptId?: string;
   }
 >;

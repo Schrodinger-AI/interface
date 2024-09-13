@@ -18,6 +18,11 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
 
+const boxRare = 'Congrats! You got a Rare Cat Box!';
+const boxNormal = 'Congrats! You got a Cat Box!';
+const isAcrossBoxRare = 'Congrats! You got a Rare Cat Box that evolved 2-Gen at a time!';
+const isAcrossBoxNormal = 'Congrats! You got a Common Cat Box that evolved 2-Gen at a time!';
+
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
   theme?: TModalTheme;
@@ -48,11 +53,21 @@ interface IAdoptNextModal {
   data: IAdoptNextData;
   adoptId: string;
   theme?: TModalTheme;
+  isBlind?: boolean;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
 
-function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId, theme }: IAdoptNextModal) {
+function AdoptNextModal({
+  isAcross,
+  data,
+  isDirect,
+  onConfirm,
+  onClose,
+  adoptId,
+  theme,
+  isBlind = false,
+}: IAdoptNextModal) {
   const modal = useModal();
   const cancelAdoptModal = useModal(CancelAdoptModal);
   const [loading, setLoading] = useState<boolean>(false);
@@ -94,7 +109,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
         <div className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
           {isDirect ? 'Instant Adopt GEN9 Cat' : 'Adopt Next-Gen Cat'}
         </div>
-        {isAcross && !isDirect && (
+        {isAcross && !isDirect && !isBlind && (
           <div className="mt-2 text-lg text-neutralSecondary font-medium">
             Congratulations! You've triggered a<span className="text-functionalWarning">{` CROSS-LEVEL `}</span>
             adoption and your cat will gain multiple traits in this adoption.
@@ -102,7 +117,7 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
         )}
       </div>
     );
-  }, [isAcross, isDirect, isDark]);
+  }, [isAcross, isDirect, isDark, isBlind]);
 
   const newTraitsList = useMemo(() => {
     const inheritedMap: Record<string, string> = {};
@@ -121,6 +136,32 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
       console.error('getRarity error:', error);
     }
   }, [allTraits]);
+
+  const generation = useMemo(() => {
+    return data?.SGRToken.tokenName?.split('GEN')[1];
+  }, [data?.SGRToken.tokenName]);
+
+  const isRare = useMemo(() => {
+    const describe = data?.SGRToken?.rankInfo?.levelInfo?.describe;
+    const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
+      ? data?.SGRToken?.rankInfo?.levelInfo?.describe.split(',')[0]
+      : '';
+    return describe && describeRarity !== 'Common';
+  }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
+
+  const noticeText = useMemo(() => {
+    const showAcross = isAcross && !isDirect;
+
+    if (isBlind) {
+      if (isRare) {
+        return showAcross ? isAcrossBoxRare : boxRare;
+      } else {
+        return showAcross ? isAcrossBoxNormal : boxNormal;
+      }
+    } else {
+      return 'Congratulations! Your Cat is ready for adoption.';
+    }
+  }, [isAcross, isBlind, isDirect, isRare]);
 
   return (
     <CommonModal
@@ -153,12 +194,24 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
             disabled={selectImage < 0}
             onClick={onClick}
             type="primary">
-            Confirm
+            {isBlind ? 'Unbox' : 'Confirm'}
           </Button>
         </div>
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
-        <NoticeBar text="Congratulations! Your Cat is ready for adoption." type="success" theme={theme} />
+        <div>
+          {isBlind ? (
+            <div
+              className={clsx('text-sm mb-[16px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
+              <p>
+                Tap "Unbox" to reveal now or "X" in the top right corner to reveal later. The cat cannot be traded or
+                transferred until it is unboxed.
+              </p>
+            </div>
+          ) : null}
+          <NoticeBar text={noticeText} type="success" theme={theme} />
+        </div>
+
         {images.length > 1 ? (
           <DescriptionItem title="Select the Cat You Prefer">
             <span className="text-functionalWarning text-base">
@@ -172,10 +225,10 @@ function AdoptNextModal({ isAcross, data, isDirect, onConfirm, onClose, adoptId,
             <SkeletonImage
               img={images[0]}
               className="w-full lg:w-[180px]"
-              generation={isInTG && isDirect ? '9' : undefined}
-              rank={isInTG ? data?.SGRToken?.rankInfo?.rank : undefined}
-              rarity={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.describe : undefined}
-              level={isInTG ? data?.SGRToken?.rankInfo?.levelInfo?.level : undefined}
+              generation={isInTG && isDirect ? '9' : generation}
+              rank={data?.SGRToken?.rankInfo?.rank}
+              rarity={data?.SGRToken?.rankInfo?.levelInfo?.describe}
+              level={data?.SGRToken?.rankInfo?.levelInfo?.level}
             />
           </div>
         )}

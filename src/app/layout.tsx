@@ -42,7 +42,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           })(window,document,'script','dataLayer','GTM-MSLRBBX2');`,
         }}></Script>
       <Script strategy="afterInteractive" src="https://telegram.org/js/telegram-web-app.js" />
-      <Script src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
+      <Script strategy="afterInteractive" src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
       <body>
         <noscript
           dangerouslySetInnerHTML={{

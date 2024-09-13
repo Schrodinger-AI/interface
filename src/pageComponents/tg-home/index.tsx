@@ -126,6 +126,7 @@ export default function TgHome() {
 
       AdTracker.trackEvent('tg_user_click_daily', {
         address,
+        user_id: address,
       });
     }
   };

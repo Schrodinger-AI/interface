@@ -13,10 +13,12 @@ export default function DetailTitle({
   detail,
   fromListAll,
   theme = 'light',
+  isBlind = false,
 }: {
   detail: TSGRTokenInfo;
   fromListAll: boolean;
   theme?: TModalTheme;
+  isBlind?: boolean;
 }) {
   const { isInTG } = useTelegram();
 
@@ -45,8 +47,17 @@ export default function DetailTitle({
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const symbolText = useMemo(() => {
-    return isInTG && holderAmountGtZero ? 'Total supply' : 'Symbol';
-  }, [holderAmountGtZero, isInTG]);
+    if (isInTG && holderAmountGtZero) {
+      isBlind;
+      if (isBlind) {
+        return '';
+      }
+
+      return 'Total supply';
+    } else {
+      return 'Symbol';
+    }
+  }, [holderAmountGtZero, isBlind, isInTG]);
 
   const renderSymbol = useMemo(() => {
     return isInTG && holderAmountGtZero ? (
@@ -70,10 +81,13 @@ export default function DetailTitle({
           className={clsx(styles.value, isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}
         />
       </div>
-      <div className={clsx(styles.card, 'ml-[16px]')}>
-        <div className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralDisable')}>{symbolText}</div>
-        {renderSymbol}
-      </div>
+      {symbolText ? (
+        <div className={clsx(styles.card, 'ml-[16px]')}>
+          <div className={clsx(styles.title, isDark ? 'text-pixelsDivider' : 'text-neutralDisable')}>{symbolText}</div>
+          {renderSymbol}
+        </div>
+      ) : null}
+
       <div className={clsx(styles.card, 'ml-[16px]')}>
         <div
           className={clsx(
