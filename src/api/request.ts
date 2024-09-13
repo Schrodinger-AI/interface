@@ -12,6 +12,7 @@ import {
   IEventsDetailData,
   IEventsDetailListTable,
   IRankConfigData,
+  IStrayCatsData,
 } from 'pageComponents/events-detail/types/type';
 import { store } from 'redux/store';
 
@@ -32,12 +33,18 @@ export const fetchToken = async (data: ITokenParams) => {
 export const fetchSchrodingerImagesByAdoptId = async ({
   adoptId,
   transactionHash,
+  adoptOnly = true,
+  address,
 }: {
   adoptId: string;
   transactionHash?: string;
+  adoptOnly: boolean;
+  address: string;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/adoptInfo?adoptId=${adoptId}${transactionHash ? `&transactionHash=${transactionHash}` : ''}`,
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&address=${address}${
+      transactionHash ? `&transactionHash=${transactionHash}` : ''
+    }`,
   );
 };
 
@@ -69,6 +76,10 @@ export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData>
   return request.post('/app/cat/all', data);
 };
 
+export const catsBlindListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
+  return request.post('/app/cat/box-list', data);
+};
+
 export const catsListBotAll = async (data: ICatsListParams): Promise<ICatsListData> => {
   return request.post('/app/cat/bot-all', data);
 };
@@ -91,6 +102,10 @@ export const getIOSCustomization = async (): Promise<{ data: TCustomizationItemT
 
 export const getCatDetail = async (params: ICatDetailParams): Promise<TSGRTokenInfo> => {
   return request.post('/app/cat/detail', params);
+};
+
+export const getBlindCatDetail = async (params: ICatDetailParams): Promise<TSGRTokenInfo> => {
+  return request.post('/app/cat/box-detail', params);
 };
 
 export const getRankList = async (): Promise<{ data: IRankListData }> => {
@@ -219,4 +234,13 @@ export const fetchNftSalesInfo = async (params: INftSaleInfoParams) => {
 
 export const fetchActivityBotRank = async (data: IActivityBotRankParams): Promise<IActivityBotRankData> => {
   return request.post('/app/activity/bot-rank', data);
+};
+
+export const getStrayCats = async (data: {
+  adopter: string;
+  chainId: string;
+  maxResultCount: number;
+  skipCount: number;
+}): Promise<IStrayCatsData> => {
+  return request.post('/app/cat/stray-cats', data);
 };

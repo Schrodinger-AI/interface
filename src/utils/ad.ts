@@ -41,6 +41,12 @@ export class AdTracker {
       if (env === 'production') {
         console.log('=====this.gtm', event);
         this.gtm.push({ event, ...this.adInfo, ...payload });
+      } else {
+        // TODO: testnet
+        // const eventName = `${event}_test`;
+        // console.log('=====this.gtm test', eventName, payload);
+        // console.log('=====this.gtm this.gtm', this.gtm);
+        // this.gtm.push({ event: eventName, ...this.adInfo, ...payload });
       }
     } catch (error) {
       console.error('track error:', error);

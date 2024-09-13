@@ -23,6 +23,7 @@ export default function ItemInfo({
   showAdopt,
   source,
   theme = 'light',
+  isBlind = false,
 }: {
   detail: TSGRToken;
   rankInfo?: TRankInfoAddLevelInfo;
@@ -30,6 +31,7 @@ export default function ItemInfo({
   showAdopt?: boolean;
   theme?: TModalTheme;
   source?: string | null;
+  isBlind?: boolean;
 }) {
   const learnMoreModal = useModal(LearnMoreModal);
   const onLearnMoreClick = useCallback(() => {
@@ -143,7 +145,7 @@ export default function ItemInfo({
             </div>
           </div>
         )}
-        {(rankInfo?.levelInfo?.token || rankInfo?.levelInfo?.awakenPrice) && (
+        {(rankInfo?.levelInfo?.token || rankInfo?.levelInfo?.awakenPrice) && !isBlind && (
           <div className="flex flex-row justify-between items-start mt-2 text-lg font-normal">
             <div
               className={clsx('max-w-[170px] md:max-w-max', isDark ? 'text-pixelsDivider' : 'text-neutralSecondary')}>

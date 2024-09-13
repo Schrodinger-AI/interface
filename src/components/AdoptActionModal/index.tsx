@@ -35,6 +35,7 @@ export type TAdoptActionModalProps = {
   inputProps?: ISGRAmountInputProps;
   isReset?: boolean;
   theme?: TModalTheme;
+  isBlind?: boolean;
 };
 
 function AdoptActionModal(params: TAdoptActionModalProps) {
@@ -52,6 +53,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     inputProps,
     isReset = false,
     theme = 'light',
+    isBlind = false,
   } = params;
   const sgrAmountInputRef = useRef<ISGRAmountInputInterface>();
 
@@ -159,7 +161,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   }, [info.name, isReset]);
 
   const inputPlaceholder = useMemo(() => {
-    if (isReset) return 'Consume Amount';
+    if (isReset) return 'Reroll Amount';
     return 'Consume Amount';
   }, [isReset]);
 
@@ -258,7 +260,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <SGRAmountInput
         ref={sgrAmountInputRef}
         title={inputTitle}
-        disableInput={disableInput}
+        disableInput={disableInput || isBlind}
         theme={theme}
         tips={
           isReset
@@ -278,7 +280,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
         errorMessage={errorMessage}
         showBuy={showBuy && info.tag === 'GEN 0'}
         placeholder={inputPlaceholder}
-        defaultValue={isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : ''}
+        defaultValue={isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : ''}
         {...inputProps}
       />
       {renderList({

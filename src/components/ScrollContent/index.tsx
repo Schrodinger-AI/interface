@@ -22,6 +22,7 @@ interface IContentProps {
   loadMore?: () => void;
   onPress: (item: TSGRItem) => void;
   ListProps: ListProps<TSGRItem>;
+  hideTradePrice?: boolean;
 }
 
 function ScrollContent(props: IContentProps) {
@@ -35,6 +36,7 @@ function ScrollContent(props: IContentProps) {
     onPress,
     loading,
     loadingMore,
+    hideTradePrice = false,
   } = props;
   const { run } = useDebounceFn(loadMore, {
     wait: 100,
@@ -73,7 +75,7 @@ function ScrollContent(props: IContentProps) {
         }}
         renderItem={(item) => (
           <List.Item key={`${item.symbol}`}>
-            <ItemCard type={type} item={item} onPress={onPress} theme={theme} />
+            <ItemCard type={type} item={item} onPress={onPress} theme={theme} hideTradePrice={hideTradePrice} />
           </List.Item>
         )}
         {...ListProps}

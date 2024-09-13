@@ -11,9 +11,10 @@ export const NEED_LOGIN_PAGE = [
   '/etransfer-history',
   '/awaken-swap',
   '/?pageState=1',
+  '/?pageState=5',
 ];
 
-export const TG_NEED_LOGIN_PAGE = ['/stray-cats', '/assets', '/referral', '/my-cats', '/?pageState=1'];
+export const TG_NEED_LOGIN_PAGE = ['/stray-cats', '/assets', '/referral', '/my-cats', '/?pageState=1', '/?pageState=5'];
 
 export const NOT_NEED_AUTO_JOIN_PAGE = ['/invitee'];
 

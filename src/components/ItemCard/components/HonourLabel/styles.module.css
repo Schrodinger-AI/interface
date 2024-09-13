@@ -21,3 +21,7 @@
 .diamond {
   @apply border-rarityDiamond text-rarityDiamond;
 }
+
+.normal {
+  @apply border-none text-white;
+}

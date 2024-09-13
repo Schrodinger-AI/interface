@@ -132,11 +132,13 @@ export const useResetHandler = () => {
         AdTracker.trackEvent('reroll', {
           generation: parentItemInfo.tokenName,
           address: wallet.address,
+          user_id: wallet.address,
         });
         if (isInTG) {
           AdTracker.trackEvent('tg_reroll', {
             generation: parentItemInfo.tokenName,
             address: wallet.address,
+            user_id: wallet.address,
           });
         }
       }

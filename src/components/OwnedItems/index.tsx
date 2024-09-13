@@ -38,7 +38,7 @@ import {
 import { ZERO } from 'constants/misc';
 import { TSGRItem } from 'types/tokens';
 import { ToolTip } from 'aelf-design';
-import { catsList, catsListAll, catsListBot, catsListBotAll } from 'api/request';
+import { catsBlindListAll, catsList, catsListAll, catsListBot, catsListBotAll } from 'api/request';
 import ScrollContent from 'components/ScrollContent';
 import { CardType } from 'components/ItemCard';
 import useColumns from 'hooks/useColumns';
@@ -51,8 +51,8 @@ import useTelegram from 'hooks/useTelegram';
 import { ItemType } from 'antd/es/menu/interface';
 import { TModalTheme } from 'components/CommonModal';
 
-export default function OwnedItems(params?: { theme?: TModalTheme }) {
-  const { theme = 'light' } = params || {};
+export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: boolean }) {
+  const { theme = 'light', hideFilter } = params || {};
   const { wallet } = useWalletService();
   // 1024 below is the mobile display
   const { isLG } = useResponsive();
@@ -66,7 +66,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
   const [filterList, setFilterList] = useState(getFilterList(curChain));
   const searchParams = useSearchParams();
   const pageState: ListTypeEnum = useMemo(
-    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.All,
+    () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.RARE,
     [searchParams],
   );
 
@@ -138,12 +138,26 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
       return;
     }
     if (isInTG && requestType === ListTypeEnum.My && !wallet.address) return;
-    const requestCatApi =
-      requestType === ListTypeEnum.My ? (inTG ? catsListBot : catsList) : inTG ? catsListBotAll : catsListAll;
+    let requestCatApi;
+    if (requestType === ListTypeEnum.My) {
+      if (inTG) {
+        requestCatApi = catsListBot;
+      } else {
+        requestCatApi = catsList;
+      }
+    } else if (requestType === ListTypeEnum.Blind) {
+      requestCatApi = catsBlindListAll;
+    } else {
+      if (inTG) {
+        requestCatApi = catsListBotAll;
+      } else {
+        requestCatApi = catsListAll;
+      }
+    }
     try {
       const res = await requestCatApi({ ...params, address: wallet.address });
 
-      const locationState = location.search.split('pageState=')[1] || ListTypeEnum.All;
+      const locationState = location.search.split('pageState=')[1] || ListTypeEnum.RARE;
       if (requestType !== Number(locationState)) return;
 
       const total = res.totalCount ?? 0;
@@ -474,7 +488,11 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
     return (
       dataSource && (
         <Flex className="pt-0 lg:pt-6" justify="center" align="center">
-          <EmptyList isChannelShow={!ownedTotal} defaultDescription="No inscriptions found" theme={theme} />
+          <EmptyList
+            isChannelShow={!ownedTotal && pageState !== ListTypeEnum.Blind}
+            defaultDescription="No inscriptions found"
+            theme={theme}
+          />
         </Flex>
       )
     );
@@ -482,9 +500,10 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
 
   const onPress = useCallback(
     (item: TSGRItem) => {
+      const from = pageState === ListTypeEnum.My ? 'my' : pageState === ListTypeEnum.Blind ? 'blind' : 'all';
       const params = qs.stringify({
         symbol: item.symbol,
-        from: pageState === ListTypeEnum.My ? 'my' : 'all',
+        from: from,
         source: isTGPage ? 'telegram' : undefined,
       });
 
@@ -526,7 +545,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
         align="center"
         justify="space-between">
         {showTotalAmount && isLG ? renderTotalAmount : null}
-        {isLG ? (
+        {isLG && !hideFilter ? (
           <Flex flex={1} gap={16} className="ml-[8px] flex justify-end">
             <Flex
               className={clsx(
@@ -577,46 +596,53 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
             width={collapsed ? 364 : 0}
             trigger={null}>
             <div className="px-4 mb-[12px]">{renderTotalAmount}</div>
-            {collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
+            {hideFilter
+              ? null
+              : collapsed && <CollapseForPC items={collapseItems} defaultOpenKeys={DEFAULT_FILTER_OPEN_KEYS} />}
           </Layout.Sider>
         )}
 
         <Layout className={clsx('relative', isDark ? 'bg-pixelsPageBg' : '!bg-[var(--bg-page)]')}>
-          <Flex
-            className={clsx(
-              'z-[50] pb-5 pt-6 lg:pt-5',
-              !isLG && 'sticky top-0',
-              isDark ? 'bg-pixelsPageBg' : 'bg-neutralWhiteBg',
-            )}
-            vertical
-            gap={12}>
-            {isLG ? null : (
-              <Flex gap={16}>
-                <Flex
-                  className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
-                  justify="center"
-                  align="center"
-                  onClick={collapsedChange}>
-                  <CollapsedSVG />
+          {hideFilter ? (
+            <div className="h-[20px] " />
+          ) : (
+            <Flex
+              className={clsx(
+                'z-[50] pb-5 pt-6 lg:pt-5',
+                !isLG && 'sticky top-0',
+                isDark ? 'bg-pixelsPageBg' : 'bg-neutralWhiteBg',
+              )}
+              vertical
+              gap={12}>
+              {isLG ? null : (
+                <Flex gap={16}>
+                  <Flex
+                    className="flex-none size-12 border border-solid border-brandDefault rounded-lg cursor-pointer"
+                    justify="center"
+                    align="center"
+                    onClick={collapsedChange}>
+                    <CollapsedSVG />
+                  </Flex>
+                  <CommonSearch
+                    placeholder="Search for an inscription symbol or name"
+                    value={searchParam}
+                    onChange={symbolChange}
+                    onPressEnter={symbolChange}
+                  />
                 </Flex>
-                <CommonSearch
-                  placeholder="Search for an inscription symbol or name"
-                  value={searchParam}
-                  onChange={symbolChange}
-                  onPressEnter={symbolChange}
-                />
-              </Flex>
-            )}
+              )}
 
-            <FilterTags
-              tagList={tagList}
-              filterSelect={filterSelect}
-              clearAll={handleTagsClearAll}
-              onchange={filterChange}
-              theme={theme}
-              clearSearchChange={clearSearchChange}
-            />
-          </Flex>
+              <FilterTags
+                tagList={tagList}
+                filterSelect={filterSelect}
+                clearAll={handleTagsClearAll}
+                onchange={filterChange}
+                theme={theme}
+                clearSearchChange={clearSearchChange}
+              />
+            </Flex>
+          )}
+
           <ScrollContent
             type={CardType.MY}
             loadingMore={loadingMore}
@@ -628,6 +654,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme }) {
             onPress={onPress}
             loadMore={loadMoreData}
             ListProps={{ dataSource }}
+            hideTradePrice={pageState === ListTypeEnum.Blind}
           />
         </Layout>
       </Layout>

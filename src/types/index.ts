@@ -128,6 +128,7 @@ export enum ListTypeEnum {
   All = 2,
   RARE = 3,
   Stray = 4,
+  Blind = 5,
 }
 
 export type FormatListingType = {
