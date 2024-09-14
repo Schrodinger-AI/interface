@@ -34,14 +34,25 @@ export function useETransferAuthToken() {
   }, [discoverProvider, walletType]);
 
   const getDiscoverSignature = useCallback(
-    async (params: SignatureParams) => {
+    async (
+      params: SignatureParams & {
+        plainTextOrigin?: string;
+      },
+    ) => {
       const provider = await discoverProvider();
       const signInfo = params.signInfo;
+
+      const hexData = params.plainTextOrigin ? Buffer.from(params.plainTextOrigin).toString('hex') : '';
+
+      const isSupportManagerSignature = (provider as any).methodCheck('wallet_getManagerSignature') && hexData;
+
       const signedMsgObject = await provider?.request({
-        method: 'wallet_getSignature',
-        payload: {
-          data: signInfo || params.hexToBeSign,
-        },
+        method: isSupportManagerSignature ? 'wallet_getManagerSignature' : 'wallet_getSignature',
+        payload: isSupportManagerSignature
+          ? { hexData }
+          : {
+              data: signInfo || params.hexToBeSign,
+            },
       });
       const signedMsgString = [
         signedMsgObject?.r.toString(16, 64),
@@ -101,6 +112,7 @@ export function useETransferAuthToken() {
       appName: appName,
       address,
       signInfo,
+      plainTextOrigin,
     });
     if (result.error) throw result.errorMessage;
 
