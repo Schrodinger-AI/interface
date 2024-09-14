@@ -23,14 +23,16 @@ export const useGetSignature = () => {
       if (loginState !== WebLoginState.logined) return;
       const timestamp = Date.now();
 
-      const signInfo = AElf.utils.sha256(signString || `${wallet.address}-${timestamp}`);
+      const signStr = signString || `${wallet.address}-${timestamp}`;
+      const hexData = Buffer.from(signStr).toString('hex');
+      const signInfo = AElf.utils.sha256(signStr);
 
       let publicKey = '';
       let signature = '';
 
       if (walletType === WalletType.discover) {
         try {
-          const { pubKey, signatureStr } = await getSignatureAndPublicKey(signInfo);
+          const { pubKey, signatureStr } = await getSignatureAndPublicKey(hexData, signInfo);
           publicKey = pubKey || '';
           signature = signatureStr || '';
         } catch (error) {

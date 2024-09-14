@@ -266,7 +266,7 @@ export default function ListingInfo({
                     size="medium"
                     className={clsx('!w-full !rounded-md !ml-auto', isDark && '!default-button-dark')}
                     onClick={() => onCancel(listings)}>
-                    Cancel
+                    Cancel All
                   </Button>
                 </div>
               ) : null}
