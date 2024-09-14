@@ -108,6 +108,7 @@ export const useGetToken = () => {
       const signStr = `${wallet.address}-${timestamp}`;
       const hexDataStr = hexDataCopywriter + signStr;
       const hexData = Buffer.from(hexDataStr).toString('hex');
+      const portkeyHexData = Buffer.from(signStr).toString('hex');
       const signInfo = AElf.utils.sha256(signStr);
 
       let publicKey = '';
@@ -131,7 +132,7 @@ export const useGetToken = () => {
         const sign = await getSignature({
           appName,
           address: wallet.address,
-          signInfo: walletType === WalletType.portkey ? hexData : signInfo,
+          signInfo: walletType === WalletType.portkey ? portkeyHexData : signInfo,
         });
         if (sign?.errorMessage) {
           const errorMessage = formatErrorMsg(sign?.errorMessage as unknown as IContractError).errorMessage.message;
@@ -158,7 +159,6 @@ export const useGetToken = () => {
           source,
           publickey: publicKey,
           address: wallet.address,
-          hexData: hexData,
         } as ITokenParams,
         needLoading,
       });
