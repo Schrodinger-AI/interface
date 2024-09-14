@@ -14,6 +14,9 @@ import { store } from 'redux/store';
 import { appName } from 'constants/common';
 
 const AElf = require('aelf-sdk');
+const hexDataCopywriter = `Welcome to Schrodinger! Click to sign in to the world's first AI-powered 404 NFT platform! This request will not trigger any blockchain transaction or cost any gas fees.
+
+signature: `;
 
 export const useGetToken = () => {
   const { loginState, wallet, getSignature, walletType, logout } = useWebLogin();
@@ -100,7 +103,12 @@ export const useGetToken = () => {
       }
       const timestamp = Date.now();
 
-      const signInfo = AElf.utils.sha256(`${wallet.address}-${timestamp}`);
+      // const signInfo = AElf.utils.sha256(`${wallet.address}-${timestamp}`);
+
+      const signStr = `${wallet.address}-${timestamp}`;
+      const hexDataStr = hexDataCopywriter + signStr;
+      const hexData = Buffer.from(hexDataStr).toString('hex');
+      const signInfo = AElf.utils.sha256(signStr);
 
       let publicKey = '';
       let signature = '';
@@ -108,7 +116,7 @@ export const useGetToken = () => {
 
       if (walletType === WalletType.discover) {
         try {
-          const { pubKey, signatureStr } = await getSignatureAndPublicKey(signInfo);
+          const { pubKey, signatureStr } = await getSignatureAndPublicKey(hexData, signInfo);
           publicKey = pubKey || '';
           signature = signatureStr || '';
           source = 'portkey';
@@ -123,10 +131,7 @@ export const useGetToken = () => {
         const sign = await getSignature({
           appName,
           address: wallet.address,
-          signInfo:
-            walletType === WalletType.portkey
-              ? Buffer.from(`${wallet.address}-${timestamp}`).toString('hex')
-              : signInfo,
+          signInfo: walletType === WalletType.portkey ? hexData : signInfo,
         });
         if (sign?.errorMessage) {
           const errorMessage = formatErrorMsg(sign?.errorMessage as unknown as IContractError).errorMessage.message;
@@ -153,6 +158,7 @@ export const useGetToken = () => {
           source,
           publickey: publicKey,
           address: wallet.address,
+          hexData: hexData,
         } as ITokenParams,
         needLoading,
       });
