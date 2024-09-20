@@ -61,12 +61,12 @@ export const getFilterList = (ChainId: string): Array<CheckboxItemType | MenuChe
         value: 'All',
       },
     },
-    {
-      key: FilterKeyEnum.Chain,
-      title: FilterKeyEnum.Chain,
-      type: FilterType.Checkbox,
-      data: [{ value: ChainId, label: `SideChain ${ChainId}`, disabled: true }],
-    },
+    // {
+    //   key: FilterKeyEnum.Chain,
+    //   title: FilterKeyEnum.Chain,
+    //   type: FilterType.Checkbox,
+    //   data: [{ value: ChainId, label: `SideChain ${ChainId}`, disabled: true }],
+    // },
     {
       key: FilterKeyEnum.Traits,
       title: FilterKeyEnum.Traits,

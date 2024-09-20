@@ -138,7 +138,7 @@ export const fetchTraitsAndImages = async (
         throw 'Waiting...';
       }
     }
-    if (!result || !result.imageUri) throw 'Waiting...';
+    if (!result || (!result.imageUri && !(result.adoptImageInfo.images.length === 2))) throw 'Waiting...';
     return result;
   } catch (error) {
     // Waiting to generate ai picture

@@ -17,6 +17,11 @@ import SkeletonImage from 'components/SkeletonImage';
 import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
+import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
+import { useWalletService } from 'hooks/useWallet';
+import { timesDecimals } from 'utils/calculate';
+import { getBlindCatDetail } from 'api/request';
+import { useCmsInfo } from 'redux/hooks';
 
 const boxRare = 'Congrats! You got a Rare Cat Box!';
 const boxNormal = 'Congrats! You got a Cat Box!';
@@ -54,6 +59,7 @@ interface IAdoptNextModal {
   adoptId: string;
   theme?: TModalTheme;
   isBlind?: boolean;
+  hideNext?: boolean;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
@@ -67,14 +73,23 @@ function AdoptNextModal({
   adoptId,
   theme,
   isBlind = false,
+  hideNext = false,
 }: IAdoptNextModal) {
   const modal = useModal();
   const cancelAdoptModal = useModal(CancelAdoptModal);
   const [loading, setLoading] = useState<boolean>(false);
   const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
   const [selectImage, setSelectImage] = useState<number>(images.length > 1 ? -1 : 0);
+  const adoptHandler = useAdoptHandler();
+  const { wallet } = useWalletService();
+  const cmsInfo = useCmsInfo();
+  const [nextLoading, setNextLoading] = useState<boolean>(false);
 
   const isDark = useMemo(() => theme === 'dark', [theme]);
+
+  const generation = useMemo(() => {
+    return data?.SGRToken.tokenName?.split('GEN')[1];
+  }, [data?.SGRToken.tokenName]);
 
   const onSelect = useCallback((index: number) => {
     setSelectImage(index);
@@ -95,6 +110,43 @@ function AdoptNextModal({
       theme,
     });
   }, [SGRToken.amount, theme, SGRToken.tokenName, adoptId, cancelAdoptModal, images, selectImage]);
+
+  const onAdoptNext = async () => {
+    try {
+      if (!(data.SGRToken.symbol && data.SGRToken.tokenName && data.SGRToken.amount)) return;
+      const amount = String(timesDecimals(data.SGRToken.amount, 8));
+      setNextLoading(true);
+      const result = await getBlindCatDetail({
+        symbol: data.SGRToken.symbol,
+        chainId: cmsInfo?.curChain || '',
+        address: wallet.address,
+      });
+      setNextLoading(false);
+      modal.hide();
+      adoptHandler({
+        parentItemInfo: {
+          tick: '',
+          symbol: data.SGRToken.symbol,
+          tokenName: data.SGRToken.tokenName,
+          amount,
+          generation: Number(generation),
+          blockTime: 0,
+          decimals: 8,
+          inscriptionImageUri: data.images[0],
+          traits: data.allTraits,
+        },
+        blindMax: String(data.SGRToken.amount),
+        isBlind: true,
+        account: wallet.address,
+        isDirect: false,
+        theme: theme,
+        prePage: 'adoptModal',
+        adoptId: result.adoptId,
+      });
+    } catch (error) {
+      setNextLoading(false);
+    }
+  };
 
   const onCancel = useCallback(() => {
     if (onClose) return onClose();
@@ -137,10 +189,6 @@ function AdoptNextModal({
     }
   }, [allTraits]);
 
-  const generation = useMemo(() => {
-    return data?.SGRToken.tokenName?.split('GEN')[1];
-  }, [data?.SGRToken.tokenName]);
-
   const isRare = useMemo(() => {
     const describe = data?.SGRToken?.rankInfo?.levelInfo?.describe;
     const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
@@ -172,12 +220,12 @@ function AdoptNextModal({
       theme={theme}
       afterClose={modal.remove}
       footer={
-        <div className="flex w-full justify-center">
+        <div className="flex w-full justify-center px-0 lg:px-[32px] gap-[8px] lg:gap-[16px]">
           {images.length > 1 ? null : (
             <Button
               loading={loading}
               className={clsx(
-                'flex-1 lg:flex-none lg:w-[356px] mr-[16px]',
+                'flex-1',
                 theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
               )}
               onClick={onReroll}
@@ -188,14 +236,24 @@ function AdoptNextModal({
           <Button
             loading={loading}
             className={clsx(
-              'flex-1 lg:flex-none lg:w-[356px]',
-              theme === 'dark' ? '!primary-button-dark' : '!rounded-lg',
+              'flex-1',
+              theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
             )}
             disabled={selectImage < 0}
             onClick={onClick}
-            type="primary">
+            type="default">
             {isBlind ? 'Unbox' : 'Confirm'}
           </Button>
+          {!isDirect && generation !== '9' && !hideNext ? (
+            <Button
+              loading={nextLoading}
+              className={clsx('flex-1', theme === 'dark' ? '!primary-button-dark' : '!rounded-lg')}
+              disabled={selectImage < 0}
+              onClick={onAdoptNext}
+              type="primary">
+              Next-Gen
+            </Button>
+          ) : null}
         </div>
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">

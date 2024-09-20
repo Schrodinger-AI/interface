@@ -20,9 +20,17 @@ interface IItemCard {
   onPress: (item: TSGRItem) => void;
   type: CardType;
   hideTradePrice?: boolean;
+  hideRankHover?: boolean;
 }
 
-export default function ItemCard({ item, onPress, type, theme = 'light', hideTradePrice = false }: IItemCard) {
+export default function ItemCard({
+  item,
+  onPress,
+  type,
+  theme = 'light',
+  hideTradePrice = false,
+  hideRankHover = true,
+}: IItemCard) {
   const {
     inscriptionImageUri,
     generation = '1',
@@ -92,7 +100,7 @@ export default function ItemCard({ item, onPress, type, theme = 'light', hideTra
             level={level}
             generation={generation}
             rarity={describe}
-            hideRankHover={true}
+            hideRankHover={hideRankHover}
             containsInscriptionCode={
               containsInscriptionCode
                 ? {

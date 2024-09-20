@@ -182,6 +182,7 @@ export type TGlobalConfigType = {
     networkType: NetworkType;
     etransferUrl: string;
     etransferAuthUrl: string;
+    etransferSocketUrl: string;
   };
   tgHomePageText: Array<Array<string> | string>;
   tgRulesText: Array<{
