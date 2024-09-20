@@ -219,17 +219,6 @@ function AdoptNextModal({
       afterClose={modal.remove}
       footer={
         <div className="flex w-full justify-center px-0 lg:px-[32px] gap-[8px] lg:gap-[16px]">
-          <Button
-            loading={loading}
-            className={clsx(
-              'flex-1',
-              theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
-            )}
-            disabled={selectImage < 0}
-            onClick={onClick}
-            type="default">
-            {isBlind ? 'Unbox' : 'Confirm'}
-          </Button>
           {images.length > 1 ? null : (
             <Button
               loading={loading}
@@ -242,6 +231,17 @@ function AdoptNextModal({
               Reroll
             </Button>
           )}
+          <Button
+            loading={loading}
+            className={clsx(
+              'flex-1',
+              theme === 'dark' ? '!default-button-dark' : '!rounded-lg border-brandDefault text-brandDefault',
+            )}
+            disabled={selectImage < 0}
+            onClick={onClick}
+            type="default">
+            {isBlind ? 'Unbox' : 'Confirm'}
+          </Button>
           {!isDirect && generation !== '9' ? (
             <Button
               loading={nextLoading}
