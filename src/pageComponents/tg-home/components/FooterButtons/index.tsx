@@ -7,7 +7,7 @@ export default function FooterButtons({ cId }: { cId: string }) {
 
   return (
     <div className="w-full fixed bottom-0 left-0 h-[72px] px-[16px] bg-pixelsModalBg z-10 flex gap-[16px] justify-center items-center">
-      <Link href={`/telegram/forest/trade?cId=${cId}`} className="flex-1">
+      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="flex-1">
         <Button size="medium" type="default" className="!w-full !default-button-dark">
           Trade
         </Button>

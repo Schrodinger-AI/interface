@@ -142,6 +142,7 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
           theme,
           adoptOnly: false,
           account: wallet.address,
+          hideNext: true,
         });
       } catch (error) {
         closeLoading();

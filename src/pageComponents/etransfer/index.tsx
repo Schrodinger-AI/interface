@@ -1,4 +1,10 @@
-import { Deposit, ETransferDepositProvider, ComponentStyle, ETransferConfig } from '@etransfer/ui-react';
+import {
+  Deposit,
+  ETransferDepositProvider,
+  ComponentStyle,
+  ETransferConfig,
+  WalletTypeEnum,
+} from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
 import { Breadcrumb, message } from 'antd';
@@ -17,7 +23,9 @@ import Link from 'next/link';
 import { ReactComponent as HistoryFilled } from 'assets/img/icons/history-filled.svg';
 import { ReactComponent as HistoryOutlined } from 'assets/img/icons/history-outlined.svg';
 import { Button } from 'aelf-design';
-import { useCheckLoginAndToken } from 'hooks/useWallet';
+import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { WalletType } from 'aelf-web-login';
+import { addPrefixSuffix } from 'utils/addressFormatting';
 
 const DarkModal = dynamic(
   async () => {
@@ -36,6 +44,7 @@ export default function ETransfer() {
   const { isInTG } = useTelegram();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const { checkLogin } = useCheckLoginAndToken();
+  const { walletType, wallet } = useWalletService();
 
   const defaultParams = useMemo(() => {
     return {
@@ -79,6 +88,19 @@ export default function ETransfer() {
     }
   }, [isLogin]);
 
+  const walletTypeEnum: WalletTypeEnum = useMemo(() => {
+    switch (walletType) {
+      case WalletType.portkey:
+        return WalletTypeEnum.aa;
+      case WalletType.discover:
+        return WalletTypeEnum.discover;
+      case WalletType.elf:
+        return WalletTypeEnum.elf;
+      default:
+        return WalletTypeEnum.unknown;
+    }
+  }, [walletType]);
+
   useEffect(() => {
     ETransferConfig.setConfig({
       depositConfig: {
@@ -87,8 +109,15 @@ export default function ETransfer() {
         defaultChainId: cmsInfo?.curChain || 'tDVV',
         defaultNetwork: defaultParams.depositFromNetwork || 'TRX',
       },
+      accountInfo: {
+        accounts: {
+          AELF: addPrefixSuffix(wallet.address, 'AELF'),
+          [cmsInfo?.curChain || 'tDVV']: addPrefixSuffix(wallet.address, cmsInfo?.curChain || 'tDVV'),
+        },
+        walletType: walletTypeEnum,
+      },
     });
-  }, [cmsInfo?.curChain, defaultParams]);
+  }, [cmsInfo?.curChain, defaultParams, wallet.address, walletType, walletTypeEnum]);
 
   const onBack = useCallback(() => {
     router.back();
@@ -158,7 +187,11 @@ export default function ETransfer() {
       ) : null}
       {isLogin ? (
         <ETransferDepositProvider>
-          <Deposit componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web} />
+          <Deposit
+            componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web}
+            isListenNoticeAuto={true}
+            isShowProcessingTip={true}
+          />
         </ETransferDepositProvider>
       ) : null}
     </div>
