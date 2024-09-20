@@ -654,6 +654,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
             onPress={onPress}
             loadMore={loadMoreData}
             ListProps={{ dataSource }}
+            isBlind={pageState === ListTypeEnum.Blind}
             hideTradePrice={pageState === ListTypeEnum.Blind}
           />
         </Layout>
