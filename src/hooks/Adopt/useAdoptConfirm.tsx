@@ -111,7 +111,11 @@ export const useAdoptConfirm = () => {
                 rankInfo: rankInfo,
               },
               allTraits: infos.adoptImageInfo.attributes,
-              images: adoptOnly ? [infos.adoptImageInfo.boxImage] : [infos.imageUri],
+              images: adoptOnly
+                ? [infos.adoptImageInfo.boxImage]
+                : infos.adoptImageInfo.images.length > 1
+                ? infos.adoptImageInfo.images
+                : [infos.imageUri],
               inheritedTraits: parentItemInfo.traits,
               transaction: {
                 txFee: ZERO.plus(commonTxFee).toFixed(),
