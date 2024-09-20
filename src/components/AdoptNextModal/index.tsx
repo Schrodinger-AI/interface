@@ -59,6 +59,7 @@ interface IAdoptNextModal {
   adoptId: string;
   theme?: TModalTheme;
   isBlind?: boolean;
+  hideNext?: boolean;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
@@ -72,6 +73,7 @@ function AdoptNextModal({
   adoptId,
   theme,
   isBlind = false,
+  hideNext = false,
 }: IAdoptNextModal) {
   const modal = useModal();
   const cancelAdoptModal = useModal(CancelAdoptModal);
@@ -242,7 +244,7 @@ function AdoptNextModal({
             type="default">
             {isBlind ? 'Unbox' : 'Confirm'}
           </Button>
-          {!isDirect && generation !== '9' ? (
+          {!isDirect && generation !== '9' && !hideNext ? (
             <Button
               loading={nextLoading}
               className={clsx('flex-1', theme === 'dark' ? '!primary-button-dark' : '!rounded-lg')}

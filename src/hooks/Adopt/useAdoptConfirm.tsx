@@ -72,6 +72,7 @@ export const useAdoptConfirm = () => {
       isDirect,
       theme,
       adoptOnly = false,
+      hideNext = false,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
@@ -81,6 +82,7 @@ export const useAdoptConfirm = () => {
       rankInfo?: IRankInfo;
       theme?: TModalTheme;
       adoptOnly?: boolean;
+      hideNext?: boolean;
     }): Promise<{
       selectImage: string;
       getWatermarkImage: boolean;
@@ -120,6 +122,7 @@ export const useAdoptConfirm = () => {
                 usd: `${ELFBalance && ELFPrice ? ZERO.plus(ELFBalance).times(ELFPrice).toFixed(2) : '--'}`,
               },
             },
+            hideNext,
             adoptId: childrenItemInfo.adoptId,
             onClose: () => {
               adoptNextModal.hide();
@@ -382,6 +385,7 @@ export const useAdoptConfirm = () => {
       theme,
       adoptOnly,
       prePage,
+      hideNext = false,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -392,6 +396,7 @@ export const useAdoptConfirm = () => {
       theme?: TModalTheme;
       adoptOnly?: boolean;
       prePage?: string;
+      hideNext?: boolean;
     }) => {
       const params = await adoptConfirmInput({
         infos,
@@ -402,6 +407,7 @@ export const useAdoptConfirm = () => {
         isDirect,
         theme,
         adoptOnly,
+        hideNext,
       });
 
       if (params) {
@@ -552,6 +558,7 @@ export const useAdoptConfirm = () => {
       theme = 'light',
       adoptOnly = true,
       prePage,
+      hideNext = false,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
@@ -559,6 +566,7 @@ export const useAdoptConfirm = () => {
       adoptOnly?: boolean;
       theme?: TModalTheme;
       prePage?: string;
+      hideNext?: boolean;
     }) => {
       try {
         const infos = await fetchImages({
@@ -580,6 +588,7 @@ export const useAdoptConfirm = () => {
           adoptOnly,
           isDirect: childrenItemInfo.isDirect,
           prePage,
+          hideNext,
         });
 
         if (result) {
