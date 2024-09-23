@@ -7,6 +7,10 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
 import Link from 'next/link';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
+import { Button } from 'aelf-design';
+import { useWalletService } from 'hooks/useWallet';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { TelegramPlatform } from '@portkey/did-ui-react';
 
 export default function BalanceModule({
   onSgrBalanceChange,
@@ -21,6 +25,16 @@ export default function BalanceModule({
   });
   const cmsInfo = useCmsInfo();
   const isJoin = useJoinStatus();
+  const { logout } = useWalletService();
+  const { isLogin } = useGetLoginStatus();
+
+  const getTgUserInfo = () => {
+    const telegram = window.Telegram.WebApp;
+    console.log('=====getTgUserInfo getInitData', TelegramPlatform.getInitData());
+    console.log('=====getTgUserInfo window.Telegram.WebApp', telegram);
+    console.log('=====getTgUserInfo initData', telegram.initData);
+    console.log('=====getTgUserInfo initDataUnsafe', telegram.initDataUnsafe);
+  };
 
   return (
     <>
@@ -30,6 +44,16 @@ export default function BalanceModule({
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
         <div className="flex items-center">
+          {isLogin ? (
+            <Button onClick={() => logout()} className="!primary-button-dark" size="mini">
+              Log out
+            </Button>
+          ) : null}
+
+          <Button onClick={() => getTgUserInfo()} className="!primary-button-dark" size="mini">
+            user info
+          </Button>
+
           {cmsInfo?.weeklyActivityRankingsEntrance ? (
             <Link href="/tg-weekly-activity-rankings">
               <div className="px-[8px]">
