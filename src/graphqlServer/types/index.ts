@@ -27,10 +27,10 @@ export type TGetSchrodingerListResult = {
     data: Array<TSGRItem>;
   };
 };
-export type TGetSchrodingerList = (
-  client: TGraphQLClient,
-  params: TGetSchrodingerListParams,
-) => TCommonGraphQLResult<TGetSchrodingerListResult>;
+// export type TGetSchrodingerList = (
+//   client: TGraphQLClient,
+//   params: TGetSchrodingerListParams,
+// ) => TCommonGraphQLResult<TGetSchrodingerListResult>;
 
 export type TGetSchrodingerDetailParams = {
   input: {
@@ -150,10 +150,10 @@ export type TGetStrayCatsResult = {
   };
 };
 
-export type TGetStrayCats = (
-  client: TGraphQLClient,
-  params: TGetStrayCatsParams,
-) => TCommonGraphQLResult<TGetStrayCatsResult>;
+// export type TGetStrayCats = (
+//   client: TGraphQLClient,
+//   params: TGetStrayCatsParams,
+// ) => TCommonGraphQLResult<TGetStrayCatsResult>;
 
 export type TGetLatestSchrodingerListParams = {
   input: {
