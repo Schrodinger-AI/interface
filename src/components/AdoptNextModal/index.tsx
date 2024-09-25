@@ -103,13 +103,17 @@ function AdoptNextModal({
   const onReroll = useCallback(() => {
     cancelAdoptModal.show({
       title: 'Reroll',
-      nftImage: images[selectImage],
-      tokenName: SGRToken.tokenName,
       amount: SGRToken.amount,
+      nftInfo: {
+        nftImage: images[selectImage],
+        tokenName: SGRToken.tokenName || '',
+        symbol: SGRToken.symbol || '',
+        generation: Number(generation),
+      },
       adoptId,
       theme,
     });
-  }, [SGRToken.amount, theme, SGRToken.tokenName, adoptId, cancelAdoptModal, images, selectImage]);
+  }, [cancelAdoptModal, SGRToken, images, selectImage, generation, adoptId, theme]);
 
   const onAdoptNext = async () => {
     try {

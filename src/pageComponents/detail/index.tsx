@@ -170,11 +170,17 @@ export default function DetailPage() {
         const amount = divDecimals(schrodingerDetail.holderAmount, schrodingerDetail.decimals).toFixed();
         cancelAdoptModal.show({
           title: 'Reroll',
-          nftImage: schrodingerDetail.inscriptionImageUri,
-          tokenName: schrodingerDetail.tokenName,
           amount: amount,
           adoptId: schrodingerDetail.adoptId,
           theme,
+          nftInfo: {
+            nftImage: schrodingerDetail.inscriptionImageUri,
+            tokenName: schrodingerDetail.tokenName,
+            symbol: schrodingerDetail.symbol,
+            generation: schrodingerDetail.generation,
+          },
+          prePage: 'rerollModal',
+          source: pageSource,
         });
       } else {
         resetHandler({
@@ -186,7 +192,7 @@ export default function DetailPage() {
         });
       }
     },
-    [cancelAdoptModal, isBlind, rankInfo, resetHandler, schrodingerDetail, wallet.address],
+    [cancelAdoptModal, isBlind, pageSource, rankInfo, resetHandler, schrodingerDetail, wallet.address],
   );
 
   const onView = useCallback(

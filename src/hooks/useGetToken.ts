@@ -57,6 +57,7 @@ export const useGetToken = () => {
           return res.access_token;
         } else {
           message.error(LoginFailed);
+          console.log('=====token error no connect');
           store.dispatch(resetLoginStatus());
           return '';
         }
@@ -70,6 +71,7 @@ export const useGetToken = () => {
           });
         } else {
           message.error(LoginFailed);
+          console.log('=====token error', error);
           isConnectWallet && logout({ noModal: true });
           needLoading && closeLoading();
           return '';
