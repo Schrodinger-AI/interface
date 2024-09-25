@@ -5,7 +5,7 @@ module.exports = [
     source: '/schrodingerGQL/:path*',
     destination:
       // 'https://test-indexer.schrodingerai.com/SchrodingerIndexer_DApp/SchrodingerIndexerPluginSchema/graphql/:path*',
-      'https://app-testnet.aefinder.io/schrodinger/0424337298924ea5b017063de749e395/graphql/:path*',
+      'https://app-testnet.aefinder.io/schrodinger/e3a8b6cdf945455183d3c0cd024f9618/graphql/:path*',
   },
   {
     source: '/forestGQL/:path*',
