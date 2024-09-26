@@ -23,7 +23,7 @@ interface ISkeletonImage {
   rank?: string | number | ReactNode;
   generation?: string | number | ReactNode;
   level?: string | number | ReactNode;
-  activityTags?: string | number | ReactNode;
+  specialTrait?: string | number | ReactNode;
   rarity?: string;
   hideRankHover?: boolean;
   badge?: {
@@ -51,7 +51,7 @@ function SkeletonImage(props: ISkeletonImage) {
     level,
     rarity,
     generation,
-    activityTags,
+    specialTrait,
     containsInscriptionCode,
     width = 108,
     height = 108,
@@ -106,15 +106,15 @@ function SkeletonImage(props: ISkeletonImage) {
     }
   }, [rank, hideRankHover]);
 
-  const activityTagsPosition = useMemo(() => {
+  const specialTraitPosition = useMemo(() => {
     if (rarity) {
-      return labelStyle.activityTags?.hasRarityPosition
-        ? labelStyle.activityTags.hasRarityPosition[tagPosition || 'default']
-        : labelStyle.activityTags.position[tagPosition || 'default'];
+      return labelStyle.specialTrait?.hasRarityPosition
+        ? labelStyle.specialTrait.hasRarityPosition[tagPosition || 'default']
+        : labelStyle.specialTrait.position[tagPosition || 'default'];
     } else {
-      return labelStyle.activityTags.position[tagPosition || 'default'];
+      return labelStyle.specialTrait.position[tagPosition || 'default'];
     }
-  }, []);
+  }, [rarity, tagPosition]);
 
   return (
     <div className={clsx('relative rounded-lg overflow-hidden', styles['skeleton-image'], className)}>
@@ -166,14 +166,14 @@ function SkeletonImage(props: ISkeletonImage) {
           ) : null}
           {renderRank()}
           {renderTag(level, 'level')}
-          {activityTags ? (
+          {specialTrait ? (
             <div
               className={clsx(
                 'absolute flex justify-center items-center text-white bg-fillMask1',
-                labelStyle.activityTags.size[tagSize || 'default'],
-                activityTagsPosition,
+                labelStyle.specialTrait.size[tagSize || 'default'],
+                specialTraitPosition,
               )}>
-              {activityTags}
+              {specialTrait}
             </div>
           ) : null}
           {rarity ? (

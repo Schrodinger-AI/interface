@@ -10,7 +10,7 @@ export const formatTagContent = (value: string | number, key: string) => {
   return {
     generation: `GEN ${value}`,
     level: `Lv. ${value}`,
-    activityTags: value,
+    specialTrait: value,
   }[key];
 };
 
@@ -50,7 +50,7 @@ export const labelStyle: ILabelStyle = {
       large: 'top-[12px] right-[12px]',
     },
   },
-  activityTags: {
+  specialTrait: {
     size: {
       default: 'px-[4px] rounded-[4px] text-[10px] leading-[16px] font-medium h-[18px] ',
     },

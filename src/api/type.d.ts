@@ -142,6 +142,7 @@ interface ILevelInfo {
   grade: number | string;
   star: number | string;
   describe: string;
+  specialTrait?: string;
   awakenPrice: string | number;
 }
 

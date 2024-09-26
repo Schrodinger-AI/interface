@@ -291,6 +291,7 @@ function AdoptNextModal({
               rank={data?.SGRToken?.rankInfo?.rank}
               rarity={data?.SGRToken?.rankInfo?.levelInfo?.describe}
               level={data?.SGRToken?.rankInfo?.levelInfo?.level}
+              specialTrait={data?.SGRToken?.rankInfo?.levelInfo?.specialTrait}
             />
           </div>
         )}
