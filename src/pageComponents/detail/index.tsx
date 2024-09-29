@@ -530,6 +530,7 @@ export default function DetailPage() {
             detail={schrodingerDetail}
             level={rankInfo?.levelInfo?.level}
             rarity={rankInfo?.levelInfo?.describe}
+            specialTrait={rankInfo?.levelInfo?.specialTrait}
             rank={rankInfo?.rank}
             theme={theme}
           />

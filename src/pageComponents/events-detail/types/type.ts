@@ -35,6 +35,7 @@ export interface IEventsDetailListStepsCardImage {
   linkType?: TLinkType | 'buyModal';
   buyType?: TBuyType;
   url: string;
+  tgUrl?: string;
   className?: string;
 }
 

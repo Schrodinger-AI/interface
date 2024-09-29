@@ -15,6 +15,7 @@ import { ReactComponent as NextArrow } from 'assets/img/icons/next-arrow.svg';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { TModalTheme } from 'components/CommonModal';
+import useTelegram from 'hooks/useTelegram';
 
 function StepsCard({ cardList, theme = 'light' }: { cardList: IEventsDetailListStepsCard[]; theme?: TModalTheme }) {
   const { isXL } = useResponsive();
@@ -23,6 +24,7 @@ function StepsCard({ cardList, theme = 'light' }: { cardList: IEventsDetailListS
   const router = useRouter();
   const { jumpToPage } = useJumpToPage();
   const { checkBalanceAndJump } = useBuyToken();
+  const { isInTG } = useTelegram();
 
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
@@ -80,17 +82,18 @@ function StepsCard({ cardList, theme = 'light' }: { cardList: IEventsDetailListS
       if (item.linkType === 'buyModal') {
         checkBalanceAndJump({
           type: item.buyType || 'buySGR',
-          theme: 'light',
+          theme,
         });
       } else {
         jumpToPage({
-          link: item.url,
+          link: isInTG ? item.tgUrl || item.url : item.url,
           linkType: item.linkType,
         });
       }
     },
-    [checkBalanceAndJump, jumpToPage],
+    [checkBalanceAndJump, isInTG, jumpToPage, theme],
   );
+
   const renderLink = (link?: Omit<IEventsDetailListStepsCardImage, 'className'>[]) => {
     if (link && link?.length) {
       return (
