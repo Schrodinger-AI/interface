@@ -111,10 +111,10 @@ export default function DetailPage() {
   }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
 
   const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
-    if (generation !== 9) {
-      setRankInfo(undefined);
-      throw '';
-    }
+    // if (generation !== 9) {
+    //   setRankInfo(undefined);
+    //   throw '';
+    // }
     const paramsTraits = formatTraits(traits);
     if (!paramsTraits) {
       setRankInfo(undefined);

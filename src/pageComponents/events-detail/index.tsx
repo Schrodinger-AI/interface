@@ -64,14 +64,16 @@ export default function ActivityDetail() {
 
         setEventInProgressTime([inProgressStartTime, inProgressEndTime]);
 
-        const displayedStartTime = `${moment(Number(configData.displayed.startTime))
-          .utc()
-          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
-        const displayedEndTime = `${moment(Number(configData.displayed.endTime))
-          .utc()
-          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        if (configData.displayed) {
+          const displayedStartTime = `${moment(Number(configData.displayed.startTime))
+            .utc()
+            .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+          const displayedEndTime = `${moment(Number(configData.displayed.endTime))
+            .utc()
+            .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
 
-        setEventDisplayedTime([displayedStartTime, displayedEndTime]);
+          setEventDisplayedTime([displayedStartTime, displayedEndTime]);
+        }
 
         setEventsDetailsList(data.list || []);
         setPageTitle(data.pageTitle || '');
