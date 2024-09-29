@@ -139,7 +139,7 @@ function EventsDetailsList({
   );
 
   const renderLink = useCallback(
-    (link: IEventsDetailListLink) => {
+    (link: IEventsDetailListLink, theme?: TModalTheme) => {
       switch (link.type) {
         case 'img-link':
         case 'img-externalLink':
@@ -149,7 +149,7 @@ function EventsDetailsList({
               onClick={() => jumpTo(link)}>
               <SkeletonImage
                 img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''}
-                className="w-full h-full"
+                className={clsx('w-full h-full', theme === 'dark' ? '!rounded-none' : '')}
                 imageClassName="!rounded-none"
               />
             </span>
@@ -207,7 +207,7 @@ function EventsDetailsList({
       {link && link.length ? (
         <div className="flex flex-col">
           {link.map((item) => {
-            return renderLink(item);
+            return renderLink(item, theme);
           })}
         </div>
       ) : null}
