@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { IEventsDetailListStepsCard, IEventsDetailListStepsCardImage } from '../types/type';
 import clsx from 'clsx';
 import { useResponsive } from 'hooks/useResponsive';
@@ -14,14 +14,17 @@ import { Row, Col } from 'antd';
 import { ReactComponent as NextArrow } from 'assets/img/icons/next-arrow.svg';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useBuyToken } from 'hooks/useBuyToken';
+import { TModalTheme } from 'components/CommonModal';
 
-function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
+function StepsCard({ cardList, theme = 'light' }: { cardList: IEventsDetailListStepsCard[]; theme?: TModalTheme }) {
   const { isXL } = useResponsive();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
   const { jumpToPage } = useJumpToPage();
   const { checkBalanceAndJump } = useBuyToken();
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const jumpTo = useCallback(
     (image?: IEventsDetailListStepsCardImage) => {
@@ -56,7 +59,10 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
             return (
               <span
                 key={index}
-                className="text-sm font-medium text-neutralSecondary mt-[4px]"
+                className={clsx(
+                  'text-sm font-medium mt-[4px]',
+                  isDark ? 'text-pixelsDivider' : 'text-neutralSecondary',
+                )}
                 dangerouslySetInnerHTML={{
                   __html: item,
                 }}
@@ -94,7 +100,10 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
             return (
               <span
                 key={index}
-                className="text-sm font-medium text-brandDefault cursor-pointer mt-[4px]"
+                className={clsx(
+                  'text-sm font-medium cursor-pointer mt-[4px]',
+                  isDark ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
+                )}
                 dangerouslySetInnerHTML={{
                   __html: item.link,
                 }}
@@ -117,12 +126,17 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
           <Col span={isXL ? 24 : 8} key={index} className={clsx('flex items-center', isXL ? 'flex-col' : 'flex-row')}>
             <div
               className={clsx(
-                'shadow-cardShadow py-[8px] flex-1 px-[24px] rounded-lg flex items-center h-[120px] bg-[auto_100%] bg-right bg-no-repeat',
+                'py-[8px] flex-1 px-[24px] flex items-center h-[120px] bg-[auto_100%] bg-right bg-no-repeat',
                 isXL ? 'flex-none' : 'flex-1',
                 isXL ? 'w-full' : 'w-auto',
+                isDark
+                  ? 'rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder'
+                  : 'shadow-cardShadow rounded-lg',
               )}
               style={{
-                backgroundImage: `url(${item.backgroundImage})`,
+                backgroundImage: `url(${
+                  isDark ? item.darkBackgroundImage || item.backgroundImage : item.backgroundImage
+                })`,
               }}>
               {item?.image?.url ? (
                 <div
@@ -137,13 +151,21 @@ function StepsCard({ cardList }: { cardList: IEventsDetailListStepsCard[] }) {
                 </div>
               ) : null}
               <div className="flex flex-col">
-                {item?.title && <span className="text-base text-neutralTitle font-medium">{item?.title}</span>}
+                {item?.title && (
+                  <span className={clsx('text-base font-medium', isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+                    {item?.title}
+                  </span>
+                )}
                 {renderDescription(item?.description)}
                 {renderLink(item.link)}
               </div>
             </div>
             <div className={clsx(isXL ? 'mt-[12px] rotate-90' : 'ml-[24px]')}>
-              {index < cardList.length - 1 ? <NextArrow /> : <div className="w-[25px]" />}
+              {index < cardList.length - 1 ? (
+                <NextArrow className={clsx(isDark && 'fill-pixelsDivider')} />
+              ) : (
+                <div className="w-[25px]" />
+              )}
             </div>
           </Col>
         );

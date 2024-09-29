@@ -1,0 +1,20 @@
+.special-catActivity-tips-modal {
+  @apply overflow-visible !bg-transparent;
+  :global {
+    .aelfd-modal-content {
+      @apply overflow-visible !bg-transparent !border-none;
+      .aelfd-modal-body {
+        @apply relative !p-0 overflow-visible !bg-transparent !border-none;
+      }
+    }
+    
+  }
+}
+
+.special-catActivity-tips-modal-wrap .special-catActivity-tips-modal.special-catActivity-tips-modal-dark {
+  :global {
+    .aelfd-modal-content {
+      @apply !bg-transparent;
+    }  
+  }
+}

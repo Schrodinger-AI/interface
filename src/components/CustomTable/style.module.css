@@ -11,4 +11,16 @@
       }
     }
   }
+
+  &.custom-table-dark {
+    :global{
+      .aelfd-table-container {
+        .aelfd-table-thead {
+          .aelfd-table-cell {
+            @apply !bg-transparent;
+          }
+        }
+      }
+    }
+  }
 }

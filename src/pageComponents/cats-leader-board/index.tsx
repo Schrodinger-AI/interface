@@ -92,7 +92,11 @@ export default function CatsLeaderBoard() {
         />
 
         {rankConfig?.[tabValue].description ? (
-          <div className="mt-[16px]">{renderDescription(rankConfig[tabValue].description)}</div>
+          <div className="mt-[16px]">
+            {renderDescription({
+              description: rankConfig[tabValue].description,
+            })}
+          </div>
         ) : null}
         {rankConfig?.[tabValue].header?.length || rankConfig?.[tabValue].server ? (
           <div className="mt-[16px]">
