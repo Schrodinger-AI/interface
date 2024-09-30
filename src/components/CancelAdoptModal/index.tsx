@@ -17,6 +17,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
 import { useRouter } from 'next/navigation';
 import { useWalletService } from 'hooks/useWallet';
+import useTelegram from 'hooks/useTelegram';
 
 function CancelAdoptModal({
   nftInfo,
@@ -47,6 +48,7 @@ function CancelAdoptModal({
   const intervalFetch = useIntervalGetSchrodingerDetail();
   const router = useRouter();
   const { wallet } = useWalletService();
+  const { isInTG } = useTelegram();
 
   const originSymbol = useMemo(() => getOriginSymbol(nftInfo.symbol), [nftInfo.symbol]);
 
@@ -63,15 +65,17 @@ function CancelAdoptModal({
         `/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
       );
     } else {
-      router.replace('/');
+      if (isInTG) {
+        router.replace('/telegram/home');
+      } else {
+        router.replace('/');
+      }
     }
-  }, [cardResultModal, intervalFetch, originSymbol, prePage, router, source, wallet.address]);
+  }, [cardResultModal, isInTG, intervalFetch, originSymbol, prePage, router, source, wallet.address]);
 
   const showResultModal = useCallback(
     ({ status, onConfirm }: { status: Status; onConfirm: () => void }) => {
-      // TODO
       const successBtnText = originSymbol ? `View ${renameSymbol(originSymbol)}` : 'View';
-
       cardResultModal.show({
         modalTitle: status === Status.ERROR ? resetSGRMessage.error.title : resetSGRMessage.success.title,
         theme,
