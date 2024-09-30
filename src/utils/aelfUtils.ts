@@ -164,7 +164,7 @@ export const checkAllowanceAndApprove = async (options: {
     const allowanceBN = new BigNumber(allowance?.allowance);
 
     if (allowanceBN.lt(bigA)) {
-      const approveAmount = isNightElf() ? CONTRACT_AMOUNT : bigA.toNumber();
+      const approveAmount = isNightElf() ? CONTRACT_AMOUNT : bigA.multipliedBy(10).toNumber();
       await openBatchApprovalEntrance();
       return await approve(spender, symbol, `${approveAmount}`, chainId);
     }

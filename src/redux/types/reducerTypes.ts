@@ -128,6 +128,14 @@ export type TCustomizationItemType = {
   bannerConfig?: Record<string, TBannerConfigItem>;
   operationButtons?: TBannerConfigButton[];
   needBindEvm?: string[];
+  specialCatActivity?: {
+    time: [number, number];
+    title?: string;
+    banner?: string;
+    eventId: string;
+    link?: string;
+    description?: string;
+  };
   eventHot?: boolean;
   adoptDirectlyNew?: boolean;
   referralRulesList?: string[];

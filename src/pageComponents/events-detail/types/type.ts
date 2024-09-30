@@ -35,12 +35,14 @@ export interface IEventsDetailListStepsCardImage {
   linkType?: TLinkType | 'buyModal';
   buyType?: TBuyType;
   url: string;
+  tgUrl?: string;
   className?: string;
 }
 
 export interface IEventsDetailListStepsCard {
   title?: string;
   backgroundImage?: string;
+  darkBackgroundImage?: string;
   image?: IEventsDetailListStepsCardImage;
   description?: string[];
   link?: Omit<IEventsDetailListStepsCardImage, 'className'>[];
@@ -55,6 +57,10 @@ export interface IEventsDetailList {
   titleIcon?: string;
   subTitle?: string[];
   description?: string[];
+  descriptionList?: {
+    title?: string;
+    description?: string[];
+  }[];
   timeCard?: string[];
   eventsTable?: IEventsDetailListTable;
   link?: IEventsDetailListLink[];

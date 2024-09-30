@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useResponsive } from 'hooks/useResponsive';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { IEventsDetailListLink, IEventsDetailList } from '../types/type';
 import EventsTable from './EventsTable';
 import SkeletonImage from 'components/SkeletonImage';
@@ -13,8 +13,10 @@ import { useRouter } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import StepsCard from './StepsCard';
 import HandleCard from './HandleCard';
+import { TModalTheme } from 'components/CommonModal';
 
-export const renderDescription = (description?: string[]) => {
+export const renderDescription = (params?: { description?: string[]; theme?: TModalTheme }) => {
+  const { description, theme = 'light' } = params || {};
   if (description?.length) {
     return (
       <span className="flex flex-col">
@@ -22,7 +24,7 @@ export const renderDescription = (description?: string[]) => {
           return (
             <span
               key={index}
-              className="text-sm text-neutralSecondary mt-[8px]"
+              className={clsx('text-sm mt-[8px]', 'text-neutralSecondary')}
               dangerouslySetInnerHTML={{
                 __html: item,
               }}
@@ -38,6 +40,7 @@ export const renderDescription = (description?: string[]) => {
 function EventsDetailsList({
   title,
   description,
+  descriptionList,
   eventsTable,
   bottomDescription,
   link,
@@ -49,8 +52,10 @@ function EventsDetailsList({
   isFinal = false,
   eventInProgressTime,
   eventDisplayedTime,
+  theme = 'light',
 }: IEventsDetailList & {
   isFinal?: boolean;
+  theme?: TModalTheme;
   eventInProgressTime?: [string, string];
   eventDisplayedTime?: [string, string];
 }) {
@@ -58,6 +63,8 @@ function EventsDetailsList({
   const { checkLogin } = useCheckLoginAndToken();
   const router = useRouter();
   const { isLogin } = useGetLoginStatus();
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const renderTime = (timeDescription?: string[]) => {
     if (timeDescription?.length) {
@@ -72,7 +79,7 @@ function EventsDetailsList({
             return (
               <span
                 key={index}
-                className="text-sm text-neutralSecondary mt-[8px]"
+                className={clsx('text-sm mt-[8px]', isDark ? 'text-pixelsBorder' : 'text-neutralSecondary')}
                 dangerouslySetInnerHTML={{
                   __html: formatTime,
                 }}
@@ -93,7 +100,7 @@ function EventsDetailsList({
             return (
               <span
                 key={index}
-                className="text-base text-neutralPrimary mt-[8px] flex"
+                className={clsx('text-base mt-[8px] flex', isDark ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}
                 dangerouslySetInnerHTML={{
                   __html: item,
                 }}
@@ -132,7 +139,7 @@ function EventsDetailsList({
   );
 
   const renderLink = useCallback(
-    (link: IEventsDetailListLink) => {
+    (link: IEventsDetailListLink, theme?: TModalTheme) => {
       switch (link.type) {
         case 'img-link':
         case 'img-externalLink':
@@ -142,7 +149,7 @@ function EventsDetailsList({
               onClick={() => jumpTo(link)}>
               <SkeletonImage
                 img={isLG ? link.imgUrl?.mobile || '' : link.imgUrl?.pc || ''}
-                className="w-full h-full"
+                className={clsx('w-full h-full', theme === 'dark' ? '!rounded-none' : '')}
                 imageClassName="!rounded-none"
               />
             </span>
@@ -177,23 +184,41 @@ function EventsDetailsList({
               />
             </div>
           ) : null}
-          <span className="text-xl font-semibold text-neutralPrimary">{title}</span>
+          <span className={clsx('text-xl font-semibold', isDark ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+            {title}
+          </span>
         </p>
       ) : null}
       {subTitle && subTitle.length ? renderSubTitle(subTitle) : null}
-      {description && description.length ? renderDescription(description) : null}
+      {description && description.length ? renderDescription({ description, theme }) : null}
+      {descriptionList && descriptionList.length ? (
+        <div>
+          {descriptionList.map((item, index) => {
+            return (
+              <div key={index}>
+                <p>{renderSubTitle([item.title || ''])}</p>
+                <p>{renderDescription({ description: item.description, theme })}</p>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
       {timeCard && timeCard.length ? renderTime(timeCard) : null}
       {link && link.length ? (
         <div className="flex flex-col">
           {link.map((item) => {
-            return renderLink(item);
+            return renderLink(item, theme);
           })}
         </div>
       ) : null}
       {handleCard && handleCard.length ? <HandleCard handleCardList={handleCard} /> : null}
-      <StepsCard cardList={stepsCardList || []} />
-      {eventsTable?.header?.length || eventsTable?.server ? <EventsTable {...eventsTable} isFinal={isFinal} /> : null}
-      {bottomDescription && bottomDescription.length ? renderDescription(bottomDescription) : null}
+      <StepsCard cardList={stepsCardList || []} theme={theme} />
+      {eventsTable?.header?.length || eventsTable?.server ? (
+        <EventsTable theme={theme} {...eventsTable} isFinal={isFinal} />
+      ) : null}
+      {bottomDescription && bottomDescription.length
+        ? renderDescription({ description: bottomDescription, theme })
+        : null}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Flex } from 'antd';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
 import { ReactComponent as InviteSVG } from 'assets/img/telegram/icon-invite.svg';
+import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import CommonCopy from 'components/CommonCopy';
@@ -29,20 +30,32 @@ export default function BalanceModule({
           <span className="font-medium">Balance:</span>
           <RefreshSVG className="cursor-pointer" onClick={refresh} />
         </Flex>
-        <div className="flex items-center">
+        <div className="flex items-center gap-[12px]">
+          <Link href="/assets">
+            <div className="px-[8px]">
+              <WalletSVG className="w-[30px] h-[30px]" />
+            </div>
+          </Link>
+
           {cmsInfo?.weeklyActivityRankingsEntrance ? (
-            <Link href="/tg-weekly-activity-rankings">
-              <div className="px-[8px]">
-                <LeaderBoardSVG className="w-[30px] h-[30px]" />
-              </div>
-            </Link>
+            <>
+              <div className="w-[1px] h-[16px] bg-pixelsBorder" />
+              <Link href="/tg-weekly-activity-rankings">
+                <div className="px-[8px]">
+                  <LeaderBoardSVG className="w-[30px] h-[30px]" />
+                </div>
+              </Link>
+            </>
           ) : null}
           {isJoin ? (
-            <Link href="/tg-referral" className="ml-[16px]">
-              <div className="px-[8px]">
-                <InviteSVG className="w-[30px] h-[30px]" />
-              </div>
-            </Link>
+            <>
+              <div className="w-[1px] h-[16px] bg-pixelsBorder" />
+              <Link href="/tg-referral">
+                <div className="px-[8px]">
+                  <InviteSVG className="w-[30px] h-[30px]" />
+                </div>
+              </Link>
+            </>
           ) : null}
         </div>
       </Flex>

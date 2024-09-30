@@ -111,10 +111,10 @@ export default function DetailPage() {
   }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
 
   const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
-    if (generation !== 9) {
-      setRankInfo(undefined);
-      throw '';
-    }
+    // if (generation !== 9) {
+    //   setRankInfo(undefined);
+    //   throw '';
+    // }
     const paramsTraits = formatTraits(traits);
     if (!paramsTraits) {
       setRankInfo(undefined);
@@ -170,11 +170,17 @@ export default function DetailPage() {
         const amount = divDecimals(schrodingerDetail.holderAmount, schrodingerDetail.decimals).toFixed();
         cancelAdoptModal.show({
           title: 'Reroll',
-          nftImage: schrodingerDetail.inscriptionImageUri,
-          tokenName: schrodingerDetail.tokenName,
           amount: amount,
           adoptId: schrodingerDetail.adoptId,
           theme,
+          nftInfo: {
+            nftImage: schrodingerDetail.inscriptionImageUri,
+            tokenName: schrodingerDetail.tokenName,
+            symbol: schrodingerDetail.symbol,
+            generation: schrodingerDetail.generation,
+          },
+          prePage: 'rerollModal',
+          source: pageSource,
         });
       } else {
         resetHandler({
@@ -186,7 +192,7 @@ export default function DetailPage() {
         });
       }
     },
-    [cancelAdoptModal, isBlind, rankInfo, resetHandler, schrodingerDetail, wallet.address],
+    [cancelAdoptModal, isBlind, pageSource, rankInfo, resetHandler, schrodingerDetail, wallet.address],
   );
 
   const onView = useCallback(
@@ -497,6 +503,7 @@ export default function DetailPage() {
               detail={schrodingerDetail}
               level={rankInfo?.levelInfo?.level}
               rarity={rankInfo?.levelInfo?.describe}
+              specialTrait={rankInfo?.levelInfo?.specialTrait}
               rank={rankInfo?.rank}
             />
           )}
@@ -523,6 +530,7 @@ export default function DetailPage() {
             detail={schrodingerDetail}
             level={rankInfo?.levelInfo?.level}
             rarity={rankInfo?.levelInfo?.describe}
+            specialTrait={rankInfo?.levelInfo?.specialTrait}
             rank={rankInfo?.rank}
             theme={theme}
           />

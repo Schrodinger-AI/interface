@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { useWalletService } from 'hooks/useWallet';
 import { formatTokenPrice } from 'utils/format';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { TModalTheme } from 'components/CommonModal';
 
 function EventsTable({
   header: th,
@@ -14,8 +15,10 @@ function EventsTable({
   server,
   isFinal = false,
   params = {},
+  theme = 'light',
 }: IEventsDetailListTable & {
   isFinal?: boolean;
+  theme?: TModalTheme;
 }) {
   const [header, setHeader] = useState<IEventsDetailListTable['header']>(server ? [] : th);
   const [dataSource, setDataSource] = useState<IEventsDetailListTable['data']>(server ? [] : data);
@@ -78,7 +81,16 @@ function EventsTable({
     }
   }, [getTableDataSource, server]);
 
-  return <CustomTable header={header} dataSource={dataSource} loading={loading} myData={myData} numberDecimal={1} />;
+  return (
+    <CustomTable
+      theme={theme}
+      header={header}
+      dataSource={dataSource}
+      loading={loading}
+      myData={myData}
+      numberDecimal={1}
+    />
+  );
 }
 
 export default React.memo(EventsTable);
