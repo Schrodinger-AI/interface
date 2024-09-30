@@ -31,6 +31,13 @@ export const useShowSpecialCatActivity = () => {
     return false;
   }, [cmsInfo?.specialCatActivity]);
 
+  const notStarted = useMemo(() => {
+    const now = new Date().getTime();
+    const activityStartTime = String(cmsInfo?.specialCatActivity?.time?.[0]);
+    if (!activityStartTime || BigNumber(activityStartTime).gt(BigNumber(now))) return true;
+    return false;
+  }, [cmsInfo?.specialCatActivity]);
+
   const addressHash = useMemo(() => {
     return Buffer.from(wallet.address).toString('hex');
   }, [wallet.address]);
@@ -55,15 +62,14 @@ export const useShowSpecialCatActivity = () => {
 
     const activityStartTime = String(cmsInfo?.specialCatActivity?.time?.[0]);
 
-    if (isEnded) return;
-
+    if (isEnded || notStarted) return;
+    const addressHasShow = loggedInAccounts.includes(addressHash);
     if (activityStartTime && !showSpecialCatActivityStatus) {
-      saveLoggedInAccounts(loggedInAccounts);
+      if (!addressHasShow) saveLoggedInAccounts(loggedInAccounts);
       toShow(activityStartTime);
       return;
     }
     if (activityStartTime && showSpecialCatActivityStatus) {
-      const addressHasShow = loggedInAccounts.includes(addressHash);
       if (addressHasShow && activityStartTime === showSpecialCatActivityStatus) {
         return;
       }
@@ -71,7 +77,7 @@ export const useShowSpecialCatActivity = () => {
       toShow(activityStartTime);
       return;
     }
-  }, [addressHash, cmsInfo?.specialCatActivity?.time, isEnded, saveLoggedInAccounts, toShow]);
+  }, [addressHash, cmsInfo?.specialCatActivity?.time, isEnded, notStarted, saveLoggedInAccounts, toShow]);
 
   return { showSpecialCatActivity };
 };
