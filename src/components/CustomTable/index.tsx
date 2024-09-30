@@ -41,7 +41,7 @@ const renderCell = ({
     <span
       className={clsx(
         'font-medium text-sm',
-        theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+        theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralTitle',
         addressClassName,
       )}>
       {value}

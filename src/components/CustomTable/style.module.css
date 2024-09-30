@@ -17,7 +17,7 @@
       .aelfd-table-container {
         .aelfd-table-thead {
           .aelfd-table-cell {
-            @apply !bg-transparent;
+            @apply !bg-pixelsModalBg !rounded-none border-none;
           }
         }
       }
