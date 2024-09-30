@@ -8,10 +8,12 @@ import CommonCopy from 'components/CommonCopy';
 import { OmittedType, addPrefixSuffix, getOmittedStr } from 'utils/addressFormatting';
 import { ReactComponent as Question } from 'assets/img/icons/question.svg';
 import { ReactComponent as MeBlueIcon } from 'assets/img/me-blue.svg';
+import { ReactComponent as MePurpleIcon } from 'assets/img/me-purple.svg';
 import { useResponsive } from 'hooks/useResponsive';
 import { formatTokenPrice } from 'utils/format';
 import { IEventsDetailListTable } from 'pageComponents/events-detail/types/type';
 import CommonTable from 'components/CommonTable';
+import { TModalTheme } from 'components/CommonModal';
 
 export interface ICustomTableProps {
   loading?: boolean;
@@ -22,14 +24,40 @@ export interface ICustomTableProps {
     value: string;
     address: string;
   };
+  theme?: TModalTheme;
   numberDecimal?: number;
 }
 
-const renderCell = (value: string, addressClassName?: string) => {
-  return <span className={clsx('text-neutralTitle font-medium text-sm', addressClassName)}>{value}</span>;
+const renderCell = ({
+  value,
+  addressClassName,
+  theme = 'light',
+}: {
+  value: string;
+  addressClassName?: string;
+  theme?: TModalTheme;
+}) => {
+  return (
+    <span
+      className={clsx(
+        'font-medium text-sm',
+        theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralTitle',
+        addressClassName,
+      )}>
+      {value}
+    </span>
+  );
 };
 
-const renderTitle = (value: string, tooltip?: string[]) => {
+const renderTitle = ({
+  value,
+  tooltip,
+  theme = 'light',
+}: {
+  value: string;
+  tooltip?: string[];
+  theme?: TModalTheme;
+}) => {
   return (
     <div className="flex items-center">
       {tooltip && tooltip.length ? (
@@ -42,16 +70,25 @@ const renderTitle = (value: string, tooltip?: string[]) => {
             </div>
           }
           className="mr-[4px]">
-          <Question className="fill-neutralDisable" />
+          <Question className={clsx(theme === 'dark' ? 'fill-pixelsBorder' : 'fill-neutralDisable')} />
         </ToolTip>
       ) : null}
 
-      <span className="text-sm text-neutralDisable font-medium">{value}</span>
+      <span className={clsx('text-sm font-medium', theme === 'dark' ? 'text-pixelsBorder' : 'text-neutralDisable')}>
+        {value}
+      </span>
     </div>
   );
 };
 
-function CustomTable({ loading = false, dataSource = [], header = [], myData, numberDecimal = 4 }: ICustomTableProps) {
+function CustomTable({
+  loading = false,
+  dataSource = [],
+  header = [],
+  myData,
+  numberDecimal = 4,
+  theme = 'light',
+}: ICustomTableProps) {
   const { isLG } = useResponsive();
 
   const renderAddress = useCallback(
@@ -59,23 +96,31 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData, nu
       return (
         <CommonCopy toCopy={addPrefixSuffix(address)}>
           {isLG ? (
-            renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS), addressClassName)
+            renderCell({
+              value: getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS),
+              addressClassName,
+              theme,
+            })
           ) : (
             <ToolTip trigger={'hover'} title={addPrefixSuffix(address)}>
-              {renderCell(getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS), addressClassName)}
+              {renderCell({
+                value: getOmittedStr(addPrefixSuffix(address), OmittedType.ADDRESS),
+                addressClassName,
+                theme,
+              })}
             </ToolTip>
           )}
         </CommonCopy>
       );
     },
-    [isLG],
+    [isLG, theme],
   );
 
   const columns: TableColumnsType<any> = useMemo(() => {
     if (header?.length) {
       return header.map((item) => {
         return {
-          title: renderTitle(item.title, item.tooltip),
+          title: renderTitle({ value: item.title, tooltip: item.tooltip, theme }),
           dataIndex: item.key,
           key: item.key,
           width: item.width,
@@ -88,13 +133,17 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData, nu
               case 'number':
                 return !value && value !== 0
                   ? '-'
-                  : renderCell(
-                      formatTokenPrice(value, {
+                  : renderCell({
+                      value: formatTokenPrice(value, {
                         decimalPlaces: numberDecimal,
                       }),
-                    );
+                      theme,
+                    });
               default:
-                return renderCell(item.key === 'index' ? `${index + 1}` : value);
+                return renderCell({
+                  value: item.key === 'index' ? `${index + 1}` : value,
+                  theme,
+                });
             }
           },
         };
@@ -102,10 +151,15 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData, nu
     } else {
       return [];
     }
-  }, [header, numberDecimal, renderAddress]);
+  }, [header, numberDecimal, renderAddress, theme]);
 
   return (
-    <div className={clsx('mt-[8px] mb-[16px] w-full overflow-x-auto', styles['custom-table'])}>
+    <div
+      className={clsx(
+        'mt-[8px] mb-[16px] w-full overflow-x-auto',
+        styles['custom-table'],
+        theme === 'dark' && styles['custom-table-dark'],
+      )}>
       {loading ? (
         <div className="w-full flex justify-center items-center p-[32px]">
           <Loading />
@@ -120,15 +174,32 @@ function CustomTable({ loading = false, dataSource = [], header = [], myData, nu
             scroll={{
               x: 'max-content',
             }}
+            theme={theme}
           />
           {myData ? (
-            <div className="w-full h-[88px] flex flex-col justify-center bg-brandBg rounded-lg px-[16px]">
-              <span className="flex text-base text-neutralTitle font-semibold ">
-                <MeBlueIcon className="mr-[8px]" />
+            <div
+              className={clsx(
+                'w-full h-[88px] flex flex-col justify-center px-[16px]',
+                theme === 'dark' ? 'bg-pixelsModalBg rounded-none' : 'bg-brandBg rounded-lg',
+              )}>
+              <span
+                className={clsx(
+                  'flex text-base font-semibold',
+                  theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+                )}>
+                {theme === 'dark' ? <MePurpleIcon className="mr-[8px]" /> : <MeBlueIcon className="mr-[8px]" />}
+
                 {myData.rank}
               </span>
-              <div className="flex justify-between items-center text-base text-neutralTitle font-semibold mt-[8px]">
-                {renderAddress(myData.address, '!text-base !font-medium !text-neutralPrimary')}
+              <div
+                className={clsx(
+                  'flex justify-between items-center text-base font-semibold mt-[8px]',
+                  theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+                )}>
+                {renderAddress(
+                  myData.address,
+                  clsx('!text-base !font-medium', theme === 'dark' ? '!text-pixelsDivider' : '!text-neutralPrimary'),
+                )}
                 <span>{myData.value}</span>
               </div>
             </div>

@@ -8,12 +8,14 @@ export default function ItemImage({
   level,
   rarity,
   rank,
+  specialTrait,
   theme = 'light',
 }: {
   detail: TSGRToken;
   level?: string;
   rarity?: string;
   rank?: number;
+  specialTrait?: string;
   theme?: TModalTheme;
 }) {
   return (
@@ -30,6 +32,7 @@ export default function ItemImage({
         level={level}
         rarity={rarity}
         tagPosition="large"
+        specialTrait={specialTrait}
         rank={rank}
         imageClassName={theme === 'dark' ? 'rounded-none' : 'rounded-lg'}
         className={clsx('w-full', theme === 'dark' ? 'rounded-none' : 'rounded-lg')}

@@ -11,11 +11,13 @@ import { useWebLogin } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
+import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
   const { wallet } = useWebLogin();
   const [notAutoJoin] = useAutoJoin();
+  const { showSpecialCatActivity } = useShowSpecialCatActivity();
 
   const toJoin = useCallback(async () => {
     return new Promise((resolve) => {
@@ -46,16 +48,18 @@ export const useCheckJoined = () => {
               console.log(error, 'error===checkJoined');
             } finally {
               JoinModalInit.hide();
+              showSpecialCatActivity();
             }
           },
         },
         onCancel: () => {
           resolve(false);
           JoinModalInit.hide();
+          showSpecialCatActivity();
         },
       });
     });
-  }, [JoinModalInit]);
+  }, [JoinModalInit, showSpecialCatActivity]);
 
   const getJoinStatus = useCallback(
     async (address?: string) => {
@@ -76,10 +80,13 @@ export const useCheckJoined = () => {
     async function (address: string) {
       if (!address) return;
       const isJoin = await getJoinStatus(address);
-      if (isJoin || notAutoJoin) return isJoin;
+      if (isJoin || notAutoJoin) {
+        showSpecialCatActivity();
+        return isJoin;
+      }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, toJoin],
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
   );
 
   return { checkJoined, toJoin, getJoinStatus };

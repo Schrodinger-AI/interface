@@ -10,6 +10,7 @@ export const formatTagContent = (value: string | number, key: string) => {
   return {
     generation: `GEN ${value}`,
     level: `Lv. ${value}`,
+    specialTrait: value,
   }[key];
 };
 
@@ -17,6 +18,7 @@ interface ILabelStyle {
   [key: string]: {
     size: Record<TTagSize, string>;
     position: Record<TPositionDistance, string>;
+    hasRarityPosition?: Record<TPositionDistance, string>;
   };
 }
 
@@ -46,6 +48,19 @@ export const labelStyle: ILabelStyle = {
     position: {
       default: 'top-[8px] right-[8px]',
       large: 'top-[12px] right-[12px]',
+    },
+  },
+  specialTrait: {
+    size: {
+      default: 'px-[4px] rounded-[4px] text-[10px] leading-[16px] font-medium h-[18px] ',
+    },
+    position: {
+      default: 'top-[8px] right-[8px]',
+      large: 'top-[12px] right-[12px]',
+    },
+    hasRarityPosition: {
+      default: 'top-[32px] right-[8px]',
+      large: 'top-[36px] right-[12px]',
     },
   },
 };

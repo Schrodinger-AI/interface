@@ -212,6 +212,7 @@ function CardResultModal({
                   generation={info?.generation}
                   level={info?.levelInfo?.level}
                   rarity={info?.levelInfo?.describe}
+                  specialTrait={info?.levelInfo?.specialTrait}
                   img={image}
                   rank={info?.rank}
                   className={clsx('w-[180px] h-[180px]', isDark && '!rounded-none')}

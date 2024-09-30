@@ -42,6 +42,7 @@ export default function ItemCard({
     rank,
     level,
     describe,
+    specialTrait,
     awakenPrice,
     token,
     inscriptionDeploy,
@@ -100,6 +101,7 @@ export default function ItemCard({
             level={level}
             generation={generation}
             rarity={describe}
+            specialTrait={specialTrait}
             hideRankHover={hideRankHover}
             containsInscriptionCode={
               containsInscriptionCode

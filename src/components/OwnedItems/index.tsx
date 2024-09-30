@@ -261,12 +261,13 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
         console.log('getTraitList error', error);
       }
     },
-    [curChain, getAllTraits, getTraits],
+    [curChain, getAllTraits, getTraits, isInTG],
   );
 
   useEffect(() => {
+    setFilterList(getFilterList(curChain));
     getFilterListData({ type: pageState });
-  }, [getFilterListData, pageState]);
+  }, [curChain, getFilterListData, pageState]);
 
   const applyFilter = useCallback(
     (newFilterSelect: IFilterSelect = tempFilterSelect) => {

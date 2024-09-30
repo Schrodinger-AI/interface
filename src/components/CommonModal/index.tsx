@@ -9,6 +9,7 @@ export type TModalTheme = 'dark' | 'light';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
   width?: number;
+  hideHeader?: boolean;
   disableMobileLayout?: boolean;
   theme?: TModalTheme;
 }
@@ -18,6 +19,7 @@ function CommonModal(props: ModalProps) {
     className,
     title,
     subTitle,
+    hideHeader = false,
     wrapClassName,
     width = 800,
     disableMobileLayout = false,
@@ -41,6 +43,7 @@ function CommonModal(props: ModalProps) {
         isLG && styles['modal-mobile'],
         isLG && !disableMobileLayout && styles['modal-full-screen'],
         theme === 'dark' && styles['modal-mobile-dark'],
+        hideHeader && styles['modal-hide-header'],
         className,
       )}
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}

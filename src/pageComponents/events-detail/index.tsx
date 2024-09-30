@@ -1,5 +1,5 @@
 import { getEventDetail, getEventResultDetail, getEventsConfig } from 'api/request';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useLoading from 'hooks/useLoading';
 import { IEventsDetailList } from './types/type';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
@@ -8,11 +8,14 @@ import EventsDetailsList from './components/EventsDetailsList';
 import MobileBackNav from 'components/MobileBackNav';
 import { useResponsive } from 'hooks/useResponsive';
 import moment from 'moment';
+import useTelegram from 'hooks/useTelegram';
+import clsx from 'clsx';
 
 export default function ActivityDetail() {
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
   const { isLG } = useResponsive();
+  const { isInTG } = useTelegram();
 
   const { id } = useParams() as {
     id: string;
@@ -61,14 +64,16 @@ export default function ActivityDetail() {
 
         setEventInProgressTime([inProgressStartTime, inProgressEndTime]);
 
-        const displayedStartTime = `${moment(Number(configData.displayed.startTime))
-          .utc()
-          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
-        const displayedEndTime = `${moment(Number(configData.displayed.endTime))
-          .utc()
-          .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+        if (configData.displayed) {
+          const displayedStartTime = `${moment(Number(configData.displayed.startTime))
+            .utc()
+            .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
+          const displayedEndTime = `${moment(Number(configData.displayed.endTime))
+            .utc()
+            .format('YYYY/MM/DD HH:mm:ss')} (UTC)`;
 
-        setEventDisplayedTime([displayedStartTime, displayedEndTime]);
+          setEventDisplayedTime([displayedStartTime, displayedEndTime]);
+        }
 
         setEventsDetailsList(data.list || []);
         setPageTitle(data.pageTitle || '');
@@ -79,6 +84,8 @@ export default function ActivityDetail() {
     [closeLoading, showLoading],
   );
 
+  const isDark = useMemo(() => isInTG, [isInTG]);
+
   useEffect(() => {
     if (!id) return;
     getEventInfo(id);
@@ -86,10 +93,14 @@ export default function ActivityDetail() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-[1360px]">
-        {isLG ? <MobileBackNav /> : null}
+      <div className={clsx('w-full max-w-[1360px]', isInTG ? 'px-[16px] py-[32px]' : '')}>
+        {isLG ? <MobileBackNav theme={isInTG ? 'dark' : 'light'} /> : null}
 
-        <h1 className="lg:pt-[24px] flex items-start pb-[8px] font-semibold text-neutralTitle text-2xl">
+        <h1
+          className={clsx(
+            'pt-[24px] flex items-start pb-[8px] font-semibold text-2xl',
+            isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+          )}>
           {!isLG ? (
             <div className="h-[32px] flex items-center justify-center">
               <ArrowSVG
@@ -108,6 +119,7 @@ export default function ActivityDetail() {
               <EventsDetailsList
                 key={index}
                 {...item}
+                theme={isInTG ? 'dark' : 'light'}
                 isFinal={isFinal}
                 eventInProgressTime={eventInProgressTime}
                 eventDisplayedTime={eventDisplayedTime}

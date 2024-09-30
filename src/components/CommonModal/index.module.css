@@ -121,3 +121,13 @@
     }
   }
 }
+
+.modal-hide-header {
+  :global {
+    .aelfd-modal-content {
+      .aelfd-modal-header {
+        @apply hidden;
+      }
+    }
+  }
+}

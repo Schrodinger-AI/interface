@@ -27,6 +27,7 @@ export type TSGRItem = TBaseSGRToken & {
   rank?: number;
   rarity?: string;
   describe?: string;
+  specialTrait?: string;
   awakenPrice?: string;
   token?: string;
   address?: string;
