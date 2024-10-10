@@ -378,3 +378,15 @@ interface IActivityBotRankData {
   myReward: number;
   myRank: number;
 }
+interface ITaskListData {
+  countdown: number; // 1:adopt 2:trade 3:invite
+  dailyTasks: ITaskItem[];
+  socialTasks: ITaskItem[];
+  accomplishmentTasks: ITaskItem[];
+}
+
+interface ITaskItem {
+  taskId: string;
+  name: string;
+  status: number; // 1:未完成， 2:已完成未领取  3:已领取
+}

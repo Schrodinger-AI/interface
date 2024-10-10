@@ -244,3 +244,7 @@ export const getStrayCats = async (data: {
 }): Promise<IStrayCatsData> => {
   return request.post('/app/cat/stray-cats', data);
 };
+
+export const fetchTasksList = async (params: IUsersAddressReq): Promise<ITaskListData> => {
+  return request.get('/app/task/list', { params });
+};
