@@ -6,14 +6,12 @@ import ItemInfo from './components/ItemInfo';
 import { Breadcrumb, message } from 'antd';
 // import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
 import { ITrait, TSGRTokenInfo } from 'types/tokens';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useResetHandler } from 'hooks/useResetHandler';
 import useLoading from 'hooks/useLoading';
-import { useTimeoutFn } from 'react-use';
 import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
@@ -21,7 +19,6 @@ import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { getBlindCatDetail, getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { useWebLoginEvent, WebLoginEvents } from 'aelf-web-login';
 import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import Image from 'next/image';
@@ -41,6 +38,7 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import { HandleButtonDefault, HandleButtonPrimary } from './components/Button';
 import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -55,7 +53,7 @@ export default function DetailPage() {
   const callbackPath = searchParams.get('callbackPath') || '';
   const { isLogin } = useGetLoginStatus();
 
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
   const { showLoading, closeLoading } = useLoading();
   const marketModal = useModal(MarketModal);
@@ -128,31 +126,31 @@ export default function DetailPage() {
   };
 
   const getDetail = useCallback(async () => {
-    if (wallet.address && !isLogin) return;
+    if (walletInfo?.address && !isLogin) return;
     let result;
     try {
       showLoading();
       const getDetail = isBlind ? getBlindCatDetail : getCatDetail;
-      result = await getDetail({ symbol, chainId: cmsInfo?.curChain || '', address: wallet.address });
+      result = await getDetail({ symbol, chainId: cmsInfo?.curChain || '', address: walletInfo?.address });
       const generation = result?.generation;
       const traits = result?.traits;
       if (pageFrom === 'blind' && !result.symbol) {
         onBack();
       }
-      await generateCatsRankInfo(generation, traits, wallet.address);
+      await generateCatsRankInfo(generation, traits, walletInfo?.address || '');
     } catch (error) {
       console.log('getDetailInGuestMode-error', error);
     } finally {
       closeLoading();
       setSchrodingerDetail(result);
     }
-  }, [wallet.address, isLogin, showLoading, isBlind, symbol, cmsInfo?.curChain, pageFrom, onBack, closeLoading]);
+  }, [walletInfo?.address, isLogin, showLoading, isBlind, symbol, cmsInfo?.curChain, pageFrom, onBack, closeLoading]);
 
   const onAdoptNextGeneration = (isDirect: boolean, theme: TModalTheme) => {
     if (!schrodingerDetail) return;
     adoptHandler({
       parentItemInfo: schrodingerDetail,
-      account: wallet.address,
+      account: walletInfo?.address || '',
       isDirect,
       rankInfo,
       theme,
@@ -185,20 +183,20 @@ export default function DetailPage() {
       } else {
         resetHandler({
           parentItemInfo: schrodingerDetail,
-          account: wallet.address,
+          account: walletInfo?.address || '',
           rankInfo,
           theme,
           prePage: 'rerollModal',
         });
       }
     },
-    [cancelAdoptModal, isBlind, pageSource, rankInfo, resetHandler, schrodingerDetail, wallet.address],
+    [cancelAdoptModal, isBlind, pageSource, rankInfo, resetHandler, schrodingerDetail, walletInfo?.address],
   );
 
   const onView = useCallback(
     async (theme?: TModalTheme) => {
       try {
-        if (!schrodingerDetail || !schrodingerDetail.adoptId || !wallet.address || !schrodingerDetail.holderAmount)
+        if (!schrodingerDetail || !schrodingerDetail.adoptId || !walletInfo?.address || !schrodingerDetail.holderAmount)
           return;
         getImageAndConfirm({
           parentItemInfo: schrodingerDetail,
@@ -217,7 +215,7 @@ export default function DetailPage() {
             intervalFetch.remove();
             closeLoading();
             route.replace(
-              `/detail?symbol=${schrodingerDetail.symbol}&from=my&address=${wallet.address}&source=${pageSource}&prePage=unbox`,
+              `/detail?symbol=${schrodingerDetail.symbol}&from=my&address=${walletInfo.address}&source=${pageSource}&prePage=unbox`,
             );
           },
           theme,
@@ -236,7 +234,7 @@ export default function DetailPage() {
       schrodingerDetail,
       showLoading,
       symbol,
-      wallet.address,
+      walletInfo?.address,
     ],
   );
 
@@ -440,17 +438,15 @@ export default function DetailPage() {
     jumpToPage,
   ]);
 
-  useTimeoutFn(() => {
-    if (!fromListAll && !isLogin) {
-      onBack();
-    }
-  }, 3000);
-
   useEffect(() => {
     getDetail();
   }, [getDetail]);
 
-  useWebLoginEvent(WebLoginEvents.LOGOUT, () => onBack());
+  useEffect(() => {
+    if (!fromListAll && !isLogin) {
+      onBack();
+    }
+  }, [fromListAll, isLogin, onBack]);
 
   const backUrl = useMemo(() => {
     if (isInTG && prePage) {

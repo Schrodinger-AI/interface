@@ -1,12 +1,12 @@
 import { GetBalance } from 'contract/multiToken';
 import useLoading from 'hooks/useLoading';
-import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { divDecimals } from 'utils/calculate';
 import { IBalanceItemProps } from '../components/BalanceItem';
 import { GEN0_SYMBOL } from 'constants/common';
 import { useBuyToken } from 'hooks/useBuyToken';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function useBalanceService(params?: {
   onSgrBalanceChange?: (value: string) => void;
@@ -15,7 +15,7 @@ export default function useBalanceService(params?: {
   const { onSgrBalanceChange, onElfBalanceChange } = params || {};
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { showLoading, closeLoading } = useLoading();
   const { checkBalanceAndJump } = useBuyToken();
 
@@ -45,17 +45,17 @@ export default function useBalanceService(params?: {
   }, [checkBalanceAndJump, elfBalance, sgrBalance]);
 
   const getBalance = useCallback(async () => {
-    if (!wallet.address) return;
+    if (!walletInfo?.address) return;
     try {
       showLoading();
       const [sgrBalanceRes, elfBalanceRes] = await Promise.all([
         GetBalance({
           symbol: GEN0_SYMBOL,
-          owner: wallet.address,
+          owner: walletInfo.address,
         }),
         GetBalance({
           symbol: 'ELF',
-          owner: wallet.address,
+          owner: walletInfo.address,
         }),
       ]);
       setSgrBalance(sgrBalanceRes?.balance || '0');
@@ -75,26 +75,26 @@ export default function useBalanceService(params?: {
     } finally {
       closeLoading();
     }
-  }, [closeLoading, onElfBalanceChange, onSgrBalanceChange, showLoading, wallet.address]);
+  }, [closeLoading, onElfBalanceChange, onSgrBalanceChange, showLoading, walletInfo?.address]);
 
   useEffect(() => {
     getBalance();
   }, [getBalance]);
 
   const fullAddress = useMemo(() => {
-    return addPrefixSuffix(wallet.address);
-  }, [wallet.address]);
+    return walletInfo?.address ? addPrefixSuffix(walletInfo.address) : '';
+  }, [walletInfo?.address]);
 
   const formatAddress = useMemo(() => {
-    if (!wallet.address) return '';
+    if (!walletInfo?.address) return '';
     return getOmittedStr(fullAddress, OmittedType.ADDRESS);
-  }, [fullAddress, wallet.address]);
+  }, [fullAddress, walletInfo?.address]);
 
   return {
     sgrBalance,
     elfBalance,
     refresh: getBalance,
-    address: wallet.address,
+    address: walletInfo?.address,
     formatAddress,
     fullAddress,
     balanceData,

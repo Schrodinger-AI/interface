@@ -7,13 +7,13 @@ import { ChainId } from '@portkey/types';
 import { TTokenApproveHandler } from '@portkey/trader-core';
 import { useAElfReact } from '@aelf-react/core';
 import { AElfContextType } from '@aelf-react/core/dist/types';
-import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
-import { WalletType } from 'aelf-web-login';
 import { getRpcUrls } from 'constants/url';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function useSwapService() {
-  const { walletType, wallet } = useWalletService();
+  const { walletType, walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
   const { curChain, networkTypeV2 } = cmsInfo || {};
   const aelfReact = useAElfReact();
@@ -25,25 +25,25 @@ export default function useSwapService() {
   }, [aelfReact]);
 
   useEffect(() => {
-    discoverProviderInstanceRef.current = wallet.discoverInfo?.provider;
-  }, [wallet.discoverInfo?.provider]);
+    discoverProviderInstanceRef.current = walletInfo?.extraInfo?.discoverInfo?.provider;
+  }, [walletInfo?.extraInfo?.discoverInfo?.provider]);
 
   const getOptions: any = useCallback(async () => {
-    if (walletType === WalletType.unknown) throw 'unknown';
-    if (walletType === WalletType.portkey) {
-      if (!wallet.portkeyInfo) throw 'no managementAccount';
-      const caHash = wallet.portkeyInfo.caInfo.caHash || '';
+    if (walletType === WalletTypeEnum.unknown) throw 'unknown';
+    if (walletType === WalletTypeEnum.aa) {
+      if (!walletInfo?.extraInfo?.portkeyInfo) throw 'no managementAccount';
+      const caHash = walletInfo?.extraInfo?.portkeyInfo.caInfo.caHash || '';
       const chainInfo = await getChainInfo(curChain);
       return {
         contractOptions: {
-          account: aelf.getWallet(wallet.portkeyInfo.walletInfo.privateKey || ''),
+          account: aelf.getWallet(walletInfo?.extraInfo?.portkeyInfo.walletInfo.privateKey || ''),
           callType: 'ca' as any,
           caHash,
           caContractAddress: chainInfo.caContractAddress,
         },
-        address: wallet.portkeyInfo.caInfo.caAddress || '',
+        address: walletInfo?.extraInfo?.portkeyInfo.caInfo.caAddress || '',
       };
-    } else if (walletType === WalletType.discover) {
+    } else if (walletType === WalletTypeEnum.discover) {
       const provider = discoverProviderInstanceRef.current;
       if (!provider) return;
       const chainProvider = await provider.getChain(curChain);
@@ -72,19 +72,19 @@ export default function useSwapService() {
         address,
       };
     }
-  }, [curChain, wallet.portkeyInfo, walletType]);
+  }, [curChain, walletInfo?.extraInfo?.portkeyInfo, walletType]);
 
   const tokenApprove: TTokenApproveHandler = useCallback(
     async (params) => {
       const originChainId = (localStorage.getItem(PORTKEY_LOGIN_CHAIN_ID_KEY) || curChain) as ChainId;
-      const caHash = wallet.portkeyInfo?.caInfo.caHash || '';
+      const caHash = walletInfo?.extraInfo?.portkeyInfo?.caInfo.caHash || '';
       const chainInfo = await getChainInfo(curChain);
 
       const [portkeyContract] = await Promise.all(
         [chainInfo.caContractAddress, chainInfo.defaultToken.address].map((ca) =>
           getContractBasic({
             contractAddress: ca,
-            account: aelf.getWallet(wallet.portkeyInfo?.walletInfo.privateKey || ''),
+            account: aelf.getWallet(walletInfo?.extraInfo?.portkeyInfo?.walletInfo.privateKey || ''),
             rpcUrl: chainInfo.endPoint,
           }),
         ),
@@ -113,7 +113,12 @@ export default function useSwapService() {
       });
       if (approveResult.error) throw approveResult.error;
     },
-    [curChain, networkTypeV2, wallet.portkeyInfo?.caInfo.caHash, wallet.portkeyInfo?.walletInfo.privateKey],
+    [
+      curChain,
+      networkTypeV2,
+      walletInfo?.extraInfo?.portkeyInfo?.caInfo.caHash,
+      walletInfo?.extraInfo?.portkeyInfo?.walletInfo.privateKey,
+    ],
   );
 
   return {

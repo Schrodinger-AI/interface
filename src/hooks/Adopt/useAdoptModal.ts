@@ -13,7 +13,6 @@ import { ONE, ZERO } from 'constants/misc';
 import { useGetAllBalance } from 'hooks/useGetAllBalance';
 import useLoading from 'hooks/useLoading';
 import { adopt1Message, promptContentTitle } from 'constants/promptMessage';
-import { WalletType, useWebLogin } from 'aelf-web-login';
 import { getDomain } from 'utils';
 import { checkAIService } from 'api/request';
 import { useAdoptConfirm } from './useAdoptConfirm';
@@ -23,10 +22,12 @@ import { renameSymbol } from 'utils/renameSymbol';
 import { TModalTheme } from 'components/CommonModal';
 import { AdTracker } from 'utils/ad';
 import useTelegram from 'hooks/useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 const useAdoptHandler = () => {
   const adoptActionModal = useModal(AdoptActionModal);
-  const { walletType } = useWebLogin();
+  const { walletType } = useConnectWallet();
 
   const promptModal = useModal(PromptModal);
   const { showLoading, closeLoading } = useLoading();
@@ -160,8 +161,7 @@ const useAdoptHandler = () => {
           title: adopt1Message.prompt.title,
           content: {
             title: promptContentTitle,
-            content:
-              walletType === WalletType.portkey ? [adopt1Message.prompt.portkey] : [adopt1Message.prompt.default],
+            content: walletType === WalletTypeEnum.aa ? [adopt1Message.prompt.portkey] : [adopt1Message.prompt.default],
           },
           initialization: async () => {
             try {

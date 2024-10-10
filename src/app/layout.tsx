@@ -3,15 +3,11 @@ import type { Metadata } from 'next';
 import Layout from 'pageComponents/layout';
 import 'styles/tailwindBase.css';
 
-import '@portkey/did-ui-react/dist/assets/index.css';
-import 'aelf-web-login/dist/assets/index.css';
-
 import 'styles/global.css';
 import 'styles/common.css';
 import 'styles/theme.css';
 
 import Provider from 'provider';
-import Head from 'next/head';
 
 export const metadata: Metadata = {
   title: 'Schrödinger',

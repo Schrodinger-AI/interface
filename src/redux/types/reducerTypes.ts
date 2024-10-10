@@ -221,7 +221,6 @@ export enum LoginState {
 
 export type TLoginStatusType = {
   loginStatus: {
-    walletStatus: LoginState;
     isConnectWallet: boolean;
     hasToken: boolean;
     isLogin: boolean;

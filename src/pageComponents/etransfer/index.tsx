@@ -1,10 +1,4 @@
-import {
-  Deposit,
-  ETransferDepositProvider,
-  ComponentStyle,
-  ETransferConfig,
-  WalletTypeEnum,
-} from '@etransfer/ui-react';
+import { Deposit, ETransferDepositProvider, ComponentStyle, ETransferConfig } from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
 import { Breadcrumb, message } from 'antd';
@@ -13,7 +7,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
-import { useTimeoutFn } from 'react-use';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
@@ -23,9 +16,9 @@ import Link from 'next/link';
 import { ReactComponent as HistoryFilled } from 'assets/img/icons/history-filled.svg';
 import { ReactComponent as HistoryOutlined } from 'assets/img/icons/history-outlined.svg';
 import { Button } from 'aelf-design';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
-import { WalletType } from 'aelf-web-login';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const DarkModal = dynamic(
   async () => {
@@ -44,7 +37,7 @@ export default function ETransfer() {
   const { isInTG } = useTelegram();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const { checkLogin } = useCheckLoginAndToken();
-  const { walletType, wallet } = useWalletService();
+  const { walletType, walletInfo } = useConnectWallet();
 
   const defaultParams = useMemo(() => {
     return {
@@ -74,32 +67,11 @@ export default function ETransfer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
 
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      if (!isInTG) {
-        setShowLogin(true);
-      }
-    }
-  }, 4000);
-
   useEffect(() => {
     if (isLogin) {
       setShowLogin(false);
     }
   }, [isLogin]);
-
-  const walletTypeEnum: WalletTypeEnum = useMemo(() => {
-    switch (walletType) {
-      case WalletType.portkey:
-        return WalletTypeEnum.aa;
-      case WalletType.discover:
-        return WalletTypeEnum.discover;
-      case WalletType.elf:
-        return WalletTypeEnum.elf;
-      default:
-        return WalletTypeEnum.unknown;
-    }
-  }, [walletType]);
 
   useEffect(() => {
     ETransferConfig.setConfig({
@@ -111,13 +83,13 @@ export default function ETransfer() {
       },
       accountInfo: {
         accounts: {
-          AELF: addPrefixSuffix(wallet.address, 'AELF'),
-          [cmsInfo?.curChain || 'tDVV']: addPrefixSuffix(wallet.address, cmsInfo?.curChain || 'tDVV'),
+          AELF: addPrefixSuffix(walletInfo?.address || '', 'AELF'),
+          [cmsInfo?.curChain || 'tDVV']: addPrefixSuffix(walletInfo?.address || '', cmsInfo?.curChain || 'tDVV'),
         },
-        walletType: walletTypeEnum,
+        walletType,
       },
     });
-  }, [cmsInfo?.curChain, defaultParams, wallet.address, walletType, walletTypeEnum]);
+  }, [cmsInfo?.curChain, defaultParams, walletInfo?.address, walletType]);
 
   const onBack = useCallback(() => {
     router.back();

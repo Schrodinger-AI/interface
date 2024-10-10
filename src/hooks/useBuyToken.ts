@@ -1,4 +1,4 @@
-import { useCheckLoginAndToken, useWalletService } from './useWallet';
+import { useCheckLoginAndToken } from './useWallet';
 import { BUY_ELF_URL, BUY_SGR_URL } from 'constants/router';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import { TModalTheme } from 'components/CommonModal';
 import { useGetAllBalance } from './useGetAllBalance';
 import { AELF_TOKEN_INFO, GEN0_SYMBOL_INFO } from 'constants/assets';
 import { formatTokenPrice } from 'utils/format';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export type TBuyType = 'buySGR' | 'buyELF';
 
@@ -27,13 +28,16 @@ export const useBuyToken = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const purchaseMethodModal = useModal(PurchaseMethodModal);
   const getAllBalance = useGetAllBalance();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const buyToken = useCallback(
     async ({ type, theme = 'light', hideSwap = false, hideTutorial = false, defaultDescription }: TProps) => {
       try {
         setLoading(true);
-        const [symbolBalance, elfBalance] = await getAllBalance([GEN0_SYMBOL_INFO, AELF_TOKEN_INFO], wallet.address);
+        const [symbolBalance, elfBalance] = await getAllBalance(
+          [GEN0_SYMBOL_INFO, AELF_TOKEN_INFO],
+          walletInfo?.address || '',
+        );
         if ((type === 'buySGR' && elfBalance !== '0') || (type === 'buyELF' && symbolBalance !== '0')) {
           purchaseMethodModal.show({
             type: type,
@@ -54,7 +58,7 @@ export const useBuyToken = () => {
         setLoading(false);
       }
     },
-    [getAllBalance, purchaseMethodModal, router, wallet.address],
+    [getAllBalance, purchaseMethodModal, router, walletInfo?.address],
   );
 
   const checkBalanceAndJump = useCallback(

@@ -1,15 +1,16 @@
-import { useWebLogin, WalletType, WebLoginState } from 'aelf-web-login';
 import { useCallback } from 'react';
 import { message } from 'antd';
 import useDiscoverProvider from './useDiscoverProvider';
 import { IContractError } from 'types';
 import { formatErrorMsg } from 'utils/formatError';
 import { appName } from 'constants/common';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 const AElf = require('aelf-sdk');
 
 export const useGetSignature = () => {
-  const { loginState, wallet, getSignature, walletType } = useWebLogin();
+  const { isConnected, walletInfo, getSignature, walletType } = useConnectWallet();
   const { getSignatureAndPublicKey } = useDiscoverProvider();
 
   const getSignInfo: (signString?: string) => Promise<
@@ -20,17 +21,17 @@ export const useGetSignature = () => {
     | undefined
   > = useCallback(
     async (signString) => {
-      if (loginState !== WebLoginState.logined) return;
+      if (!isConnected) return;
       const timestamp = Date.now();
 
-      const signStr = signString || `${wallet.address}-${timestamp}`;
+      const signStr = signString || `${walletInfo?.address}-${timestamp}`;
       const hexData = Buffer.from(signStr).toString('hex');
       const signInfo = AElf.utils.sha256(signStr);
 
       let publicKey = '';
       let signature = '';
 
-      if (walletType === WalletType.discover) {
+      if (walletType === WalletTypeEnum.discover) {
         try {
           const { pubKey, signatureStr } = await getSignatureAndPublicKey(hexData, signInfo);
           publicKey = pubKey || '';
@@ -44,10 +45,10 @@ export const useGetSignature = () => {
       } else {
         const sign = await getSignature({
           appName,
-          address: wallet.address,
+          address: walletInfo?.address || '',
           signInfo:
-            walletType === WalletType.portkey
-              ? Buffer.from(signString || `${wallet.address}-${timestamp}`).toString('hex')
+            walletType === WalletTypeEnum.aa
+              ? Buffer.from(signString || `${walletInfo?.address}-${timestamp}`).toString('hex')
               : signInfo,
         });
         if (sign?.errorMessage) {
@@ -56,15 +57,22 @@ export const useGetSignature = () => {
           return;
         }
 
-        publicKey = wallet.publicKey || '';
-        signature = sign.signature;
+        publicKey = walletInfo?.extraInfo?.publicKey || '';
+        signature = sign?.signature || '';
       }
       return {
         signature,
         publicKey,
       };
     },
-    [loginState, wallet.address, wallet.publicKey, walletType, getSignatureAndPublicKey, getSignature],
+    [
+      isConnected,
+      walletInfo?.address,
+      walletInfo?.extraInfo?.publicKey,
+      walletType,
+      getSignatureAndPublicKey,
+      getSignature,
+    ],
   );
 
   return { getSignInfo };

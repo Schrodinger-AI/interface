@@ -6,12 +6,12 @@ import Loading from 'components/Loading';
 import NoticeList from './components/NoticeList';
 import TableEmpty from 'components/TableEmpty';
 import clsx from 'clsx';
-import { useWalletService } from 'hooks/useWallet';
 import { getMessageUnreadCount } from 'utils/getMessageUnreadCount';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { messageList } from 'api/request';
 import { dispatch } from 'redux/store';
 import { setUnreadMessagesCount } from 'redux/reducer/info';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const endMessage = (
   <div className="text-textSecondary text-base font-medium pt-[28px] pb-[28px] text-center">No more yet~</div>
@@ -26,7 +26,7 @@ function NoticeScrollList(props?: { useInfiniteScroll?: boolean }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(0);
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { unreadMessagesCount } = useGetStoreInfo();
 
   const loader = useMemo(
@@ -40,9 +40,9 @@ function NoticeScrollList(props?: { useInfiniteScroll?: boolean }) {
 
   const getNoticeList = async (pageSize: number) => {
     try {
-      if (loadingMore || !hasMore) return;
+      if (loadingMore || !hasMore || !walletInfo?.address) return;
       const res = await messageList({
-        address: wallet.address,
+        address: walletInfo.address,
         skipCount: (pageSize - 1) * 20,
         maxResultCount: 20,
       });
@@ -114,14 +114,16 @@ function NoticeScrollList(props?: { useInfiniteScroll?: boolean }) {
   }, [handleScroll]);
 
   useEffect(() => {
-    if (!wallet.address) return;
-    init(wallet.address);
+    if (!walletInfo?.address) return;
+    init(walletInfo.address);
 
     return () => {
       dispatch(setUnreadMessagesCount(0));
-      getMessageUnreadCount(wallet.address);
+      if (walletInfo.address) {
+        getMessageUnreadCount(walletInfo.address);
+      }
     };
-  }, [wallet.address]);
+  }, [walletInfo?.address]);
 
   if (useInfiniteScroll) {
     return (

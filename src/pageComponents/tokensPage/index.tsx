@@ -12,7 +12,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useJumpToPage } from 'hooks/useJumpToPage';
-import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
@@ -82,17 +81,6 @@ export default function TokensPage() {
     }
     router.replace(`/?pageState=${value}`);
   };
-
-  useTimeoutFn(() => {
-    if (
-      !isLogin &&
-      (Number(searchParams.get('pageState')) === ListTypeEnum.My ||
-        Number(searchParams.get('pageState')) === ListTypeEnum.Blind)
-    ) {
-      closeLoading();
-      router.replace('/');
-    }
-  }, 3000);
 
   const onOperationButtonClick = (item: TBannerConfigButton) => {
     if (item.linkType === 'buyModal') {

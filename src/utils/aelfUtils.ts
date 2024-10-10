@@ -8,8 +8,25 @@ import { IContractError } from 'types';
 import { CONTRACT_AMOUNT } from 'constants/common';
 import { MethodType, SentryMessageType, captureMessage } from './captureMessage';
 import { IPortkeyProvider, MethodsBase } from '@portkey/provider-types';
-import { detectDiscoverProvider } from 'aelf-web-login';
+import detectProvider from '@portkey/detect-provider';
 
+export default async function detectDiscoverProvider(): Promise<IPortkeyProvider | null> {
+  let detectProviderFunc = detectProvider;
+  if (typeof detectProvider !== 'function') {
+    const detectProviderModule = detectProvider as any;
+    detectProviderFunc = detectProviderModule.default;
+  }
+  try {
+    const res = await detectProviderFunc({
+      timeout: 6000,
+      providerName: 'Portkey',
+    });
+    return res;
+  } catch (e) {
+    console.log('detectDiscoverProvider error', e);
+    return null;
+  }
+}
 const httpProviders: any = {};
 export function getAElf(rpcUrl?: string) {
   const rpc = rpcUrl || '';

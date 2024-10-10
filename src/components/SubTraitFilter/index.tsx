@@ -7,7 +7,6 @@ import {
   TGetSubTraitsParams,
   TGetSubAllTraitsParams,
 } from 'graphqlServer';
-import { useWalletService } from 'hooks/useWallet';
 import { ChangeEvent, useCallback, useMemo, useState, forwardRef, useImperativeHandle } from 'react';
 import useEffectOnce from 'react-use/lib/useEffectOnce';
 import { useCmsInfo } from 'redux/hooks';
@@ -20,6 +19,7 @@ import { ListTypeEnum } from 'types';
 import { useSearchParams } from 'next/navigation';
 import { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 type TSubTraitItem = Omit<TFilterSubTrait, 'amount'> & {
   amount: string;
@@ -45,7 +45,7 @@ export const SubTraitFilter = forwardRef(
 
     const getSubTraits = useGetSubTraits();
     const getSubAllTraits = useGetSubAllTraits();
-    const { wallet } = useWalletService();
+    const { walletInfo } = useConnectWallet();
     const [list, setList] = useState<TSubTraitItem[]>([]);
 
     const curViewListType: ListTypeEnum = useMemo(
@@ -62,7 +62,7 @@ export const SubTraitFilter = forwardRef(
         address?: string;
       } = {
         chainId: cmsInfo?.curChain || '',
-        address: wallet.address || '',
+        address: walletInfo?.address || '',
         traitType,
       };
       if (curViewListType !== ListTypeEnum.My) {
@@ -94,7 +94,7 @@ export const SubTraitFilter = forwardRef(
       }
 
       setIsLoading(false);
-    }, [cmsInfo?.curChain, curViewListType, getSubAllTraits, getSubTraits, traitType, wallet.address]);
+    }, [cmsInfo?.curChain, curViewListType, getSubAllTraits, getSubTraits, traitType, walletInfo?.address]);
 
     useEffectOnce(() => {
       console.log('traitType', traitType, selectValues);

@@ -5,13 +5,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from './hooks/useGetNoticeData';
 import { useCmsInfo } from 'redux/hooks';
-import { Button } from 'aelf-design';
 import clsx from 'clsx';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useJumpToPage } from 'hooks/useJumpToPage';
-import { useTimeoutFn } from 'react-use';
 import useLoading from 'hooks/useLoading';
 import StrayCats from 'pageComponents/strayCats';
 import BackCom from './components/BackCom';
@@ -87,13 +85,6 @@ export default function TokensPage() {
     }
     router.replace(`/telegram/?pageState=${value}`);
   };
-
-  useTimeoutFn(() => {
-    if (!isLogin && Number(searchParams.get('pageState')) === ListTypeEnum.My) {
-      closeLoading();
-      router.replace('/telegram');
-    }
-  }, 3000);
 
   return (
     <div className="flex flex-col max-w-[2560px] w-full h-full overflow-scroll bg-pixelsPageBg" id={PAGE_CONTAINER_ID}>

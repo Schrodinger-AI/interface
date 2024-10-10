@@ -3,7 +3,6 @@
 import { getCatDetail } from 'api/request';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useState } from 'react';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -27,10 +26,11 @@ import { useBuyToken } from 'hooks/useBuyToken';
 import PurchaseMethodModal from 'components/PurchaseMethodModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
@@ -50,18 +50,18 @@ export default function TgHome() {
   const purchaseMethodModal = useModal(PurchaseMethodModal);
 
   const getDetail = useCallback(async () => {
-    if (wallet.address && !isLogin) return;
+    if (walletInfo?.address && !isLogin) return;
     try {
       const result = await getCatDetail({
         symbol: GEN0_SYMBOL,
         chainId: cmsInfo?.curChain || '',
-        address: wallet.address,
+        address: walletInfo?.address,
       });
       setSchrodingerDetail(result);
     } catch (error) {
       /* empty */
     }
-  }, [cmsInfo?.curChain, isLogin, wallet.address]);
+  }, [cmsInfo?.curChain, isLogin, walletInfo?.address]);
 
   const getNotice = useCallback(async () => {
     try {
@@ -75,7 +75,7 @@ export default function TgHome() {
   }, [getNoticeData]);
 
   const OpenAdoptModal = useCallback(() => {
-    if (!wallet.address || !schrodingerDetail) return;
+    if (!walletInfo?.address || !schrodingerDetail) return;
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
       const description = `Insufficient funds, need more $SGR. The cat adoption costs ${DIRECT_ADOPT_GEN9_MIN} $SGR minimum. `;
       if (divDecimals(elfBalance, 8).gt(0)) {
@@ -100,12 +100,20 @@ export default function TgHome() {
     }
     adoptHandler({
       parentItemInfo: schrodingerDetail,
-      account: wallet.address,
+      account: walletInfo.address,
       isDirect: true,
       theme: 'dark',
       prePage: 'adoptModal',
     });
-  }, [adoptHandler, checkBalanceAndJump, elfBalance, schrodingerDetail, sgrBalance, wallet.address]);
+  }, [
+    adoptHandler,
+    checkBalanceAndJump,
+    elfBalance,
+    purchaseMethodModal,
+    schrodingerDetail,
+    sgrBalance,
+    walletInfo?.address,
+  ]);
 
   const sendAdTrack = (address: string) => {
     const tg_user_click_daily: {
@@ -144,9 +152,9 @@ export default function TgHome() {
   };
 
   useEffect(() => {
-    if (!wallet.address) return;
-    sendAdTrack(wallet?.address);
-  }, [wallet?.address]);
+    if (!walletInfo?.address) return;
+    sendAdTrack(walletInfo?.address);
+  }, [walletInfo?.address]);
 
   useEffect(() => {
     if (isLogin && !isJoin) {

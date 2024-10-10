@@ -7,19 +7,19 @@ import { IContractError } from 'types';
 import { getDomain } from 'utils';
 import { TransactionFeeNotEnough } from 'utils/formatError';
 import useAutoJoin from './useAutoJoin';
-import { useWebLogin } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
-  const { wallet } = useWebLogin();
+  const { walletInfo } = useConnectWallet();
   const [notAutoJoin] = useAutoJoin();
   const { showSpecialCatActivity } = useShowSpecialCatActivity();
 
-  const toJoin = useCallback(async () => {
+  const toJoin = async () => {
     return new Promise((resolve) => {
       const referrerAddress = TelegramPlatform.getInitData()?.start_param;
 
@@ -59,12 +59,12 @@ export const useCheckJoined = () => {
         },
       });
     });
-  }, [JoinModalInit, showSpecialCatActivity]);
+  };
 
   const getJoinStatus = useCallback(
     async (address?: string) => {
       try {
-        const isJoin = await GetJoinRecord(address || wallet.address);
+        const isJoin = await GetJoinRecord(address || walletInfo?.address || '');
         store.dispatch(setIsJoin(isJoin));
         return isJoin;
       } catch (error) {
@@ -73,7 +73,7 @@ export const useCheckJoined = () => {
         return false;
       }
     },
-    [wallet.address],
+    [walletInfo?.address],
   );
 
   const checkJoined = useCallback(

@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetJoinRecord } from 'contract/schrodinger';
-import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import useLoading from 'hooks/useLoading';
@@ -14,9 +13,10 @@ import styles from './style.module.css';
 import { ReactComponent as InviteFriends } from 'assets/img/telegram/referral/invite-friends.svg';
 import { ReactComponent as ReferralIcon } from 'assets/img/telegram/referral/icon-referral.svg';
 import { ReactComponent as CopyIcon } from 'assets/img/copy.svg';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function TgReferral() {
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const [, setCopied] = useCopyToClipboard();
   const isJoin = useJoinStatus();
@@ -29,7 +29,7 @@ function TgReferral() {
   const checkJoined = useCallback(async () => {
     let isJoin = false;
     try {
-      isJoin = await GetJoinRecord(wallet.address);
+      isJoin = await GetJoinRecord(walletInfo?.address || '');
     } catch (error) {
       console.log('Referral-Record-error', error);
     } finally {
@@ -37,13 +37,13 @@ function TgReferral() {
     }
 
     !isJoin && router.replace('/');
-  }, [closeLoading, router, wallet.address]);
+  }, [closeLoading, router, walletInfo?.address]);
 
-  const copyLink = useMemo(() => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`, [wallet.address]);
+  const copyLink = useMemo(() => `${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`, [walletInfo?.address]);
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
-    [wallet.address],
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
+    [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
   const onCopy = useCallback(() => {
@@ -63,12 +63,12 @@ function TgReferral() {
 
   useEffect(() => {
     showLoading();
-    if (wallet.address && !isJoin) {
+    if (walletInfo?.address && !isJoin) {
       checkJoined();
     } else {
       closeLoading();
     }
-  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
+  }, [checkJoined, walletInfo?.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 

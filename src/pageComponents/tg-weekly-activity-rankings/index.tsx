@@ -13,10 +13,10 @@ import { TabsProps } from 'antd';
 import { TgWeeklyActivityRankTime, TgWeeklyActivityRankType } from './types/type';
 import RankList from './components/RankList';
 import useLoading from 'hooks/useLoading';
-import { useWalletService } from 'hooks/useWallet';
 import TableEmpty from 'components/TableEmpty';
 import trophies from 'assets/img/telegram/rank/trophies.png';
 import Image from 'next/image';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const tabsType: TabsProps['items'] = [
   {
@@ -51,7 +51,7 @@ export default function TgWeeklyActivityRankings() {
     [searchParams],
   );
 
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const { showLoading, closeLoading, visible } = useLoading();
 
@@ -67,7 +67,7 @@ export default function TgWeeklyActivityRankings() {
         setDataSource([]);
         const { data, myRank, myReward, myScore } = await fetchActivityBotRank({
           tab: tabTypeValue,
-          address: wallet.address,
+          address: walletInfo?.address || '',
           isCurrent: tabTimeValue === TgWeeklyActivityRankTime.lastWeek ? false : true,
         });
 
@@ -75,7 +75,7 @@ export default function TgWeeklyActivityRankings() {
 
         if (data) {
           setMyData({
-            address: wallet.address,
+            address: walletInfo?.address || '',
             scores: myScore ? String(myScore) : '',
             reward: myReward ? String(myReward) : '',
             rank: myRank,
@@ -87,7 +87,7 @@ export default function TgWeeklyActivityRankings() {
         closeLoading();
       }
     },
-    [closeLoading, showLoading, wallet.address],
+    [closeLoading, showLoading, walletInfo?.address],
   );
 
   const onTabsChange = ({ type, time }: { type: TgWeeklyActivityRankType; time: TgWeeklyActivityRankTime }) => {
@@ -96,7 +96,7 @@ export default function TgWeeklyActivityRankings() {
 
   useEffect(() => {
     getActivityBotRank(tabTypeValue, tabTimeValue);
-  }, [tabTypeValue, tabTimeValue, getActivityBotRank, wallet.address]);
+  }, [tabTypeValue, tabTimeValue, getActivityBotRank, walletInfo?.address]);
 
   return (
     <div className={clsx(styles['tg-weekly-activity-rankings-wrap'])}>
@@ -160,7 +160,7 @@ export default function TgWeeklyActivityRankings() {
                     index={`${index + 1}`}
                     value={item}
                     type={tabTimeValue}
-                    isMine={item.address === wallet.address}
+                    isMine={item.address === walletInfo?.address}
                   />
                 );
               })}
@@ -171,7 +171,7 @@ export default function TgWeeklyActivityRankings() {
         </div>
       </div>
 
-      {myData && wallet.address && dataSource.length ? (
+      {myData && walletInfo?.address && dataSource.length ? (
         <div className="fixed bottom-0 h-[70px] left-0 w-full px-[10px] bg-pixelsCardBg z-20 flex items-center">
           <RankList
             index={myData?.rank ? `${myData?.rank}` : '-'}

@@ -2,23 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useWebLogin, useComponentFlex } from 'aelf-web-login';
 import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
-import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import useTelegram from 'hooks/useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { PortkeyAssetProvider, Asset } from '@portkey/did-ui-react';
 
 export default function MyAsset() {
   const router = useRouter();
-  const { wallet } = useWebLogin();
-  const { logout } = useWalletService();
+  const { walletInfo, disConnectWallet } = useConnectWallet();
   const { isLogin } = useGetLoginStatus();
   const { isInTG } = useTelegram();
 
-  const { PortkeyAssetProvider, Asset } = useComponentFlex();
   const { isShowRampBuy = true, isShowRampSell = true } = useCmsInfo() || {};
 
   useEffect(() => {
@@ -33,7 +31,9 @@ export default function MyAsset() {
 
   return (
     <div className={styles.asset}>
-      <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
+      <PortkeyAssetProvider
+        originChainId={walletInfo?.extraInfo?.portkeyInfo?.chainId as Chain}
+        pin={walletInfo?.extraInfo?.portkeyInfo?.pin}>
         <Asset
           isShowRamp={isShowRampBuy || isShowRampSell}
           isShowRampBuy={isShowRampBuy}
@@ -43,7 +43,7 @@ export default function MyAsset() {
             router.back();
           }}
           onDeleteAccount={() => {
-            logout();
+            disConnectWallet();
           }}
         />
       </PortkeyAssetProvider>
