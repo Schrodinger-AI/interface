@@ -12,11 +12,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useJumpToPage } from 'hooks/useJumpToPage';
-import useLoading from 'hooks/useLoading';
 import { ICommonRadioTabButton } from 'components/CommonRadioTab';
 import CommonSegmented from 'components/CommonSegmented';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { TBannerConfigButton } from 'redux/types/reducerTypes';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   // {
@@ -47,8 +47,8 @@ export default function TokensPage() {
   const router = useRouter();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
-  const { closeLoading } = useLoading();
   const { checkBalanceAndJump, loading: buyTokenLoading } = useBuyToken();
+  useOnFinish();
 
   const cmsInfo = useCmsInfo();
   const { jumpToPage } = useJumpToPage();

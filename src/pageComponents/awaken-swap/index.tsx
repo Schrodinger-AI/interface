@@ -17,6 +17,7 @@ import '@portkey/trader-react-ui/dist/assets/index.css';
 import './style.css';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 const DarkModal = dynamic(
   async () => {
@@ -35,6 +36,7 @@ export default function AwakenSwap() {
   const router = useRouter();
   const { isInTG } = useTelegram();
   const { getOptions, tokenApprove } = useSwapService();
+  useOnFinish();
 
   const [loading, setLoading] = useState(false);
   const [awakenInstance, setAwakenInstance] = useState<IPortkeySwapperAdapter>();

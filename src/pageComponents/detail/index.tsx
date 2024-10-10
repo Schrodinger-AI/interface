@@ -39,6 +39,7 @@ import { HandleButtonDefault, HandleButtonPrimary } from './components/Button';
 import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -49,6 +50,7 @@ export default function DetailPage() {
   const pageSource = searchParams.get('source') || '';
   const getImageAndConfirm = useGetImageAndConfirm();
   const intervalFetch = useIntervalGetSchrodingerDetail();
+  useOnFinish();
 
   const callbackPath = searchParams.get('callbackPath') || '';
   const { isLogin } = useGetLoginStatus();

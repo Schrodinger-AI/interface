@@ -19,6 +19,7 @@ import { Button } from 'aelf-design';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 const DarkModal = dynamic(
   async () => {
@@ -38,6 +39,7 @@ export default function ETransfer() {
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const { checkLogin } = useCheckLoginAndToken();
   const { walletType, walletInfo } = useConnectWallet();
+  useOnFinish();
 
   const defaultParams = useMemo(() => {
     return {
