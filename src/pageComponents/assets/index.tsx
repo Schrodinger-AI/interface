@@ -10,7 +10,7 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import useTelegram from 'hooks/useTelegram';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { PortkeyAssetProvider, Asset, did } from '@portkey/did-ui-react';
-import { LoginStatusEnum } from '@portkey/types';
+// import { LoginStatusEnum } from '@portkey/types'; // TODO: login acceleration
 
 export default function MyAsset() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function MyAsset() {
     }
   }, [isInTG, isLogin, router]);
 
-  const isLoginOnChain = did.didWallet.isLoginStatus === LoginStatusEnum.SUCCESS;
+  // const isLoginOnChain = did.didWallet.isLoginStatus === LoginStatusEnum.SUCCESS; // TODO: login acceleration
 
   if (!isLogin) {
     return null;
@@ -41,7 +41,7 @@ export default function MyAsset() {
           isShowRamp={isShowRampBuy || isShowRampSell}
           isShowRampBuy={isShowRampBuy}
           isShowRampSell={isShowRampSell}
-          isLoginOnChain={isLoginOnChain}
+          // isLoginOnChain={isLoginOnChain} // TODO: login acceleration
           backIcon={<LeftOutlined reversed={undefined} />}
           onOverviewBack={() => {
             router.back();
