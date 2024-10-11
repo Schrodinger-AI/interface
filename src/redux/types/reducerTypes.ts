@@ -185,6 +185,8 @@ export type TGlobalConfigType = {
   showNftQuantity?: number;
   buySGRFromETransfer?: string;
   telegramBotId?: string;
+  telegramBotToken?: string;
+  telegramBotChatId?: string;
   etransferConfig: {
     supportChainIds: string[];
     networkType: NetworkType;

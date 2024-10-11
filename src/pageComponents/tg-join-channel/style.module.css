@@ -1,0 +1,27 @@
+.channel-container {
+  background-image: url('../../assets/img/telegram/channel/channel-bg2.png'), url('../../assets/img/telegram/channel/channel-bg.png');
+  background-position: center bottom, center;
+  background-size: 100% auto, cover;
+  background-repeat: no-repeat;
+  transition: transform 0.2s;
+}
+
+.channel-button {
+  @apply !bg-[url('../../assets/img/telegram/channel/channel-btn.png')] !bg-[length:100%_100%] bg-center bg-no-repeat !bg-transparent border-none cursor-pointer;
+}
+
+.verify-button {
+  @apply !bg-[url('../../assets/img/telegram/channel/verify.png')] !bg-[length:100%_100%] bg-center bg-no-repeat !bg-transparent border-none cursor-pointer;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
