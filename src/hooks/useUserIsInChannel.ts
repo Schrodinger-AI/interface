@@ -2,8 +2,10 @@ import { useCallback, useEffect } from 'react';
 import useTelegram from './useTelegram';
 import { useCmsInfo } from 'redux/hooks';
 import { fetchChatMember } from 'api/request';
+import { useRouter } from 'next/navigation';
 
 export default function useUserIsInChannel() {
+  const router = useRouter();
   const { isInTelegram, getTgUserId } = useTelegram();
   const cmsInfo = useCmsInfo();
   const userId = getTgUserId();
@@ -15,7 +17,7 @@ export default function useUserIsInChannel() {
     try {
       const data = await fetchChatMember(token, { chat_id: chatId, user_id: userId });
       if (data?.ok && data?.result?.status === 'left') {
-        window.location.href = '/tg-join-channel';
+        router.push('/tg-join-channel');
       }
     } catch (error) {
       /* empty */
