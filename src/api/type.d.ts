@@ -378,3 +378,25 @@ interface IActivityBotRankData {
   myReward: number;
   myRank: number;
 }
+
+interface ITgChannelParams {
+  chat_id: string;
+  user_id: string;
+}
+
+interface ITGChatMemmberResponse {
+  ok: boolean;
+  result: ITGChatMemmberResponseResult;
+}
+
+interface ITGChatMemmberResponseResult {
+  status: string;
+  user: ITGChatMemmberResponseUser;
+}
+interface ITGChatMemmberResponseUser {
+  id: number;
+  is_bot: boolean;
+  first_name: string;
+  username: string;
+  language_code: string;
+}

@@ -27,10 +27,12 @@ import PurchaseMethodModal from 'components/PurchaseMethodModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import useTelegram from 'hooks/useTelegram';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
   const { walletInfo } = useConnectWallet();
+  const { isInTelegram } = useTelegram();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
@@ -172,6 +174,12 @@ export default function TgHome() {
   useEffect(() => {
     getNotice();
   }, [getNotice]);
+
+  useEffect(() => {
+    if (isInTelegram()) {
+      window?.Telegram?.WebApp?.disableVerticalSwipes?.();
+    }
+  }, [isInTelegram]);
 
   return (
     <div

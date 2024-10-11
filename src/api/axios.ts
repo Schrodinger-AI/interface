@@ -38,7 +38,7 @@ class Request {
       <T>(response: AxiosResponse<ResponseType<T>>) => {
         const res = response.data;
         const { code, data, message: errorMessage } = response.data;
-        if (response.config.url?.includes('api.etherscan.io')) {
+        if (response.config.url?.includes('api.etherscan.io') || response.config.url?.includes('api.telegram.org')) {
           return res;
         }
         if (config.baseURL?.includes('cms') || response?.config.baseURL?.includes('cms')) {
