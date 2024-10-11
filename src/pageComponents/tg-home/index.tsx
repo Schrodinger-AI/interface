@@ -28,6 +28,7 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useTelegram from 'hooks/useTelegram';
+import useUserIsInChannel from 'hooks/useUserIsInChannel';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -42,6 +43,8 @@ export default function TgHome() {
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
+
+  useUserIsInChannel();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);

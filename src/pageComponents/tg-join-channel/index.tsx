@@ -14,7 +14,7 @@ function TgJoinChannel() {
   const [isShaking, setIsShaking] = useState(false);
   const cmsInfo = useCmsInfo();
   const { getTgUserId } = useTelegram();
-  const userId = getTgUserId() || '6444764485';
+  const userId = getTgUserId();
   const token = cmsInfo?.telegramBotToken;
   const chatId = cmsInfo?.telegramBotChatId;
 
