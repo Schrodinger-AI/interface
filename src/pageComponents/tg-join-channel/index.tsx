@@ -9,12 +9,14 @@ import { useCmsInfo } from 'redux/hooks';
 import { useState } from 'react';
 import useTelegram from 'hooks/useTelegram';
 import throttle from 'lodash-es/throttle';
+import { useRouter } from 'next/navigation';
 
 function TgJoinChannel() {
   const [isShaking, setIsShaking] = useState(false);
+  const router = useRouter();
   const cmsInfo = useCmsInfo();
   const { getTgUserId } = useTelegram();
-  const userId = getTgUserId() || '6444764485';
+  const userId = getTgUserId();
   const token = cmsInfo?.telegramBotToken;
   const chatId = cmsInfo?.telegramBotChatId;
 
@@ -24,7 +26,7 @@ function TgJoinChannel() {
       try {
         const data = await fetchChatMember(token, { chat_id: chatId, user_id: userId });
         if (data?.ok && data?.result?.status === 'member') {
-          window.location.href = `/telegram/home`;
+          router.push('/telegram/home');
         } else {
           setIsShaking(true);
 
