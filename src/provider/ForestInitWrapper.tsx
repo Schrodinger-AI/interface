@@ -11,15 +11,12 @@ export default ({ children }: { children: React.ReactNode }) => {
   const [state, { dispatch }] = useForestStore();
   const [loading, setLoading] = useState(false);
   const cmsInfo = useCmsInfo();
-  // const { walletInfo } = cloneDeep(useSelector((store: AppState) => store.userInfo));
   const { walletInfo } = cloneDeep(useConnectWallet());
 
   useEffect(() => {
     if (!walletInfo) return;
-    console.log('=====walletInfo', walletInfo, {
-      ...walletInfo,
-      ...walletInfo.extraInfo,
-    });
+    // Store.getInstance().setStore('walletInfo', walletInfo);
+    // TODO: After upgrading forest sdk, you can delete the current
     Store.getInstance().setStore('walletInfo', {
       ...walletInfo,
       ...walletInfo.extraInfo,

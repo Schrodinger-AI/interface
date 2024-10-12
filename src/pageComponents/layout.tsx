@@ -10,6 +10,7 @@ import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useWalletInit } from 'hooks/useWallet';
 import WebLoginInstance from 'contract/webLogin';
+import ForestWebLoginInstance from 'contract/forestWebLogin';
 import { SupportedELFChainId } from 'types';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import { usePathname } from 'next/navigation';
@@ -45,7 +46,9 @@ const Layout = dynamic(async () => {
 
     const { isInTelegram, isInTG } = useTelegram();
 
-    ContractInstance.set(WebLoginInstance.get());
+    // ContractInstance.set(WebLoginInstance.get());
+    // TODO: After upgrading forest sdk, you can delete the current
+    ContractInstance.set(ForestWebLoginInstance.get());
 
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';
@@ -80,6 +83,25 @@ const Layout = dynamic(async () => {
         sendMethod: callSendMethod,
         viewMethod: callViewMethod,
       });
+
+      // TODO: After upgrading forest sdk, you can delete the current
+      ForestWebLoginInstance.get().setContractMethod([
+        {
+          chain: SupportedELFChainId.MAIN_NET,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
+        },
+        {
+          chain: SupportedELFChainId.TDVV_NET,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
+        },
+        {
+          chain: SupportedELFChainId.TDVW_NET,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
+        },
+      ]);
     }, [callSendMethod, callViewMethod, webLoginContext.isConnected]);
 
     useWalletInit();
