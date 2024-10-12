@@ -72,6 +72,8 @@ export default function ETransfer() {
   useEffect(() => {
     if (isLogin) {
       setShowLogin(false);
+    } else {
+      setShowLogin(true);
     }
   }, [isLogin]);
 

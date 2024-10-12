@@ -37,7 +37,7 @@ export const useResetHandler = () => {
   const getTokenPrice = useGetTokenPrice();
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
-  const { walletInfo } = useConnectWallet();
+  const { walletInfo, walletType } = useConnectWallet();
   const { isInTG } = useTelegram();
 
   const searchParams = useSearchParams();
@@ -85,6 +85,7 @@ export const useResetHandler = () => {
                 symbol: parentItemInfo.symbol,
                 decimals: parentItemInfo.decimals,
                 amount,
+                walletType,
               });
 
               if (!check) throw AdoptActionErrorCode.approveFailed;
