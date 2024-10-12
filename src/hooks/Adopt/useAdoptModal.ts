@@ -184,6 +184,7 @@ const useAdoptHandler = () => {
                   isDirect,
                   address: account,
                   decimals: parentItemInfo.decimals,
+                  walletType,
                 });
               }
 

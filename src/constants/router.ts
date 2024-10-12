@@ -6,7 +6,7 @@ export const NEED_LOGIN_PAGE = [
   '/assets',
   '/referral',
   '/my-cats',
-  '/etransfer',
+  // '/etransfer',
   '/etransfer-history',
   '/awaken-swap',
   '/?pageState=1',

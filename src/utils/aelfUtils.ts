@@ -9,6 +9,7 @@ import { CONTRACT_AMOUNT } from 'constants/common';
 import { MethodType, SentryMessageType, captureMessage } from './captureMessage';
 import { IPortkeyProvider, MethodsBase } from '@portkey/provider-types';
 import detectProvider from '@portkey/detect-provider';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 export default async function detectDiscoverProvider(): Promise<IPortkeyProvider | null> {
   let detectProviderFunc = detectProvider;
@@ -36,35 +37,9 @@ export function getAElf(rpcUrl?: string) {
   return httpProviders[rpc];
 }
 
-const isNightElf = () => {
-  const walletInfo = localStorage.getItem('wallet-info');
-  const walletInfoObj = walletInfo ? JSON.parse(walletInfo) : {};
-  let isNightElfStatus = true;
-  if (walletInfoObj?.discoverInfo || walletInfoObj?.portkeyInfo) {
-    isNightElfStatus = false;
-  }
-
-  return isNightElfStatus;
-};
-
-const walletType = () => {
-  const walletInfo = localStorage.getItem('wallet-info');
-  const walletInfoObj = walletInfo ? JSON.parse(walletInfo) : {};
-  let walletType = '';
-  if (walletInfoObj?.discoverInfo) {
-    walletType = 'discover';
-  } else if (walletInfoObj?.portkeyInfo) {
-    walletType = 'portkey';
-  } else {
-    walletType = 'nightElf';
-  }
-
-  return walletType;
-};
-
-const openBatchApprovalEntrance = async () => {
+const openBatchApprovalEntrance = async (walletType: WalletTypeEnum) => {
   try {
-    if (walletType() === 'discover') {
+    if (walletType === WalletTypeEnum.discover) {
       const discoverProvider = async () => {
         const provider: IPortkeyProvider | null = await detectDiscoverProvider();
         if (provider) {
@@ -155,6 +130,7 @@ export const checkAllowanceAndApprove = async (options: {
   symbol?: string;
   decimals?: number;
   amount: string;
+  walletType: WalletTypeEnum;
 }) => {
   const { chainId, symbol = 'ELF', address, spender, amount, decimals = 8 } = options;
   try {
@@ -181,8 +157,9 @@ export const checkAllowanceAndApprove = async (options: {
     const allowanceBN = new BigNumber(allowance?.allowance);
 
     if (allowanceBN.lt(bigA)) {
-      const approveAmount = isNightElf() ? CONTRACT_AMOUNT : bigA.multipliedBy(10).toNumber();
-      await openBatchApprovalEntrance();
+      const approveAmount =
+        options.walletType === WalletTypeEnum.elf ? CONTRACT_AMOUNT : bigA.multipliedBy(10).toNumber();
+      await openBatchApprovalEntrance(options.walletType);
       return await approve(spender, symbol, `${approveAmount}`, chainId);
     }
     return true;
