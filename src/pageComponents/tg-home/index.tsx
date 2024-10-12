@@ -29,8 +29,10 @@ import { formatTokenPrice } from 'utils/format';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useTelegram from 'hooks/useTelegram';
 import useUserIsInChannel from 'hooks/useUserIsInChannel';
+import { useRouter } from 'next/navigation';
 
 export default function TgHome() {
+  const router = useRouter();
   const adoptHandler = useAdoptHandler();
   const { walletInfo } = useConnectWallet();
   const { isInTelegram } = useTelegram();
@@ -44,7 +46,7 @@ export default function TgHome() {
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
 
-  useUserIsInChannel();
+  const { isJoined } = useUserIsInChannel();
 
   const onBalanceChange = useCallback((value: string) => {
     value && setSgrBalance(value);
@@ -177,6 +179,13 @@ export default function TgHome() {
   useEffect(() => {
     getNotice();
   }, [getNotice]);
+
+  useEffect(() => {
+    if (!isJoined) {
+      router.push('/tg-join-channel');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isJoined]);
 
   useEffect(() => {
     if (isInTelegram()) {
