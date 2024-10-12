@@ -42,6 +42,10 @@ function TgJoinChannel() {
     { trailing: false },
   );
 
+  const handleLinkClick = () => {
+    window.open('https://t.me/schrodingerann', '_blank');
+  };
+
   return (
     <div className={clsx(styles['channel-container'], 'w-full h-full relative')}>
       <img src={require('assets/img/telegram/channel/header.png').default.src} alt="" className="w-[100vw] h-auto" />
@@ -57,9 +61,7 @@ function TgJoinChannel() {
           <span className="text-white font-semibold text-[18px] leading-[26px]">Join Our Channel</span>
         </Flex>
 
-        <Link href="https://t.me/schrodingerann">
-          <button className={clsx(styles['channel-button'], '!w-[64px] !h-[32px]')}></button>
-        </Link>
+        <button className={clsx(styles['channel-button'], '!w-[64px] !h-[32px]')} onClick={handleLinkClick}></button>
       </Flex>
 
       <Flex align="center" justify="center" className="mt-12">
