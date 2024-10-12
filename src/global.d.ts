@@ -7,6 +7,7 @@ interface Window {
     request?: (...args: any[]) => void;
     chainId?: number;
   };
+  Telegram: any;
   web3?: {};
   plus?: any;
   NightElf?: {};

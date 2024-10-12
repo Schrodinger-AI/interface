@@ -10,8 +10,16 @@ export default function useTelegram() {
     return isInTelegram();
   }, [isInTelegram]);
 
+  const getTgUserId = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      return isInTG ? TelegramPlatform.getTelegramUserId() : null;
+    }
+    return null;
+  }, [isInTG]);
+
   return {
     isInTelegram,
     isInTG,
+    getTgUserId,
   };
 }

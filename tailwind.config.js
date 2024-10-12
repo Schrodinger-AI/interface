@@ -129,6 +129,7 @@ module.exports = {
         cardShadow2: '0px 4px 12px 0px rgb(27 63 116 / 8%)',
         radioShadow: '0px 2px 8px 0px rgb(0 0 0 / 5%)',
         darkPixelsShadow: '4px 4px 4px 0 #262284',
+        floatingButtonsShadow: '0px 2px 0px 0px #6D68FF inset, 0px -4px 0px 0px #2F2C89 inset',
       },
       keyframes: {
         loading: {
@@ -139,6 +140,7 @@ module.exports = {
       },
       backgroundImage: {
         inviteCardBg: 'linear-gradient(180deg, #DFECFE 0%, #FFFFFF 50.18%)',
+        floatingButtonsBg: 'linear-gradient(0deg, #4743C5 0%, #1D1A74 95.83%)',
       },
       animation: {
         loading: 'loading 800ms linear infinite',

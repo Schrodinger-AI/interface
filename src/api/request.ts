@@ -244,3 +244,7 @@ export const getStrayCats = async (data: {
 }): Promise<IStrayCatsData> => {
   return request.post('/app/cat/stray-cats', data);
 };
+
+export const fetchChatMember = async (token: string, params: ITgChannelParams): Promise<ITGChatMemmberResponse> => {
+  return request.get(`https://api.telegram.org/bot${token}/getChatMember`, { params });
+};
