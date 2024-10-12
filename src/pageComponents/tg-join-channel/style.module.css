@@ -4,6 +4,7 @@
   background-size: 100% auto, cover;
   background-repeat: no-repeat;
   transition: transform 0.2s;
+  touch-action: none;
 }
 
 .channel-button {
