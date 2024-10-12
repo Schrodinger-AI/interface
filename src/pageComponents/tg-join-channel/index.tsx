@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import styles from './style.module.css';
 import { ReactComponent as TgLogoSVG } from 'assets/img/telegram/telegram_logo.svg';
 import { Flex } from 'antd';
-import Link from 'next/link';
 import { fetchChatMember } from 'api/request';
 import { useCmsInfo } from 'redux/hooks';
 import { useState } from 'react';

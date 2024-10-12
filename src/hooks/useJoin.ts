@@ -12,12 +12,14 @@ import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import useUserIsInChannel from './useUserIsInChannel';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
   const { walletInfo } = useConnectWallet();
   const [notAutoJoin] = useAutoJoin();
   const { showSpecialCatActivity } = useShowSpecialCatActivity();
+  const { getUserChannelStatus } = useUserIsInChannel();
 
   const toJoin = async () => {
     return new Promise((resolve) => {
@@ -80,13 +82,14 @@ export const useCheckJoined = () => {
     async function (address: string) {
       if (!address) return;
       const isJoin = await getJoinStatus(address);
-      if (isJoin || notAutoJoin) {
+      const isJoinChannel = await getUserChannelStatus();
+      if (isJoinChannel && (isJoin || notAutoJoin)) {
         showSpecialCatActivity();
         return isJoin;
       }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin, getUserChannelStatus],
   );
 
   return { checkJoined, toJoin, getJoinStatus };
