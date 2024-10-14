@@ -1,12 +1,11 @@
 import { Flex } from 'antd';
 import { ReactComponent as HeadSVG } from 'assets/img/telegram/head.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
-import { ReactComponent as InviteSVG } from 'assets/img/telegram/icon-invite.svg';
 import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
 import BalanceItem from '../BalanceItem';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import Link from 'next/link';
-import { useCmsInfo, useJoinStatus } from 'redux/hooks';
+import { useCmsInfo } from 'redux/hooks';
 import { useWebLogin } from 'aelf-web-login';
 
 export default function BalanceModule({
@@ -25,7 +24,6 @@ export default function BalanceModule({
     onPointsChange,
   });
   const cmsInfo = useCmsInfo();
-  const isJoin = useJoinStatus();
   const balance = balanceData.slice(0, 2);
 
   return (
@@ -51,13 +49,13 @@ export default function BalanceModule({
               </div>
             </Link>
           ) : null}
-          {!isJoin ? (
+          {/* {!isJoin ? (
             <Link href="/tg-referral">
               <div className="px-[8px]">
                 <InviteSVG className="w-[30px] h-[30px]" />
               </div>
             </Link>
-          ) : null}
+          ) : null} */}
         </div>
       </Flex>
       <Flex gap={16} justify="space-between" className="mt-2" wrap="wrap">

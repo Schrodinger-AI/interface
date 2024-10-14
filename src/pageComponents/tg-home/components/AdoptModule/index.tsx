@@ -99,7 +99,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
         onOk={() => setIsOpen(false)}
         onCancel={() => setIsOpen(false)}>
         <Flex vertical justify="center" align="center" className="h-[184px]" gap={16}>
-          <LockSVG />
+          <LockSVG className="w-[72px] h-[72px]" />
           <button
             className={clsx(styles['modal-button'], '!w-[124px] !h-[48px]')}
             onClick={() => setIsOpen(false)}></button>
