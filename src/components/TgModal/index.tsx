@@ -31,7 +31,7 @@ function CommonModal(props: ModalProps) {
       keyboard={false}
       maskClosable={false}
       destroyOnClose={true}
-      closeIcon={<Close width={24} height={24} />}
+      closeIcon={<Close className="w-[24px] h-[24px]" />}
       centered
       footer={null}
       {...props}

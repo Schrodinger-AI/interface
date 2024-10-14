@@ -11,6 +11,7 @@ import Countdown from 'antd/es/statistic/Countdown';
 import TaskModule from './components/TaskModule';
 import styles from './index.module.css';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
+import { ReactComponent as RefreshSVG } from 'assets/img/telegram/icon_refresh.svg';
 
 export default function TgHome() {
   const [countdown, setCountdown] = useState(1000 * 60 * 60 * 24);
@@ -35,7 +36,7 @@ export default function TgHome() {
   };
 
   const deadline = useMemo(() => {
-    return Date.now() + countdown;
+    return Date.now() + countdown * 1000;
   }, [countdown]);
 
   useEffect(() => {
@@ -54,7 +55,10 @@ export default function TgHome() {
   return (
     <div className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]')}>
       <BalanceModule />
-      <div className="mt-[2.7vh]">
+      <div className="relative mt-[2.7vh]">
+        <div className="absolute top-[8px] right-0 z-20" onClick={getTaskList}>
+          <RefreshSVG className="w-[24px] h-[24px]" />
+        </div>
         <TaskModule
           title="Daily Tasks"
           subTitle={

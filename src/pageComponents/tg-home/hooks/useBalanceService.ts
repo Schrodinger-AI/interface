@@ -8,7 +8,6 @@ import { IBalanceItemProps } from '../components/BalanceItem';
 import { GEN0_SYMBOL } from 'constants/common';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { fetchPoints } from 'api/request';
-import { add } from 'lodash-es';
 
 export default function useBalanceService(params?: {
   onSgrBalanceChange?: (value: string) => void;
@@ -37,7 +36,7 @@ export default function useBalanceService(params?: {
       },
       {
         symbol: 'FISH',
-        amount: divDecimals(points, 8).toString(),
+        amount: points,
         onBuy: () => {
           checkBalanceAndJump({
             type: 'buyFISH',
@@ -81,13 +80,15 @@ export default function useBalanceService(params?: {
       setPoints(pointsRes?.fishScore || 0);
       return {
         sgrBalance: sgrBalanceRes?.balance || '0',
-        elfBalance: sgrBalanceRes?.balance || '0',
+        elfBalance: elfBalanceRes?.balance || '0',
+        fishScore: pointsRes?.fishScore || '0',
       };
     } catch (error) {
       console.error('getBalance error', error);
       return {
         sgrBalance: '0',
         elfBalance: '0',
+        fishScore: '0',
       };
     } finally {
       closeLoading();
