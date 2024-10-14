@@ -38,6 +38,7 @@ export default function TgHome() {
   const cmsInfo = useCmsInfo();
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
+  const [points, setPoints] = useState(0);
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
@@ -48,6 +49,9 @@ export default function TgHome() {
   }, []);
   const onElfBalanceChange = useCallback((value: string) => {
     value && setElfBalance(value);
+  }, []);
+  const onPointsChange = useCallback((value: number) => {
+    value && setPoints(value);
   }, []);
   const purchaseMethodModal = useModal(PurchaseMethodModal);
 
@@ -176,17 +180,21 @@ export default function TgHome() {
   return (
     <div
       className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
+      <BalanceModule
+        onSgrBalanceChange={onBalanceChange}
+        onElfBalanceChange={onElfBalanceChange}
+        onPointsChange={onPointsChange}
+      />
       {noticeData && noticeData?.length ? (
-        <div className="w-full h-[48px] overflow-hidden mb-[8px] rounded-md">
-          <ScrollAlert data={noticeData} type="notice" theme="dark" />
+        <div className="w-full h-[32px] overflow-hidden my-[8px] rounded-md">
+          <ScrollAlert data={noticeData} type="info" theme="dark" />
         </div>
       ) : null}
-      <BalanceModule onSgrBalanceChange={onBalanceChange} onElfBalanceChange={onElfBalanceChange} />
-      <div className="mt-10">
-        <AdoptModule onAdopt={OpenAdoptModal} />
+      <div className="mt-[2.7vh]">
+        <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
       </div>
 
-      <FooterButtons cId={schrodingerDetail?.collectionId || ''} />
+      <FooterButtons />
       <FloatingButton />
     </div>
   );

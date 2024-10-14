@@ -7,14 +7,18 @@ import { divDecimals } from 'utils/calculate';
 import { IBalanceItemProps } from '../components/BalanceItem';
 import { GEN0_SYMBOL } from 'constants/common';
 import { useBuyToken } from 'hooks/useBuyToken';
+import { fetchPoints } from 'api/request';
+import { add } from 'lodash-es';
 
 export default function useBalanceService(params?: {
   onSgrBalanceChange?: (value: string) => void;
   onElfBalanceChange?: (value: string) => void;
+  onPointsChange?: (value: number) => void;
 }) {
-  const { onSgrBalanceChange, onElfBalanceChange } = params || {};
+  const { onSgrBalanceChange, onElfBalanceChange, onPointsChange } = params || {};
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
+  const [points, setPoints] = useState(0);
   const { wallet } = useWalletService();
   const { showLoading, closeLoading } = useLoading();
   const { checkBalanceAndJump } = useBuyToken();
@@ -32,6 +36,16 @@ export default function useBalanceService(params?: {
         },
       },
       {
+        symbol: 'FISH',
+        amount: divDecimals(points, 8).toString(),
+        onBuy: () => {
+          checkBalanceAndJump({
+            type: 'buyFISH',
+            theme: 'dark',
+          });
+        },
+      },
+      {
         symbol: 'ELF',
         amount: divDecimals(elfBalance, 8).toString(),
         onBuy: () => {
@@ -42,13 +56,13 @@ export default function useBalanceService(params?: {
         },
       },
     ];
-  }, [checkBalanceAndJump, elfBalance, sgrBalance]);
+  }, [checkBalanceAndJump, elfBalance, points, sgrBalance]);
 
   const getBalance = useCallback(async () => {
     if (!wallet.address) return;
     try {
       showLoading();
-      const [sgrBalanceRes, elfBalanceRes] = await Promise.all([
+      const [sgrBalanceRes, elfBalanceRes, pointsRes] = await Promise.all([
         GetBalance({
           symbol: GEN0_SYMBOL,
           owner: wallet.address,
@@ -57,11 +71,14 @@ export default function useBalanceService(params?: {
           symbol: 'ELF',
           owner: wallet.address,
         }),
+        fetchPoints({ address: wallet.address }),
       ]);
       setSgrBalance(sgrBalanceRes?.balance || '0');
       onSgrBalanceChange && onSgrBalanceChange(sgrBalanceRes?.balance || '0');
       onElfBalanceChange && onElfBalanceChange(elfBalanceRes?.balance || '0');
+      onPointsChange && onPointsChange(pointsRes?.fishScore || 0);
       setElfBalance(elfBalanceRes?.balance || '0');
+      setPoints(pointsRes?.fishScore || 0);
       return {
         sgrBalance: sgrBalanceRes?.balance || '0',
         elfBalance: sgrBalanceRes?.balance || '0',
@@ -75,7 +92,7 @@ export default function useBalanceService(params?: {
     } finally {
       closeLoading();
     }
-  }, [closeLoading, onElfBalanceChange, onSgrBalanceChange, showLoading, wallet.address]);
+  }, [closeLoading, onElfBalanceChange, onSgrBalanceChange, onPointsChange, showLoading, wallet.address]);
 
   useEffect(() => {
     getBalance();

@@ -30,6 +30,7 @@
   --fill-mask-5: rgb(0 0 0 / 85%);
   --fill-mask-6: rgb(0 0 0 / 15%);
   --fill-mask-7: rgb(0 0 0 / 25%);
+  --fill-mask-8: rgb(0 0 0 / 40%);
   --warning-100: #FFF7F2;
   --warning-600: #F90;
   --warning-500: #FFB272;
@@ -61,10 +62,15 @@
   --pixels-border: #5D5E66;
   --pixels-warning: #FCE502;
   --pixels-complete: #40F4D2;
-  --pixels-pale-yellow: #FFEBB5;
   --pixels-dash-purple: #4743C5;
+  --pixels-dash-purple-60: #4743c599;
   --pixels-white-bg: #FFF;
   --pixels-hover: #28282D;
+  --pixels-button-success: #50D500;
+  --pixels-button-warning: #FFDC30;
+  --pixels-light-purple: #D5D3FB;
+  --pixels-deep-purple: #6B66FF;
+  --pixels-gray-purple: #5853F3;
 }
 
 .dark-theme {

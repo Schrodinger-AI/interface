@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { ReactComponent as NoticeIcon } from 'assets/img/icons/notice.svg';
+import { ReactComponent as InfoIcon } from 'assets/img/telegram/icon-notice.svg';
 import Marquee from 'react-fast-marquee';
 import useResponsive from 'hooks/useResponsive';
 import { TModalTheme } from 'components/CommonModal';
@@ -22,6 +23,10 @@ const customizeAlertStyle: Record<
   notice: {
     styles: styles['alert-notice'],
     icon: <NoticeIcon />,
+  },
+  info: {
+    styles: styles['alert-notice'],
+    icon: <InfoIcon />,
   },
 };
 
@@ -72,7 +77,7 @@ function ScrollAlert(props: TProps) {
                 className={clsx(
                   'text-sm lg:text-base font-semibold min-w-max mr-[80px] whitespace-nowrap',
                   item.handle ? 'cursor-pointer' : 'cursor-default',
-                  theme === 'dark' ? 'text-pixelsPageBg' : 'text-neutralPrimary',
+                  theme === 'dark' ? 'text-white' : 'text-neutralPrimary',
                 )}
                 style={{
                   width: isMD ? 'max-content' : `${contentWidth}px`,
