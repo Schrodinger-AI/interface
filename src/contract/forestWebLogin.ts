@@ -31,8 +31,6 @@ export default class ForestWebLoginInstance {
     if (!ForestWebLoginInstance.instance) {
       ForestWebLoginInstance.instance = new ForestWebLoginInstance();
     }
-
-    console.log('=====ForestWebLoginInstance instance', ForestWebLoginInstance.instance);
     return ForestWebLoginInstance.instance;
   }
 
