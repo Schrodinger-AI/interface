@@ -25,8 +25,8 @@ export default function useSwapService() {
   }, [aelfReact]);
 
   useEffect(() => {
-    discoverProviderInstanceRef.current = walletInfo?.extraInfo?.discoverInfo?.provider;
-  }, [walletInfo?.extraInfo?.discoverInfo?.provider]);
+    discoverProviderInstanceRef.current = walletInfo?.extraInfo?.provider;
+  }, [walletInfo?.extraInfo?.provider]);
 
   const getOptions: any = useCallback(async () => {
     if (walletType === WalletTypeEnum.unknown) throw 'unknown';
