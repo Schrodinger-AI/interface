@@ -1,0 +1,3 @@
+.modal-button {
+  @apply !bg-[url('../../../../assets/img/telegram/modal-ok.png')] !bg-[length:100%_100%] bg-center bg-no-repeat !bg-transparent border-none cursor-pointer;
+}

@@ -400,3 +400,31 @@ interface ITGChatMemmberResponseUser {
   username: string;
   language_code: string;
 }
+interface ITaskListData {
+  countdown: number; // 1:adopt 2:trade 3:invite
+  dailyTasks: ITaskItem[];
+  socialTasks: ITaskItem[];
+  accomplishmentTasks: ITaskItem[];
+}
+
+interface ITaskItem {
+  [x: string]: any;
+  taskId: string;
+  name: string;
+  status: number;
+  link?: string;
+}
+
+interface ITaskResponse {
+  taskId: string;
+  name: string;
+  status: number;
+}
+
+interface ITaskPointsResponse {
+  fishScore: number;
+}
+
+interface ITaskClaimPointsResponse extends ITaskResponse {
+  fishScore: number;
+}

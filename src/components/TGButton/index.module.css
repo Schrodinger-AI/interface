@@ -1,0 +1,7 @@
+.btn-success {
+  @apply flex flex-col items-center bg-[url('../../assets/img/telegram/buttons/success.png')] bg-center bg-contain bg-no-repeat;
+}
+
+.btn-warning {
+  @apply flex flex-col items-center bg-[url('../../assets/img/telegram/buttons/warning.png')] bg-center bg-contain bg-no-repeat;
+}
