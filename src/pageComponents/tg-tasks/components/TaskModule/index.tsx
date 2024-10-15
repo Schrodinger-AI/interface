@@ -40,7 +40,14 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
   const handleLink = throttle(
     async (taskId, link, index) => {
       if (link) {
-        window.open(link, '_blank');
+        console.log('====handleLink');
+        if (window?.Telegram?.WebApp?.openTelegramLink) {
+          console.log('====handleLink openTelegramLink');
+          window?.Telegram?.WebApp?.openTelegramLink(link);
+        } else {
+          console.log('====handleLink window');
+          window.open(link, '_blank');
+        }
       }
       try {
         const data = await finishTask({ taskId });
