@@ -1,18 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-import { GetJoinRecord } from 'contract/schrodinger';
 import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import useLoading from 'hooks/useLoading';
 import { useCopyToClipboard } from 'react-use';
 import { Button, Flex, message } from 'antd';
 import { QRCode } from 'react-qrcode-logo';
 import clsx from 'clsx';
 import { useCmsInfo, useJoinStatus } from 'redux/hooks';
-import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import styles from './style.module.css';
-import { ReactComponent as InviteFriends } from 'assets/img/telegram/referral/invite-friends.svg';
-import { ReactComponent as ReferralIcon } from 'assets/img/telegram/referral/icon-referral.svg';
 import { ReactComponent as CopyIcon } from 'assets/img/copy.svg';
 import FooterButtons from 'pageComponents/tg-home/components/FooterButtons';
 import { useCheckJoined } from 'hooks/useJoin';
@@ -26,33 +21,21 @@ function TgReferral() {
 
   const { showLoading, closeLoading, visible } = useLoading();
 
-  const router = useRouter();
+  const { toJoin, getJoinStatus } = useCheckJoined();
 
-  const { toJoin } = useCheckJoined();
-
-  const checkJoined = useCallback(async () => {
-    let isJoin = false;
-    try {
-      isJoin = await GetJoinRecord(wallet.address);
-    } catch (error) {
-      console.log('Referral-Record-error', error);
-    } finally {
-      closeLoading();
-    }
-
-    !isJoin && router.replace('/');
-  }, [closeLoading, router, wallet.address]);
-
-  const copyLink = useMemo(() => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`, [wallet.address]);
+  const copyLink = useMemo(
+    () => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
+    [cmsInfo?.tgWebAppUrl, wallet.address],
+  );
 
   const shareLink = useMemo(
     () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
-    [wallet.address],
+    [cmsInfo?.tgWebAppUrl, wallet.address],
   );
 
   const handleJoin = async () => {
     await toJoin();
-    checkJoined();
+    getJoinStatus();
   };
 
   const onCopy = useCallback(() => {
@@ -73,11 +56,11 @@ function TgReferral() {
   useEffect(() => {
     showLoading();
     if (wallet.address && !isJoin) {
-      checkJoined();
+      getJoinStatus();
     } else {
       closeLoading();
     }
-  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
+  }, [getJoinStatus, wallet.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 

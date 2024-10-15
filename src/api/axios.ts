@@ -2,6 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import WalletAndTokenInfo from 'utils/walletAndTokenInfo';
+import { TelegramPlatform } from '@portkey/did-ui-react';
 
 interface ResponseType<T> {
   code: string;
@@ -63,6 +64,8 @@ class Request {
       },
       (error) => {
         let errMessage = '';
+        const isInTelegram = TelegramPlatform.isTelegramPlatform();
+
         switch (error?.response?.status) {
           case 400:
             errMessage = 'Bad Request';
@@ -71,7 +74,7 @@ class Request {
           case 401:
             message.error('The signature has expired. Please log in again.');
             setTimeout(() => {
-              location.pathname = '/';
+              location.pathname = isInTelegram ? '/telegram/home' : '/';
             }, 3000);
             break;
 
