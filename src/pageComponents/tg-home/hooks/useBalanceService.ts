@@ -108,6 +108,10 @@ export default function useBalanceService(params?: {
     return getOmittedStr(fullAddress, OmittedType.ADDRESS);
   }, [fullAddress, wallet.address]);
 
+  const updatePoints = (fishScore: number) => {
+    setPoints(fishScore || 0);
+  };
+
   return {
     sgrBalance,
     elfBalance,
@@ -116,5 +120,6 @@ export default function useBalanceService(params?: {
     formatAddress,
     fullAddress,
     balanceData,
+    updatePoints,
   };
 }
