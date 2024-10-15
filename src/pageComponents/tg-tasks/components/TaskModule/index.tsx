@@ -12,22 +12,22 @@ type IProps = {
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   tasks: ITaskItem[];
-  onUpdate?: () => void;
+  onUpdate?: (i: number, data: ITaskResponse) => void;
 };
 
 export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps) {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
 
-  const toCclainPoints = throttle(
-    async (taskId) => {
-      // setVisible(true);
+  const toClaimPoints = throttle(
+    async (taskId, score, index) => {
       try {
-        const { status, fishScore } = await claimPoints({ taskId });
+        const data = await claimPoints({ taskId });
+        const { status } = data;
         if (status === 2) {
-          setMessage(`You got ${fishScore} $fish`);
+          setMessage(`You got ${score} $fish`);
           setVisible(true);
-          onUpdate?.();
+          onUpdate?.(index, data);
         }
       } catch (error) {
         /* empty */
@@ -38,14 +38,15 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
   );
 
   const handleLink = throttle(
-    async (taskId, link) => {
+    async (taskId, link, index) => {
       if (link) {
         window.open(link, '_blank');
       }
       try {
-        const { status } = await finishTask({ taskId });
+        const data = await finishTask({ taskId });
+        const { status } = data;
         if (status === 1) {
-          onUpdate?.();
+          onUpdate?.(index, data);
         }
       } catch (error) {
         /* empty */
@@ -70,7 +71,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
       <List
         split={false}
         dataSource={tasks}
-        renderItem={(item) => (
+        renderItem={(item, index) => (
           <List.Item
             className={clsx(
               item.status === 2 ? 'bg-pixelsBorder' : 'bg-pixelsDashPurple',
@@ -83,7 +84,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
               description={
                 <Flex align="center" gap={4}>
                   <FishSVG className="w-[16px] h-[16px]" />
-                  <span className="text-white font-semibold text-[10px]">{item.name}</span>
+                  <span className="text-white font-semibold text-[10px]">+ {item.score} Fish</span>
                 </Flex>
               }
             />
@@ -95,13 +96,13 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
             ) : item.status === 1 ? (
               <button
                 className="w-[64px] h-[30px] rounded-[8px] bg-white text-black border-0 text-[12px] font-bold"
-                onClick={() => toCclainPoints(item.taskId)}>
+                onClick={() => toClaimPoints(item.taskId, item.score, index)}>
                 Claim
               </button>
             ) : (
               <button
                 className="w-[64px] h-[30px] rounded-[8px] bg-pixelsdeepPurple text-white border-0 text-[12px] font-bold"
-                onClick={() => handleLink(item.taskId, item.link)}>
+                onClick={() => handleLink(item.taskId, item.link, index)}>
                 Go
               </button>
             )}

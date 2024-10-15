@@ -257,7 +257,7 @@ export const finishTask = async (params: { taskId: string }): Promise<ITaskRespo
   return request.post('/app/task/finish', params);
 };
 
-export const claimPoints = async (params: { taskId: string }): Promise<ITaskClaimPointsResponse> => {
+export const claimPoints = async (params: { taskId: string }): Promise<ITaskResponse> => {
   return request.post('/app/task/claim', params);
 };
 

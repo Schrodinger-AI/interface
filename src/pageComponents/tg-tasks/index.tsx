@@ -14,7 +14,7 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/icon_refresh.svg';
 
 export default function TgHome() {
-  const [countdown, setCountdown] = useState(1000 * 60 * 60 * 24);
+  const [countdown, setCountdown] = useState(0);
   const [dailyTasks, setDailyTasks] = useState<ITaskItem[]>([]);
   const [socialTasks, setSocialTasks] = useState<ITaskItem[]>([]);
   const [accomplishmentTasks, setAccomplishmentTasks] = useState<ITaskItem[]>([]);
@@ -50,13 +50,46 @@ export default function TgHome() {
     getTaskList();
   };
 
+  const onDailyUpdate = (index: number, data: ITaskResponse) => {
+    setDailyTasks((prevItems) => {
+      const newItems = [...prevItems];
+      if (index >= 0 && index < newItems.length) {
+        newItems[index] = { ...newItems[index], status: data.status };
+      }
+      return newItems;
+    });
+    refresh();
+  };
+
+  const onSocialUpdate = (index: number, data: ITaskResponse) => {
+    setSocialTasks((prevItems) => {
+      const newItems = [...prevItems];
+      if (index >= 0 && index < newItems.length) {
+        newItems[index] = { ...newItems[index], status: data.status };
+      }
+      return newItems;
+    });
+    refresh();
+  };
+
+  const onNewUpdate = (index: number, data: ITaskResponse) => {
+    setAccomplishmentTasks((prevItems) => {
+      const newItems = [...prevItems];
+      if (index >= 0 && index < newItems.length) {
+        newItems[index] = { ...newItems[index], status: data.status };
+      }
+      return newItems;
+    });
+    refresh();
+  };
+
   const onFinish = () => isLogin && getTaskList();
 
   return (
     <div className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]')}>
       <BalanceModule />
       <div className="relative mt-[2.7vh]">
-        <div className="absolute top-[8px] right-0 z-20" onClick={getTaskList}>
+        <div className="absolute top-[8px] right-0 z-20" onClick={handleUpdate}>
           <RefreshSVG className="w-[24px] h-[24px]" />
         </div>
         <TaskModule
@@ -67,13 +100,13 @@ export default function TgHome() {
             </p>
           }
           tasks={dailyTasks}
-          onUpdate={handleUpdate}
+          onUpdate={onDailyUpdate}
         />
 
-        {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={handleUpdate} />}
+        {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={onSocialUpdate} />}
 
         {accomplishmentTasks.length > 0 && (
-          <TaskModule title="New Tasks" tasks={accomplishmentTasks} onUpdate={handleUpdate} />
+          <TaskModule title="New Tasks" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />
         )}
       </div>
 
