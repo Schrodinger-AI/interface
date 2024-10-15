@@ -18,11 +18,14 @@ type IProps = {
 export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps) {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const toClaimPoints = throttle(
     async (taskId, score, index) => {
       try {
+        setLoading(true);
         const data = await claimPoints({ taskId });
+        setLoading(false);
         const { status } = data;
         if (status === 2) {
           setMessage(`You got ${score} $fish`);
@@ -40,12 +43,13 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
   const handleLink = throttle(
     async (taskId, link, index) => {
       if (link) {
-        console.log('====handleLink');
         if (window?.Telegram?.WebApp?.openTelegramLink) {
-          console.log('====handleLink openTelegramLink');
-          window?.Telegram?.WebApp?.openTelegramLink(link);
+          try {
+            window?.Telegram?.WebApp?.openTelegramLink?.(link);
+          } catch (error) {
+            window.open(link, '_blank');
+          }
         } else {
-          console.log('====handleLink window');
           window.open(link, '_blank');
         }
       }
@@ -106,6 +110,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
               </Flex>
             ) : item.status === 1 ? (
               <button
+                disabled={loading}
                 className="w-[64px] h-[30px] rounded-[8px] bg-white text-black border-0 text-[12px] font-bold"
                 onClick={() => toClaimPoints(item.taskId, item.score, index)}>
                 Claim

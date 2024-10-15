@@ -21,7 +21,7 @@ export default function TgHome() {
 
   const { isLogin } = useGetLoginStatus();
 
-  const { balanceData, refresh } = useBalanceService();
+  const { balanceData, refresh, updatePoints } = useBalanceService();
 
   const getTaskList = async () => {
     try {
@@ -58,7 +58,7 @@ export default function TgHome() {
       }
       return newItems;
     });
-    refresh();
+    data?.fishScore && updatePoints(data.fishScore);
   };
 
   const onSocialUpdate = (index: number, data: ITaskResponse) => {
@@ -69,7 +69,7 @@ export default function TgHome() {
       }
       return newItems;
     });
-    refresh();
+    data?.fishScore && updatePoints(data.fishScore);
   };
 
   const onNewUpdate = (index: number, data: ITaskResponse) => {
@@ -80,7 +80,7 @@ export default function TgHome() {
       }
       return newItems;
     });
-    refresh();
+    data?.fishScore && updatePoints(data.fishScore);
   };
 
   const onFinish = () => isLogin && getTaskList();
