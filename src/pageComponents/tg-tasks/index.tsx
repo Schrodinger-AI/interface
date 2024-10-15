@@ -21,7 +21,7 @@ export default function TgHome() {
 
   const { isLogin } = useGetLoginStatus();
 
-  const { refresh } = useBalanceService();
+  const { balanceData, refresh } = useBalanceService();
 
   const getTaskList = async () => {
     try {
@@ -87,7 +87,7 @@ export default function TgHome() {
 
   return (
     <div className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]')}>
-      <BalanceModule />
+      <BalanceModule balanceData={balanceData} />
       <div className="relative mt-[2.7vh]">
         <div className="absolute top-[8px] right-0 z-20" onClick={handleUpdate}>
           <RefreshSVG className="w-[24px] h-[24px]" />

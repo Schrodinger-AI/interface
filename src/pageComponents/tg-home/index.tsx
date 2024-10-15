@@ -28,6 +28,7 @@ import PurchaseMethodModal from 'components/PurchaseMethodModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
 import useTelegram from 'hooks/useTelegram';
+import useBalanceService from './hooks/useBalanceService';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -49,6 +50,11 @@ export default function TgHome() {
   const onElfBalanceChange = useCallback((value: string) => {
     value && setElfBalance(value);
   }, []);
+
+  const { balanceData } = useBalanceService({
+    onSgrBalanceChange: onBalanceChange,
+    onElfBalanceChange,
+  });
   const purchaseMethodModal = useModal(PurchaseMethodModal);
 
   const getDetail = useCallback(async () => {
@@ -184,7 +190,7 @@ export default function TgHome() {
   return (
     <div
       className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
-      <BalanceModule onSgrBalanceChange={onBalanceChange} onElfBalanceChange={onElfBalanceChange} />
+      <BalanceModule balanceData={balanceData} />
       {noticeData && noticeData?.length ? (
         <div className="w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />

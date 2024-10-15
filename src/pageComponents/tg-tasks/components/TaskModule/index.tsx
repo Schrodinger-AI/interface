@@ -70,7 +70,11 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
       </Flex>
       <List
         split={false}
-        dataSource={tasks}
+        dataSource={tasks.sort((a, b) => {
+          if (a.status === 1) return -1;
+          if (b.status === 1) return 1;
+          return a.status - b.status;
+        })}
         renderItem={(item, index) => (
           <List.Item
             className={clsx(
