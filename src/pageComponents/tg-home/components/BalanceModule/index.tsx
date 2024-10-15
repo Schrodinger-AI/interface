@@ -7,6 +7,8 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
 import { useWebLogin } from 'aelf-web-login';
+import CommonCopy from 'components/CommonCopy';
+import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 
 export default function BalanceModule({
   onSgrBalanceChange,
@@ -18,7 +20,7 @@ export default function BalanceModule({
   onPointsChange?: (value: number) => void;
 }) {
   const { wallet } = useWebLogin();
-  const { balanceData, refresh } = useBalanceService({
+  const { balanceData } = useBalanceService({
     onSgrBalanceChange,
     onElfBalanceChange,
     onPointsChange,
@@ -31,9 +33,11 @@ export default function BalanceModule({
       <Flex justify="space-between" align="center" className="w-full text-neutralWhiteBg text-sm font-normal">
         <Flex align="center" gap={8}>
           <HeadSVG className="cursor-pointer" />
-          <p className="font-medium max-w-[40vw] overflow-hidden whitespace-nowrap text-ellipsis">
-            {wallet?.address || ''}
-          </p>
+          <CommonCopy toCopy={addPrefixSuffix(wallet?.address)}>
+            <span className="text-xs font-medium text-neutralWhiteBg">
+              {getOmittedStr(addPrefixSuffix(wallet?.address), OmittedType.ADDRESS)}
+            </span>
+          </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
           <Link href="/assets">
@@ -49,13 +53,6 @@ export default function BalanceModule({
               </div>
             </Link>
           ) : null}
-          {/* {!isJoin ? (
-            <Link href="/tg-referral">
-              <div className="px-[8px]">
-                <InviteSVG className="w-[30px] h-[30px]" />
-              </div>
-            </Link>
-          ) : null} */}
         </div>
       </Flex>
       <Flex gap={16} justify="space-between" className="mt-2" wrap="wrap">
@@ -63,12 +60,6 @@ export default function BalanceModule({
           return <BalanceItem key={index} {...item} onBuy={item.onBuy} />;
         })}
       </Flex>
-      {/* <Flex className="w-full text-sm font-medium text-neutralWhiteBg mt-4" align="center">
-        <span>Address:</span>
-        <CommonCopy toCopy={fullAddress} className="text-pixelsTertiaryTextPurple ml-4" size="large">
-          {formatAddress}
-        </CommonCopy>
-      </Flex> */}
     </>
   );
 }

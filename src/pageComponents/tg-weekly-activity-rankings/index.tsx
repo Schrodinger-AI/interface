@@ -18,16 +18,17 @@ import TableEmpty from 'components/TableEmpty';
 import trophies from 'assets/img/telegram/rank/trophies.png';
 import Image from 'next/image';
 
-const tabsType: TabsProps['items'] = [
-  {
-    key: `${TgWeeklyActivityRankType.ADOPT}`,
-    label: 'Cat Adoption',
-  },
-  {
-    key: `${TgWeeklyActivityRankType.TRADE}`,
-    label: 'NFT Trading',
-  },
-];
+// TODO: To be updated on subsequent activities
+// const tabsType: TabsProps['items'] = [
+//   {
+//     key: `${TgWeeklyActivityRankType.ADOPT}`,
+//     label: 'Cat Adoption',
+//   },
+//   {
+//     key: `${TgWeeklyActivityRankType.TRADE}`,
+//     label: 'NFT Trading',
+//   },
+// ];
 
 const tabsTime: ICommonRadioTabButton<TgWeeklyActivityRankTime>[] = [
   {
@@ -103,7 +104,7 @@ export default function TgWeeklyActivityRankings() {
       <div className={clsx(styles['rankings-bg'])} />
       <BackCom
         theme="dark"
-        title="Weekly Leaderboard"
+        title="Cat Adoption"
         className="relative z-10 w-full px-4"
         tips={{
           show: true,
@@ -111,7 +112,8 @@ export default function TgWeeklyActivityRankings() {
         }}
       />
 
-      <CommonTabs
+      {/* TODO: To be updated on subsequent activities */}
+      {/* <CommonTabs
         options={tabsType}
         activeKey={`${tabTypeValue}`}
         onTabsChange={(value) =>
@@ -122,9 +124,9 @@ export default function TgWeeklyActivityRankings() {
         }
         theme="dark"
         className={clsx('relative z-10 my-[16px] w-full px-4 !h-[38px]', styles['rankings-type'])}
-      />
+      /> */}
 
-      <div className="relative z-10 flex w-full justify-center items-center">
+      <div className="relative z-10 flex w-full justify-center items-center mt-[16px]">
         <CommonSegmented
           options={tabsTime}
           value={tabTimeValue}
