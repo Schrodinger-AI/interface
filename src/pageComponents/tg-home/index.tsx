@@ -111,7 +111,15 @@ export default function TgHome() {
       theme: 'dark',
       prePage: 'adoptModal',
     });
-  }, [adoptHandler, checkBalanceAndJump, elfBalance, schrodingerDetail, sgrBalance, wallet.address]);
+  }, [
+    adoptHandler,
+    checkBalanceAndJump,
+    elfBalance,
+    purchaseMethodModal,
+    schrodingerDetail,
+    sgrBalance,
+    wallet.address,
+  ]);
 
   const sendAdTrack = (address: string) => {
     const tg_user_click_daily: {
