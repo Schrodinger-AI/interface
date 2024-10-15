@@ -44,7 +44,11 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
     async (taskId, link, index) => {
       if (link) {
         if (window?.Telegram?.WebApp?.openTelegramLink) {
-          window?.Telegram?.WebApp?.openTelegramLink(link);
+          try {
+            window?.Telegram?.WebApp?.openTelegramLink?.(link);
+          } catch (error) {
+            window.open(link, '_blank');
+          }
         } else {
           window.open(link, '_blank');
         }
