@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
@@ -31,7 +32,7 @@ function CommonModal(props: ModalProps) {
       keyboard={false}
       maskClosable={false}
       destroyOnClose={true}
-      closeIcon={<Close className="w-[24px] h-[24px]" />}
+      closeIcon={<img src={require('assets/img/icon_close.png').default.src} alt="" className="w-[24px] h-[24px]" />}
       centered
       footer={null}
       {...props}

@@ -2,27 +2,13 @@ import { Flex } from 'antd';
 import { ReactComponent as HeadSVG } from 'assets/img/telegram/head.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
 import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
-import BalanceItem from '../BalanceItem';
-import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
+import BalanceItem, { IBalanceItemProps } from '../BalanceItem';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
 import { useWebLogin } from 'aelf-web-login';
 
-export default function BalanceModule({
-  onSgrBalanceChange,
-  onElfBalanceChange,
-  onPointsChange,
-}: {
-  onSgrBalanceChange?: (value: string) => void;
-  onElfBalanceChange?: (value: string) => void;
-  onPointsChange?: (value: number) => void;
-}) {
+export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
   const { wallet } = useWebLogin();
-  const { balanceData, refresh } = useBalanceService({
-    onSgrBalanceChange,
-    onElfBalanceChange,
-    onPointsChange,
-  });
   const cmsInfo = useCmsInfo();
   const balance = balanceData.slice(0, 2);
 
