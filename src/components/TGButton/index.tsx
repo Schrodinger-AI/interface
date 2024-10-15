@@ -33,7 +33,7 @@ export default function TGButton({
   const btnSize = useMemo(() => {
     switch (size) {
       case 'large':
-        return 'h-[46px] px-[35px] py-[10px] border-radius-[8px]';
+        return 'h-[46px] px-[35px] py-[10px] border-radius-[8px] text-[16px] !font-black';
       case 'small':
         return 'h-[38px] px-[10px] py-[4px] border-radius-[4px]';
       default:

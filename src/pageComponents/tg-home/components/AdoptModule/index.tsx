@@ -6,7 +6,6 @@ import { ReactComponent as BagSVG } from 'assets/img/telegram/icon-bags.svg';
 import { ReactComponent as WheelSVG } from 'assets/img/telegram/icon-wheel.svg';
 import { ReactComponent as ShoppingSVG } from 'assets/img/telegram/icon-shopping.svg';
 import { ReactComponent as PoolsSVG } from 'assets/img/telegram/icon-pools.svg';
-import { ReactComponent as LockSVG } from 'assets/img/telegram/Lock.svg';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useState } from 'react';
 import TgModal from 'components/TgModal';
@@ -99,7 +98,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
         onOk={() => setIsOpen(false)}
         onCancel={() => setIsOpen(false)}>
         <Flex vertical justify="center" align="center" className="h-[184px]" gap={16}>
-          <LockSVG className="w-[72px] h-[72px]" />
+          <img src={require('assets/img/telegram/lock.png').default.src} alt="" className="w-[72px] h-[72px]" />
           <button
             className={clsx(styles['modal-button'], '!w-[124px] !h-[48px]')}
             onClick={() => setIsOpen(false)}></button>

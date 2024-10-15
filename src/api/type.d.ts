@@ -419,12 +419,10 @@ interface ITaskResponse {
   taskId: string;
   name: string;
   status: number;
+  score: number;
+  fishScore?: number;
 }
 
 interface ITaskPointsResponse {
-  fishScore: number;
-}
-
-interface ITaskClaimPointsResponse extends ITaskResponse {
   fishScore: number;
 }
