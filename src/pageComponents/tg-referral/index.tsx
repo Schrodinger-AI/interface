@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
+import { GetJoinRecord, Join } from 'contract/schrodinger';
 import { useWalletService } from 'hooks/useWallet';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useLoading from 'hooks/useLoading';
 import { useCopyToClipboard } from 'react-use';
 import { Button, Flex, message } from 'antd';
@@ -10,7 +11,9 @@ import { useCmsInfo, useJoinStatus } from 'redux/hooks';
 import styles from './style.module.css';
 import { ReactComponent as CopyIcon } from 'assets/img/copy.svg';
 import FooterButtons from 'pageComponents/tg-home/components/FooterButtons';
-import { useCheckJoined } from 'hooks/useJoin';
+import { store } from 'redux/store';
+import { setIsJoin } from 'redux/reducer/info';
+import { getDomain } from 'utils';
 
 function TgReferral() {
   const { wallet } = useWalletService();
@@ -18,10 +21,33 @@ function TgReferral() {
   const [, setCopied] = useCopyToClipboard();
   const isJoin = useJoinStatus();
   const cmsInfo = useCmsInfo();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { showLoading, closeLoading, visible } = useLoading();
 
-  const { toJoin, getJoinStatus } = useCheckJoined();
+  const toJoin = async () => {
+    try {
+      setLoading(true);
+      const domain = getDomain();
+      await Join({
+        domain,
+      });
+      store.dispatch(setIsJoin(true));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkJoined = useCallback(async () => {
+    let isJoin = false;
+    try {
+      isJoin = await GetJoinRecord(wallet.address);
+    } finally {
+      closeLoading();
+    }
+
+    !isJoin && store.dispatch(setIsJoin(isJoin));
+  }, [closeLoading, wallet.address]);
 
   const copyLink = useMemo(
     () => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
@@ -35,7 +61,7 @@ function TgReferral() {
 
   const handleJoin = async () => {
     await toJoin();
-    getJoinStatus();
+    checkJoined();
   };
 
   const onCopy = useCallback(() => {
@@ -56,11 +82,11 @@ function TgReferral() {
   useEffect(() => {
     showLoading();
     if (wallet.address && !isJoin) {
-      getJoinStatus();
+      checkJoined();
     } else {
       closeLoading();
     }
-  }, [getJoinStatus, wallet.address, isJoin, showLoading, closeLoading]);
+  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 
@@ -72,6 +98,7 @@ function TgReferral() {
             Join the project and draw rare cats <br /> with your friends
           </p>
           <Button
+            loading={loading}
             className="w-[164px] h-[48px] !rounded-[12px] !text-black !bg-white font-bold text-[24px]"
             onClick={handleJoin}>
             Join
