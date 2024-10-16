@@ -10,7 +10,7 @@ import { useGetAllBalance } from './useGetAllBalance';
 import { AELF_TOKEN_INFO, GEN0_SYMBOL_INFO } from 'constants/assets';
 import { formatTokenPrice } from 'utils/format';
 
-export type TBuyType = 'buySGR' | 'buyELF';
+export type TBuyType = 'buySGR' | 'buyELF' | 'buyFISH';
 
 type TProps = {
   type: TBuyType;
@@ -34,7 +34,9 @@ export const useBuyToken = () => {
       try {
         setLoading(true);
         const [symbolBalance, elfBalance] = await getAllBalance([GEN0_SYMBOL_INFO, AELF_TOKEN_INFO], wallet.address);
-        if ((type === 'buySGR' && elfBalance !== '0') || (type === 'buyELF' && symbolBalance !== '0')) {
+        if (type === 'buyFISH') {
+          router.push('/telegram/tasks');
+        } else if ((type === 'buySGR' && elfBalance !== '0') || (type === 'buyELF' && symbolBalance !== '0')) {
           purchaseMethodModal.show({
             type: type,
             theme,
