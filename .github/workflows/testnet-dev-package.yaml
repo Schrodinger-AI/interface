@@ -1,7 +1,7 @@
 name: Build and Push Image
 on:
   push:
-    branches: ['dev', 'feature/*', 'fix/*']
+    branches: ['test']
 jobs:
   build-and-push-image:
     runs-on: schrodinger-runner

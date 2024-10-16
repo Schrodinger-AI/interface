@@ -248,3 +248,19 @@ export const getStrayCats = async (data: {
 export const fetchChatMember = async (token: string, params: ITgChannelParams): Promise<ITGChatMemmberResponse> => {
   return request.get(`https://api.telegram.org/bot${token}/getChatMember`, { params });
 };
+
+export const fetchTasksList = async (): Promise<ITaskListData> => {
+  return request.post('/app/task/list', {});
+};
+
+export const finishTask = async (params: { taskId: string }): Promise<ITaskResponse> => {
+  return request.post('/app/task/finish', params);
+};
+
+export const claimPoints = async (params: { taskId: string }): Promise<ITaskResponse> => {
+  return request.post('/app/task/claim', params);
+};
+
+export const fetchPoints = async (params: { address: string }): Promise<ITaskPointsResponse> => {
+  return request.post('/app/task/score', params);
+};

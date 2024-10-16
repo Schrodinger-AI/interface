@@ -8,7 +8,7 @@ import clsx from 'clsx';
 export type TModalTheme = 'dark' | 'light';
 export interface ModalProps extends AntdModalProps {
   subTitle?: string;
-  width?: number;
+  width?: number | string;
   hideHeader?: boolean;
   disableMobileLayout?: boolean;
   theme?: TModalTheme;

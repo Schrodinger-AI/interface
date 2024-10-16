@@ -1,34 +1,29 @@
 import { Flex } from 'antd';
-import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
+import { ReactComponent as HeadSVG } from 'assets/img/telegram/head.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
-import { ReactComponent as InviteSVG } from 'assets/img/telegram/icon-invite.svg';
 import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
-import BalanceItem from '../BalanceItem';
-import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
-import CommonCopy from 'components/CommonCopy';
+import BalanceItem, { IBalanceItemProps } from '../BalanceItem';
 import Link from 'next/link';
-import { useCmsInfo, useJoinStatus } from 'redux/hooks';
+import { useCmsInfo } from 'redux/hooks';
+import { useWebLogin } from 'aelf-web-login';
+import CommonCopy from 'components/CommonCopy';
+import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 
-export default function BalanceModule({
-  onSgrBalanceChange,
-  onElfBalanceChange,
-}: {
-  onSgrBalanceChange?: (value: string) => void;
-  onElfBalanceChange?: (value: string) => void;
-}) {
-  const { formatAddress, balanceData, fullAddress, refresh } = useBalanceService({
-    onSgrBalanceChange,
-    onElfBalanceChange,
-  });
+export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
+  const { wallet } = useWebLogin();
   const cmsInfo = useCmsInfo();
-  const isJoin = useJoinStatus();
+  const balance = balanceData.slice(0, 2);
 
   return (
     <>
       <Flex justify="space-between" align="center" className="w-full text-neutralWhiteBg text-sm font-normal">
         <Flex align="center" gap={8}>
-          <span className="font-medium">Balance:</span>
-          <RefreshSVG className="cursor-pointer" onClick={refresh} />
+          <HeadSVG className="cursor-pointer" />
+          <CommonCopy toCopy={addPrefixSuffix(wallet?.address)}>
+            <span className="text-xs font-medium text-neutralWhiteBg">
+              {getOmittedStr(addPrefixSuffix(wallet?.address), OmittedType.ADDRESS)}
+            </span>
+          </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
           <Link href="/assets">
@@ -38,37 +33,18 @@ export default function BalanceModule({
           </Link>
 
           {cmsInfo?.weeklyActivityRankingsEntrance ? (
-            <>
-              <div className="w-[1px] h-[16px] bg-pixelsBorder" />
-              <Link href="/tg-weekly-activity-rankings">
-                <div className="px-[8px]">
-                  <LeaderBoardSVG className="w-[30px] h-[30px]" />
-                </div>
-              </Link>
-            </>
-          ) : null}
-          {isJoin ? (
-            <>
-              <div className="w-[1px] h-[16px] bg-pixelsBorder" />
-              <Link href="/tg-referral">
-                <div className="px-[8px]">
-                  <InviteSVG className="w-[30px] h-[30px]" />
-                </div>
-              </Link>
-            </>
+            <Link href="/tg-weekly-activity-rankings">
+              <div className="px-[8px]">
+                <LeaderBoardSVG className="w-[30px] h-[30px]" />
+              </div>
+            </Link>
           ) : null}
         </div>
       </Flex>
-      <Flex gap={16} className="mt-2" wrap="wrap">
-        {balanceData.map((item, index) => {
+      <Flex gap={16} justify="space-between" className="mt-2" wrap="wrap">
+        {balance.map((item, index) => {
           return <BalanceItem key={index} {...item} onBuy={item.onBuy} />;
         })}
-      </Flex>
-      <Flex className="w-full text-sm font-medium text-neutralWhiteBg mt-4" align="center">
-        <span>Address:</span>
-        <CommonCopy toCopy={fullAddress} className="text-pixelsTertiaryTextPurple ml-4" size="large">
-          {formatAddress}
-        </CommonCopy>
       </Flex>
     </>
   );

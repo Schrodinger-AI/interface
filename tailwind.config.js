@@ -41,6 +41,10 @@ const rotateY = plugin(function ({ addUtilities }) {
     '.tg-card-shadow': {
       boxShadow: '4px 4px 4px 0 #262284',
     },
+    '.dark-btn-font': {
+      color: 'var(--pixels-white-bg)',
+      textShadow: '2px 2px 0 #000000',
+    },
   });
 });
 
@@ -107,8 +111,14 @@ module.exports = {
         pixelsComplete: 'var(--pixels-complete)',
         pixelsPaleYellow: 'var(--pixels-pale-yellow)',
         pixelsDashPurple: 'var(--pixels-dash-purple)',
+        pixelsDashPurple60: 'var(--pixels-dash-purple-60)',
         pixelsWhiteBg: 'var(--pixels-white-bg)',
         pixelsHover: 'var(--pixels-hover)',
+        pixelsButtonWarning: 'var(--pixels-button-warning)',
+        pixelsButtonSuccess: 'var(--pixels-button-success)',
+        pixelsLightPurple: 'var(--pixels-light-purple)',
+        pixelsdeepPurple: 'var(--pixels-deep-purple)',
+        pixelsGrayPurple: 'var(--pixels-gray-purple)',
       },
       fontSize: {
         xxs: ['10px', '16px'],
@@ -129,7 +139,8 @@ module.exports = {
         cardShadow2: '0px 4px 12px 0px rgb(27 63 116 / 8%)',
         radioShadow: '0px 2px 8px 0px rgb(0 0 0 / 5%)',
         darkPixelsShadow: '4px 4px 4px 0 #262284',
-        floatingButtonsShadow: '0px 2px 0px 0px #6D68FF inset, 0px -4px 0px 0px #2F2C89 inset',
+        floatingButtonsShadow: '0px 2px 0px 0px #6D68FF inset, 0px 2px 0px 0px rgb(0 0 0 / 10%)',
+        tgModalShadow: '0px 2px 0px 0px #6D68FF inset, 0px -4px 0px 0px #2F2C89 inset',
       },
       keyframes: {
         loading: {
@@ -141,6 +152,7 @@ module.exports = {
       backgroundImage: {
         inviteCardBg: 'linear-gradient(180deg, #DFECFE 0%, #FFFFFF 50.18%)',
         floatingButtonsBg: 'linear-gradient(0deg, #4743C5 0%, #1D1A74 95.83%)',
+        tgModalBg: 'radial-gradient(50% 50% at 50% 50%, #4C48D9 0%, #3C38AF 100%)',
       },
       animation: {
         loading: 'loading 800ms linear infinite',

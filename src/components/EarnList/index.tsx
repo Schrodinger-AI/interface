@@ -38,7 +38,7 @@ export function TokenEarnList({
     const isDark = theme === 'dark';
     return [
       {
-        title: <ColumnsTitle title="Rewarding Behaviors" theme={theme} />,
+        title: <ColumnsTitle title="Name" theme={theme} />,
         dataIndex: 'displayName',
         key: 'symbol',
         width: isLG ? 160 : 'max-content',
@@ -127,6 +127,7 @@ export function TokenEarnList({
         title: <ColumnsTitle title="Action" theme={theme} />,
         dataIndex: 'action',
         key: 'action',
+        align: 'right',
         width: isLG ? 115 : 'max-content',
         fixed: isLG ? 'right' : false,
         render: (_: null, record: IPointItem) => {
@@ -139,11 +140,7 @@ export function TokenEarnList({
                   isInTG,
                 })
               }>
-              <span
-                className={clsx(
-                  'text-xs font-medium',
-                  isDark ? 'text-pixelsSecondaryTextPurple' : 'text-brandDefault',
-                )}>
+              <span className={clsx('text-xs font-medium', isDark ? 'text-pixelsGrayPurple' : 'text-brandDefault')}>
                 Details
               </span>
               <ArrowIcon
