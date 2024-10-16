@@ -57,7 +57,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <BagSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px]">My Bags</div>
+          <div className="dark-btn-font leading-[18px] font-black text-[10px]">My Bags</div>
         </Flex>
       </Link>
       <div onClick={handleShow} className="absolute top-[37px] right-0 z-20">
@@ -67,7 +67,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <WheelSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px]">Lucky Spin</div>
+          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Lucky Spin</div>
         </Flex>
       </div>
       <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[40vw] left-0 z-20">
@@ -77,7 +77,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <ShoppingSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px]">Shopping</div>
+          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Shopping</div>
         </Flex>
       </Link>
       <div onClick={handleShow} className="absolute top-[40vw] right-0 z-20">
@@ -87,7 +87,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <PoolsSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px]">Pools</div>
+          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Pools</div>
         </Flex>
       </div>
 

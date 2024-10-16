@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { Flex, List } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ReactComponent as TaskSVG } from 'assets/img/telegram/icon_Task.svg';
 import { ReactComponent as FishSVG } from 'assets/img/telegram/tasks/icon_silver.svg';
 import { ReactComponent as Finished } from 'assets/img/telegram/tasks/icon_finished.svg';
@@ -67,6 +67,16 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
     { trailing: false },
   );
 
+  const taskData = useMemo(
+    () =>
+      tasks.sort((a, b) => {
+        if (a.status === 1) return -1;
+        if (b.status === 1) return 1;
+        return a.status - b.status;
+      }),
+    [tasks],
+  );
+
   return (
     <div className="relative mt-[8px]">
       <Flex align="center" justify="start" className="mb-2" gap={8}>
@@ -81,11 +91,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
       </Flex>
       <List
         split={false}
-        dataSource={tasks.sort((a, b) => {
-          if (a.status === 1) return -1;
-          if (b.status === 1) return 1;
-          return a.status - b.status;
-        })}
+        dataSource={taskData}
         renderItem={(item, index) => (
           <List.Item
             className={clsx(
