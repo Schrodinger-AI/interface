@@ -5,12 +5,12 @@ import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg
 import BalanceItem, { IBalanceItemProps } from '../BalanceItem';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
-import { useWebLogin } from 'aelf-web-login';
 import CommonCopy from 'components/CommonCopy';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
-  const { wallet } = useWebLogin();
+  const { walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
   const balance = balanceData.slice(0, 2);
 
@@ -19,9 +19,9 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
       <Flex justify="space-between" align="center" className="w-full text-neutralWhiteBg text-sm font-normal">
         <Flex align="center" gap={8}>
           <HeadSVG className="cursor-pointer" />
-          <CommonCopy toCopy={addPrefixSuffix(wallet?.address)}>
+          <CommonCopy toCopy={addPrefixSuffix(walletInfo?.address || '')}>
             <span className="text-xs font-medium text-neutralWhiteBg">
-              {getOmittedStr(addPrefixSuffix(wallet?.address), OmittedType.ADDRESS)}
+              {getOmittedStr(addPrefixSuffix(walletInfo?.address || ''), OmittedType.ADDRESS)}
             </span>
           </CommonCopy>
         </Flex>

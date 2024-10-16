@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetJoinRecord, Join } from 'contract/schrodinger';
-import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useLoading from 'hooks/useLoading';
 import { useCopyToClipboard } from 'react-use';
@@ -14,9 +13,10 @@ import FooterButtons from 'pageComponents/tg-home/components/FooterButtons';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { getDomain } from 'utils';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function TgReferral() {
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const [, setCopied] = useCopyToClipboard();
   const isJoin = useJoinStatus();
@@ -41,22 +41,23 @@ function TgReferral() {
   const checkJoined = useCallback(async () => {
     let isJoin = false;
     try {
-      isJoin = await GetJoinRecord(wallet.address);
+      if (!walletInfo?.address) return;
+      isJoin = await GetJoinRecord(walletInfo.address);
     } finally {
       closeLoading();
     }
 
     !isJoin && store.dispatch(setIsJoin(isJoin));
-  }, [closeLoading, wallet.address]);
+  }, [closeLoading, walletInfo?.address]);
 
   const copyLink = useMemo(
-    () => `${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
-    [cmsInfo?.tgWebAppUrl, wallet.address],
+    () => `${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
+    [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${wallet.address}`,
-    [cmsInfo?.tgWebAppUrl, wallet.address],
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
+    [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
   const handleJoin = async () => {
@@ -81,12 +82,12 @@ function TgReferral() {
 
   useEffect(() => {
     showLoading();
-    if (wallet.address && !isJoin) {
+    if (walletInfo?.address && !isJoin) {
       checkJoined();
     } else {
       closeLoading();
     }
-  }, [checkJoined, wallet.address, isJoin, showLoading, closeLoading]);
+  }, [checkJoined, walletInfo?.address, isJoin, showLoading, closeLoading]);
 
   if (visible) return null;
 

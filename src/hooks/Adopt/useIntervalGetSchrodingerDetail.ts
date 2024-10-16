@@ -1,11 +1,11 @@
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useGetSchrodingerDetail } from 'graphqlServer';
-import { useWalletService } from 'hooks/useWallet';
 import { useCallback, useMemo, useRef } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 
 const useIntervalGetSchrodingerDetail = () => {
   const getSDGDetail = useGetSchrodingerDetail();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
 
   const intervalRef = useRef<number>();
@@ -17,7 +17,7 @@ const useIntervalGetSchrodingerDetail = () => {
           setInterval(async () => {
             try {
               const result = await getSDGDetail({
-                input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: wallet.address },
+                input: { symbol: symbol ?? '', chainId: cmsInfo?.curChain || '', address: walletInfo?.address },
               });
               if (result.data.getSchrodingerDetail?.symbol) {
                 clearInterval(intervalRef.current);
@@ -29,7 +29,7 @@ const useIntervalGetSchrodingerDetail = () => {
           }, 2000),
         );
       }),
-    [cmsInfo?.curChain, getSDGDetail, wallet.address],
+    [cmsInfo?.curChain, getSDGDetail, walletInfo?.address],
   );
 
   const startInterval = useCallback(async (symbol: string) => {

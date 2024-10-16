@@ -3,15 +3,11 @@ import type { Metadata } from 'next';
 import Layout from 'pageComponents/layout';
 import 'styles/tailwindBase.css';
 
-import '@portkey/did-ui-react/dist/assets/index.css';
-import 'aelf-web-login/dist/assets/index.css';
-
 import 'styles/global.css';
 import 'styles/common.css';
 import 'styles/theme.css';
 
 import Provider from 'provider';
-import Head from 'next/head';
 
 export const metadata: Metadata = {
   title: 'Schrödinger',
@@ -41,8 +37,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','GTM-MSLRBBX2');`,
         }}></Script>
-      <Script strategy="afterInteractive" src="https://telegram.org/js/telegram-web-app.js" />
-      <Script strategy="afterInteractive" src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
+      <Script src="https://telegram.org/js/telegram-web-app.js" />
+      <Script src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
       <body>
         <noscript
           dangerouslySetInnerHTML={{

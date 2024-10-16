@@ -10,8 +10,8 @@ import isMobile from 'utils/isMobile';
 import Footer from 'components/Footer';
 import { useWalletInit } from 'hooks/useWallet';
 import WebLoginInstance from 'contract/webLogin';
+import ForestWebLoginInstance from 'contract/forestWebLogin';
 import { SupportedELFChainId } from 'types';
-import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import { usePathname } from 'next/navigation';
 import styles from './style.module.css';
@@ -32,36 +32,23 @@ import { ContractInstance } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
 
 const Layout = dynamic(async () => {
-  const { useWebLogin, useCallContract } = await import('aelf-web-login').then((module) => module);
+  const { useConnectWallet } = await import('@aelf-web-login/wallet-adapter-react').then((module) => module);
   return (props: React.PropsWithChildren<{}>) => {
     const { children } = props;
 
-    const { cmsInfo } = useGetStoreInfo();
     const customTheme = useGetCustomTheme();
 
-    const webLoginContext = useWebLogin();
+    const webLoginContext = useConnectWallet();
     const { getToken } = useGetToken();
 
     const pathname = usePathname();
+    const { callSendMethod, callViewMethod } = useConnectWallet();
 
     const { isInTelegram, isInTG } = useTelegram();
 
-    console.log('WebLoginInstance.get()', WebLoginInstance.get());
-
-    ContractInstance.set(WebLoginInstance.get());
-
-    const { callSendMethod: callAELFSendMethod, callViewMethod: callAELFViewMethod } = useCallContract({
-      chainId: SupportedELFChainId.MAIN_NET,
-      rpcUrl: cmsInfo?.rpcUrlAELF,
-    });
-    const { callSendMethod: callTDVVSendMethod, callViewMethod: callTDVVViewMethod } = useCallContract({
-      chainId: SupportedELFChainId.TDVV_NET,
-      rpcUrl: cmsInfo?.rpcUrlTDVV,
-    });
-    const { callSendMethod: callTDVWSendMethod, callViewMethod: callTDVWViewMethod } = useCallContract({
-      chainId: SupportedELFChainId.TDVW_NET,
-      rpcUrl: cmsInfo?.rpcUrlTDVW,
-    });
+    // ContractInstance.set(WebLoginInstance.get());
+    // TODO: After upgrading forest sdk, you can delete the current
+    ContractInstance.set(ForestWebLoginInstance.get());
 
     const isGrayBackground = useMemo(() => {
       return pathname === '/coundown';
@@ -92,26 +79,30 @@ const Layout = dynamic(async () => {
     const { isLG } = useResponsive();
 
     useEffect(() => {
-      console.log('webLoginContext.loginState', webLoginContext.loginState);
-      WebLoginInstance.get().setContractMethod([
+      WebLoginInstance.get().setContractMethod({
+        sendMethod: callSendMethod,
+        viewMethod: callViewMethod,
+      });
+
+      // TODO: After upgrading forest sdk, you can delete the current
+      ForestWebLoginInstance.get().setContractMethod([
         {
           chain: SupportedELFChainId.MAIN_NET,
-          sendMethod: callAELFSendMethod,
-          viewMethod: callAELFViewMethod,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
         },
         {
           chain: SupportedELFChainId.TDVV_NET,
-          sendMethod: callTDVVSendMethod,
-          viewMethod: callTDVVViewMethod,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
         },
         {
           chain: SupportedELFChainId.TDVW_NET,
-          sendMethod: callTDVWSendMethod,
-          viewMethod: callTDVWViewMethod,
+          sendMethod: callSendMethod,
+          viewMethod: callViewMethod,
         },
       ]);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [webLoginContext.loginState]);
+    }, [callSendMethod, callViewMethod, webLoginContext.isConnected]);
 
     useWalletInit();
 
@@ -124,7 +115,7 @@ const Layout = dynamic(async () => {
     }, [isInTelegram, pathname]);
 
     useEffect(() => {
-      WalletAndTokenInfo.setWallet(webLoginContext.walletType, webLoginContext.wallet, webLoginContext.version);
+      WalletAndTokenInfo.setWallet(webLoginContext.walletType, webLoginContext.walletInfo);
       WalletAndTokenInfo.setSignMethod(getToken);
     }, [getToken, webLoginContext]);
 

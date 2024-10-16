@@ -1,15 +1,15 @@
-import { useWalletService } from './useWallet';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useEffect } from 'react';
 import { getMessageUnreadCount } from 'utils/getMessageUnreadCount';
 
 const useGetUnreadMessagesCount = () => {
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   useEffect(() => {
-    if (wallet.address) {
-      getMessageUnreadCount(wallet.address);
+    if (walletInfo?.address) {
+      getMessageUnreadCount(walletInfo.address);
     }
-  }, [wallet.address]);
+  }, [walletInfo?.address]);
 };
 
 export default useGetUnreadMessagesCount;
