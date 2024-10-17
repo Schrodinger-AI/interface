@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';
 import { ReactComponent as ArrowSVG } from 'assets/img/icon_arrow.svg';
+import styles from './index.module.css';
 
 type TgCollapseProps = {
   items: CollapseProps['items'];
@@ -24,8 +25,9 @@ const TgCollapse: React.FC<TgCollapseProps> = (props) => {
         ...item,
         style: { ...panelStyle },
         className:
-          index % 2 === 0 ? 'bg-compareRightBg shadow-compareRightShadow' : 'bg-compareLeftBg shadow-compareLeftShadow',
+          index % 2 !== 0 ? 'bg-compareRightBg shadow-compareRightShadow' : 'bg-compareLeftBg shadow-compareLeftShadow',
       })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [items],
   );
 
@@ -35,6 +37,7 @@ const TgCollapse: React.FC<TgCollapseProps> = (props) => {
       defaultActiveKey={['1']}
       expandIconPosition="end"
       ghost={true}
+      className={styles['tg-collapse']}
       expandIcon={({ isActive }) => <ArrowSVG className={isActive ? 'rotate-180' : ''} />}
       items={data}
     />

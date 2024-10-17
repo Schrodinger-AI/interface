@@ -1,6 +1,7 @@
 import React from 'react';
 
-const DynamicBar = ({ left, right }: any) => {
+const DynamicBar = ({ data }: { data: number[] }) => {
+  const [left = 50, right = 50] = data;
   const total = left + right;
   const leftPercentage = (left / total) * 100;
   const rightPercentage = (right / total) * 100;

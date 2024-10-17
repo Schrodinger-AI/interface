@@ -143,6 +143,14 @@ export type TCustomizationItemType = {
   adoptDirectlyNew?: boolean;
   referralRulesList?: string[];
   buyTokenModal: Record<TBuyType, TBuyTokenModalContent>;
+  trumpTraits?: Array<{
+    traitType: string;
+    values: string[];
+  }>;
+  harrisTraits?: Array<{
+    traitType: string;
+    values: string[];
+  }>;
   [key: string]: any;
 };
 

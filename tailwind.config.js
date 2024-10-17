@@ -95,6 +95,8 @@ module.exports = {
         transparentWhite20: 'var(--transparent-white-20)',
         transparentWhite10: 'var(--transparent-white-10)',
 
+        rarityOrange: 'var(--rarity-orange)',
+
         pixelsModalBg: 'var(--pixels-modal-bg)',
         pixelsPrimaryTextPurple: 'var(--pixels-primary-text-purple)',
         pixelsPrimaryTextPink: 'var(--pixels-primary-text-pink)',
@@ -117,6 +119,7 @@ module.exports = {
         pixelsButtonWarning: 'var(--pixels-button-warning)',
         pixelsButtonSuccess: 'var(--pixels-button-success)',
         pixelsLightPurple: 'var(--pixels-light-purple)',
+        pixelsLighterPurple: 'var(--pixels-lighter-purple)',
         pixelsdeepPurple: 'var(--pixels-deep-purple)',
         pixelsGrayPurple: 'var(--pixels-gray-purple)',
       },
@@ -144,6 +147,7 @@ module.exports = {
         btnShadow: '0px 2px 0px 0px rgb(0 0 0 / 25%)',
         compareRightShadow: '0px 2px 0px 0px #FA5961 inset, 0px -2px 0px 0px rgb(0 0 0 / 40%) inset',
         compareLeftShadow: '0px 2px 0px 0px #485EC9 inset, 0px -2px 0px 0px rgb(0 0 0 / 40%) inset',
+        modalContentShadow: '0px 24px 12px 5px rgb(0 0 0 / 40%)',
       },
       keyframes: {
         loading: {

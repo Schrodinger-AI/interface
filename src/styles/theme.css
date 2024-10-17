@@ -44,6 +44,7 @@
   --rarity-bronze: #D2965E;
   --rarity-silver: #ADC4D5;
   --rarity-gold: #E3CA69;
+  --rarity-orange: #F5C812;
   --rarity-halcyon: #7DC7AD;
   --rarity-diamond: #AA98FF;
 
@@ -71,6 +72,7 @@
   --pixels-light-purple: #D5D3FB;
   --pixels-deep-purple: #6B66FF;
   --pixels-gray-purple: #5853F3;
+  --pixels-lighter-purple: #AEABFF;
 }
 
 .dark-theme {

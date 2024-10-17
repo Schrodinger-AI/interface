@@ -2,7 +2,6 @@
 import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
-import { ReactComponent as Close } from 'assets/img/icon_close.svg';
 import useResponsive from 'hooks/useResponsive';
 import clsx from 'clsx';
 
