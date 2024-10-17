@@ -2,23 +2,22 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useWebLogin, useComponentFlex } from 'aelf-web-login';
 import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
-import { useWalletService } from 'hooks/useWallet';
 import { useCmsInfo } from 'redux/hooks';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import useTelegram from 'hooks/useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { PortkeyAssetProvider, Asset, did } from '@portkey/did-ui-react';
+// import { LoginStatusEnum } from '@portkey/types'; // TODO: login acceleration
 
 export default function MyAsset() {
   const router = useRouter();
-  const { wallet } = useWebLogin();
-  const { logout } = useWalletService();
+  const { walletInfo, disConnectWallet } = useConnectWallet();
   const { isLogin } = useGetLoginStatus();
   const { isInTG } = useTelegram();
 
-  const { PortkeyAssetProvider, Asset } = useComponentFlex();
   const { isShowRampBuy = true, isShowRampSell = true } = useCmsInfo() || {};
 
   useEffect(() => {
@@ -27,23 +26,28 @@ export default function MyAsset() {
     }
   }, [isInTG, isLogin, router]);
 
+  // const isLoginOnChain = did.didWallet.isLoginStatus === LoginStatusEnum.SUCCESS; // TODO: login acceleration
+
   if (!isLogin) {
     return null;
   }
 
   return (
     <div className={styles.asset}>
-      <PortkeyAssetProvider originChainId={wallet?.portkeyInfo?.chainId as Chain} pin={wallet?.portkeyInfo?.pin}>
+      <PortkeyAssetProvider
+        originChainId={walletInfo?.extraInfo?.portkeyInfo?.chainId as Chain}
+        pin={walletInfo?.extraInfo?.portkeyInfo?.pin}>
         <Asset
           isShowRamp={isShowRampBuy || isShowRampSell}
           isShowRampBuy={isShowRampBuy}
           isShowRampSell={isShowRampSell}
+          // isLoginOnChain={isLoginOnChain} // TODO: login acceleration
           backIcon={<LeftOutlined reversed={undefined} />}
           onOverviewBack={() => {
             router.back();
           }}
           onDeleteAccount={() => {
-            logout();
+            disConnectWallet();
           }}
         />
       </PortkeyAssetProvider>

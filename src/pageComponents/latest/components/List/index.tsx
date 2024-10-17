@@ -14,7 +14,7 @@ import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'gr
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
-import { useWalletService } from 'hooks/useWallet';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const pageSize = 32;
 export default function List() {
@@ -25,7 +25,7 @@ export default function List() {
   const gutter = useLatestGutter();
   const column = useLatestColumns();
   const learnMoreModal = useModal(LearnMoreModal);
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const latestModal = useMemo(() => {
     return cmsInfo?.latestModal;
@@ -56,7 +56,7 @@ export default function List() {
         try {
           const catsRankProbability = await getCatsRankProbability({
             catsTraits: catsRankProbabilityParams,
-            address: addPrefixSuffix(wallet.address),
+            address: addPrefixSuffix(walletInfo?.address || ''),
           });
 
           return {
@@ -70,7 +70,7 @@ export default function List() {
         return false;
       }
     },
-    [wallet.address],
+    [walletInfo?.address],
   );
 
   const fetchData = useCallback(

@@ -1,21 +1,14 @@
-import { useWalletService } from 'hooks/useWallet';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { useTimeoutFn } from 'react-use';
-import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { useDisconnect } from 'wagmi';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import { useCmsInfo } from 'redux/hooks';
 import useGetPointsData from './hooks/useGetPointsData';
 import TokenEarnCard from './components/TokenEarnCard';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function PointsPage() {
-  const { wallet } = useWalletService();
-  const { isLogin } = useGetLoginStatus();
-  const router = useRouter();
+  const { walletInfo } = useConnectWallet();
   const [hasBoundAddress, setHasBoundAddress] = useState<boolean>(false);
   const [boundEvmAddress, setBoundEvmAddress] = useState<string>();
-  const { disconnect } = useDisconnect();
   const { jumpToPage } = useJumpToPage();
   const cmsInfo = useCmsInfo();
 
@@ -28,22 +21,15 @@ export default function PointsPage() {
 
   const toBindAddress = useCallback(async () => {
     setHasBoundAddress(true);
-    getPointsData(wallet.address, (response) => {
+    getPointsData(walletInfo?.address || '', (response) => {
       saveBoundEvmAddress(response);
     });
-  }, [getPointsData, wallet.address]);
+  }, [getPointsData, walletInfo?.address]);
 
   useEffect(() => {
     if (!data) return;
     saveBoundEvmAddress(data);
   }, [data]);
-
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      disconnect();
-      router.push('/');
-    }
-  }, 3000);
 
   if (loading) return null;
 

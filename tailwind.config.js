@@ -77,6 +77,7 @@ module.exports = {
         functionalErrorBg: 'var(--functional-error-bg)',
         functionalErrorHover: 'var(--functional-error-hover)',
         functionalErrorPressed: 'var(--functional-error-pressed)',
+        functionalYellowSub: 'var(--functional-yellow-sub)',
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
         fillMask3: 'var(--fill-mask-3)',

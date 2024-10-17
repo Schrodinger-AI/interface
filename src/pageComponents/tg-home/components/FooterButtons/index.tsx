@@ -7,9 +7,14 @@ import { ReactComponent as EarnSelectedSVG } from 'assets/img/telegram/tabs/Tab_
 import { ReactComponent as EarnUnSelectedSVG } from 'assets/img/telegram/tabs/Tab_Earn_unselected.svg';
 import { ReactComponent as FriendSelectedSVG } from 'assets/img/telegram/tabs/Tab_Friends_selected.svg';
 import { ReactComponent as FriendUnSelectedSVG } from 'assets/img/telegram/tabs/Tab_Friends_unselected.svg';
+import HomeIcon from 'assets/img/telegram/tabs/home.png';
+import TasksIcon from 'assets/img/telegram/tabs/tasks.png';
+import FriendsIcon from 'assets/img/telegram/tabs/friends.png';
+import EarnIcon from 'assets/img/telegram/tabs/earn.png';
 import Link from 'next/link';
 import { Flex } from 'antd';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 export default function FooterButtons() {
   const pathname = usePathname();
@@ -27,7 +32,8 @@ export default function FooterButtons() {
               ) : (
                 <HomeUnSelectedSVG className="w-[40px] h-[40px]" />
               )}
-              <span className="dark-btn-font leading-[18px]">Home</span>
+
+              <Image src={HomeIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </Link>
           <Link href={isLogin ? '/telegram/tasks' : '/telegram/tasks'} className="flex-1">
@@ -37,7 +43,7 @@ export default function FooterButtons() {
               ) : (
                 <TasksUnSelectedSVG className="w-[40px] h-[40px]" />
               )}
-              <span className="dark-btn-font leading-[18px]">Task</span>
+              <Image src={TasksIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </Link>
           <Link href={isLogin ? '/tg-referral' : ''} className="flex-1">
@@ -47,7 +53,7 @@ export default function FooterButtons() {
               ) : (
                 <FriendUnSelectedSVG className="w-[40px] h-[40px]" />
               )}
-              <span className="dark-btn-font leading-[18px]">Friends</span>
+              <Image src={FriendsIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </Link>
           <Link href={isLogin ? '/summary-points' : ''} className="flex-1">
@@ -57,7 +63,7 @@ export default function FooterButtons() {
               ) : (
                 <EarnUnSelectedSVG className="w-[40px] h-[40px]" />
               )}
-              <span className="dark-btn-font leading-[18px]">Earn</span>
+              <Image src={EarnIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </Link>
         </div>

@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { ReactComponent as ArrowSVG } from 'assets/img/arrow.svg';
 import { formatNumber, formatTokenPrice, formatUSDPrice } from 'utils/format';
 import CommonCopy from 'components/CommonCopy';
-import { useWalletService } from 'hooks/useWallet';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useForestSdk from 'hooks/useForestSdk';
@@ -23,6 +22,7 @@ import Loading from 'components/Loading';
 import { COLLECTION_NAME } from 'constants/common';
 import { ReactComponent as RefreshSVG } from 'assets/img/telegram/refresh.svg';
 import { timesDecimals } from 'utils/calculate';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function ListingInfo({
   symbol,
@@ -37,7 +37,7 @@ export default function ListingInfo({
   theme?: TModalTheme;
   onRefresh: () => void;
 }) {
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const [expend, setExpend] = useState(true);
   const { cancelList } = useCancel({});
 
@@ -102,19 +102,19 @@ export default function ListingInfo({
     if (listingState === 'all') {
       refreshListing({ page: 1 });
     } else {
-      refreshListing({ address: wallet.address, page: 1 });
+      refreshListing({ address: walletInfo?.address, page: 1 });
     }
-  }, [listingState, refreshListing, wallet.address]);
+  }, [listingState, refreshListing, walletInfo?.address]);
 
   const onPageChange = useCallback(
     ({ page }: { page?: number }) => {
       if (listingState === 'all') {
         onChange({ page });
       } else {
-        onChange({ address: wallet.address, page });
+        onChange({ address: walletInfo?.address, page });
       }
     },
-    [listingState, onChange, wallet.address],
+    [listingState, onChange, walletInfo?.address],
   );
 
   useEffect(() => {
@@ -214,7 +214,7 @@ export default function ListingInfo({
                                 From
                               </span>
                               <Flex align="center">
-                                {list.ownerAddress === wallet.address ? (
+                                {list.ownerAddress === walletInfo?.address ? (
                                   <span className={clsx(isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>you</span>
                                 ) : (
                                   <span
@@ -228,7 +228,7 @@ export default function ListingInfo({
                                 />
                               </Flex>
                             </Flex>
-                            {list.ownerAddress !== wallet.address && listingState !== 'my' && (
+                            {list.ownerAddress !== walletInfo?.address && listingState !== 'my' && (
                               <div className="w-full">
                                 <Button
                                   type="primary"
@@ -241,7 +241,7 @@ export default function ListingInfo({
                                 </Button>
                               </div>
                             )}
-                            {list.ownerAddress === wallet.address ? (
+                            {list.ownerAddress === walletInfo?.address ? (
                               <div className="w-full">
                                 <Button
                                   type="primary"
@@ -304,7 +304,7 @@ export default function ListingInfo({
       onPageChange,
       getListingData,
       elfPrice,
-      wallet.address,
+      walletInfo?.address,
       onClick,
       onCancel,
     ],

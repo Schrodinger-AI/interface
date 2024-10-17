@@ -24,7 +24,7 @@ export default function BalanceItem({ symbol, amount, onBuy }: IBalanceItemProps
           gap={2}
           justify="center"
           align="center"
-          className="bg-fillMask1 h-[20px] pl-[2px] pr-[15px] rounded-[4px]"
+          className="bg-fillMask1 font-bold h-[20px] pl-[2px] pr-[15px] rounded-[4px]"
           onClick={onBuy}>
           {symbol === 'SGR' ? <AddGoldSVG /> : <AddSilverSVG />}
           {amountText}

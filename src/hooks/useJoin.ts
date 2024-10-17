@@ -7,19 +7,21 @@ import { IContractError } from 'types';
 import { getDomain } from 'utils';
 import { TransactionFeeNotEnough } from 'utils/formatError';
 import useAutoJoin from './useAutoJoin';
-import { useWebLogin } from 'aelf-web-login';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import useUserIsInChannel from './useUserIsInChannel';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
-  const { wallet } = useWebLogin();
+  const { walletInfo } = useConnectWallet();
   const [notAutoJoin] = useAutoJoin();
   const { showSpecialCatActivity } = useShowSpecialCatActivity();
+  const { getUserChannelStatus } = useUserIsInChannel();
 
-  const toJoin = useCallback(async () => {
+  const toJoin = async () => {
     return new Promise((resolve) => {
       const referrerAddress = TelegramPlatform.getInitData()?.start_param;
 
@@ -59,12 +61,12 @@ export const useCheckJoined = () => {
         },
       });
     });
-  }, [JoinModalInit, showSpecialCatActivity]);
+  };
 
   const getJoinStatus = useCallback(
     async (address?: string) => {
       try {
-        const isJoin = await GetJoinRecord(address || wallet.address);
+        const isJoin = await GetJoinRecord(address || walletInfo?.address || '');
         store.dispatch(setIsJoin(isJoin));
         return isJoin;
       } catch (error) {
@@ -73,20 +75,21 @@ export const useCheckJoined = () => {
         return false;
       }
     },
-    [wallet.address],
+    [walletInfo?.address],
   );
 
   const checkJoined = useCallback(
     async function (address: string) {
       if (!address) return;
       const isJoin = await getJoinStatus(address);
-      if (isJoin || notAutoJoin) {
+      const isJoinChannel = await getUserChannelStatus();
+      if (isJoinChannel && (isJoin || notAutoJoin)) {
         showSpecialCatActivity();
         return isJoin;
       }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin, getUserChannelStatus],
   );
 
   return { checkJoined, toJoin, getJoinStatus };

@@ -16,8 +16,8 @@ import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
 import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
 import { useRouter } from 'next/navigation';
-import { useWalletService } from 'hooks/useWallet';
 import useTelegram from 'hooks/useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function CancelAdoptModal({
   nftInfo,
@@ -47,7 +47,7 @@ function CancelAdoptModal({
   const [loading, setLoading] = useState<boolean>(false);
   const intervalFetch = useIntervalGetSchrodingerDetail();
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { isInTG } = useTelegram();
 
   const originSymbol = useMemo(() => getOriginSymbol(nftInfo.symbol), [nftInfo.symbol]);
@@ -62,7 +62,7 @@ function CancelAdoptModal({
       intervalFetch.remove();
       cardResultModal.hide();
       router.replace(
-        `/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+        `/detail?symbol=${originSymbol}&from=my&address=${walletInfo?.address}&source=${source}&prePage=${prePage}`,
       );
     } else {
       if (isInTG) {
@@ -71,7 +71,7 @@ function CancelAdoptModal({
         router.replace('/');
       }
     }
-  }, [cardResultModal, isInTG, intervalFetch, originSymbol, prePage, router, source, wallet.address]);
+  }, [cardResultModal, isInTG, intervalFetch, originSymbol, prePage, router, source, walletInfo?.address]);
 
   const showResultModal = useCallback(
     ({ status, onConfirm }: { status: Status; onConfirm: () => void }) => {

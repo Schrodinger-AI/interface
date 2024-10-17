@@ -54,6 +54,7 @@ function TopBanner() {
               <div
                 key={index}
                 onClick={() => {
+                  if (item.linkType === 'buyModal') return;
                   jumpToPage({
                     link: item.link,
                     linkType: item.linkType,

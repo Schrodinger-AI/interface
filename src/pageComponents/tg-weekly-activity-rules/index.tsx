@@ -15,11 +15,11 @@ export default function TgWeeklyActivityRules() {
         {tgWeeklyActivityRulesText?.map((item, index) => {
           return (
             <Flex key={index} vertical gap={8}>
-              <h3 className="text-lg font-semibold text-pixelsTertiaryTextPurple">{item?.title}</h3>
+              <h3 className="text-lg font-semibold text-functionalYellowSub">{item?.title}</h3>
               {typeof item?.content === 'string' ? (
                 <p>{item?.content}</p>
               ) : (
-                <ul className="list-inside list-none">
+                <ul className="list-inside list-none text-neutralSecondary">
                   {item.content.map((text) => {
                     return <li key={text}>{text}</li>;
                   })}

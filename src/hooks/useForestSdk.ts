@@ -1,16 +1,16 @@
 import { useBuy, useSell } from 'forest-ui-react';
 import getNftInfo from 'utils/getNftInfo';
-import { useWalletService } from './useWallet';
 import useLoading from './useLoading';
 import { useCmsInfo } from 'redux/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function useForestSdk({ symbol, onViewNft }: { symbol: string; onViewNft: () => void }) {
   const [nftInfo, setNftInfo] = useState<INftInfo>();
   const { buyNow } = useBuy({ nftInfo, onViewNft });
   const { sell } = useSell({ nftInfo, onViewNft });
   const { showLoading, closeLoading } = useLoading();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { curChain } = useCmsInfo() || {};
 
   const nftId = useMemo(() => {
@@ -18,15 +18,15 @@ export default function useForestSdk({ symbol, onViewNft }: { symbol: string; on
   }, [curChain, symbol]);
 
   const initNftInfo = useCallback(async () => {
-    if (!nftId || !wallet.address) return;
+    if (!nftId || !walletInfo?.address) return;
     showLoading();
     const nftInfo = await getNftInfo({
       nftId,
-      address: wallet.address,
+      address: walletInfo.address,
     });
     closeLoading();
     if (nftInfo) setNftInfo(nftInfo);
-  }, [closeLoading, nftId, showLoading, wallet.address]);
+  }, [closeLoading, nftId, showLoading, walletInfo?.address]);
 
   useEffect(() => {
     initNftInfo();

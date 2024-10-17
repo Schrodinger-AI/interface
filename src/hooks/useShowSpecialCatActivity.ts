@@ -1,16 +1,16 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 import { useModal } from '@ebay/nice-modal-react';
 import SpecialCatActivityTipsModal from 'components/SpecialCatActivityTipsModal';
 import { sleep } from '@portkey/utils';
 import BigNumber from 'bignumber.js';
 import useTelegram from './useTelegram';
-import { useWalletService } from './useWallet';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const useShowSpecialCatActivity = () => {
   const cmsInfo = useCmsInfo();
   const { isInTG } = useTelegram();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const specialCatActivityTipsModal = useModal(SpecialCatActivityTipsModal);
 
   const toShow = useCallback(
@@ -38,16 +38,21 @@ export const useShowSpecialCatActivity = () => {
     return false;
   }, [cmsInfo?.specialCatActivity]);
 
-  const addressHash = useMemo(() => {
-    return Buffer.from(wallet.address).toString('hex');
-  }, [wallet.address]);
+  const getAddressHash = (address?: string) => {
+    if (!address) return;
+    const hash = Buffer.from(address).toString('hex');
+    return hash;
+  };
 
   const saveLoggedInAccounts = useCallback(
     (loggedInAccounts: string[]) => {
-      const accounts = [...loggedInAccounts, addressHash];
-      localStorage.setItem('specialCatActivityHash', JSON.stringify(accounts));
+      const addressHash = getAddressHash(walletInfo?.address);
+      if (addressHash) {
+        const accounts = [...loggedInAccounts, addressHash];
+        localStorage.setItem('specialCatActivityHash', JSON.stringify(accounts));
+      }
     },
-    [addressHash],
+    [walletInfo?.address],
   );
 
   const showSpecialCatActivity = useCallback(async () => {
@@ -63,6 +68,7 @@ export const useShowSpecialCatActivity = () => {
     const activityStartTime = String(cmsInfo?.specialCatActivity?.time?.[0]);
 
     if (isEnded || notStarted) return;
+    const addressHash = getAddressHash(walletInfo?.address);
     const addressHasShow = loggedInAccounts.includes(addressHash);
     if (activityStartTime && !showSpecialCatActivityStatus) {
       if (!addressHasShow) saveLoggedInAccounts(loggedInAccounts);
@@ -77,7 +83,7 @@ export const useShowSpecialCatActivity = () => {
       toShow(activityStartTime);
       return;
     }
-  }, [addressHash, cmsInfo?.specialCatActivity?.time, isEnded, notStarted, saveLoggedInAccounts, toShow]);
+  }, [walletInfo?.address, cmsInfo?.specialCatActivity?.time, isEnded, notStarted, saveLoggedInAccounts, toShow]);
 
   return { showSpecialCatActivity };
 };

@@ -4,7 +4,7 @@ import { useResponsive } from 'hooks/useResponsive';
 import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Button } from 'aelf-design';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { useGetSignature } from 'hooks/useGetSignature';
 import { ReactComponent as LinkIcon } from 'assets/img/icons/link.svg';
 import { addressRelation, bindAddressActivity } from 'api/request';
@@ -13,6 +13,7 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import clsx from 'clsx';
 import { OmittedType, getOmittedStr } from 'utils/addressFormatting';
 import CommonCopy from 'components/CommonCopy';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function BindEvm() {
   const { isLG } = useResponsive();
@@ -24,7 +25,7 @@ function BindEvm() {
   const [sourceChainAddress, setSourceChainAddress] = useState<string>('');
   const [bindLoading, setBindLoading] = useState<boolean>(false);
   const [hasBind, setHasBind] = useState<boolean>(false);
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { isLogin } = useGetLoginStatus();
   const { getSignInfo } = useGetSignature();
   const searchParams = useSearchParams();
@@ -59,12 +60,12 @@ function BindEvm() {
     try {
       if (bindLoading) return;
       setBindLoading(true);
-      const info = `${wallet.address}-${evmAddress}-${activityId}`;
+      const info = `${walletInfo?.address}-${evmAddress}-${activityId}`;
       const res = await getSignInfo(info);
-      if (res?.publicKey && res.signature && evmAddress && activityId) {
-        console.log('=====account SignInfo', res, evmAddress, wallet.address, activityId);
+      if (res?.publicKey && res.signature && evmAddress && activityId && walletInfo?.address) {
+        console.log('=====account SignInfo', res, evmAddress, walletInfo.address, activityId);
         await bindAddressActivity({
-          aelfAddress: wallet.address,
+          aelfAddress: walletInfo.address,
           sourceChainAddress: evmAddress,
           signature: res.signature,
           publicKey: res.publicKey,
@@ -73,14 +74,14 @@ function BindEvm() {
         setSourceChainAddress(evmAddress);
         setEvmAddress(evmAddress);
         setHasBind(true);
-        // getAddressRelation(wallet.address, activityId);
+        // getAddressRelation(walletInfo.address, activityId);
       }
     } catch (error) {
       /* empty */
       console.log('=====error', error);
     }
     setBindLoading(false);
-  }, [activityId, bindLoading, evmAddress, getSignInfo, wallet.address]);
+  }, [activityId, bindLoading, evmAddress, getSignInfo, walletInfo?.address]);
 
   const toConnect = useCallback(() => {
     if (isLogin) {
@@ -161,13 +162,13 @@ function BindEvm() {
   }, [account]);
 
   useEffect(() => {
-    if (wallet.address && activityId) {
-      getAddressRelation(wallet.address, activityId);
+    if (walletInfo?.address && activityId) {
+      getAddressRelation(walletInfo.address, activityId);
     } else {
       disconnect();
       setHasBind(false);
     }
-  }, [wallet.address, activityId, disconnect]);
+  }, [walletInfo?.address, activityId, disconnect]);
 
   return (
     <div className="w-full h-full flex items-center justify-between">

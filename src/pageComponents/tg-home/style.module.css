@@ -1,7 +1,7 @@
 .pageContainer {
   /* @apply w-full flex flex-col items-center bg-[url('../../assets/img/telegram/star-bg.png')] bg-center bg-cover; */
   background-image: url('../../assets/img/telegram/bg-light2.png'), url('../../assets/img/telegram/bg-light.png'), url('../../assets/img/telegram/bg-mask.png'), url('../../assets/img/telegram/star-bg.png');
-  background-position: center 62%, center, center, center;
+  background-position: center 64%, center, center, center;
   background-size: 70.7vw 49.1vw, cover, cover, cover;
   background-repeat: no-repeat;
 }

@@ -185,6 +185,8 @@ export type TGlobalConfigType = {
   showNftQuantity?: number;
   buySGRFromETransfer?: string;
   telegramBotId?: string;
+  telegramBotToken?: string;
+  telegramBotChatId?: string;
   etransferConfig: {
     supportChainIds: string[];
     networkType: NetworkType;
@@ -221,7 +223,6 @@ export enum LoginState {
 
 export type TLoginStatusType = {
   loginStatus: {
-    walletStatus: LoginState;
     isConnectWallet: boolean;
     hasToken: boolean;
     isLogin: boolean;

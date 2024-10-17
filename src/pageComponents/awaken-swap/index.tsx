@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
-import { useTimeoutFn } from 'react-use';
 import styles from './style.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
@@ -13,11 +12,12 @@ import dynamic from 'next/dynamic';
 import { ComponentType, Swap } from '@portkey/trader-react-ui';
 import { AwakenSwapper, IPortkeySwapperAdapter } from '@portkey/trader-core';
 import { getRpcUrls } from 'constants/url';
-import { useWalletService } from 'hooks/useWallet';
-import { WalletType } from 'aelf-web-login';
 import useSwapService from './hooks/useSwapService';
 import '@portkey/trader-react-ui/dist/assets/index.css';
 import './style.css';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 const DarkModal = dynamic(
   async () => {
@@ -32,10 +32,11 @@ export default function AwakenSwap() {
   const cmsInfo = useCmsInfo();
   const searchParams = useSearchParams();
   const { isLogin } = useGetLoginStatus();
-  const { walletType } = useWalletService();
+  const { walletType } = useConnectWallet();
   const router = useRouter();
   const { isInTG } = useTelegram();
   const { getOptions, tokenApprove } = useSwapService();
+  useOnFinish();
 
   const [loading, setLoading] = useState(false);
   const [awakenInstance, setAwakenInstance] = useState<IPortkeySwapperAdapter>();
@@ -48,21 +49,13 @@ export default function AwakenSwap() {
   }, [searchParams]);
 
   const awakenProps = useMemo(() => {
-    if (!awakenInstance || (walletType === WalletType.portkey && !tokenApprove)) return undefined;
+    if (!awakenInstance || (walletType === WalletTypeEnum.aa && !tokenApprove)) return undefined;
     return {
       instance: awakenInstance,
-      tokenApprove: walletType === WalletType.portkey ? tokenApprove : undefined,
+      tokenApprove: walletType === WalletTypeEnum.aa ? tokenApprove : undefined,
       getOptions,
     };
   }, [awakenInstance, getOptions, tokenApprove, walletType]);
-
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      if (!isInTG) {
-        router.replace('/');
-      }
-    }
-  }, 4000);
 
   useEffect(() => {
     setLoading(true);
