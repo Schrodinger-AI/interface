@@ -1,4 +1,3 @@
-import { useWalletService } from 'hooks/useWallet';
 import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from 'aelf-design';
@@ -10,7 +9,6 @@ import { divDecimals } from 'utils/calculate';
 import { useAdoptConfirm } from 'hooks/Adopt/useAdoptConfirm';
 import { useCmsInfo } from 'redux/hooks';
 import { formatTokenPrice } from 'utils/format';
-import { useTimeoutFn } from 'react-use';
 import { checkAIService, getStrayCats } from 'api/request';
 import { useModal } from '@ebay/nice-modal-react';
 import SyncAdoptModal from 'components/SyncAdoptModal';
@@ -23,6 +21,7 @@ import { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
 import CommonTable from 'components/CommonTable';
 import CommonPagination from 'components/CommonPagination';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const textStyle =
   'block max-w-[84px] lg:max-w-[364px] overflow-hidden whitespace-nowrap text-ellipsis text-sm font-medium';
@@ -37,7 +36,7 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const { showLoading, closeLoading } = useLoading();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const [dataSource, setDataSource] = useState<TStrayCats[]>();
   const [totalCount, setTotalCount] = useState<number>(30);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -57,11 +56,11 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
 
   const getStrayCatsData = useCallback(async () => {
     try {
-      if (!wallet.address) return;
+      if (!walletInfo?.address) return;
       setLoading(true);
       const res = await getStrayCats({
         chainId: cmsInfo?.curChain || '',
-        adopter: wallet.address,
+        adopter: walletInfo.address,
         skipCount: (pageNum - 1) * pageSize,
         maxResultCount: pageSize,
       });
@@ -70,7 +69,7 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
     } finally {
       setLoading(false);
     }
-  }, [cmsInfo?.curChain, getStrayCats, pageNum, pageSize, wallet.address]);
+  }, [cmsInfo?.curChain, pageNum, pageSize, walletInfo?.address]);
 
   useEffect(() => {
     getStrayCatsData();
@@ -141,14 +140,14 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
           },
           theme,
           adoptOnly: false,
-          account: wallet.address,
+          account: walletInfo?.address || '',
           hideNext: true,
         });
       } catch (error) {
         closeLoading();
       }
     },
-    [adoptConfirm, checkAIServer, closeLoading, formatAdoptConfirmParams, showLoading, wallet.address],
+    [adoptConfirm, checkAIServer, closeLoading, formatAdoptConfirmParams, showLoading, walletInfo?.address],
   );
 
   const columns: TableColumnsType<TStrayCats> = useMemo(
@@ -238,12 +237,6 @@ export default function StrayCatsPage(props?: { theme?: TModalTheme }) {
       return columns;
     }
   };
-
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      router.push('/');
-    }
-  }, 3000);
 
   return (
     <div className="w-full flex flex-col items-center">

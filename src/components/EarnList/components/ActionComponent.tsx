@@ -1,7 +1,6 @@
 import { useAccountModal, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useGetSignature } from 'hooks/useGetSignature';
 import { bindAddress as bindEvmAddress } from 'api/request';
-import { useWalletService } from 'hooks/useWallet';
 import { Button, HashAddress, ToolTip } from 'aelf-design';
 import { useResponsive } from 'hooks/useResponsive';
 import { useCallback, useEffect, useState } from 'react';
@@ -14,6 +13,7 @@ import { OmittedType, getOmittedStr } from 'utils/addressFormatting';
 import CommonCopy from 'components/CommonCopy';
 import { TCustomizationItemType, TGlobalConfigType } from 'redux/types/reducerTypes';
 import useTelegram from 'hooks/useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const jumpToEcoEarn = (params?: {
   isInTG?: boolean;
@@ -38,7 +38,7 @@ function ActionComponent({
 }) {
   const { symbol } = data;
   const { getSignInfo } = useGetSignature();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const [connected, setConnected] = useState<boolean>(false);
   const [evmAddress, setEvmAddress] = useState<string>('');
   const [bindLoading, setBindLoading] = useState<boolean>(false);
@@ -58,13 +58,13 @@ function ActionComponent({
 
   const sign = useCallback(async () => {
     try {
-      if (bindLoading) return;
+      if (bindLoading || !walletInfo?.address) return;
       setBindLoading(true);
-      const info = `${wallet.address}-${evmAddress}`;
+      const info = `${walletInfo.address}-${evmAddress}`;
       const res = await getSignInfo(info);
       if (res?.publicKey && res.signature && evmAddress) {
         await bindEvmAddress({
-          aelfAddress: wallet.address,
+          aelfAddress: walletInfo.address,
           evmAddress,
           signature: res.signature,
           publicKey: res.publicKey,
@@ -75,7 +75,7 @@ function ActionComponent({
       console.log('=====account error', error);
     }
     setBindLoading(false);
-  }, [bindAddress, bindLoading, evmAddress, getSignInfo, wallet.address]);
+  }, [bindAddress, bindLoading, evmAddress, getSignInfo, walletInfo?.address]);
 
   if (cmsInfo?.needBindEvm && cmsInfo.needBindEvm.includes(symbol) && !hasBoundAddress) {
     return (

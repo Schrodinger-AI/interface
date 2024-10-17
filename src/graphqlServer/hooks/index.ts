@@ -1,8 +1,6 @@
 import {
   getLatestSchrodingerList,
   getSchrodingerDetail,
-  // getSchrodingerList,
-  // getStrayCats,
   getSubTraits,
   getTraits,
   getAllTraits,
@@ -18,14 +16,6 @@ export const useGraphQLClient = () => {
   const cmsInfo = useCmsInfo();
   return getGraphQLClient(cmsInfo?.graphqlSchrodinger || '');
 };
-
-// export const useGetSchrodingerList = () => {
-//   const client = useGraphQLClient();
-//   return useCallback(
-//     (params: TGraphQLParamsType<typeof getSchrodingerList>) => getSchrodingerList(client, params),
-//     [client],
-//   );
-// };
 
 export const useGetSchrodingerDetail = () => {
   const client = useGraphQLClient();
@@ -54,11 +44,6 @@ export const useGetSubAllTraits = () => {
   const client = useGraphQLClient();
   return useCallback((params: TGraphQLParamsType<typeof getAllSubTraits>) => getAllSubTraits(client, params), [client]);
 };
-
-// export const useGetStrayCats = () => {
-//   const client = useGraphQLClient();
-//   return useCallback((params: TGraphQLParamsType<typeof getStrayCats>) => getStrayCats(client, params), [client]);
-// };
 
 export const useGetLatestSchrodingerList = () => {
   const client = useGraphQLClient();

@@ -2,7 +2,7 @@ import { Dropdown } from 'aelf-design';
 import styles from '../style.module.css';
 import { ICompassProps } from '../type';
 import { CompassLink, CompassText } from './CompassLink';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import clsx from 'clsx';
 import { ReactComponent as ArrowDownIcon } from 'assets/img/arrow.svg';
 import React, { useMemo, useState } from 'react';

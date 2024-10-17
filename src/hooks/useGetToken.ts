@@ -1,4 +1,3 @@
-import { useWebLogin, WalletType, WebLoginState } from 'aelf-web-login';
 import { useCallback, useMemo } from 'react';
 import { storages } from 'constants/storages';
 import { fetchToken } from 'api/request';
@@ -12,6 +11,8 @@ import { formatErrorMsg, LoginFailed } from 'utils/formatError';
 import { resetLoginStatus, setLoginStatus } from 'redux/reducer/loginStatus';
 import { store } from 'redux/store';
 import { appName } from 'constants/common';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 const AElf = require('aelf-sdk');
 const hexDataCopywriter = `Welcome to Schrodinger! Click to sign in to the world's first AI-powered 404 NFT platform! This request will not trigger any blockchain transaction or cost any gas fees.
@@ -19,14 +20,10 @@ const hexDataCopywriter = `Welcome to Schrodinger! Click to sign in to the world
 signature: `;
 
 export const useGetToken = () => {
-  const { loginState, wallet, getSignature, walletType, logout } = useWebLogin();
+  const { walletInfo, walletType, disConnectWallet, getSignature, isConnected } = useConnectWallet();
   const { showLoading, closeLoading } = useLoading();
   const { getSignatureAndPublicKey } = useDiscoverProvider();
   const { checkJoined } = useCheckJoined();
-
-  const isConnectWallet = useMemo(() => {
-    return loginState === WebLoginState.logined;
-  }, [loginState]);
 
   const getTokenFromServer: (props: {
     params: ITokenParams;
@@ -39,7 +36,7 @@ export const useGetToken = () => {
       try {
         const res = await fetchToken(params);
         needLoading && closeLoading();
-        if (isConnectWallet) {
+        if (isConnected && walletInfo) {
           store.dispatch(
             setLoginStatus({
               hasToken: true,
@@ -49,7 +46,7 @@ export const useGetToken = () => {
           localStorage.setItem(
             storages.accountInfo,
             JSON.stringify({
-              account: wallet.address,
+              account: walletInfo?.address || '',
               token: res.access_token,
               expirationTime: Date.now() + res.expires_in * 1000,
             }),
@@ -72,42 +69,42 @@ export const useGetToken = () => {
         } else {
           message.error(LoginFailed);
           console.log('=====token error', error);
-          isConnectWallet && logout({ noModal: true });
+          isConnected && disConnectWallet();
           needLoading && closeLoading();
           return '';
         }
       }
     },
-    [closeLoading, isConnectWallet, logout, showLoading, wallet.address],
+    [closeLoading, disConnectWallet, isConnected, showLoading, walletInfo],
   );
 
   const checkTokenValid = useCallback(() => {
-    if (loginState !== WebLoginState.logined) return false;
+    if (!isConnected) return false;
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
 
-    if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === wallet.address) {
+    if (accountInfo?.token && Date.now() < accountInfo?.expirationTime && accountInfo.account === walletInfo?.address) {
       return true;
     } else {
       return false;
     }
-  }, [loginState, wallet.address]);
+  }, [isConnected, walletInfo?.address]);
 
   const getToken: (params?: { needLoading?: boolean }) => Promise<undefined | string> = useCallback(
     async (params?: { needLoading?: boolean }) => {
       const { needLoading } = params || {};
-      if (loginState !== WebLoginState.logined) return;
+      if (!isConnected || !walletInfo || !walletInfo?.address) return;
 
       if (checkTokenValid()) {
-        checkJoined(wallet.address);
+        checkJoined(walletInfo.address);
         return;
       } else {
         localStorage.removeItem(storages.accountInfo);
       }
       const timestamp = Date.now();
 
-      // const signInfo = AElf.utils.sha256(`${wallet.address}-${timestamp}`);
+      // const signInfo = AElf.utils.sha256(`${walletInfo.address}-${timestamp}`);
 
-      const signStr = `${wallet.address}-${timestamp}`;
+      const signStr = `${walletInfo.address}-${timestamp}`;
       const hexDataStr = hexDataCopywriter + signStr;
       const hexData = Buffer.from(hexDataStr).toString('hex');
       const portkeyHexData = Buffer.from(signStr).toString('hex');
@@ -117,7 +114,7 @@ export const useGetToken = () => {
       let signature = '';
       let source = '';
 
-      if (walletType === WalletType.discover) {
+      if (walletType === WalletTypeEnum.discover) {
         try {
           const { pubKey, signatureStr } = await getSignatureAndPublicKey(hexData, signInfo);
           publicKey = pubKey || '';
@@ -127,25 +124,25 @@ export const useGetToken = () => {
           const resError = error as IContractError;
           const errorMessage = formatErrorMsg(resError).errorMessage.message;
           message.error(errorMessage);
-          isConnectWallet && logout({ noModal: true });
+          isConnected && disConnectWallet();
           return;
         }
       } else {
         const sign = await getSignature({
           appName,
-          address: wallet.address,
-          signInfo: walletType === WalletType.portkey ? portkeyHexData : signInfo,
+          address: walletInfo?.address,
+          signInfo: walletType === WalletTypeEnum.aa ? portkeyHexData : signInfo,
         });
         if (sign?.errorMessage) {
           const errorMessage = formatErrorMsg(sign?.errorMessage as unknown as IContractError).errorMessage.message;
           message.error(errorMessage);
-          isConnectWallet && logout({ noModal: true });
+          isConnected && disConnectWallet();
           return;
         }
 
-        publicKey = wallet.publicKey || '';
-        signature = sign.signature;
-        if (walletType === WalletType.elf) {
+        publicKey = walletInfo?.extraInfo?.publicKey || '';
+        signature = sign?.signature || '';
+        if (walletType === WalletTypeEnum.elf) {
           source = 'nightElf';
         } else {
           source = 'portkey';
@@ -160,25 +157,23 @@ export const useGetToken = () => {
           signature,
           source,
           publickey: publicKey,
-          address: wallet.address,
+          address: walletInfo?.address,
         } as ITokenParams,
         needLoading,
       });
 
-      checkJoined(wallet.address);
+      checkJoined(walletInfo?.address);
       return res;
     },
     [
-      loginState,
-      checkJoined,
-      wallet.address,
-      wallet.publicKey,
+      isConnected,
+      walletInfo,
       checkTokenValid,
       walletType,
       getTokenFromServer,
+      checkJoined,
       getSignatureAndPublicKey,
-      isConnectWallet,
-      logout,
+      disConnectWallet,
       getSignature,
     ],
   );
