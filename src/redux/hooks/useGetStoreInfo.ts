@@ -7,6 +7,8 @@ const useGetStoreInfo = () => {
     cmsInfo: info.cmsInfo,
     unreadMessagesCount: info.unreadMessagesCount,
     hasNewActivities: info.hasNewActivities,
+    schrodingerDetail: info.catDetailInfo,
+    voteInfo: info.voteInfo,
   };
 };
 

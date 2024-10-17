@@ -1,6 +1,6 @@
 'use client';
 
-import { getCatDetail } from 'api/request';
+import { fetchVoteInfo, getCatDetail } from 'api/request';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useWalletService } from 'hooks/useWallet';
@@ -21,16 +21,19 @@ import { TelegramPlatform } from '@portkey/did-ui-react';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 import { AcceptReferral } from 'contract/schrodinger';
-import { store } from 'redux/store';
-import { setIsJoin } from 'redux/reducer/info';
+import { dispatch, store } from 'redux/store';
+import { setCatDetailInfo, setIsJoin, setVoteInfo } from 'redux/reducer/info';
 import { useBuyToken } from 'hooks/useBuyToken';
 import PurchaseMethodModal from 'components/PurchaseMethodModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
 import useTelegram from 'hooks/useTelegram';
 import useBalanceService from './hooks/useBalanceService';
+import { IVoteInfo } from 'redux/types/reducerTypes';
+import { useRouter } from 'next/navigation';
 
 export default function TgHome() {
+  const router = useRouter();
   const adoptHandler = useAdoptHandler();
   const { wallet } = useWalletService();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
@@ -40,6 +43,10 @@ export default function TgHome() {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
+  const [voteDetail, setVoteDetail] = useState<IVoteInfo>({
+    countdown: 1,
+    votes: [],
+  });
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
@@ -71,6 +78,16 @@ export default function TgHome() {
     }
   }, [cmsInfo?.curChain, isLogin, wallet.address]);
 
+  const getVoteDetail = useCallback(async () => {
+    try {
+      const res = await fetchVoteInfo();
+      setVoteDetail(res);
+      dispatch(setVoteInfo(res));
+    } catch (error) {
+      /* empty */
+    }
+  }, []);
+
   const getNotice = useCallback(async () => {
     try {
       const res = await getNoticeData({
@@ -83,6 +100,11 @@ export default function TgHome() {
   }, [getNoticeData]);
 
   const OpenAdoptModal = useCallback(() => {
+    if (voteDetail?.countdown > 0) {
+      dispatch(setCatDetailInfo(schrodingerDetail));
+      router.push('/telegram/battle');
+      return;
+    }
     if (!wallet.address || !schrodingerDetail) return;
     if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
       const description = `Insufficient funds, need more $SGR. The cat adoption costs ${DIRECT_ADOPT_GEN9_MIN} $SGR minimum. `;
@@ -113,6 +135,7 @@ export default function TgHome() {
       theme: 'dark',
       prePage: 'adoptModal',
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     adoptHandler,
     checkBalanceAndJump,
@@ -121,6 +144,7 @@ export default function TgHome() {
     schrodingerDetail,
     sgrBalance,
     wallet.address,
+    voteDetail,
   ]);
 
   const sendAdTrack = (address: string) => {
@@ -180,6 +204,10 @@ export default function TgHome() {
   useEffect(() => {
     getNotice();
   }, [getNotice]);
+
+  useEffect(() => {
+    getVoteDetail();
+  }, [getVoteDetail]);
 
   useEffect(() => {
     if (isInTelegram()) {

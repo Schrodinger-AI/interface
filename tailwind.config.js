@@ -141,6 +141,9 @@ module.exports = {
         darkPixelsShadow: '4px 4px 4px 0 #262284',
         floatingButtonsShadow: '0px 2px 0px 0px #6D68FF inset, 0px 2px 0px 0px rgb(0 0 0 / 10%)',
         tgModalShadow: '0px 2px 0px 0px #6D68FF inset, 0px -4px 0px 0px #2F2C89 inset',
+        btnShadow: '0px 2px 0px 0px rgb(0 0 0 / 25%)',
+        compareRightShadow: '0px 2px 0px 0px #FA5961 inset, 0px -2px 0px 0px rgb(0 0 0 / 40%) inset',
+        compareLeftShadow: '0px 2px 0px 0px #485EC9 inset, 0px -2px 0px 0px rgb(0 0 0 / 40%) inset',
       },
       keyframes: {
         loading: {
@@ -153,6 +156,13 @@ module.exports = {
         inviteCardBg: 'linear-gradient(180deg, #DFECFE 0%, #FFFFFF 50.18%)',
         floatingButtonsBg: 'linear-gradient(0deg, #4743C5 0%, #1D1A74 95.83%)',
         tgModalBg: 'radial-gradient(50% 50% at 50% 50%, #4C48D9 0%, #3C38AF 100%)',
+        successBtnBg: 'linear-gradient(180deg, #50D500 0%, #36B027 48.96%, #47CB19 111.78%)',
+        defaultBtnBg: 'linear-gradient(180deg, #615DF4 0%, #544FE1 48.96%, #625DFD 111.78%)',
+        dangerBtnBg: 'linear-gradient(180deg, #EB4951 0%, #CE2C34 48.96%, #EB4951 111.78%)',
+        battaleBg:
+          'radial-gradient(125.45% 50% at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%), radial-gradient(50% 34.26% at 50% 50%, #2F2C89 0%, #25236C 100%)',
+        compareLeftBg: 'linear-gradient(90deg, #485EC9 0%, #657FFC 100%)',
+        compareRightBg: 'linear-gradient(90deg, #EB4951 50.15%, #D7353D 100%)',
       },
       animation: {
         loading: 'loading 800ms linear infinite',

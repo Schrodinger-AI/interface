@@ -1,0 +1,8 @@
+
+.trump {
+  @apply bg-[url('../../../../assets/img/telegram/battle/trump.png')] bg-no-repeat bg-center bg-contain bg-bottom
+}
+
+.haris {
+  @apply bg-[url('../../../../assets/img/telegram/battle/haris.png')] bg-no-repeat bg-center bg-contain bg-bottom
+}
