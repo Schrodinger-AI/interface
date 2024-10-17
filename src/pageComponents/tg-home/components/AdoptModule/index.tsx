@@ -19,13 +19,12 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
   const [isOpen, setIsOpen] = useState(false);
 
   const handleShow = () => {
-    console.log('handleShow');
     setIsOpen(true);
   };
 
   return (
     <div className="relative">
-      <Flex className="p-4 z-10 relative" align="center" vertical>
+      <Flex className="py-[16px] px-4 z-10 relative" align="center" vertical>
         <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
 
         <div className="mt-[-5px]">
@@ -46,8 +45,6 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
             );
           })}
         </div>
-
-        <img src={require('assets/img/telegram/cat2.png').default.src} alt="" className="mt-4 w-[50.7vw] z-10" />
       </Flex>
 
       <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[37px] left-0 z-20">

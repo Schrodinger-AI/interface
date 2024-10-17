@@ -3,6 +3,7 @@ import { ICompassProps } from 'components/Header/type';
 import { TNftActivityListByConditionInput } from 'graphqlServer';
 import { TBuyType } from 'hooks/useBuyToken';
 import { TEmptyChannelGroup } from 'types/misc';
+import { TSGRTokenInfo } from 'types/tokens';
 
 export enum ThemeType {
   'dark' = 'dark',
@@ -24,6 +25,8 @@ export type InfoStateType = {
   isJoin: boolean;
   unreadMessagesCount: number;
   hasNewActivities: boolean;
+  catDetailInfo?: TSGRTokenInfo;
+  voteInfo?: IVoteInfo;
 };
 
 export type TTradeItem = {
@@ -362,4 +365,9 @@ export interface IActivityDetailRules {
 export interface IActivityDetailData {
   pageTitle?: string;
   rules?: IActivityDetailRules[];
+}
+
+export interface IVoteInfo {
+  countdown: number;
+  votes: number[];
 }

@@ -35,14 +35,16 @@ export const fetchSchrodingerImagesByAdoptId = async ({
   transactionHash,
   adoptOnly = true,
   address,
+  faction,
 }: {
   adoptId: string;
   transactionHash?: string;
   adoptOnly: boolean;
   address: string;
+  faction?: string;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&address=${address}${
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&faction=${faction}&address=${address}${
       transactionHash ? `&transactionHash=${transactionHash}` : ''
     }`,
   );
@@ -263,4 +265,8 @@ export const claimPoints = async (params: { taskId: string }): Promise<ITaskResp
 
 export const fetchPoints = async (params: { address: string }): Promise<ITaskPointsResponse> => {
   return request.post('/app/task/score', params);
+};
+
+export const fetchVoteInfo = async (): Promise<IVoteResponse> => {
+  return request.get('/app/schrodinger/votes');
 };

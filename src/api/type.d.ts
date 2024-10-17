@@ -426,3 +426,8 @@ interface ITaskResponse {
 interface ITaskPointsResponse {
   fishScore: number;
 }
+
+interface IVoteResponse {
+  countdown: number;
+  votes: number[];
+}
