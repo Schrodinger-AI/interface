@@ -43,7 +43,7 @@ export default function SummaryPoints() {
 
         <div className={clsx(styles['card-wrap'])}>
           <div className={clsx(styles['card-title'])}>Points Details</div>
-          <TokenEarnCard pointDetails={data?.pointDetails || []} theme="dark" />
+          <TokenEarnCard pointDetails={data?.pointDetails || []} theme="dark" tokenEarnListClassName="!mt-0" />
         </div>
       </>
 

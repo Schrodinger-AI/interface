@@ -6,6 +6,7 @@ export default function TokenEarnCard({
   pointDetails,
   hasBoundAddress,
   boundEvmAddress,
+  tokenEarnListClassName,
   theme = 'light',
   bindAddress,
 }: {
@@ -13,6 +14,7 @@ export default function TokenEarnCard({
   hasBoundAddress?: boolean;
   boundEvmAddress?: string;
   theme?: TModalTheme;
+  tokenEarnListClassName?: string;
   bindAddress?: () => Promise<void>;
 }) {
   return (
@@ -23,6 +25,7 @@ export default function TokenEarnCard({
           hasBoundAddress={hasBoundAddress}
           boundEvmAddress={boundEvmAddress}
           theme={theme}
+          className={tokenEarnListClassName}
           bindAddress={bindAddress}
         />
       ) : (

@@ -3,7 +3,7 @@
 
   .card-wrap {
     &:first-child {
-      @apply mt-[16px];
+      @apply mt-0;
     }
     @apply mt-[32px];
 
