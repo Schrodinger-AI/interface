@@ -1,8 +1,8 @@
 import { did } from '@portkey/did-ui-react';
 import { ChainId } from '@portkey/provider-types';
 import { GetCAHolderByManagerParams } from '@portkey/services';
-import { WalletInfo, WalletType } from 'aelf-web-login';
 import { PORTKEY_LOGIN_CHAIN_ID_KEY } from 'constants/common';
+import { TWalletInfo, WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 export const getCaHashAndOriginChainIdByWallet = async (
   caAddress: string,
@@ -25,13 +25,13 @@ export const getCaInfo = async ({
   address,
   walletInfo,
 }: {
-  walletType: WalletType;
+  walletType: WalletTypeEnum;
   address: string;
-  walletInfo: WalletInfo;
+  walletInfo: TWalletInfo;
 }) => {
-  if (walletType === WalletType.portkey) {
+  if (walletType === WalletTypeEnum.aa) {
     const originChainId = (localStorage.getItem(PORTKEY_LOGIN_CHAIN_ID_KEY) || '') as ChainId;
-    const caInfo = walletInfo.portkeyInfo?.caInfo;
+    const caInfo = walletInfo?.extraInfo?.portkeyInfo?.caInfo;
 
     if (!caInfo?.caHash || !caInfo.caAddress || !originChainId) throw new Error('You are not logged in.');
     return {

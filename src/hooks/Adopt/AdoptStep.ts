@@ -6,6 +6,7 @@ import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { timesDecimals } from 'utils/calculate';
 import ProtoInstance from 'utils/initializeProto';
 import { AdoptActionErrorCode } from './adopt';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 export interface IAttribute {
   traitType: string;
@@ -40,6 +41,7 @@ export const adoptStep1Handler = async ({
   address,
   decimals,
   isDirect,
+  walletType,
 }: {
   address: string;
   isDirect?: boolean;
@@ -49,6 +51,7 @@ export const adoptStep1Handler = async ({
     amount: string;
     domain: string;
   };
+  walletType: WalletTypeEnum;
 }) => {
   const amount = params.amount;
   const { schrodingerSideAddress: contractAddress, curChain: chainId } = store.getState()?.info.cmsInfo || {};
@@ -61,6 +64,7 @@ export const adoptStep1Handler = async ({
     symbol: params.parent,
     decimals,
     amount,
+    walletType,
   });
 
   if (!check) throw AdoptActionErrorCode.approveFailed;

@@ -3,12 +3,12 @@ import useLoading from 'hooks/useLoading';
 import { getDomain } from 'utils';
 import { getPoints } from 'api/request';
 import { useRequest } from 'ahooks';
-import { useWalletService } from 'hooks/useWallet';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function useGetPointsData() {
   const { showLoading, closeLoading } = useLoading();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { isLogin } = useGetLoginStatus();
 
   const getPointsData = useCallback(
@@ -26,9 +26,9 @@ export default function useGetPointsData() {
     [closeLoading, isLogin, showLoading],
   );
 
-  const { data, loading } = useRequest(() => getPointsData(wallet.address), {
+  const { data, loading } = useRequest(() => getPointsData(walletInfo?.address || ''), {
     pollingInterval: 1000 * 60,
-    refreshDeps: [wallet.address, isLogin],
+    refreshDeps: [walletInfo?.address, isLogin],
     onError: (err) => {
       console.error('getPointsDataError', err);
     },

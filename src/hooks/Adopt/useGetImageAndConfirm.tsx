@@ -22,7 +22,6 @@ import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMess
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
-import { useWalletService } from 'hooks/useWallet';
 import { renameSymbol } from 'utils/renameSymbol';
 import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
@@ -30,6 +29,7 @@ import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
 import { checkAIService } from 'api/request';
 import useLoading from 'hooks/useLoading';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const useGetImageAndConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -39,7 +39,7 @@ export const useGetImageAndConfirm = () => {
   const promptModal = useModal(PromptModal);
   const intervalFetch = useIntervalGetSchrodingerDetail();
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
 
   const searchParams = useSearchParams();
   const source = searchParams.get('source');
@@ -61,11 +61,12 @@ export const useGetImageAndConfirm = () => {
       asyncModal.show({
         theme,
       });
-      const result = await fetchTraitsAndImages(adoptId, adoptOnly, wallet.address, transactionHash);
+      if (!walletInfo?.address) return undefined;
+      const result = await fetchTraitsAndImages(adoptId, adoptOnly, walletInfo.address, transactionHash);
       asyncModal.hide();
       return result;
     },
-    [asyncModal, wallet.address],
+    [asyncModal, walletInfo?.address],
   );
 
   const retryAdoptConfirm = useCallback(
@@ -312,7 +313,7 @@ export const useGetImageAndConfirm = () => {
               intervalFetch.remove();
               cardResultModal.hide();
               router.replace(
-                `/detail?symbol=${symbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+                `/detail?symbol=${symbol}&from=my&address=${walletInfo?.address}&source=${source}&prePage=${prePage}`,
               );
             },
           },
@@ -334,25 +335,23 @@ export const useGetImageAndConfirm = () => {
           },
         });
       }),
-    [cardResultModal, intervalFetch, router, source, wallet.address],
+    [cardResultModal, intervalFetch, router, source, walletInfo?.address],
   );
 
   const getRankInfo = useCallback(
     async (allTraits: ITrait[]) => {
       const traits = formatTraits(allTraits);
-      if (!traits) {
-        return;
-      }
+      if (!traits || !walletInfo?.address) return;
       const catsRankProbability = await getCatsRankProbability({
         catsTraits: [traits],
-        address: addPrefixSuffix(wallet.address),
+        address: addPrefixSuffix(walletInfo.address),
       });
 
       const info = (catsRankProbability && catsRankProbability?.[0]) || undefined;
 
       return info;
     },
-    [wallet.address],
+    [walletInfo?.address],
   );
 
   const checkAIServer = useCallback(async () => {
@@ -399,6 +398,8 @@ export const useGetImageAndConfirm = () => {
           transactionHash: childrenItemInfo.transactionHash,
           theme,
         });
+
+        if (!infos) return;
 
         const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
 

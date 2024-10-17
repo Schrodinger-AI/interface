@@ -28,6 +28,8 @@ import ConnectEvmWalletProvider from './ConnectEvmWalletProvider';
 import { ForestProvider } from 'forest-ui-react';
 import 'forest-ui-react/dist/assets/index.css';
 import Wrapper from './ForestInitWrapper';
+import { AElfReactProvider } from '@aelf-react/core';
+import { appName } from 'constants/common';
 
 const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
@@ -104,12 +106,14 @@ function Provider({ children }: { children: React.ReactNode }) {
               ) : isCorrectDomain ? (
                 <WebLoginProvider>
                   <ETransferLayout>
-                    <ForestProvider>
-                      <Wrapper>
-                        <Updater />
-                        <NiceModal.Provider>{children}</NiceModal.Provider>
-                      </Wrapper>
-                    </ForestProvider>
+                    <AElfReactProvider appName={appName}>
+                      <ForestProvider>
+                        <Wrapper>
+                          <Updater />
+                          <NiceModal.Provider>{children}</NiceModal.Provider>
+                        </Wrapper>
+                      </ForestProvider>
+                    </AElfReactProvider>
                   </ETransferLayout>
                 </WebLoginProvider>
               ) : (

@@ -1,6 +1,6 @@
 'use client';
 import { Button, Dropdown } from 'aelf-design';
-import { useCheckLoginAndToken, useWalletService } from 'hooks/useWallet';
+import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { ReactComponent as MenuMySVG } from 'assets/img/menu-my.svg';
 import { ReactComponent as NoticeSVG } from 'assets/img/notice.svg';
 import { ReactComponent as ExitSVG } from 'assets/img/exit.svg';
@@ -10,7 +10,6 @@ import { Badge, Modal } from 'antd';
 import styles from './style.module.css';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { WalletType, WebLoginEvents, useWebLoginEvent } from 'aelf-web-login';
 import { ReactComponent as MenuIcon } from 'assets/img/menu.svg';
 import { ReactComponent as ArrowIcon } from 'assets/img/right_arrow.svg';
 import { NavHostTag } from 'components/HostTag';
@@ -42,12 +41,15 @@ import TagNewIcon from 'assets/img/event/tag-new-square.png';
 import TagHotIcon from 'assets/img/event/tag-hot.json';
 import Lottie from 'lottie-react';
 import InviteItem from './components/InviteItem';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
-  const { logout, wallet, walletType } = useWalletService();
+
   const { isLogin } = useGetLoginStatus();
   const { unreadMessagesCount, hasNewActivities } = useGetStoreInfo();
+  const { isConnected, walletInfo, disConnectWallet, walletType } = useConnectWallet();
 
   const { isLG, isXL } = useResponsive();
   const router = useRouter();
@@ -132,10 +134,12 @@ export default function Header() {
 
   const [logoutComplete, setLogoutComplete] = useState(true);
 
-  useWebLoginEvent(WebLoginEvents.LOGOUT, () => {
-    setLogoutComplete(true);
-    setMenuModalVisibleModel(ModalViewModel.NONE);
-  });
+  useEffect(() => {
+    if (!isConnected) {
+      setLogoutComplete(true);
+      setMenuModalVisibleModel(ModalViewModel.NONE);
+    }
+  }, [isConnected]);
 
   const LogoutItem = useCallback(() => {
     return (
@@ -143,14 +147,14 @@ export default function Header() {
         className={styles.menuItem}
         onClick={() => {
           setLogoutComplete(false);
-          logout();
+          disConnectWallet();
           setMenuModalVisibleModel(ModalViewModel.NONE);
         }}>
         <ExitSVG />
         <span>Log out</span>
       </div>
     );
-  }, [logout]);
+  }, [disConnectWallet]);
 
   const closeMenuModal = () => {
     setMenuModalVisibleModel(ModalViewModel.NONE);
@@ -177,7 +181,7 @@ export default function Header() {
     const menuItems = [
       {
         key: 'address',
-        label: <CopyAddressItem address={wallet.address} />,
+        label: <CopyAddressItem address={walletInfo?.address || ''} />,
       },
       {
         key: 'asset',
@@ -194,12 +198,12 @@ export default function Header() {
     if (!isJoin) {
       menuItems.splice(-2, 1);
     }
-    if (walletType !== WalletType.portkey) {
+    if (walletType !== WalletTypeEnum.aa) {
       menuItems.splice(1, 1);
     }
 
     return menuItems;
-  }, [wallet.address, checkAndRedirect, LogoutItem, isJoin, walletType]);
+  }, [walletInfo?.address, checkAndRedirect, LogoutItem, isJoin, walletType]);
 
   const firstClassCompassItems = useMemo(() => {
     const _menuItems = [...menuItems];

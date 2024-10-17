@@ -20,6 +20,7 @@ interface ITokenEarnListProps {
   hasBoundAddress?: boolean;
   boundEvmAddress?: string;
   theme?: TModalTheme;
+  className?: string;
   bindAddress?: () => void;
 }
 
@@ -27,6 +28,7 @@ export function TokenEarnList({
   dataSource,
   hasBoundAddress = false,
   theme = 'light',
+  className,
   bindAddress,
   boundEvmAddress,
 }: ITokenEarnListProps) {
@@ -144,7 +146,7 @@ export function TokenEarnList({
                 Details
               </span>
               <ArrowIcon
-                className={clsx('scale-75 ml-[8px]', isDark ? 'fill-pixelsSecondaryTextPurple' : 'fill-brandDefault')}
+                className={clsx('scale-75 ml-[8px]', isDark ? 'fill-pixelsGrayPurple' : 'fill-brandDefault')}
               />
             </div>
           ) : (
@@ -170,7 +172,7 @@ export function TokenEarnList({
 
   if (!dataSource?.length) return null;
   return (
-    <div className={clsx(styles['earn-list'], theme === 'dark' && styles['earn-list-dark'])}>
+    <div className={clsx(styles['earn-list'], theme === 'dark' && styles['earn-list-dark'], className)}>
       <CommonTable
         dataSource={formatDataSource}
         columns={columns}
