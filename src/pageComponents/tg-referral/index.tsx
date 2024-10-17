@@ -100,7 +100,7 @@ function TgReferral() {
           </p>
           <Button
             loading={loading}
-            className="w-[164px] h-[48px] !rounded-[12px] !text-black !bg-white font-bold text-[24px]"
+            className="w-[164px] h-[48px] !rounded-[12px] !text-black !bg-white font-bold text-base"
             onClick={handleJoin}>
             Join
           </Button>

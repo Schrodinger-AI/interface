@@ -29,7 +29,6 @@ import { formatTokenPrice } from 'utils/format';
 import useTelegram from 'hooks/useTelegram';
 import useBalanceService from './hooks/useBalanceService';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-import useUserIsInChannel from 'hooks/useUserIsInChannel';
 
 export default function TgHome() {
   const adoptHandler = useAdoptHandler();
@@ -190,17 +189,17 @@ export default function TgHome() {
 
   return (
     <div
-      className={clsx('flex flex-col max-w-[2560px] w-full min-h-screen px-4 py-6 pb-[112px]', styles.pageContainer)}>
+      className={clsx(
+        'flex flex-col max-w-[2560px] w-full min-h-screen px-4 pt-[16px] pb-[112px]',
+        styles.pageContainer,
+      )}>
       <BalanceModule balanceData={balanceData} />
       {noticeData && noticeData?.length ? (
         <div className="w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />
         </div>
       ) : null}
-      <div className="mt-[2.7vh]">
-        <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
-      </div>
-
+      <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
       <FooterButtons />
       <FloatingButton />
     </div>

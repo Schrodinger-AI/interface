@@ -10,7 +10,7 @@
       @apply py-0 px-0 rounded-xl max-h-[80vh] h-auto flex flex-col overflow-hidden bg-tgModalBg shadow-tgModalShadow;
 
       :global(.aelfd-modal-body) {
-        @apply pb-0 px-8 pb-8 box-border border-0 flex-1 overflow-y-auto pt-0;
+        @apply px-8 pb-8 box-border border-0 flex-1 overflow-y-auto pt-0;
       }
       :global(.aelfd-modal-footer) {
         @apply flex items-center justify-center px-0 border-neutralDivider border-t-0 pb-8 pt-0;
@@ -23,9 +23,9 @@
         }
       }
       :global(.aelfd-modal-header) {
-        @apply px-8 py-8 rounded-none mb-0 border-b-0 bg-none;
+        @apply px-8 py-8 rounded-none mb-0 border-b-0 bg-none bg-transparent;
         :global(.aelfd-modal-title) {
-          @apply min-h-[28px] text-[14px] text-neutralPrimary font-semibold text-neutralWhiteBg;
+          @apply min-h-[28px] text-[14px] font-semibold text-neutralWhiteBg;
         }
       }
       :global(.aelfd-modal-close) {

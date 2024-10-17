@@ -20,7 +20,7 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
         <Flex align="center" gap={8}>
           <HeadSVG className="cursor-pointer" />
           <CommonCopy toCopy={addPrefixSuffix(walletInfo?.address || '')}>
-            <span className="text-xs font-medium text-neutralWhiteBg">
+            <span className="text-xs font-bold text-neutralWhiteBg">
               {getOmittedStr(addPrefixSuffix(walletInfo?.address || ''), OmittedType.ADDRESS)}
             </span>
           </CommonCopy>
