@@ -14,7 +14,7 @@
     .summary-card {
       @apply rounded-[6px] bg-pixelsDashPurple flex-1 h-[82px] flex flex-col justify-center items-center;
       .summary-title {
-        @apply text-xs text-pixelsLightPurple mt-[6px];
+        @apply text-xs text-pixelsLightPurple mt-[6px] opacity-40;
       }
       .summary-value {
         @apply text-base text-pixelsWhiteBg font-semibold;
