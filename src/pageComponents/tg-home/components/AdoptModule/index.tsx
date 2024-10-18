@@ -19,7 +19,15 @@ import clsx from 'clsx';
 import styles from './index.module.css';
 import Image from 'next/image';
 
-export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId: string }) {
+export default function AdoptModule({
+  cId,
+  isInActivity,
+  onAdopt,
+}: {
+  onAdopt: () => void;
+  cId: string;
+  isInActivity?: boolean;
+}) {
   // const { tgHomePageText } = useCmsInfo() || {};
   const { isLogin } = useGetLoginStatus();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +39,11 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
   return (
     <div className="relative">
       <Flex className="py-[16px] px-4 z-10 relative" align="center" vertical>
-        <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
+        {isInActivity ? (
+          <img src={require('assets/img/telegram/cat-activity.png').default.src} alt="" className="w-[26.6vw] z-10" />
+        ) : (
+          <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
+        )}
 
         <div className="mt-[-5px]">
           <Flex vertical justify="center" align="center">
@@ -42,6 +54,9 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
             </TGButton>
           </Flex>
         </div>
+        {!isInActivity && (
+          <img src={require('assets/img/telegram/cat2.png').default.src} alt="" className="mt-4 w-[50.7vw] z-10" />
+        )}
       </Flex>
 
       <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[37px] left-0 z-20">
