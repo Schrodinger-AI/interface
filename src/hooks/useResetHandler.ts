@@ -14,7 +14,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import PromptModal from 'components/PromptModal';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 import { AdoptActionErrorCode } from './Adopt/adopt';
-import { useWalletService } from './useWallet';
 import { getDomain, getOriginSymbol } from 'utils';
 import { timesDecimals } from 'utils/calculate';
 import useIntervalGetSchrodingerDetail from './Adopt/useIntervalGetSchrodingerDetail';
@@ -26,6 +25,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import { TModalTheme } from 'components/CommonModal';
 import CardResultModal from 'components/CardResultModal';
 import useTelegram from './useTelegram';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const useResetHandler = () => {
   const resetModal = useModal(AdoptActionModal);
@@ -37,7 +37,7 @@ export const useResetHandler = () => {
   const getTokenPrice = useGetTokenPrice();
   const { showLoading, closeLoading } = useLoading();
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { walletInfo, walletType } = useConnectWallet();
   const { isInTG } = useTelegram();
 
   const searchParams = useSearchParams();
@@ -76,15 +76,16 @@ export const useResetHandler = () => {
             try {
               const { schrodingerSideAddress: contractAddress, curChain: chainId } =
                 store.getState().info.cmsInfo || {};
-              if (!contractAddress || !chainId) throw AdoptActionErrorCode.missingParams;
+              if (!contractAddress || !chainId || !walletInfo?.address) throw AdoptActionErrorCode.missingParams;
 
               const check = await checkAllowanceAndApprove({
                 spender: contractAddress,
-                address: wallet.address,
+                address: walletInfo.address,
                 chainId,
                 symbol: parentItemInfo.symbol,
                 decimals: parentItemInfo.decimals,
                 amount,
+                walletType,
               });
 
               if (!check) throw AdoptActionErrorCode.approveFailed;
@@ -106,7 +107,7 @@ export const useResetHandler = () => {
           },
         });
       }),
-    [promptModal, wallet.address],
+    [promptModal, walletInfo?.address],
   );
 
   const showResultModal = useCallback(
@@ -131,14 +132,14 @@ export const useResetHandler = () => {
       if (status === Status.SUCCESS) {
         AdTracker.trackEvent('reroll', {
           generation: parentItemInfo.tokenName,
-          address: wallet.address,
-          user_id: wallet.address,
+          address: walletInfo?.address,
+          user_id: walletInfo?.address,
         });
         if (isInTG) {
           AdTracker.trackEvent('tg_reroll', {
             generation: parentItemInfo.tokenName,
-            address: wallet.address,
-            user_id: wallet.address,
+            address: walletInfo?.address,
+            user_id: walletInfo?.address,
           });
         }
       }
@@ -198,7 +199,7 @@ export const useResetHandler = () => {
                 intervalFetch.remove();
                 cardResultModal.hide();
                 router.replace(
-                  `/detail?symbol=${originSymbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+                  `/detail?symbol=${originSymbol}&from=my&address=${walletInfo?.address}&source=${source}&prePage=${prePage}`,
                 );
               } else {
                 router.replace('/');
@@ -208,7 +209,7 @@ export const useResetHandler = () => {
         },
       });
     },
-    [cardResultModal, wallet.address, isInTG, approveReset, promptModal, intervalFetch, router, source],
+    [cardResultModal, walletInfo?.address, isInTG, approveReset, promptModal, intervalFetch, router, source],
   );
 
   return useCallback(

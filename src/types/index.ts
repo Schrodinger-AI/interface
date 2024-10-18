@@ -1,7 +1,6 @@
 import { Accounts, ChainId } from '@portkey/provider-types';
 import { IBlockchainWallet } from '@portkey/types';
 import { ManagerInfoType } from '@portkey/did-ui-react';
-import { DiscoverInfo, PortkeyInfo, PortkeyInfoV1, SignatureData, WalletType, WebLoginState } from 'aelf-web-login';
 
 export type TBaseTokenInfo = {
   decimals: number;
@@ -94,8 +93,9 @@ export type WalletInfoType = {
   address: string;
   publicKey?: string;
   token?: string;
-  discoverInfo?: DiscoverInfo;
-  portkeyInfo?: PortkeyInfo | PortkeyInfoV1;
+  //FIXME:
+  discoverInfo?: any;
+  portkeyInfo?: any;
   aelfChainAddress?: string;
 };
 
@@ -111,16 +111,6 @@ export interface IAccountInfo {
   account?: string;
   token?: string;
   expirationTime?: number;
-}
-
-export interface ICreateTokenParams {
-  signMethod: () => Promise<void>;
-  walletInfo: WalletInfoType;
-  walletType: WalletType;
-  version: string;
-  loginState?: WebLoginState;
-  onError?: <T>(error: T) => void;
-  signInfo?: SignatureData;
 }
 
 export enum ListTypeEnum {
@@ -156,3 +146,36 @@ export type TCancelListingType = {
   originQuantity: number;
   startTime: number;
 };
+
+export enum ListType {
+  NOT_LISTED,
+  FIXED_PRICE,
+  ENGLISH_AUCTION,
+  DUTCH_AUCTION,
+}
+
+export interface IPrice {
+  symbol: string;
+  amount: number;
+}
+
+export interface ITimestamp {
+  seconds: number;
+  nanos: number;
+}
+
+export interface IListDuration {
+  startTime: ITimestamp;
+  publicTime: ITimestamp;
+  durationHours?: number;
+  durationMinutes: number;
+}
+
+export interface IListedNFTInfo {
+  symbol: string;
+  owner: string;
+  quantity: number;
+  listType: ListType;
+  price: IPrice;
+  duration: IListDuration;
+}

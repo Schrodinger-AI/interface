@@ -6,12 +6,18 @@ import { ReactComponent as BagSVG } from 'assets/img/telegram/icon-bags.svg';
 import { ReactComponent as WheelSVG } from 'assets/img/telegram/icon-wheel.svg';
 import { ReactComponent as ShoppingSVG } from 'assets/img/telegram/icon-shopping.svg';
 import { ReactComponent as PoolsSVG } from 'assets/img/telegram/icon-pools.svg';
+import { ReactComponent as MyBagsTextSVG } from 'assets/img/telegram/home-list/my-bags.svg';
+import { ReactComponent as PoolsTextSVG } from 'assets/img/telegram/home-list/pools.svg';
+import { ReactComponent as LuckySpinTextSVG } from 'assets/img/telegram/home-list/lucky-spin.svg';
+import { ReactComponent as ShoppingTextSVG } from 'assets/img/telegram/home-list/shopping.svg';
+import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useState } from 'react';
 import TgModal from 'components/TgModal';
 import clsx from 'clsx';
 // import { useCmsInfo } from 'redux/hooks';
 import styles from './index.module.css';
+import Image from 'next/image';
 
 export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId: string }) {
   // const { tgHomePageText } = useCmsInfo() || {};
@@ -28,22 +34,13 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
         <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
 
         <div className="mt-[-5px]">
-          {Array.from({ length: 1 }).map((_item, index) => {
-            return (
-              <Flex vertical justify="center" align="center" key={index}>
-                <img
-                  key={index}
-                  src={require('assets/img/telegram/adopt-card.png').default.src}
-                  alt=""
-                  className="w-[40vw]"
-                />
+          <Flex vertical justify="center" align="center">
+            <img src={require('assets/img/telegram/adopt-card.png').default.src} alt="" className="w-[40vw]" />
 
-                <TGButton type="success" size="large" className="mt-4" onClick={onAdopt}>
-                  Adopt
-                </TGButton>
-              </Flex>
-            );
-          })}
+            <TGButton type="success" size="large" className="mt-4" onClick={onAdopt}>
+              <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
+            </TGButton>
+          </Flex>
         </div>
       </Flex>
 
@@ -54,7 +51,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <BagSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px] font-black text-[10px]">My Bags</div>
+          <MyBagsTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
       <div onClick={handleShow} className="absolute top-[37px] right-0 z-20">
@@ -64,7 +61,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <WheelSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Lucky Spin</div>
+          <LuckySpinTextSVG className="mt-[4px]" />
         </Flex>
       </div>
       <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[40vw] left-0 z-20">
@@ -74,7 +71,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <ShoppingSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Shopping</div>
+          <ShoppingTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
       <div onClick={handleShow} className="absolute top-[40vw] right-0 z-20">
@@ -84,7 +81,7 @@ export default function AdoptModule({ cId, onAdopt }: { onAdopt: () => void; cId
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <PoolsSVG className="w-[32px] h-[32px]" />
-          <div className="dark-btn-font leading-[18px] font-black text-[10px]">Pools</div>
+          <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
 

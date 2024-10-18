@@ -25,7 +25,6 @@ import { useDebounceFn } from 'ahooks';
 import useResponsive from 'hooks/useResponsive';
 import { ReactComponent as CollapsedSVG } from 'assets/img/collapsed.svg';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
-import { useWalletService } from 'hooks/useWallet';
 import { store } from 'redux/store';
 import {
   TGetAllTraitsParams,
@@ -50,10 +49,11 @@ import SearchInput from './SearchInput';
 import useTelegram from 'hooks/useTelegram';
 import { ItemType } from 'antd/es/menu/interface';
 import { TModalTheme } from 'components/CommonModal';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: boolean }) {
   const { theme = 'light', hideFilter } = params || {};
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   // 1024 below is the mobile display
   const { isLG } = useResponsive();
   const isMobile = useMemo(() => isLG, [isLG]);
@@ -92,7 +92,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
   const gutter = useMemo(() => (isLG ? 12 : 20), [isLG]);
   const column = useColumns(collapsed);
   const router = useRouter();
-  const walletAddress = useMemo(() => wallet.address, [wallet.address]);
+  const walletAddress = useMemo(() => walletInfo?.address, [walletInfo?.address]);
   const filterListRef = useRef<any>();
   const walletAddressRef = useRef(walletAddress);
   const { isLogin } = useGetLoginStatus();
@@ -137,7 +137,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
     if (!params.chainId) {
       return;
     }
-    if (isInTG && requestType === ListTypeEnum.My && !wallet.address) return;
+    if (isInTG && requestType === ListTypeEnum.My && !walletInfo?.address) return;
     let requestCatApi;
     if (requestType === ListTypeEnum.My) {
       if (inTG) {
@@ -155,7 +155,7 @@ export default function OwnedItems(params?: { theme?: TModalTheme; hideFilter?: 
       }
     }
     try {
-      const res = await requestCatApi({ ...params, address: wallet.address });
+      const res = await requestCatApi({ ...params, address: walletInfo?.address });
 
       const locationState = location.search.split('pageState=')[1] || ListTypeEnum.RARE;
       if (requestType !== Number(locationState)) return;
