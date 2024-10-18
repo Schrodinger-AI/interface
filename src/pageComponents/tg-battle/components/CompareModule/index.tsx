@@ -14,18 +14,18 @@ const DynamicBar = ({ data }: { data: number[] }) => {
   return (
     <div className="mt-[16px]">
       <div className="flex w-full justify-between">
-        <div className="text-pixelsWhiteBg text-[16px] font-bold leading-[24px]">{Math.round(leftPercentage)}%</div>
-        <div className="text-pixelsWhiteBg text-[16px] font-bold leading-[24px]">{Math.round(rightPercentage)}%</div>
+        <div className="text-pixelsWhiteBg text-base font-bold">{Math.round(leftPercentage)}%</div>
+        <div className="text-pixelsWhiteBg text-base font-bold">{Math.round(rightPercentage)}%</div>
       </div>
       <div className="flex w-full h-[42px] overflow-hidden">
         <div
           style={{ width: `${leftPercentage}%` }}
-          className="flex items-center justify-start bg-compareLeftBg shadow-compareLeftShadow text-pixelsWhiteBg font-bold text-[12px] rounded-l-[8px] pl-[10px] max-w-[92%] min-w-[8%]">
+          className="flex items-center justify-start bg-compareLeftBg text-pixelsWhiteBg font-bold text-sm rounded-l-[8px] pl-[10px] max-w-[92%] min-w-[8%]">
           {leftValue}
         </div>
         <div
           style={{ width: `${rightPercentage}%` }}
-          className="flex items-center justify-end bg-compareRightBg shadow-compareRightShadow text-pixelsWhiteBg font-bold text-[12px] rounded-r-[8px] pr-[10px] max-w-[92%] min-w-[8%]">
+          className="flex items-center justify-end bg-compareRightBg text-pixelsWhiteBg font-bold text-sm rounded-r-[8px] pr-[10px] max-w-[92%] min-w-[8%]">
           {rightValue}
         </div>
       </div>

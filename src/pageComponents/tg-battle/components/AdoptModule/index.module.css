@@ -7,7 +7,7 @@
   @apply bg-[url('../../../../assets/img/telegram/battle/trump.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
 }
 
-.haris-contain {
+.harris-contain {
   @apply bg-[url('../../../../assets/img/telegram/battle/Harris.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
 }
 
@@ -15,6 +15,6 @@
   @apply bg-[url('../../../../assets/img/telegram/battle/Trump_HD.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
 }
 
-.haris {
+.harris {
   @apply bg-[url('../../../../assets/img/telegram/battle/Harris_HD.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
 }

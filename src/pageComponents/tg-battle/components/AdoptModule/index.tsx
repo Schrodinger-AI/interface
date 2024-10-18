@@ -18,8 +18,8 @@ const DynamicBar = ({ onAdopt }: IProps) => {
   return (
     <Flex vertical className="mt-[16px]">
       <Flex className={clsx(styles['battle-contain'], 'relative')}>
-        <Flex vertical align="center" className={clsx(styles['haris-contain'], 'basis-1/2')}>
-          <div className={clsx(styles.haris, 'w-full h-[96vw] ')}></div>
+        <Flex vertical align="center" className={clsx(styles['harris-contain'], 'basis-1/2')}>
+          <div className={clsx(styles.harris, 'w-full h-[96vw] ')}></div>
         </Flex>
         <Flex vertical align="center" className={clsx(styles['trump-contain'], 'basis-1/2')}>
           <div className={clsx(styles.trump, 'w-full h-[96vw] ')}></div>
@@ -36,14 +36,14 @@ const DynamicBar = ({ onAdopt }: IProps) => {
         </div>
       </Flex>
 
-      <Flex className={'mt-[24px]'}>
+      <Flex className={'mt-[16px]'}>
         <Flex vertical align="center" className="basis-1/2">
           <TGButton size="large" onClick={() => onAdopt(nextSide)}>
             Adopt
           </TGButton>
 
-          <p className="mt-[4px] px[4px] text-[10px] leading-[18px] font-medium text-pixelsWhiteBg text-center">
-            If you choose Haris team,you are more likely to adopt cats with &quot;Haris&quot; traits!
+          <p className="mt-[8px] px-[4px] text-xs font-medium text-pixelsWhiteBg text-center">
+            If you choose Haris team,you are more likely to adopt cats with &quot;{nextSide}&quot; traits!
           </p>
         </Flex>
         <Flex vertical align="center" className="basis-1/2">
@@ -51,8 +51,8 @@ const DynamicBar = ({ onAdopt }: IProps) => {
             Adopt
           </TGButton>
 
-          <p className="mt-[4px] px[4px] text-[10px] leading-[18px] font-medium text-pixelsWhiteBg text-center">
-            If you choose Trump team,you are more likely to adopt cats with &quot;Trump&quot; traits!
+          <p className="mt-[8px] px-[4px] text-xs font-medium text-pixelsWhiteBg text-center">
+            If you choose Trump team,you are more likely to adopt cats with &quot;{prevSide}&quot; traits!
           </p>
         </Flex>
       </Flex>
