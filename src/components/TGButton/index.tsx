@@ -59,7 +59,14 @@ export default function TGButton({ children, type, size = 'medium', className, s
       )}
       style={style}
       onClick={onClick}>
-      <span className={clsx(styles.btnText, backgroundColor, styles[size], btnContentSize, 'block dark-btn-font z-10')}>
+      <span
+        className={clsx(
+          styles.btnText,
+          backgroundColor,
+          styles[size],
+          btnContentSize,
+          'flex items-center justify-center dark-btn-font z-10',
+        )}>
         {children}
       </span>
     </button>
