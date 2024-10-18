@@ -4,7 +4,7 @@
 }
 
 .trump-contain {
-  @apply bg-[url('../../../../assets/img/telegram/battle/Trump.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
+  @apply bg-[url('../../../../assets/img/telegram/battle/trump.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
 }
 
 .haris-contain {
