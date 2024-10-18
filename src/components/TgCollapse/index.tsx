@@ -23,7 +23,7 @@ const TgCollapse: React.FC<TgCollapseProps> = (props) => {
     () =>
       items?.map((item, index) => ({
         ...item,
-        style: { ...panelStyle },
+        style: { ...panelStyle, marginBottom: index === items.length - 1 ? 0 : 24 },
         className:
           index % 2 !== 0 ? 'bg-compareRightBg shadow-compareRightShadow' : 'bg-compareLeftBg shadow-compareLeftShadow',
       })),
@@ -34,7 +34,7 @@ const TgCollapse: React.FC<TgCollapseProps> = (props) => {
   return (
     <Collapse
       bordered={false}
-      defaultActiveKey={['1']}
+      activeKey={items?.map((item) => item.key || '') || []}
       expandIconPosition="end"
       ghost={true}
       className={styles['tg-collapse']}

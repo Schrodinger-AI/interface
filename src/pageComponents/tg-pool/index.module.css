@@ -1,0 +1,5 @@
+.poolList {
+  :global(.aelfd-spin-container) {
+    @apply max-h-[calc(100vh-270px)] overflow-y-auto overflow-x-hidden;
+  }
+}
