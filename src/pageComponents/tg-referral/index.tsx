@@ -57,10 +57,12 @@ function TgReferral() {
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
-  const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}?startapp=${walletInfo?.address}&text=${shareText}`,
-    [cmsInfo?.tgWebAppUrl, walletInfo?.address],
-  );
+  const shareLink = useMemo(() => {
+    const encodeUrl = encodeURIComponent(
+      `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}?startapp=${walletInfo?.address}&text=${shareText}`,
+    );
+    return encodeUrl;
+  }, [cmsInfo?.tgWebAppUrl, walletInfo?.address]);
 
   const handleJoin = async () => {
     await toJoin();
