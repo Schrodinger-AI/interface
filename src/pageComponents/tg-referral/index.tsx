@@ -15,6 +15,7 @@ import { setIsJoin } from 'redux/reducer/info';
 import { getDomain } from 'utils';
 import { shareText } from './config';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { ReactComponent as FriendHeaderSVG } from 'assets/img/telegram/friend-header.svg';
 
 function TgReferral() {
   const { walletInfo } = useConnectWallet();
@@ -57,7 +58,7 @@ function TgReferral() {
   );
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}&startapp=${walletInfo?.address}&text=${shareText}`,
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}?startapp=${walletInfo?.address}&text=${shareText}`,
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
@@ -109,12 +110,8 @@ function TgReferral() {
       ) : (
         <div className={clsx(styles['referral-container'])}>
           <div className="pb-[100px]">
-            <div className="w-full flex justify-between items-center px-[16px]">
-              <img
-                src={require('assets/img/telegram/friend-header.png').default.src}
-                alt=""
-                className="w-[100vw] h-auto"
-              />
+            <div className="w-full flex justify-between items-center pt-[16px] px-[16px]">
+              <FriendHeaderSVG className="w-[100vw] h-auto" />
             </div>
 
             {cmsInfo?.referralRulesList?.length ? (

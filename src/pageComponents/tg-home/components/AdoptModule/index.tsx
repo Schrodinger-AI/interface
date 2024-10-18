@@ -11,6 +11,9 @@ import { ReactComponent as PoolsTextSVG } from 'assets/img/telegram/home-list/po
 import { ReactComponent as LuckySpinTextSVG } from 'assets/img/telegram/home-list/lucky-spin.svg';
 import { ReactComponent as ShoppingTextSVG } from 'assets/img/telegram/home-list/shopping.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
+import treasureChest from 'assets/img/telegram/treasure-chest.png';
+import treasureChestLight from 'assets/img/telegram/bg-light2.png';
+import lightRound from 'assets/img/telegram/light-round.png';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useState } from 'react';
 import TgModal from 'components/TgModal';
@@ -39,13 +42,23 @@ export default function AdoptModule({
   return (
     <div className="relative">
       <Flex className="py-[16px] px-4 z-10 relative" align="center" vertical>
-        {isInActivity ? (
-          <img src={require('assets/img/telegram/cat-activity.png').default.src} alt="" className="w-[26.6vw] z-10" />
-        ) : (
-          <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
-        )}
+        <div className="relative w-full flex justify-center items-center">
+          {!isInActivity ? (
+            <Image
+              src={lightRound}
+              alt=""
+              className="absolute w-full scale-110 aspect-square top-0 bottom-0 left-0 right-0 m-auto z-1"
+            />
+          ) : null}
 
-        <div className="mt-[-5px]">
+          {isInActivity ? (
+            <img src={require('assets/img/telegram/cat-activity.png').default.src} alt="" className="w-[26.6vw] z-10" />
+          ) : (
+            <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
+          )}
+        </div>
+
+        <div className="-mt-[5px] relative z-10">
           <Flex vertical justify="center" align="center">
             <img src={require('assets/img/telegram/adopt-card.png').default.src} alt="" className="w-[40vw]" />
 
@@ -55,7 +68,14 @@ export default function AdoptModule({
           </Flex>
         </div>
         {!isInActivity && (
-          <img src={require('assets/img/telegram/cat2.png').default.src} alt="" className="mt-4 w-[50.7vw] z-10" />
+          <div className="relative mt-4 ">
+            <Image
+              src={treasureChestLight}
+              className="absolute scale-125 bottom-[70%] left-0 right-0 m-auto z-1"
+              alt=""
+            />
+            <Image src={treasureChest} className="w-[50.7vw] z-10" alt="" />
+          </div>
         )}
       </Flex>
 
