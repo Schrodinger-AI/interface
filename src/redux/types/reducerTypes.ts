@@ -154,6 +154,8 @@ export type TCustomizationItemType = {
   voteRules: string;
   nextSide: string;
   prevSide: string;
+  voteActivityStartTime: string;
+  voteActivityEndTime: string;
   [key: string]: any;
 };
 

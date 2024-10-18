@@ -28,9 +28,9 @@ import { useModal } from '@ebay/nice-modal-react';
 import { formatTokenPrice } from 'utils/format';
 import useTelegram from 'hooks/useTelegram';
 import useBalanceService from './hooks/useBalanceService';
-import { IVoteInfo } from 'redux/types/reducerTypes';
 import { useRouter } from 'next/navigation';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import dayjs from 'dayjs';
 
 export default function TgHome() {
   const router = useRouter();
@@ -40,13 +40,14 @@ export default function TgHome() {
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
+  const startTime = dayjs(cmsInfo?.voteActivityStartTime || '').valueOf();
+  const endTime = dayjs(cmsInfo?.voteActivityEndTime || '').valueOf();
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
-  const [voteDetail, setVoteDetail] = useState<IVoteInfo>({
-    countdown: 1,
-    votes: [],
-  });
+
+  const isActivity = Date.now() >= startTime && Date.now() <= endTime;
+
   const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
@@ -78,16 +79,6 @@ export default function TgHome() {
     }
   }, [cmsInfo?.curChain, isLogin, walletInfo?.address]);
 
-  const getVoteDetail = useCallback(async () => {
-    try {
-      const res = await fetchVoteInfo();
-      setVoteDetail(res);
-      dispatch(setVoteInfo(res));
-    } catch (error) {
-      /* empty */
-    }
-  }, []);
-
   const getNotice = useCallback(async () => {
     try {
       const res = await getNoticeData({
@@ -100,7 +91,9 @@ export default function TgHome() {
   }, [getNoticeData]);
 
   const OpenAdoptModal = useCallback(() => {
-    if (voteDetail?.countdown > 0) {
+    const now = Date.now();
+    const isActivity = now >= startTime && now <= endTime;
+    if (isActivity) {
       dispatch(setCatDetailInfo(schrodingerDetail));
       router.push('/telegram/battle');
       return;
@@ -144,7 +137,6 @@ export default function TgHome() {
     schrodingerDetail,
     sgrBalance,
     walletInfo?.address,
-    voteDetail,
   ]);
 
   const sendAdTrack = (address: string) => {
@@ -206,10 +198,6 @@ export default function TgHome() {
   }, [getNotice]);
 
   useEffect(() => {
-    getVoteDetail();
-  }, [getVoteDetail]);
-
-  useEffect(() => {
     if (isInTelegram()) {
       window?.Telegram?.WebApp?.disableVerticalSwipes?.();
     }
@@ -219,7 +207,7 @@ export default function TgHome() {
     <div
       className={clsx(
         'flex flex-col max-w-[2560px] w-full min-h-screen px-4 pt-[16px] pb-[112px]',
-        styles.pageContainer,
+        isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
       )}>
       <BalanceModule balanceData={balanceData} />
       {noticeData && noticeData?.length ? (
@@ -227,7 +215,7 @@ export default function TgHome() {
           <ScrollAlert data={noticeData} type="info" theme="dark" />
         </div>
       ) : null}
-      <AdoptModule onAdopt={OpenAdoptModal} cId={schrodingerDetail?.collectionId || ''} />
+      <AdoptModule onAdopt={OpenAdoptModal} isInActivity={isActivity} cId={schrodingerDetail?.collectionId || ''} />
       <FooterButtons />
       <FloatingButton />
     </div>

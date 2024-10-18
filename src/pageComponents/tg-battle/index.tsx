@@ -20,25 +20,36 @@ import TgModal from 'components/TgModal';
 import { useCmsInfo } from 'redux/hooks';
 import styles from './index.module.css';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import dayjs from 'dayjs';
+import { fetchVoteInfo } from 'api/request';
+import { IVoteInfo } from 'redux/types/reducerTypes';
 
 export default function TgHome() {
   const router = useRouter();
   const { walletInfo } = useConnectWallet();
-  const { schrodingerDetail, voteInfo } = useGetStoreInfo();
+  const { schrodingerDetail } = useGetStoreInfo();
   const { refresh } = useBalanceService();
   const { checkBalanceAndJump } = useBuyToken();
   const adoptHandler = useAdoptHandler();
   const cmsInfo = useCmsInfo();
   const voteRules = cmsInfo?.voteRules;
+  const startTime = dayjs(cmsInfo?.voteActivityStartTime || '').valueOf();
+  const endTime = dayjs(cmsInfo?.voteActivityEndTime || '').valueOf();
   const purchaseMethodModal = useModal(PurchaseMethodModal);
 
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const [isOpen, setIsOpen] = useState(false);
+  const [voteInfo, setVoteInfo] = useState<IVoteInfo>({
+    countdown: 0,
+    votes: [],
+  });
 
   const OpenAdoptModal = useCallback(
     (faction: string) => {
-      if (voteInfo?.countdown && voteInfo?.countdown > 0) {
+      const now = Date.now();
+      const isActivity = now >= startTime && now <= endTime;
+      if (!isActivity) {
         router.back();
         return;
       }
@@ -97,9 +108,22 @@ export default function TgHome() {
     }
   }, [refresh]);
 
+  const getVoteDetail = useCallback(async () => {
+    try {
+      const res = await fetchVoteInfo();
+      setVoteInfo(res);
+    } catch (error) {
+      /* empty */
+    }
+  }, []);
+
   useEffect(() => {
     getBalance();
   }, [getBalance]);
+
+  useEffect(() => {
+    getVoteDetail();
+  }, [getVoteDetail]);
 
   return (
     <div className={clsx('max-w-[2560px] w-full min-h-screen p-[16px] bg-battaleBg')}>
