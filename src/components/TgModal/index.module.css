@@ -9,7 +9,7 @@
 
     :global(.aelfd-modal-content) {
       @apply py-0 px-0 rounded-xl max-h-[80vh] h-auto flex flex-col overflow-hidden bg-tgModalBg shadow-tgModalShadow;
-      @apply relative !p-[16px] overflow-hidden after:content-[''] after:opacity-40 after:absolute after:top-[48px] after:left-[10%] after:block after:w-4/5 after:h-[48px] after:bg-[url(../../assets/img/modal-content-shadow.png)] after:bg-center after:bg-no-repeat after:bg-[length:100%_100%];
+      @apply relative !py-[16px] overflow-hidden after:content-[''] after:opacity-40 after:absolute after:top-[48px] after:left-[10%] after:block after:w-4/5 after:h-[48px] after:bg-[url(../../assets/img/modal-content-shadow.png)] after:bg-center after:bg-no-repeat after:bg-[length:100%_100%];
 
       :global(.aelfd-modal-body) {
         @apply pb-0 px-8 pb-8 box-border border-0 flex-1 overflow-y-auto pt-0;
