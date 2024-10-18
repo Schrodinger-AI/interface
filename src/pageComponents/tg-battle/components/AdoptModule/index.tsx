@@ -12,8 +12,8 @@ type IProps = {
 
 const DynamicBar = ({ onAdopt }: IProps) => {
   const cmsInfo = useCmsInfo();
-  const prevSide = cmsInfo?.prevSide;
-  const nextSide = cmsInfo?.nextSide;
+  const prevSide = cmsInfo?.prevSide || '';
+  const nextSide = cmsInfo?.nextSide || '';
 
   return (
     <Flex vertical className="mt-[16px]">

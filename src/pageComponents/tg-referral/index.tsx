@@ -57,7 +57,7 @@ function TgReferral() {
   );
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}&text=${shareText}/?startapp=${walletInfo?.address}`,
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}&startapp=${walletInfo?.address}&text=${shareText}`,
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 

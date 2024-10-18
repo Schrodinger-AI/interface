@@ -183,6 +183,8 @@ export default function TgHome() {
   useEffect(() => {
     if (isLogin && !isJoin) {
       const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+
+      console.log('=====referrerAddress', referrerAddress);
       if (referrerAddress) {
         acceptReferral(referrerAddress);
       }
