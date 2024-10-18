@@ -10,6 +10,7 @@ import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import { useCallback, useEffect, useState } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 import { ICatsListData } from 'types/tokens';
+import styles from './index.module.css';
 
 export default function TgHome() {
   const [trumpData, setTrumpData] = useState<ICatsListData>();
@@ -63,13 +64,21 @@ export default function TgHome() {
             children: (
               <List
                 grid={{
-                  gutter: 16,
+                  gutter: 9,
+                  xs: 4,
+                  sm: 4,
                   md: 4,
                 }}
-                dataSource={harrisData?.data || []}
+                className={styles.poolList}
+                dataSource={trumpData?.data || []}
                 renderItem={(item) => (
                   <List.Item>
-                    <img src={item.adopter} alt={item.adopter} />
+                    <SkeletonImage
+                      img={item.inscriptionImageUri}
+                      imageSizeType="contain"
+                      className="!rounded-[4px] border-[1px] border-solid border-pixelsWhiteBg shadow-btnShadow"
+                      imageClassName="!rounded-[4px]"
+                    />
                   </List.Item>
                 )}
               />
@@ -91,6 +100,7 @@ export default function TgHome() {
                   sm: 4,
                   md: 4,
                 }}
+                className={styles.poolList}
                 dataSource={trumpData?.data || []}
                 renderItem={(item) => (
                   <List.Item>

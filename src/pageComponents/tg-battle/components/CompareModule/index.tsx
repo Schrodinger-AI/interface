@@ -20,12 +20,12 @@ const DynamicBar = ({ data }: { data: number[] }) => {
       <div className="flex w-full h-[42px] overflow-hidden">
         <div
           style={{ width: `${leftPercentage}%` }}
-          className="flex items-center justify-start bg-compareLeftBg shadow-compareLeftShadow text-pixelsWhiteBg font-bold text-[12px] rounded-l-[8px] pl-[10px]">
+          className="flex items-center justify-start bg-compareLeftBg shadow-compareLeftShadow text-pixelsWhiteBg font-bold text-[12px] rounded-l-[8px] pl-[10px] max-w-[92%] min-w-[8%]">
           {leftValue}
         </div>
         <div
           style={{ width: `${rightPercentage}%` }}
-          className="flex items-center justify-end bg-compareRightBg shadow-compareRightShadow text-pixelsWhiteBg font-bold text-[12px] rounded-r-[8px] pr-[10px]">
+          className="flex items-center justify-end bg-compareRightBg shadow-compareRightShadow text-pixelsWhiteBg font-bold text-[12px] rounded-r-[8px] pr-[10px] max-w-[92%] min-w-[8%]">
           {rightValue}
         </div>
       </div>
