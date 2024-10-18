@@ -82,14 +82,13 @@ export const useCheckJoined = () => {
     async function (address: string) {
       if (!address) return;
       const isJoin = await getJoinStatus(address);
-      const isJoinChannel = await getUserChannelStatus();
-      if (isJoinChannel && (isJoin || notAutoJoin)) {
+      if (isJoin || notAutoJoin) {
         showSpecialCatActivity();
         return isJoin;
       }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin, getUserChannelStatus],
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
   );
 
   return { checkJoined, toJoin, getJoinStatus };
