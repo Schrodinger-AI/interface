@@ -4,10 +4,10 @@ import { IEventsDetailListTable } from '../types/type';
 import { getEventRankList } from 'api/request';
 import CustomTable, { ICustomTableProps } from 'components/CustomTable';
 import { useParams } from 'next/navigation';
-import { useWalletService } from 'hooks/useWallet';
 import { formatTokenPrice } from 'utils/format';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { TModalTheme } from 'components/CommonModal';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function EventsTable({
   header: th,
@@ -24,10 +24,13 @@ function EventsTable({
   const [dataSource, setDataSource] = useState<IEventsDetailListTable['data']>(server ? [] : data);
   const [loading, setLoading] = useState<boolean>(server ? true : false);
   const [myData, setMyData] = useState<ICustomTableProps['myData']>();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { isLogin } = useGetLoginStatus();
 
-  const address = useMemo(() => (isLogin && wallet.address ? wallet.address : undefined), [isLogin, wallet.address]);
+  const address = useMemo(
+    () => (isLogin && walletInfo?.address ? walletInfo.address : undefined),
+    [isLogin, walletInfo?.address],
+  );
 
   const { id } = useParams() as {
     id: string;
@@ -60,7 +63,7 @@ function EventsTable({
           }
           setMyData({
             rank: `${myRank ? myRank : '> 20'}`,
-            address: wallet.address,
+            address: walletInfo?.address || '',
             value: currentShowValue,
           });
         } else {
@@ -72,7 +75,7 @@ function EventsTable({
         setLoading(false);
       }
     },
-    [address, id, isFinal, params, wallet.address],
+    [address, id, isFinal, params, walletInfo?.address],
   );
 
   useEffect(() => {

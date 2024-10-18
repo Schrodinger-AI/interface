@@ -18,10 +18,10 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { useWalletService } from 'hooks/useWallet';
 import { timesDecimals } from 'utils/calculate';
 import { getBlindCatDetail } from 'api/request';
 import { useCmsInfo } from 'redux/hooks';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const boxRare = 'Congrats! You got a Rare Cat Box!';
 const boxNormal = 'Congrats! You got a Cat Box!';
@@ -81,7 +81,7 @@ function AdoptNextModal({
   const { SGRToken, allTraits, images, inheritedTraits, transaction, ELFBalance } = data;
   const [selectImage, setSelectImage] = useState<number>(images.length > 1 ? -1 : 0);
   const adoptHandler = useAdoptHandler();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
   const [nextLoading, setNextLoading] = useState<boolean>(false);
 
@@ -123,7 +123,7 @@ function AdoptNextModal({
       const result = await getBlindCatDetail({
         symbol: data.SGRToken.symbol,
         chainId: cmsInfo?.curChain || '',
-        address: wallet.address,
+        address: walletInfo?.address,
       });
       setNextLoading(false);
       modal.hide();
@@ -141,7 +141,7 @@ function AdoptNextModal({
         },
         blindMax: String(data.SGRToken.amount),
         isBlind: true,
-        account: wallet.address,
+        account: walletInfo?.address || '',
         isDirect: false,
         theme: theme,
         prePage: 'adoptModal',

@@ -30,13 +30,13 @@ import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMess
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { addPrefixSuffix } from 'utils/addressFormatting';
-import { useWalletService } from 'hooks/useWallet';
 import { renameSymbol } from 'utils/renameSymbol';
 import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
 import { useGetImageAndConfirm } from './useGetImageAndConfirm';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
@@ -48,7 +48,7 @@ export const useAdoptConfirm = () => {
   const promptModal = useModal(PromptModal);
   const intervalFetch = useIntervalGetSchrodingerDetail();
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const getImageAndConfirm = useGetImageAndConfirm();
 
   const searchParams = useSearchParams();
@@ -362,20 +362,28 @@ export const useAdoptConfirm = () => {
       adoptOnly,
       transactionHash,
       theme = 'light',
+      faction,
     }: {
       adoptId: string;
       adoptOnly: boolean;
       transactionHash?: string;
       theme?: TModalTheme;
+      faction?: string;
     }) => {
       asyncModal.show({
         theme,
       });
-      const result = await fetchTraitsAndImages(adoptId, adoptOnly, wallet.address, transactionHash);
+      const result = await fetchTraitsAndImages({
+        adoptId,
+        adoptOnly,
+        address: walletInfo?.address || '',
+        transactionHash,
+        faction,
+      });
       asyncModal.hide();
       return result;
     },
-    [asyncModal, wallet.address],
+    [asyncModal, walletInfo?.address],
   );
 
   const approveAdoptConfirm = useCallback(
@@ -512,7 +520,7 @@ export const useAdoptConfirm = () => {
               intervalFetch.remove();
               cardResultModal.hide();
               router.replace(
-                `/detail?symbol=${symbol}&from=my&address=${wallet.address}&source=${source}&prePage=${prePage}`,
+                `/detail?symbol=${symbol}&from=my&address=${walletInfo?.address}&source=${source}&prePage=${prePage}`,
               );
             },
           },
@@ -533,25 +541,23 @@ export const useAdoptConfirm = () => {
           },
         });
       }),
-    [cardResultModal, intervalFetch, router, source, wallet.address],
+    [cardResultModal, intervalFetch, router, source, walletInfo?.address],
   );
 
   const getRankInfo = useCallback(
     async (allTraits: ITrait[]) => {
       const traits = formatTraits(allTraits);
-      if (!traits) {
-        return;
-      }
+      if (!traits || !walletInfo?.address) return;
       const catsRankProbability = await getCatsRankProbability({
         catsTraits: [traits],
-        address: addPrefixSuffix(wallet.address),
+        address: addPrefixSuffix(walletInfo.address),
       });
 
       const info = (catsRankProbability && catsRankProbability?.[0]) || undefined;
 
       return info;
     },
-    [wallet.address],
+    [walletInfo?.address],
   );
 
   const adoptConfirm = useCallback(
@@ -563,6 +569,7 @@ export const useAdoptConfirm = () => {
       adoptOnly = true,
       prePage,
       hideNext = false,
+      faction,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
@@ -571,6 +578,7 @@ export const useAdoptConfirm = () => {
       theme?: TModalTheme;
       prePage?: string;
       hideNext?: boolean;
+      faction?: string;
     }) => {
       try {
         const infos = await fetchImages({
@@ -578,7 +586,10 @@ export const useAdoptConfirm = () => {
           adoptOnly,
           transactionHash: childrenItemInfo.transactionHash,
           theme,
+          faction,
         });
+
+        if (!infos) return;
 
         const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
 

@@ -7,7 +7,6 @@ import AdoptModule from './components/AdoptModule';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useGetStoreInfo from 'redux/hooks/useGetStoreInfo';
-import { useWalletService } from 'hooks/useWallet';
 import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import { divDecimals } from 'utils/calculate';
 import { DIRECT_ADOPT_GEN9_MIN } from 'constants/common';
@@ -20,10 +19,11 @@ import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import TgModal from 'components/TgModal';
 import { useCmsInfo } from 'redux/hooks';
 import styles from './index.module.css';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 export default function TgHome() {
   const router = useRouter();
-  const { wallet } = useWalletService();
+  const { walletInfo } = useConnectWallet();
   const { schrodingerDetail, voteInfo } = useGetStoreInfo();
   const { refresh } = useBalanceService();
   const { checkBalanceAndJump } = useBuyToken();
@@ -42,7 +42,7 @@ export default function TgHome() {
         router.back();
         return;
       }
-      if (!wallet.address || !schrodingerDetail) return;
+      if (!walletInfo?.address || !schrodingerDetail) return;
       if (divDecimals(sgrBalance, 8).lt(DIRECT_ADOPT_GEN9_MIN)) {
         const description = `Insufficient funds, need more $SGR. The cat adoption costs ${DIRECT_ADOPT_GEN9_MIN} $SGR minimum. `;
         if (divDecimals(elfBalance, 8).gt(0)) {
@@ -67,10 +67,12 @@ export default function TgHome() {
       }
       adoptHandler({
         parentItemInfo: schrodingerDetail,
-        account: wallet.address,
+        account: walletInfo?.address,
         isDirect: true,
         theme: 'dark',
         prePage: 'adoptModal',
+        faction,
+        hideInputModal: true,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,7 +83,7 @@ export default function TgHome() {
       purchaseMethodModal,
       schrodingerDetail,
       sgrBalance,
-      wallet.address,
+      walletInfo?.address,
       voteInfo?.countdown,
     ],
   );

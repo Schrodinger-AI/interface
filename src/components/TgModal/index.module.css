@@ -12,7 +12,7 @@
       @apply relative !py-[16px] overflow-hidden after:content-[''] after:opacity-40 after:absolute after:top-[48px] after:left-[10%] after:block after:w-4/5 after:h-[48px] after:bg-[url(../../assets/img/modal-content-shadow.png)] after:bg-center after:bg-no-repeat after:bg-[length:100%_100%];
 
       :global(.aelfd-modal-body) {
-        @apply pb-0 px-8 pb-8 box-border border-0 flex-1 overflow-y-auto pt-0;
+        @apply px-8 pb-8 box-border border-0 flex-1 overflow-y-auto pt-0;
       }
       :global(.aelfd-modal-footer) {
         @apply flex items-center justify-center px-0 border-neutralDivider border-t-0 pb-8 pt-0;
@@ -26,9 +26,9 @@
       }
       :global(.aelfd-modal-header) {
         background: none;
-        @apply px-8 py-8 rounded-none mb-0 border-b-0 bg-none !bg-tgModalBg;
+        @apply px-8 py-8 rounded-none mb-0 border-b-0 !bg-tgModalBg;
         :global(.aelfd-modal-title) {
-          @apply min-h-[28px] text-[14px] text-neutralPrimary font-semibold text-neutralWhiteBg;
+          @apply min-h-[28px] text-[14px] font-semibold text-neutralWhiteBg;
         }
       }
       :global(.aelfd-modal-close) {

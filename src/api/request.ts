@@ -46,7 +46,7 @@ export const fetchSchrodingerImagesByAdoptId = async ({
   return request.get(
     `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&faction=${faction}&address=${address}${
       transactionHash ? `&transactionHash=${transactionHash}` : ''
-    }`,
+    }${faction ? `&faction=${faction}` : ''}`,
   );
 };
 

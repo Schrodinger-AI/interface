@@ -6,7 +6,6 @@ import { useETransferAuthToken } from 'hooks/useETransferAuthToken';
 import { useCallback, useEffect, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useRouter } from 'next/navigation';
-import { useTimeoutFn } from 'react-use';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
@@ -46,14 +45,6 @@ export default function ETransferHistory() {
     getAuthToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
-
-  useTimeoutFn(() => {
-    if (!isLogin) {
-      if (!isInTG) {
-        router.replace('/');
-      }
-    }
-  }, 4000);
 
   if (loading || !isLogin) return null;
 
