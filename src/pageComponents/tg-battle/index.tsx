@@ -67,6 +67,8 @@ export default function TgHome() {
         isDirect: true,
         theme: 'dark',
         prePage: 'adoptModal',
+        faction,
+        hideInputModal: true,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

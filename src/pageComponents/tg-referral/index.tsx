@@ -13,6 +13,7 @@ import FooterButtons from 'pageComponents/tg-home/components/FooterButtons';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { getDomain } from 'utils';
+import { shareText } from './config';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function TgReferral() {
@@ -56,7 +57,7 @@ function TgReferral() {
   );
 
   const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
+    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}&text=${shareText}/?startapp=${walletInfo?.address}`,
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
