@@ -18,10 +18,10 @@ const DynamicBar = ({ onAdopt }: IProps) => {
   return (
     <Flex vertical className="mt-[16px]">
       <Flex className={clsx(styles['battle-contain'], 'relative')}>
-        <Flex vertical align="center" className="basis-1/2">
+        <Flex vertical align="center" className={clsx(styles['haris-contain'], 'basis-1/2')}>
           <div className={clsx(styles.haris, 'w-full h-[96vw] ')}></div>
         </Flex>
-        <Flex vertical align="center" className="basis-1/2">
+        <Flex vertical align="center" className={clsx(styles['trump-contain'], 'basis-1/2')}>
           <div className={clsx(styles.trump, 'w-full h-[96vw] ')}></div>
         </Flex>
 

@@ -1,7 +1,12 @@
 import React from 'react';
 
 const DynamicBar = ({ data }: { data: number[] }) => {
-  const [left = 50, right = 50] = data;
+  const [leftValue = 0, rightValue = 0] = data;
+  let [left = 50, right = 50] = data;
+  if (left === 0 && right === 0) {
+    left = 50;
+    right = 50;
+  }
   const total = left + right;
   const leftPercentage = (left / total) * 100;
   const rightPercentage = (right / total) * 100;
@@ -16,12 +21,12 @@ const DynamicBar = ({ data }: { data: number[] }) => {
         <div
           style={{ width: `${leftPercentage}%` }}
           className="flex items-center justify-start bg-compareLeftBg shadow-compareLeftShadow text-pixelsWhiteBg font-bold text-[12px] rounded-l-[8px] pl-[10px]">
-          {left}
+          {leftValue}
         </div>
         <div
           style={{ width: `${rightPercentage}%` }}
           className="flex items-center justify-end bg-compareRightBg shadow-compareRightShadow text-pixelsWhiteBg font-bold text-[12px] rounded-r-[8px] pr-[10px]">
-          {right}
+          {rightValue}
         </div>
       </div>
     </div>

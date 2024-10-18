@@ -151,6 +151,9 @@ export type TCustomizationItemType = {
     traitType: string;
     values: string[];
   }>;
+  voteRules: string;
+  nextSide: string;
+  prevSide: string;
   [key: string]: any;
 };
 
