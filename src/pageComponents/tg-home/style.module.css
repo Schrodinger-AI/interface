@@ -1,7 +1,12 @@
 .pageContainer {
-  /* @apply w-full flex flex-col items-center bg-[url('../../assets/img/telegram/star-bg.png')] bg-center bg-cover; */
-  background-image: url('../../assets/img/telegram/bg-light2.png'), url('../../assets/img/telegram/bg-light.png'), url('../../assets/img/telegram/bg-mask.png'), url('../../assets/img/telegram/star-bg.png');
-  background-position: center 64%, center, center, center;
-  background-size: 70.7vw 49.1vw, cover, cover, cover;
+  background-image: url('../../assets/img/telegram/bg-shadow.png'), url('../../assets/img/telegram/bg-mask.png'), url('../../assets/img/telegram/star-bg.png');
+  @apply bg-cover bg-center bg-no-repeat;
+}
+
+
+.pageContainer-activity {
+  background-image: url('../../assets/img/telegram/bg-light.png'), radial-gradient(125.45% 50% at 50% 50%, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 60%) 100%), url('../../assets/img/telegram/home-battle-bg.png'), radial-gradient(50% 34.26% at 50% 50%, #2F2C89 0%, #25236C 100%);
+  background-position: center 15%, center, bottom center;
+  background-size: contain, cover, contain, cover;
   background-repeat: no-repeat;
 }

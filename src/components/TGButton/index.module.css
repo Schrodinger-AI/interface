@@ -1,7 +1,38 @@
-.btn-success {
-  @apply flex flex-col items-center bg-[url('../../assets/img/telegram/buttons/success.png')] bg-center bg-contain bg-no-repeat;
+.btn-default {
+  @apply shadow-[0px_24px_0px_0px_rgba(97,93,244,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-defaultBtnBg
+
 }
 
-.btn-warning {
-  @apply flex flex-col items-center bg-[url('../../assets/img/telegram/buttons/warning.png')] bg-center bg-contain bg-no-repeat;
+.btn-default .medium {
+  @apply shadow-[0px_20px_0px_0px_rgba(97,93,244,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-defaultBtnBg
+}
+
+.btn-default .small {
+  @apply shadow-[0px_16px_0px_0px_rgba(97,93,244,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-defaultBtnBg
+}
+
+.btn-success {
+  @apply shadow-[0px_24px_0px_0px_rgba(80,213,0,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-successBtnBg
+
+}
+
+.btn-success .medium {
+  @apply shadow-[0px_20px_0px_0px_rgba(80,213,0,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-successBtnBg
+}
+
+.btn-success .small {
+  @apply shadow-[0px_16px_0px_0px_rgba(80,213,0,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-successBtnBg
+}
+
+.btn-danger {
+  @apply shadow-[0px_24px_0px_0px_rgba(235,73,81,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-dangerBtnBg
+
+}
+
+.btn-danger .medium {
+  @apply shadow-[0px_20px_0px_0px_rgba(235,73,81,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-dangerBtnBg
+}
+
+.btn-danger .small {
+  @apply shadow-[0px_16px_0px_0px_rgba(235,73,81,1)_inset,_0_-2px_0px_rgba(0,0,0,.5)_inset] bg-dangerBtnBg
 }

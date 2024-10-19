@@ -52,17 +52,24 @@ export const useGetImageAndConfirm = () => {
       transactionHash,
       theme = 'light',
       adoptOnly,
+      faction,
     }: {
       adoptId: string;
       transactionHash?: string;
       theme?: TModalTheme;
       adoptOnly: boolean;
+      faction?: string;
     }) => {
       asyncModal.show({
         theme,
       });
-      if (!walletInfo?.address) return undefined;
-      const result = await fetchTraitsAndImages(adoptId, adoptOnly, walletInfo.address, transactionHash);
+      const result = await fetchTraitsAndImages({
+        adoptId,
+        adoptOnly,
+        address: walletInfo?.address || '',
+        transactionHash,
+        faction,
+      });
       asyncModal.hide();
       return result;
     },
@@ -379,6 +386,7 @@ export const useGetImageAndConfirm = () => {
       childrenItemInfo,
       theme = 'light',
       prePage,
+      faction,
       onSuccessModalCloseCallback,
     }: {
       parentItemInfo: TSGRToken;
@@ -386,6 +394,7 @@ export const useGetImageAndConfirm = () => {
       adoptOnly?: boolean;
       theme?: TModalTheme;
       prePage?: string;
+      faction?: string;
       onSuccessModalCloseCallback?: () => void;
     }) => {
       try {
@@ -397,6 +406,7 @@ export const useGetImageAndConfirm = () => {
           adoptOnly: false,
           transactionHash: childrenItemInfo.transactionHash,
           theme,
+          faction,
         });
 
         if (!infos) return;
