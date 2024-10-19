@@ -44,7 +44,7 @@ const DynamicBar = ({ onAdopt }: IProps) => {
           </TGButton>
 
           <p className="mt-[8px] px-[4px] text-xs font-medium text-pixelsWhiteBg text-center">
-            If you prefer {nextSide} style, you are more likely to adopt cats with "{nextSide}" Traits.
+            If you pick "Team Harris", you're more likely to adopt cats with "Harris" Badges.
           </p>
         </Flex>
         <Flex vertical align="center" className="basis-1/2">
@@ -53,7 +53,7 @@ const DynamicBar = ({ onAdopt }: IProps) => {
           </TGButton>
 
           <p className="mt-[8px] px-[4px] text-xs font-medium text-pixelsWhiteBg text-center">
-            If you prefer {prevSide} style, you are more likely to adopt cats with "{prevSide}" Traits.
+            If you pick "Team Trump", you're more likely to adopt cats with "Trump" Badges.
           </p>
         </Flex>
       </Flex>

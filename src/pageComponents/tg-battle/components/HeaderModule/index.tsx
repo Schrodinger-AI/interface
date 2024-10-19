@@ -28,7 +28,9 @@ export default function HeaderModule({ countdown, showRules, onFinish }: Props) 
   return (
     <Flex align="start" justify="space-between" className="">
       <div>
-        <p className="font-black text-[16px] leading-[24px] text-pixelsWhiteBg mb-[4px]">Which Type You Prefer?</p>
+        <p className="font-black text-[16px] leading-[24px] text-pixelsWhiteBg mb-[4px]">
+          Pick Your Team & Win a Bigger Share of $1,500
+        </p>
         <p className="font-semibold text-[12px] leading-[20px] text-pixelsWhiteBg">
           <Countdown className={styles.countdown} value={deadline} format={format} onFinish={() => onFinish?.()} />
         </p>
