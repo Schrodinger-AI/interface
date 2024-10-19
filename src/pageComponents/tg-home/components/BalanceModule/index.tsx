@@ -16,7 +16,10 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="w-full text-neutralWhiteBg text-sm font-normal">
+      <Flex
+        justify="space-between"
+        align="center"
+        className="relative z-20 w-full text-neutralWhiteBg text-sm font-normal">
         <Flex align="center" gap={8}>
           <HeadSVG className="cursor-pointer" />
           <CommonCopy toCopy={addPrefixSuffix(walletInfo?.address || '')}>
@@ -41,7 +44,7 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
           ) : null}
         </div>
       </Flex>
-      <Flex gap={16} justify="space-between" className="mt-2" wrap="wrap">
+      <Flex gap={16} justify="space-between" className="mt-2 relative z-20 " wrap="wrap">
         {balance.map((item, index) => {
           return <BalanceItem key={index} {...item} onBuy={item.onBuy} />;
         })}

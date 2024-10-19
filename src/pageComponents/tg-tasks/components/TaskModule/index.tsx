@@ -7,6 +7,7 @@ import { ReactComponent as Finished } from 'assets/img/telegram/tasks/icon_finis
 import throttle from 'lodash-es/throttle';
 import { claimPoints, finishTask } from 'api/request';
 import { Toast } from 'components/Toast';
+import { useRouter } from 'next/navigation';
 
 type IProps = {
   title?: React.ReactNode;
@@ -19,6 +20,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const toClaimPoints = throttle(
     async (taskId, score, index) => {
@@ -41,16 +43,30 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
   );
 
   const handleLink = throttle(
-    async (taskId, link, index) => {
+    async ({
+      taskId,
+      link,
+      index,
+      linkType,
+    }: {
+      taskId: string;
+      link?: string;
+      linkType?: TLinkType;
+      index: number;
+    }) => {
       if (link) {
-        if (window?.Telegram?.WebApp?.openTelegramLink) {
-          try {
-            window?.Telegram?.WebApp?.openTelegramLink?.(link);
-          } catch (error) {
+        if (linkType === 'link') {
+          router.push(link);
+        } else {
+          if (window?.Telegram?.WebApp?.openTelegramLink) {
+            try {
+              window?.Telegram?.WebApp?.openTelegramLink?.(link);
+            } catch (error) {
+              window.open(link, '_blank');
+            }
+          } else {
             window.open(link, '_blank');
           }
-        } else {
-          window.open(link, '_blank');
         }
       }
       try {
@@ -95,8 +111,8 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
         renderItem={(item, index) => (
           <List.Item
             className={clsx(
+              'rounded-[8px] !px-[12px] mb-[8px]',
               item.status === 2 ? 'bg-pixelsBorder' : 'bg-pixelsDashPurple',
-              'bg-pixelsDashPurple rounded-[8px] !px-[12px] mb-[8px]',
             )}
             key={item.taskId}>
             <List.Item.Meta
@@ -124,7 +140,14 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
             ) : (
               <button
                 className="w-[64px] h-[30px] rounded-[8px] bg-pixelsdeepPurple text-white border-0 text-[12px] font-bold"
-                onClick={() => handleLink(item.taskId, item.link, index)}>
+                onClick={() =>
+                  handleLink({
+                    taskId: item.taskId,
+                    link: item.link,
+                    linkType: item.linkType,
+                    index,
+                  })
+                }>
                 Go
               </button>
             )}

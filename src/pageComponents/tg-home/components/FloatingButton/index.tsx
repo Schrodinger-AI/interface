@@ -1,4 +1,4 @@
-import { ReactComponent as CommunityIcon } from 'assets/img/community-icon.svg';
+import { ReactComponent as CommunityIcon } from 'assets/img/telegram/community-icon.svg';
 import { useCallback } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 
@@ -11,7 +11,7 @@ export default function FloatingButton() {
 
   return (
     <div
-      className="fixed bottom-[88px] right-0 w-[42px] h-[32px] rounded-l-full bg-pixelsCardBg border border-dashed border-pixelsDashPurple z-10 tg-card-shadow flex justify-center items-center"
+      className="fixed bottom-[140px] right-0 w-[34px] h-[34px] z-10 flex justify-center items-center"
       onClick={handleCommunity}>
       <CommunityIcon />
     </div>

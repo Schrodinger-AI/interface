@@ -1,0 +1,20 @@
+
+.battle-contain {
+  @apply bg-[url('../../../../assets/img/telegram/battle/cat_pk_bg.png')] bg-no-repeat bg-center bg-[length:100%_100%] bg-bottom
+}
+
+.trump-contain {
+  @apply bg-[url('../../../../assets/img/telegram/battle/trump.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
+}
+
+.harris-contain {
+  @apply bg-[url('../../../../assets/img/telegram/battle/Harris.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
+}
+
+.trump {
+  @apply bg-[url('../../../../assets/img/telegram/battle/Trump_HD.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
+}
+
+.harris {
+  @apply bg-[url('../../../../assets/img/telegram/battle/Harris_HD.png')] bg-no-repeat bg-center bg-[length:auto_100%] bg-bottom
+}
