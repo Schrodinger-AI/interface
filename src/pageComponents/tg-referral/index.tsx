@@ -13,7 +13,9 @@ import FooterButtons from 'pageComponents/tg-home/components/FooterButtons';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
 import { getDomain } from 'utils';
+import { shareText } from './config';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { ReactComponent as FriendHeaderSVG } from 'assets/img/telegram/friend-header.svg';
 
 function TgReferral() {
   const { walletInfo } = useConnectWallet();
@@ -55,10 +57,12 @@ function TgReferral() {
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
-  const shareLink = useMemo(
-    () => `https://t.me/share/url?url=${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
-    [cmsInfo?.tgWebAppUrl, walletInfo?.address],
-  );
+  const shareLink = useMemo(() => {
+    const encodeParams = encodeURIComponent(
+      `${cmsInfo?.tgWebAppUrl}?startapp=${walletInfo?.address}&text=${shareText}`,
+    );
+    return `https://t.me/share/url?url=${encodeParams}`;
+  }, [cmsInfo?.tgWebAppUrl, walletInfo?.address]);
 
   const handleJoin = async () => {
     await toJoin();
@@ -72,6 +76,7 @@ function TgReferral() {
 
   const onInvite = useCallback(() => {
     try {
+      console.log('=====shareLink', shareLink);
       if (window?.Telegram?.WebApp?.openTelegramLink) {
         window?.Telegram?.WebApp?.openTelegramLink(shareLink);
       }
@@ -108,12 +113,8 @@ function TgReferral() {
       ) : (
         <div className={clsx(styles['referral-container'])}>
           <div className="pb-[100px]">
-            <div className="w-full flex justify-between items-center px-[16px]">
-              <img
-                src={require('assets/img/telegram/friend-header.png').default.src}
-                alt=""
-                className="w-[100vw] h-auto"
-              />
+            <div className="w-full flex justify-between items-center pt-[16px] px-[16px]">
+              <FriendHeaderSVG className="w-[100vw] h-auto" />
             </div>
 
             {cmsInfo?.referralRulesList?.length ? (

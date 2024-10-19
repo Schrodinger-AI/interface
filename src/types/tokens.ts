@@ -3,7 +3,7 @@ import { GenerateType } from './utils';
 export interface ITrait {
   traitType: string;
   value: string;
-  percent: number;
+  percent?: number;
   isRare?: boolean;
 }
 

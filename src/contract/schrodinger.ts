@@ -140,3 +140,39 @@ export const AcceptReferral = async (params: { referrer: string }, options?: ICo
 
 export const RerollAdoption = async (adoptId: string, options?: IContractOptions): Promise<ISendResult> =>
   await schrodingerContractRequest('RerollAdoption', adoptId, options);
+
+export const Spin = async (params: ISpin, options?: IContractOptions): Promise<ISendResult> =>
+  await schrodingerContractRequest('Spin', params, options);
+
+export const AdoptWithVoucher = async (
+  params: {
+    tick: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('AdoptWithVoucher', params, options);
+
+export const ConfirmVoucher = async (
+  params: {
+    voucherId: string;
+    signature: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('ConfirmVoucher', params, options);
+
+export const GetAdoptionVoucherAmount = async (
+  params: {
+    tick: string;
+    account: string;
+  },
+  options?: IContractOptions,
+): Promise<{ value: string }> => {
+  try {
+    const res: any = await schrodingerContractRequest('GetAdoptionVoucherAmount', params, {
+      ...options,
+      type: ContractMethodType.VIEW,
+    });
+    return Promise.resolve(res);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

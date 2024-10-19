@@ -12,11 +12,13 @@ export interface ModalProps extends AntdModalProps {
   hideHeader?: boolean;
   disableMobileLayout?: boolean;
   theme?: TModalTheme;
+  titleClassName?: string;
 }
 function CommonModal(props: ModalProps) {
   const {
     children,
     className,
+    titleClassName,
     title,
     subTitle,
     hideHeader = false,
@@ -49,7 +51,7 @@ function CommonModal(props: ModalProps) {
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
-          <div className={(clsx('pr-8 break-words'), styles['modal-title'])}>{title}</div>
+          <div className={(clsx('pr-8 break-words'), styles['modal-title'], titleClassName)}>{title}</div>
           {subTitle && <div className="mt-2">{subTitle}</div>}
         </div>
       }>

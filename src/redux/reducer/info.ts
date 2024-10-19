@@ -14,6 +14,10 @@ const initialState: InfoStateType = {
   isJoin: false,
   unreadMessagesCount: 0,
   hasNewActivities: false,
+  voteInfo: {
+    countdown: 0,
+    votes: [],
+  },
 };
 
 // Actual Slice
@@ -64,6 +68,12 @@ export const infoSlice = createSlice({
     setHasNewActivities(state, action) {
       state.hasNewActivities = action.payload;
     },
+    setCatDetailInfo(state, action) {
+      state.catDetailInfo = action.payload;
+    },
+    setVoteInfo(state, action) {
+      state.voteInfo = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -86,8 +96,11 @@ export const {
   setAdInfo,
   setUnreadMessagesCount,
   setHasNewActivities,
+  setCatDetailInfo,
+  setVoteInfo,
 } = infoSlice.actions;
 export const selectInfo = (state: AppState) => state.info;
 export const getJoinStats = (state: AppState) => state.info.isJoin;
+export const getVoteInfo = (state: AppState) => state.info.voteInfo;
 
 export default infoSlice.reducer;

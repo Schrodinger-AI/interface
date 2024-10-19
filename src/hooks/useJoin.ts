@@ -12,14 +12,14 @@ import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-import useUserIsInChannel from './useUserIsInChannel';
+import FakeAdoptModal from 'components/FakeAdoptModal';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
   const { walletInfo } = useConnectWallet();
   const [notAutoJoin] = useAutoJoin();
   const { showSpecialCatActivity } = useShowSpecialCatActivity();
-  const { getUserChannelStatus } = useUserIsInChannel();
+  const fakeAdoptModal = useModal(FakeAdoptModal);
 
   const toJoin = async () => {
     return new Promise((resolve) => {
@@ -37,6 +37,7 @@ export const useCheckJoined = () => {
                 domain,
               });
               store.dispatch(setIsJoin(true));
+              fakeAdoptModal.show();
               resolve(true);
               console.log(res, 'res==checkJoined');
             } catch (error) {

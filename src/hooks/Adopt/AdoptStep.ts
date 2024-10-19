@@ -125,16 +125,24 @@ export const fetchWaterImages = async (
   }
 };
 
-export const fetchTraitsAndImages = async (
-  adoptId: string,
-  adoptOnly: boolean,
-  address: string,
-  transactionHash?: string,
+export const fetchTraitsAndImages = async ({
+  adoptId,
+  adoptOnly,
+  address,
+  transactionHash,
   count = 0,
-): Promise<IAdoptImageInfo> => {
+  faction,
+}: {
+  adoptId: string;
+  adoptOnly: boolean;
+  address: string;
+  transactionHash?: string;
+  count?: number;
+  faction?: string;
+}): Promise<IAdoptImageInfo> => {
   count++;
   try {
-    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, address, transactionHash });
+    const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, address, transactionHash, faction });
     if (adoptOnly) {
       if (result?.adoptImageInfo?.boxImage && result?.adoptImageInfo?.attributes) {
         return result;
@@ -142,7 +150,7 @@ export const fetchTraitsAndImages = async (
         throw 'Waiting...';
       }
     }
-    if (!result || (!result.imageUri && !(result.adoptImageInfo.images.length === 2))) throw 'Waiting...';
+    if (!result || (!result.imageUri && !(result.adoptImageInfo.images?.length === 2))) throw 'Waiting...';
     return result;
   } catch (error) {
     // Waiting to generate ai picture
@@ -152,7 +160,7 @@ export const fetchTraitsAndImages = async (
       await sleep(3000);
     }
 
-    return fetchTraitsAndImages(adoptId, adoptOnly, address, transactionHash, count);
+    return fetchTraitsAndImages({ adoptId, adoptOnly, address, transactionHash, count, faction });
   }
 };
 

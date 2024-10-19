@@ -15,6 +15,7 @@ import {
   IStrayCatsData,
 } from 'pageComponents/events-detail/types/type';
 import { store } from 'redux/store';
+import { ILuckyWheelPrizes } from '@lucky-canvas/react';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -35,16 +36,18 @@ export const fetchSchrodingerImagesByAdoptId = async ({
   transactionHash,
   adoptOnly = true,
   address,
+  faction,
 }: {
   adoptId: string;
   transactionHash?: string;
   adoptOnly: boolean;
   address: string;
+  faction?: string;
 }): Promise<IAdoptImageInfo> => {
   return request.get(
-    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&address=${address}${
+    `/app/schrodinger/adoptInfo?adoptId=${adoptId}&adoptOnly=${adoptOnly}&faction=${faction}&address=${address}${
       transactionHash ? `&transactionHash=${transactionHash}` : ''
-    }`,
+    }${faction ? `&faction=${faction}` : ''}`,
   );
 };
 
@@ -263,4 +266,24 @@ export const claimPoints = async (params: { taskId: string }): Promise<ITaskResp
 
 export const fetchPoints = async (params: { address: string }): Promise<ITaskPointsResponse> => {
   return request.post('/app/task/score', params);
+};
+
+export const fetchVoteInfo = async (): Promise<IVoteResponse> => {
+  return request.get('/app/schrodinger/votes');
+};
+
+export const getSpinPrizesPool = async (): Promise<{ data: ISpinPrizesPoolData }> => {
+  return cmsRequest.get(`/items/spinPrizesPool`);
+};
+
+export const getSpinPrizes = async (): Promise<{ data: ILuckyWheelPrizes[] }> => {
+  return cmsRequest.get('/items/spinPrizes');
+};
+
+export const toSpin = async (): Promise<ISpin> => {
+  return request.post('/app/task/spin');
+};
+
+export const voucherAdoption = async (data: { voucherId: string }): Promise<ICouponAdoption> => {
+  return request.post('/app/task/voucher-adoption', data);
 };

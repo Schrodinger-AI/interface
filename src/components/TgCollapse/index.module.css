@@ -1,0 +1,8 @@
+.tg-collapse {
+  :global(.aelfd-collapse-header) {
+    @apply !px-[12px] !py-[13px];
+  }
+  :global(.aelfd-collapse-content-box) {
+    @apply relative !px-[12px] !py-[16px] overflow-hidden after:content-[''] after:absolute after:top-[-24px] after:left-[10%] after:block after:w-4/5 after:h-[48px] after:bg-[url(../../assets/img/modal-content-shadow.png)] after:bg-center after:bg-no-repeat after:bg-[length:100%_100%];
+  }
+}

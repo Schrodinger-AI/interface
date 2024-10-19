@@ -1,0 +1,21 @@
+.customized-tabs {
+  :global(.aelfd-tabs-tab) {
+    @apply !px-0;
+  }
+
+  :global(.aelfd-tabs-nav) {
+    @apply !hidden border-b-0;
+  }
+
+  :global(.aelfd-tabs-tab-btn) {
+    @apply text-[16px] font-bold leading-[24px];
+  }
+  
+  :global(.aelfd-tabs-tab-active .aelfd-tabs-tab-btn) {
+    @apply !text-pixelsWhiteBg;
+  }
+
+  :global(.aelfd-tabs-tab-disabled .aelfd-tabs-tab-btn) {
+    @apply !text-pixelsBorder;
+  }
+}

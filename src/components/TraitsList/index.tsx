@@ -9,9 +9,10 @@ interface ITraitsListProps {
   data: ITrait[];
   theme?: TModalTheme;
   showNew?: boolean;
+  className?: string;
 }
 
-export default function TraitsList({ data = [], showNew = false, theme = 'light' }: ITraitsListProps) {
+export default function TraitsList({ data = [], showNew = false, theme = 'light', className }: ITraitsListProps) {
   const { isLG } = useResponsive();
   const colSpan = useMemo(() => {
     if (isLG) return 24;
@@ -22,7 +23,7 @@ export default function TraitsList({ data = [], showNew = false, theme = 'light'
   return (
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (
-        <TraitsCard key={index} item={item} showNew={showNew} theme={theme} />
+        <TraitsCard key={index} item={item} showNew={showNew} theme={theme} className={className} />
       ))}
     </Row>
   );

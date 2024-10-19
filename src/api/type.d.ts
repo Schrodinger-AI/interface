@@ -33,6 +33,7 @@ interface IBaseTrait {
 
 interface IAdoptImageInfo {
   adoptImageInfo: {
+    tokenName?: string;
     generation: number;
     attributes: (IBaseTrait & { percent: number })[];
     images: string[];
@@ -413,6 +414,7 @@ interface ITaskItem {
   name: string;
   status: number;
   link?: string;
+  linkType?: TLinkType;
 }
 
 interface ITaskResponse {
@@ -425,4 +427,46 @@ interface ITaskResponse {
 
 interface ITaskPointsResponse {
   fishScore: number;
+}
+
+interface IVoteResponse {
+  countdown: number;
+  votes: number[];
+}
+
+interface RareItem {
+  rate: string;
+  data: ISpinPrizesPoolItem[];
+}
+
+interface ISpinPrizesPoolData {
+  rareSuper: RareItem;
+  rareGold: RareItem;
+  rareSilver: RareItem;
+  rareBronze: RareItem;
+  rareCommon: RareItem;
+}
+
+interface ISpinPrizesPoolItem {
+  amount: number;
+  generation: number;
+  describe: string;
+  inscriptionImageUri: string;
+}
+interface ISpinReward {
+  name: string;
+  content: string;
+}
+
+interface ISpin {
+  seed: string;
+  tick: string;
+  expirationTime: number;
+  signature: number[];
+}
+
+interface ICouponAdoption {
+  voucherId: string;
+  signature: string;
+  isRare: boolean;
 }

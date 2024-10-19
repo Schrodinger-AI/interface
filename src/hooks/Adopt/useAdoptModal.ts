@@ -22,6 +22,7 @@ import { renameSymbol } from 'utils/renameSymbol';
 import { TModalTheme } from 'components/CommonModal';
 import { AdTracker } from 'utils/ad';
 import useTelegram from 'hooks/useTelegram';
+import { DIRECT_ADOPT_GEN9_MIN } from 'constants/common';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 
@@ -255,6 +256,8 @@ const useAdoptHandler = () => {
       isBlind = false,
       adoptId: blindAdoptId,
       blindMax,
+      hideInputModal = false,
+      faction,
     }: {
       parentItemInfo: TSGRToken;
       account: string;
@@ -264,8 +267,10 @@ const useAdoptHandler = () => {
       theme?: TModalTheme;
       prePage?: string;
       isBlind?: boolean;
+      hideInputModal?: boolean;
       adoptId?: string;
       blindMax?: string;
+      faction?: string;
     }) => {
       try {
         showLoading();
@@ -273,17 +278,19 @@ const useAdoptHandler = () => {
         await checkAIServer();
 
         closeLoading();
-        const amount = await adoptInput({
-          parentItemInfo,
-          account,
-          isDirect,
-          parentPrice,
-          rankInfo,
-          disableInput,
-          theme,
-          isBlind,
-          blindMax,
-        });
+        const amount = hideInputModal
+          ? `${DIRECT_ADOPT_GEN9_MIN}`
+          : await adoptInput({
+              parentItemInfo,
+              account,
+              isDirect,
+              parentPrice,
+              rankInfo,
+              disableInput,
+              theme,
+              isBlind,
+              blindMax,
+            });
         const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash } = await approveAdopt({
           amount,
           account,
@@ -300,6 +307,7 @@ const useAdoptHandler = () => {
           account,
           theme,
           prePage,
+          faction,
         });
       } catch (error) {
         console.log(error, 'error==');
