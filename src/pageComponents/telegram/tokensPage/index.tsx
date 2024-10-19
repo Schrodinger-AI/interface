@@ -2,21 +2,18 @@
 import OwnedItems from 'components/OwnedItems';
 import { ListTypeEnum } from 'types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { IScrollAlertItem } from 'components/ScrollAlert';
-import useGetNoticeData from './hooks/useGetNoticeData';
 import { useCmsInfo } from 'redux/hooks';
 import clsx from 'clsx';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { useCheckLoginAndToken } from 'hooks/useWallet';
-import { useJumpToPage } from 'hooks/useJumpToPage';
-import useLoading from 'hooks/useLoading';
-import StrayCats from 'pageComponents/strayCats';
 import BackCom from './components/BackCom';
-import useTelegram from 'hooks/useTelegram';
 import { PAGE_CONTAINER_ID } from 'constants/index';
 import CommonTabs from 'components/CommonTabs';
 import { TabsProps } from 'antd';
+import ItemsModule from 'pageComponents/tg-bags/components/ItemsModule';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { GetAdoptionVoucherAmount } from 'contract/schrodinger';
 
 const pageStateList: TabsProps['items'] = [
   // {
@@ -32,13 +29,12 @@ const pageStateList: TabsProps['items'] = [
     label: 'Cat Box',
   },
   {
-    key: `${ListTypeEnum.Stray}`,
-    label: 'Stray Cats',
+    key: `${ListTypeEnum.Voucher}`,
+    label: 'Items',
   },
 ];
 
 export default function TokensPage() {
-  const { getNoticeData } = useGetNoticeData();
   const searchParams = useSearchParams();
   const pageState: ListTypeEnum = useMemo(
     () => (Number(searchParams.get('pageState')) as ListTypeEnum) || ListTypeEnum.My,
@@ -47,33 +43,34 @@ export default function TokensPage() {
   const router = useRouter();
   const { isLogin } = useGetLoginStatus();
   const { checkLogin } = useCheckLoginAndToken();
-  const { closeLoading } = useLoading();
+  const [amount, setAmount] = useState<number>(0);
+  const { walletInfo } = useConnectWallet();
 
   const cmsInfo = useCmsInfo();
-  const { jumpToPage } = useJumpToPage();
 
-  const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
-  const { isInTelegram } = useTelegram();
-
-  const isInTG = useMemo(() => {
-    return isInTelegram();
-  }, [isInTelegram]);
-
-  const getNotice = useCallback(async () => {
+  const getTickAmount = useCallback(async () => {
+    if (!walletInfo?.address || !isLogin) return;
     try {
-      const res = await getNoticeData();
-      setNoticeData(res);
+      const result = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
+      console.log('result', result);
+      if (result?.value) {
+        setAmount(Number(result?.value) || 0);
+      } else {
+        setAmount(0);
+      }
     } catch (error) {
-      setNoticeData([]);
+      setAmount(0);
     }
-  }, [getNoticeData]);
+  }, [walletInfo, isLogin]);
 
   useEffect(() => {
-    getNotice();
-  }, [getNotice]);
+    if (pageState === ListTypeEnum.Voucher) {
+      getTickAmount();
+    }
+  }, [getTickAmount, pageState]);
 
   const onTabsChange = (value: ListTypeEnum) => {
-    if ([ListTypeEnum.My, ListTypeEnum.Stray].includes(value)) {
+    if ([ListTypeEnum.My, ListTypeEnum.Voucher].includes(value)) {
       if (!isLogin) {
         checkLogin({
           onSuccess: () => {
@@ -104,8 +101,11 @@ export default function TokensPage() {
       </div>
 
       <div className="px-4 lg:px-10">
-        {pageState === ListTypeEnum.Stray ? (
-          <StrayCats theme="dark" />
+        {pageState === ListTypeEnum.Voucher ? (
+          <ItemsModule
+            data={[{ src: require('assets/img/telegram/spin/CatTicket.png').default.src as string, amount }]}
+            onFinished={getTickAmount}
+          />
         ) : (
           <OwnedItems theme="dark" hideFilter={pageState === ListTypeEnum.Blind} />
         )}

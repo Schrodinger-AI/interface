@@ -1,6 +1,7 @@
 import { Accounts, ChainId } from '@portkey/provider-types';
 import { IBlockchainWallet } from '@portkey/types';
 import { ManagerInfoType } from '@portkey/did-ui-react';
+import { ITrait } from './tokens';
 
 export type TBaseTokenInfo = {
   decimals: number;
@@ -119,6 +120,7 @@ export enum ListTypeEnum {
   RARE = 3,
   Stray = 4,
   Blind = 5,
+  Voucher = 6,
 }
 
 export type FormatListingType = {
@@ -178,4 +180,35 @@ export interface IListedNFTInfo {
   listType: ListType;
   price: IPrice;
   duration: IListDuration;
+}
+
+export interface IVoucherInfo {
+  voucherId: string;
+  adopter: string;
+  attributes: { data: ITrait[] };
+  tick: string;
+  isRare: boolean;
+  adoptId: string;
+}
+
+export enum SpinRewardType {
+  Other = 'Other',
+  Point = 'Point',
+  AdoptionVoucher = 'AdoptionVoucher',
+  Token = 'Token',
+}
+
+export interface ISpinInfo {
+  spinId: string;
+  name: string;
+  type: SpinRewardType;
+  amount: string;
+  account: string;
+}
+
+export interface ISpunLogs {
+  seed: string;
+  spinInfo: ISpinInfo;
+  tick: string;
+  transactionHash: string;
 }

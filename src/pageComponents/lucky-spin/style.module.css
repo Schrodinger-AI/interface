@@ -1,0 +1,4 @@
+.spin-container {
+  background-image: url('../../assets/img/telegram/bg-mask.png'), url('../../assets/img/telegram/star-bg.png');
+  @apply bg-cover bg-center bg-no-repeat;
+}

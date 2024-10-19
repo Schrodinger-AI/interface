@@ -6,6 +6,7 @@ import { WalletInfoType } from 'types';
 export interface IUserInfoState {
   userInfo: UserInfoType;
   walletInfo: WalletInfoType;
+  points: number;
 }
 
 export const logOutUserInfo: UserInfoType = {
@@ -26,6 +27,7 @@ const initialState: IUserInfoState = {
     address: '',
     aelfChainAddress: '',
   },
+  points: 0,
 };
 
 // Actual Slice
@@ -38,6 +40,9 @@ export const userInfoSlice = createSlice({
     },
     setUserInfo(state, action) {
       state.userInfo = action.payload;
+    },
+    setPoints(state, action) {
+      state.points = action.payload;
     },
   },
 
@@ -52,6 +57,7 @@ export const userInfoSlice = createSlice({
   },
 });
 
-export const { setWalletInfo, setUserInfo } = userInfoSlice.actions;
+export const { setWalletInfo, setUserInfo, setPoints } = userInfoSlice.actions;
 export const getMyAddress = (state: AppState) => state.userInfo.userInfo.address;
+export const getPoints = (state: AppState) => state.userInfo.points;
 export default userInfoSlice.reducer;

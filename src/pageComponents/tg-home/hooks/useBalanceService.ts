@@ -8,6 +8,9 @@ import { GEN0_SYMBOL } from 'constants/common';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { fetchPoints } from 'api/request';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { setPoints } from 'redux/reducer/userInfo';
+import { dispatch } from 'redux/store';
+import useGetPoints from 'redux/hooks/useGetPoints';
 
 export default function useBalanceService(params?: {
   onSgrBalanceChange?: (value: string) => void;
@@ -17,10 +20,10 @@ export default function useBalanceService(params?: {
   const { onSgrBalanceChange, onElfBalanceChange, onPointsChange } = params || {};
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
-  const [points, setPoints] = useState(0);
   const { walletInfo } = useConnectWallet();
   const { showLoading, closeLoading } = useLoading();
   const { checkBalanceAndJump } = useBuyToken();
+  const { points } = useGetPoints();
 
   const balanceData: Array<IBalanceItemProps> = useMemo(() => {
     return [
@@ -77,7 +80,7 @@ export default function useBalanceService(params?: {
       onElfBalanceChange && onElfBalanceChange(elfBalanceRes?.balance || '0');
       onPointsChange && onPointsChange(pointsRes?.fishScore || 0);
       setElfBalance(elfBalanceRes?.balance || '0');
-      setPoints(pointsRes?.fishScore || 0);
+      dispatch(setPoints(pointsRes?.fishScore || 0));
       return {
         sgrBalance: sgrBalanceRes?.balance || '0',
         elfBalance: elfBalanceRes?.balance || '0',
@@ -109,7 +112,7 @@ export default function useBalanceService(params?: {
   }, [fullAddress, walletInfo?.address]);
 
   const updatePoints = (fishScore: number) => {
-    setPoints(fishScore || 0);
+    dispatch(setPoints(fishScore));
   };
 
   return {
@@ -120,6 +123,7 @@ export default function useBalanceService(params?: {
     formatAddress,
     fullAddress,
     balanceData,
+    fish: points,
     updatePoints,
   };
 }
