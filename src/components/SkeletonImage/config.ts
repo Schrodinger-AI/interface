@@ -1,4 +1,4 @@
-export type TPositionDistance = 'default' | 'large';
+export type TPositionDistance = 'default' | 'large' | 'small';
 export type TTagSize = 'default';
 
 export const imageType = {
@@ -30,6 +30,7 @@ export const labelStyle: ILabelStyle = {
     position: {
       default: 'top-[8px] left-[8px] px-[4px]',
       large: 'top-[12px] left-[12px] px-[4px]',
+      small: '',
     },
   },
   level: {
@@ -39,6 +40,7 @@ export const labelStyle: ILabelStyle = {
     position: {
       default: 'top-[30px] left-[8px] px-[4px]',
       large: 'top-[34px] left-[12px] px-[4px]',
+      small: '',
     },
   },
   rarity: {
@@ -48,6 +50,7 @@ export const labelStyle: ILabelStyle = {
     position: {
       default: 'top-[8px] right-[8px]',
       large: 'top-[12px] right-[12px]',
+      small: 'top-[4px] right-[4px]',
     },
   },
   specialTrait: {
@@ -57,10 +60,12 @@ export const labelStyle: ILabelStyle = {
     position: {
       default: 'top-[8px] right-[8px]',
       large: 'top-[12px] right-[12px]',
+      small: '',
     },
     hasRarityPosition: {
       default: 'top-[32px] right-[8px]',
       large: 'top-[36px] right-[12px]',
+      small: '',
     },
   },
 };

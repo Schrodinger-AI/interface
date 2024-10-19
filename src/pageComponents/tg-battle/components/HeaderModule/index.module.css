@@ -1,0 +1,8 @@
+.countdown {
+  display: inline-block;
+
+  :global(.aelfd-statistic-content) {
+    /* font-size: 16px; */
+    @apply text-[12px] text-white font-semibold leading-[24px];
+  }
+}

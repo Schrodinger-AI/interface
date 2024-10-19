@@ -2,8 +2,8 @@
 import React from 'react';
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd';
 import styles from './index.module.css';
-import { ReactComponent as Close } from 'assets/img/icon_close.svg';
 import useResponsive from 'hooks/useResponsive';
+import { ReactComponent as CloseIcon } from 'assets/img/telegram/icons/icon_close.svg';
 import clsx from 'clsx';
 
 export type TModalTheme = 'dark' | 'light';
@@ -30,9 +30,9 @@ function CommonModal(props: ModalProps) {
   return (
     <AntdModal
       keyboard={false}
-      maskClosable={false}
+      maskClosable={true}
       destroyOnClose={true}
-      closeIcon={<img src={require('assets/img/icon_close.png').default.src} alt="" className="w-[24px] h-[24px]" />}
+      closeIcon={<CloseIcon className="w-[24px] h-[24px]" />}
       centered
       footer={null}
       {...props}

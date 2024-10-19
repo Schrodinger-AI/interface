@@ -1,0 +1,27 @@
+.rules h3 {
+  @apply text-rarityOrange text-[16px] leading-[24px] font-bold;
+}
+
+.rules h4 {
+  @apply mt-[16px] mb-[8px] text-rarityOrange text-[16px] leading-[24px] font-bold;
+}
+
+.rules p {
+  @apply text-pixelsLighterPurple text-[14px] leading-[24px];
+}
+
+.rules ul {
+  @apply list-decimal ml-[24px];
+}
+
+.rules ol {
+  @apply list-disc ml-[24px];
+}
+
+.rules li {
+  @apply text-pixelsLightPurple font-bold text-[14px] leading-[24px];
+}
+
+.rules li p {
+  @apply text-pixelsLighterPurple font-medium text-[14px] leading-[24px] ml-[2px];
+}

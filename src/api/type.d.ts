@@ -413,6 +413,7 @@ interface ITaskItem {
   name: string;
   status: number;
   link?: string;
+  linkType?: TLinkType;
 }
 
 interface ITaskResponse {
@@ -425,4 +426,9 @@ interface ITaskResponse {
 
 interface ITaskPointsResponse {
   fishScore: number;
+}
+
+interface IVoteResponse {
+  countdown: number;
+  votes: number[];
 }

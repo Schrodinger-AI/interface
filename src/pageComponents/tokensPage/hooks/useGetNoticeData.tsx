@@ -54,7 +54,7 @@ export default function useGetNoticeData() {
             text: (
               <span>
                 {symbol} purchased for{' '}
-                <span className={theme === 'dark' ? 'text-pixelsPrimaryTextPurple' : 'text-warning600'}>
+                <span className={theme === 'dark' ? 'text-tgSubCyan' : 'text-warning600'}>
                   {formatTokenPrice(item.price)} ELF
                 </span>{' '}
                 by {getOmittedStr(addPrefixSuffix(item.to), OmittedType.ADDRESS)}
