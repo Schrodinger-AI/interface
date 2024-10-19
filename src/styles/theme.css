@@ -30,6 +30,7 @@
   --fill-mask-4: rgb(0 0 0 / 50%);
   --fill-mask-5: rgb(0 0 0 / 85%);
   --fill-mask-6: rgb(0 0 0 / 15%);
+  --fill-mask-20: rgb(0 0 0 / 20%);
   --fill-mask-7: rgb(0 0 0 / 25%);
   --fill-mask-8: rgb(0 0 0 / 40%);
   --warning-100: #FFF7F2;
@@ -74,7 +75,18 @@
   --pixels-deep-purple: #6B66FF;
   --pixels-gray-purple: #5853F3;
   --pixels-lighter-purple: #AEABFF;
+  --pixels-primary-purple-bg: #A76DFF;
+  --pixels-primary-warning-bg: #FFCF24;
+  --pixels-primary-info-bg: #A8D5F8;
+  --pixels-deep-warning-bg: #F1A262;
+  --pixels-primary-gray-bg: #C6D0CD;
+  --pixels-text-purple: #7340C1;
+  --pixels-text-warning: #B2911D;
+  --pixels-text-info: #5898C9;
+  --pixels-text-deep-warning: #B77641;
+  --pixels-text-gray: #8B918F;
   --tg-sub-cyan: #0BCFFC;
+  --pixels-modal-text-bg: #2F2C89;
 }
 
 .dark-theme {

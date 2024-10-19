@@ -11,9 +11,18 @@ interface INoticeBar {
   style?: React.CSSProperties;
   children?: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
-export default function TGButton({ children, type, size = 'medium', className, style, onClick }: INoticeBar) {
+export default function TGButton({
+  children,
+  type,
+  size = 'medium',
+  className,
+  disabled = false,
+  style,
+  onClick,
+}: INoticeBar) {
   const backgroundColor = useMemo(() => {
     switch (type) {
       case 'warning':
@@ -34,7 +43,7 @@ export default function TGButton({ children, type, size = 'medium', className, s
       case 'small':
         return 'rounded-[4px] text-[12px] !font-black';
       default:
-        return 'rounded-[6px] text-[14px] !font-black';
+        return 'rounded-[6px] text-[16px] !font-black';
     }
   }, [size]);
 
@@ -58,6 +67,7 @@ export default function TGButton({ children, type, size = 'medium', className, s
         className,
       )}
       style={style}
+      disabled={disabled}
       onClick={onClick}>
       <span
         className={clsx(
@@ -65,7 +75,7 @@ export default function TGButton({ children, type, size = 'medium', className, s
           backgroundColor,
           styles[size],
           btnContentSize,
-          'flex items-center justify-center dark-btn-font z-10',
+          'flex items-center justify-center font-black dark-btn-font z-10',
         )}>
         {children}
       </span>

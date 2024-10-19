@@ -1,0 +1,13 @@
+.collapse {
+  @apply !bg-pixelsHover !shadow-collapseShadow !border-0 !rounded-[8px] overflow-hidden mt-[16px];
+
+  :global(.aelfd-collapse-header) {
+    @apply !px-[12px] !py-[13px] !text-pixelsWhiteBg !text-[16px] !font-black;
+  }
+  :global(.aelfd-collapse-content) {
+    @apply !border-0 !bg-pixelsHover;
+  }
+  :global(.aelfd-collapse-content-box) {
+    @apply relative !px-[12px] !py-[16px] bg-pixelsHover overflow-hidden;
+  }
+}
