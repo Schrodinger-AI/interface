@@ -34,7 +34,7 @@ const TgCollapse: React.FC<TgCollapseProps> = (props) => {
   return (
     <Collapse
       bordered={false}
-      activeKey={items?.map((item) => item.key || '') || []}
+      defaultActiveKey={items?.map((item) => item.key || '') || []}
       expandIconPosition="end"
       ghost={true}
       className={styles['tg-collapse']}

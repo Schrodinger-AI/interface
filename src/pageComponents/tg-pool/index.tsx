@@ -70,7 +70,7 @@ export default function TgHome() {
                   md: 4,
                 }}
                 className={styles.poolList}
-                dataSource={trumpData?.data || []}
+                dataSource={harrisData?.data || []}
                 renderItem={(item) => (
                   <List.Item>
                     <SkeletonImage

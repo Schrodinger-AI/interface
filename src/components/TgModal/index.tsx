@@ -29,7 +29,7 @@ function CommonModal(props: ModalProps) {
   return (
     <AntdModal
       keyboard={false}
-      maskClosable={false}
+      maskClosable={true}
       destroyOnClose={true}
       closeIcon={<img src={require('assets/img/icon_close.png').default.src} alt="" className="w-[24px] h-[24px]" />}
       centered
