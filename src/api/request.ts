@@ -270,3 +270,7 @@ export const fetchPoints = async (params: { address: string }): Promise<ITaskPoi
 export const fetchVoteInfo = async (): Promise<IVoteResponse> => {
   return request.get('/app/schrodinger/votes');
 };
+
+export const getSpinPrizesPool = async (): Promise<{ data: ISpinPrizesPoolData }> => {
+  return cmsRequest.get(`/items/spinPrizesPool`);
+};
