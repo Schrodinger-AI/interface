@@ -133,6 +133,7 @@ module.exports = {
         pixelsTextDeepWorning: 'var(--pixels-text-deep-warning)',
         pixelsTextInfo: 'var(--pixels-text-info)',
         pixelsTextGray: 'var(--pixels-text-gray)',
+        pixelsModalTextBg: 'var(--pixels-modal-text-bg)',
         tgSubCyan: 'var(--tg-sub-cyan)',
       },
       fontSize: {
