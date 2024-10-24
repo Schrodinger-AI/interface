@@ -120,6 +120,7 @@ export default function useBalanceService(params?: {
     formatAddress,
     fullAddress,
     balanceData,
+    fish: points,
     updatePoints,
   };
 }

@@ -15,6 +15,7 @@ import {
   IStrayCatsData,
 } from 'pageComponents/events-detail/types/type';
 import { store } from 'redux/store';
+import { ILuckyWheelPrizes } from '@lucky-canvas/react';
 
 export const checkDomain = async (): Promise<any> => {
   return request.get('/app/domain/check');
@@ -273,4 +274,20 @@ export const fetchVoteInfo = async (): Promise<IVoteResponse> => {
 
 export const getSpinPrizesPool = async (): Promise<{ data: ISpinPrizesPoolData }> => {
   return cmsRequest.get(`/items/spinPrizesPool`);
+};
+
+export const getSpinPrizes = async (): Promise<{ data: ILuckyWheelPrizes[] }> => {
+  return cmsRequest.get('/items/spinPrizes');
+};
+
+export const getSpinReward = async (): Promise<ISpinReward> => {
+  return request.get('/app/task/reward');
+};
+
+export const toSpin = async (): Promise<ISpin> => {
+  return request.post('/app/task/spin');
+};
+
+export const voucherAdoption = async (data: { voucherId: string }): Promise<ICouponAdoption> => {
+  return request.post('/app/task/voucher-adoption', data);
 };

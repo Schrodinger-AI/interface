@@ -81,6 +81,7 @@ module.exports = {
         fillMask1: 'var(--fill-mask-1)',
         fillMask2: 'var(--fill-mask-2)',
         fillMask3: 'var(--fill-mask-3)',
+        fillMask20: 'var(--fill-mask-20)',
         rarityPlatinum: 'var(--rarity-platinum)',
         rarityBronze: 'var(--rarity-bronze)',
         raritySilver: 'var(--rarity-silver)',
