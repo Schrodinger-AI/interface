@@ -432,3 +432,23 @@ interface IVoteResponse {
   countdown: number;
   votes: number[];
 }
+
+interface RareItem {
+  rate: string;
+  data: ISpinPrizesPoolItem[];
+}
+
+interface ISpinPrizesPoolData {
+  rareSuper: RareItem;
+  rareGold: RareItem;
+  rareSilver: RareItem;
+  rareBronze: RareItem;
+  rareCommon: RareItem;
+}
+
+interface ISpinPrizesPoolItem {
+  amount: number;
+  generation: number;
+  describe: string;
+  inscriptionImageUri: string;
+}
