@@ -1,17 +1,18 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import TGButton from 'components/TGButton';
 import TgModal from 'components/TgModal';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { Flex } from 'antd';
 import { ReactComponent as SpinSVG } from 'assets/img/telegram/spin/Spin.svg';
 import { ReactComponent as AdoptSVG } from 'assets/img/telegram/spin/Adopt.svg';
 import ticketIcon from 'assets/img/telegram/spin/ticket.png';
 import prizeIcon from 'assets/img/telegram/spin/prize.png';
-import { SpinRewardType } from 'types/misc';
 import Image from 'next/image';
 import clsx from 'clsx';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
+import { SpinRewardType } from 'types';
+import { formatNumber } from 'utils/format';
 
 function SpinResultModal({
   type,
@@ -20,20 +21,19 @@ function SpinResultModal({
   onSpin,
 }: {
   type: SpinRewardType;
-  amount: number;
+  amount: string;
   tick: string;
   onSpin?: () => void;
 }) {
   const modal = useModal();
   const pathname = usePathname();
-  const router = useRouter();
   const { adoptWithVoucher } = useAdoptWithVoucher();
 
   const content = useMemo(() => {
     switch (type) {
       case SpinRewardType.AdoptionVoucher:
         return {
-          subTitle: `You won ${amount} S-Cat Voucher!`,
+          subTitle: `You won ${formatNumber(amount)} S-Cat Voucher!`,
           description: [
             'Use your voucher to adopt a GEN9 cat for free! You get to keep Rare GEN9 cats, but be aware that Common GEN9 cats will run off and disappear.',
             'Good luck!',
@@ -51,7 +51,7 @@ function SpinResultModal({
         };
       case SpinRewardType.Point:
         return {
-          subTitle: `You won ${amount} $Fish`,
+          subTitle: `You won ${formatNumber(amount)} $Fish`,
           description: ['Ready for your next spin?'],
           rewardImg: prizeIcon,
           imageClassName: 'w-[96px] h-[96px]',
@@ -69,15 +69,16 @@ function SpinResultModal({
           rewardImg: null,
         };
     }
-  }, [type, amount]);
+  }, [type, amount, adoptWithVoucher, tick, onSpin]);
 
   useEffect(() => {
     modal.hide();
-  }, [modal, pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <TgModal
-      title="Notice"
+      title="REWARD"
       open={modal.visible}
       hideHeader={false}
       afterClose={modal.remove}
@@ -102,7 +103,15 @@ function SpinResultModal({
             );
           })}
         </Flex>
-        <TGButton type="success" className="w-full mt-[24px]"></TGButton>
+        <TGButton
+          type="success"
+          className="w-full mt-[24px]"
+          onClick={() => {
+            modal.hide();
+            content.button?.onClick && content.button?.onClick();
+          }}>
+          {content.button?.text}
+        </TGButton>
       </div>
     </TgModal>
   );

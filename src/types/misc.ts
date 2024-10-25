@@ -51,10 +51,3 @@ export type TEmptyChannelGroup = {
   banner?: TEmptyChannelBanner[];
   introduction?: TEmptyChannelIntroduction;
 };
-
-export enum SpinRewardType {
-  Other = 0,
-  Point = 1,
-  AdoptionVoucher = 2,
-  Token = 3,
-}

@@ -188,3 +188,25 @@ export interface IVoucherInfo {
   is_rare: boolean;
   adopt_id: string;
 }
+
+export enum SpinRewardType {
+  Other = 'Other',
+  Point = 'Point',
+  AdoptionVoucher = 'AdoptionVoucher',
+  Token = 'Token',
+}
+
+export interface ISpinInfo {
+  spinId: string;
+  name: string;
+  type: SpinRewardType;
+  amount: string;
+  account: string;
+}
+
+export interface ISpunLogs {
+  seed: string;
+  spinInfo: ISpinInfo;
+  tick: string;
+  transactionHash: string;
+}
