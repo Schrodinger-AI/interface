@@ -4,8 +4,9 @@ import TgModal from 'components/TgModal';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { Flex } from 'antd';
-import { ReactComponent as SpinSVG } from 'assets/img/telegram/spin/Spin.svg';
-import { ReactComponent as AdoptSVG } from 'assets/img/telegram/spin/Adopt.svg';
+import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
+
+import spinText from 'assets/img/telegram/spin/spin-text.png';
 import ticketIcon from 'assets/img/telegram/spin/ticket.png';
 import prizeIcon from 'assets/img/telegram/spin/prize.png';
 import Image from 'next/image';
@@ -41,7 +42,7 @@ function SpinResultModal({
           rewardImg: ticketIcon,
           imageClassName: 'w-[140px] h-[140px]',
           button: {
-            text: <AdoptSVG />,
+            text: <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />,
             onClick: () => {
               adoptWithVoucher({
                 tick,
@@ -56,7 +57,7 @@ function SpinResultModal({
           rewardImg: prizeIcon,
           imageClassName: 'w-[96px] h-[96px]',
           button: {
-            text: <SpinSVG />,
+            text: <Image src={spinText} className="w-auto h-[24px]" alt="spin" />,
             onClick: () => {
               onSpin && onSpin();
             },

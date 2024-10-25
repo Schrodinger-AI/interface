@@ -8,15 +8,9 @@ import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
 import { ReactComponent as SuperRareSVG } from 'assets/img/telegram/spin-pool/SuperRare.svg';
 import { ReactComponent as RareSVG } from 'assets/img/telegram/spin-pool/Rare.svg';
 import { ReactComponent as CommonSVG } from 'assets/img/telegram/spin-pool/Common.svg';
-import { ReactComponent as GoSVG } from 'assets/img/telegram/spin/Go.svg';
-import { ReactComponent as SpinSVG } from 'assets/img/telegram/spin/Spin.svg';
-import { ReactComponent as VoucherSVG } from 'assets/img/telegram/spin/Voucher.svg';
-import { ReactComponent as AdoptSVG } from 'assets/img/telegram/spin/Adopt.svg';
-import { ReactComponent as InfoSVG } from 'assets/img/telegram/spin/info.svg';
 import { useCallback, useEffect, useState } from 'react';
 import PoolModule from './components/PoolModule';
 import TgModal from 'components/TgModal';
-import TGButton from 'components/TGButton';
 import { ResultModule } from './components/ResultModule';
 
 export default function TgHome() {

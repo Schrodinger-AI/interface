@@ -9,6 +9,7 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import spinBg from 'assets/img/telegram/spin/spin-bg.png';
 import { ReactComponent as SpinArrow } from 'assets/img/telegram/spin/spin-arrow.svg';
 import { ReactComponent as SpinRibbon } from 'assets/img/telegram/spin/ribbon.svg';
+import spinText from 'assets/img/telegram/spin/spin-text.png';
 import Image from 'next/image';
 import { defaultConfig, spinBlocks, spinCenterButtons } from './config';
 import TGButton from 'components/TGButton';
@@ -164,7 +165,7 @@ export default function Spinner() {
         'flex flex-col max-w-[2560px] w-full min-h-screen px-4 pt-[16px] pb-[112px]',
         styles['spin-container'],
       )}>
-      <MobileBackNav theme="dark" className="mb-[32px]" />
+      <MobileBackNav theme="dark" className="mb-[16px]" />
       <BalanceModule balanceData={balanceData} />
       <div className="mt-[59px] w-full flex justify-center items-center flex-col">
         <div className="relative">
@@ -195,7 +196,7 @@ export default function Spinner() {
       </div>
       <div className="w-full flex justify-center items-center flex-col">
         <TGButton type="success" size="large" className="mt-[32px]" onClick={onSpin} disabled={spinDisabled}>
-          <span className="text-base font-black">spin</span>
+          <Image src={spinText} className="w-auto h-[24px]" alt="spin" />
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">
           Use {numberOfFishConsumedInDraw} $Fish to spin!
