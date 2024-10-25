@@ -280,10 +280,6 @@ export const getSpinPrizes = async (): Promise<{ data: ILuckyWheelPrizes[] }> =>
   return cmsRequest.get('/items/spinPrizes');
 };
 
-export const getSpinReward = async (): Promise<ISpinReward> => {
-  return request.get('/app/task/reward');
-};
-
 export const toSpin = async (): Promise<ISpin> => {
   return request.post('/app/task/spin');
 };

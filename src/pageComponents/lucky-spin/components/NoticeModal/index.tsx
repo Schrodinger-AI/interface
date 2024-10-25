@@ -18,7 +18,8 @@ function NoticeModal({
 
   useEffect(() => {
     modal.hide();
-  }, [modal, pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <TgModal

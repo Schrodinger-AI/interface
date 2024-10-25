@@ -1,11 +1,12 @@
 declare module '@lucky-canvas/react' {
   export interface ILuckyWheelPrizes {
-    background?: string;
-    imgs?: {
+    background: string;
+    imgs: {
       src: string;
       width: string;
       top: string;
     }[];
+    name: string;
   }
 
   export interface ILuckyWheelProps {

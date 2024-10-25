@@ -17,25 +17,30 @@ import { getSpinPrizes, toSpin } from 'api/request';
 import { Spin } from 'contract/schrodinger';
 import { message } from 'antd';
 import ProtoInstance from 'utils/initializeProto';
-import { IAdoptedLogs } from 'hooks/Adopt/AdoptStep';
 import { useCmsInfo } from 'redux/hooks';
 import { sleep } from '@portkey/utils';
 import BigNumber from 'bignumber.js';
 import MobileBackNav from 'components/MobileBackNav';
 import { numberOfFishConsumedInDraw } from 'constants/common';
-import { SpinRewardType } from 'types/misc';
 import { useModal } from '@ebay/nice-modal-react';
 import NoticeModal from './components/NoticeModal';
 import SpinResultModal from './components/SpinResultModal';
+import { IContractError, ISpinInfo, ISpunLogs, SpinRewardType } from 'types';
+import { formatNumber } from 'utils/format';
 
 export default function Spinner() {
-  const { balanceData, fish, refresh, updatePoints } = useBalanceService();
+  const { balanceData, fish, updatePoints } = useBalanceService();
   const { showLoading, closeLoading } = useLoading();
   const cmsInfo = useCmsInfo();
-  const [spinInfo, setSpinInfo] = useState<any>();
+  const [spinInfo, setSpinInfo] = useState<
+    ISpinInfo & {
+      tick: string;
+    }
+  >();
   const noticeModal = useModal(NoticeModal);
   const spinResultModal = useModal(SpinResultModal);
   const [spinDisabled, setSpinDisabled] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   const [spinPrizes, setSpinPrizes] = useState<ILuckyWheelPrizes[]>([]);
 
@@ -43,35 +48,37 @@ export default function Spinner() {
     return BigNumber(fish).dividedToIntegerBy(numberOfFishConsumedInDraw).toNumber();
   }, [fish]);
 
-  const getSpinInfo = async (params: ISpin) => {
-    const contractAddress = cmsInfo?.schrodingerSideAddress;
-    if (!contractAddress) return;
-    await sleep(1000);
-    const currentFish = BigNumber(fish).minus(100).toNumber();
-    updatePoints(currentFish);
-    // TODO
-    // const result = await Spin(params);
-    // const TransactionResult = result.TransactionResult;
-    // const logs = await ProtoInstance.getLogEventResult<IAdoptedLogs>({
-    //   contractAddress,
-    //   logsName: 'Adopted',
-    //   TransactionResult,
-    // });
-    // if (!logs) return;
-    // return { ...logs, transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId };
-    // TODO: mock
-    return {
-      spin_id: '1',
-      name: 'item1',
-      type: '2',
-      amount: '3',
-      account: 'nduwe3u',
-    };
-  };
+  const getSpinInfo = useCallback(
+    async (params: ISpin) => {
+      const contractAddress = cmsInfo?.schrodingerSideAddress;
+      if (!contractAddress) return;
+      const currentFish = BigNumber(fish).minus(100).toNumber();
+      console.log('=====spin updatePoints -100', fish, currentFish);
+      updatePoints(currentFish);
+      const result = await Spin(params);
+      const TransactionResult = result.TransactionResult;
+      const logs = await ProtoInstance.getLogEventResult<ISpunLogs>({
+        contractAddress,
+        logsName: 'Spun',
+        TransactionResult,
+      });
+      console.log('=====spin Spin logs', logs);
+      if (!logs) return;
+      return { ...logs };
+    },
+    [cmsInfo?.schrodingerSideAddress, fish, updatePoints],
+  );
 
-  const onSpin = async () => {
+  const getPrizesIndex = useCallback(
+    (name: string) => {
+      const index = spinPrizes.findIndex((item) => item.name === name);
+      return index;
+    },
+    [spinPrizes],
+  );
+
+  const onSpin = useCallback(async () => {
     try {
-      console.log('=====setSpinDisabled');
       if (drawsCounts <= 0) {
         noticeModal.show();
         return;
@@ -79,43 +86,42 @@ export default function Spinner() {
       if (!myLucky.current) return;
       myLucky.current.play();
       setSpinDisabled(true);
-      // TODO: mock
-      // const res = await toSpin();
-      await sleep(1000);
-      // TODO: mock
-      const res = {
-        signature: '0dsbfjwe23ds',
-        seed: '1221',
-        tick: 'string',
-        expirationTime: 1730851200,
-        type: SpinRewardType.Point,
-        amount: 2,
-      };
+      const res = await toSpin();
       if (res.signature) {
         const info = await getSpinInfo(res);
         if (info) {
-          console.log('=====info', info);
-          myLucky.current.stop(2);
-          setSpinInfo(info);
+          const index = getPrizesIndex(info.spinInfo.name);
+          myLucky.current.stop(index);
+          setSpinInfo({ ...info.spinInfo, tick: info.tick });
+        } else {
+          myLucky.current.stop(0);
         }
       }
     } catch (error) {
-      console.log('=====error', error);
       if (!myLucky.current) return;
       myLucky.current.stop(0);
+      const resError = error as IContractError;
+      setErrorMessage(resError.errorMessage?.message);
     }
-  };
+  }, [drawsCounts, getPrizesIndex, getSpinInfo, noticeModal]);
 
-  const showResultModal = async () => {
-    await sleep(300);
-    spinResultModal.show({
-      type: spinInfo.type,
-      amount: spinInfo.amount,
-      tick: spinInfo.tick,
-      onSpin,
-    });
-    setSpinInfo(undefined);
-  };
+  const showResultModal = useCallback(
+    async (
+      spinInfo: ISpinInfo & {
+        tick: string;
+      },
+    ) => {
+      await sleep(300);
+      spinResultModal.show({
+        type: spinInfo.type,
+        amount: spinInfo.amount,
+        tick: spinInfo.tick,
+        onSpin,
+      });
+      setSpinInfo(undefined);
+    },
+    [onSpin, spinResultModal],
+  );
 
   const myLucky = useRef<{
     play: () => {};
@@ -132,21 +138,21 @@ export default function Spinner() {
     }
   }, [closeLoading, showLoading]);
 
-  const spinOnEnd = (prize: ILuckyWheelPrizes) => {
-    console.log('=====onEnd prize', prize);
+  const spinOnEnd = useCallback(() => {
     if (spinInfo) {
-      showResultModal();
-
+      showResultModal(spinInfo);
       if (spinInfo.type === SpinRewardType.Point) {
-        const currentFish = BigNumber(fish).minus(spinInfo.amount).toNumber();
+        const currentFish = BigNumber(fish).plus(spinInfo.amount).toNumber();
+        console.log('=====spin updatePoints +point', fish, currentFish, spinInfo.amount);
+
         updatePoints(currentFish);
       }
     } else {
-      message.error('Failure! Please try again.');
+      message.error(errorMessage || 'Failure! Please try again.');
     }
 
     setSpinDisabled(false);
-  };
+  }, [fish, showResultModal, spinInfo, errorMessage, updatePoints]);
 
   useEffect(() => {
     getPrizes();
@@ -182,7 +188,7 @@ export default function Spinner() {
           <div className="relative -mt-[16px] flex justify-center items-center">
             <SpinRibbon className="w-[343px]" />
             <span className="absolute text-sm font-black text-black flex w-full h-full justify-center items-center mb-[10px]">
-              Your Spin: {drawsCounts}
+              Your Spin: {formatNumber(drawsCounts)}
             </span>
           </div>
         </div>
@@ -192,7 +198,7 @@ export default function Spinner() {
           <span className="text-base font-black">spin</span>
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">
-          Each spin consumes {numberOfFishConsumedInDraw} $Fish
+          Use {numberOfFishConsumedInDraw} $Fish to spin!
         </span>
       </div>
     </div>

@@ -461,7 +461,7 @@ interface ISpin {
   seed: string;
   tick: string;
   expirationTime: number;
-  signature: string;
+  signature: number[];
 }
 
 interface ICouponAdoption {
