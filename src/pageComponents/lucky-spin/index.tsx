@@ -198,7 +198,7 @@ export default function Spinner() {
           <span className="text-base font-black">spin</span>
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">
-          Each spin consumes {numberOfFishConsumedInDraw} $Fish
+          Use {numberOfFishConsumedInDraw} $Fish to spin!
         </span>
       </div>
     </div>

@@ -51,7 +51,7 @@ function SpinResultModal({
         };
       case SpinRewardType.Point:
         return {
-          subTitle: `You won ${formatNumber(amount)} $Fish`,
+          subTitle: `You won ${formatNumber(amount)} $Fish!`,
           description: ['Ready for your next spin?'],
           rewardImg: prizeIcon,
           imageClassName: 'w-[96px] h-[96px]',
