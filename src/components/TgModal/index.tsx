@@ -21,6 +21,7 @@ function CommonModal(props: ModalProps) {
     subTitle,
     hideHeader = false,
     wrapClassName,
+    maskClosable = true,
     disableMobileLayout = false,
     theme = 'light',
   } = props;
@@ -30,7 +31,7 @@ function CommonModal(props: ModalProps) {
   return (
     <AntdModal
       keyboard={false}
-      maskClosable={true}
+      maskClosable={maskClosable}
       destroyOnClose={true}
       closeIcon={<CloseIcon className="w-[24px] h-[24px]" />}
       centered

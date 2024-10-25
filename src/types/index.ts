@@ -187,7 +187,7 @@ export interface IVoucherInfo {
   adopter: string;
   attributes: { data: ITrait[] };
   tick: string;
-  is_rare: boolean;
+  isRare: boolean;
   adoptId: string;
 }
 

@@ -3,8 +3,8 @@
     @apply !px-0;
   }
 
-  :global(.aelfd-tabs-nav::before) {
-    @apply hidden;
+  :global(.aelfd-tabs-nav) {
+    @apply !hidden border-b-0;
   }
 
   :global(.aelfd-tabs-tab-btn) {

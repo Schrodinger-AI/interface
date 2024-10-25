@@ -12,6 +12,7 @@ function TGAdoptLoading() {
       title="DETAILS"
       open={modal.visible}
       hideHeader={false}
+      maskClosable={false}
       onOk={modal.hide}
       onCancel={modal.hide}
       afterClose={modal.remove}>

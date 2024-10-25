@@ -38,7 +38,7 @@ export default function TgHome() {
   }, [getTickAmount]);
 
   return (
-    <div className={clsx('max-w-[2560px] w-full min-h-screen p-[16px] bg-neutralTitle')}>
+    <div className={clsx('max-w-[2560px] w-full h-[100vh] min-h-screen p-[16px] bg-neutralTitle')}>
       <BackCom className="w-full" theme="dark" />
       <Tabs
         defaultActiveKey="3"

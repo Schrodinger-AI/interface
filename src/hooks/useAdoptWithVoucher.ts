@@ -10,7 +10,9 @@ import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useModal } from '@ebay/nice-modal-react';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal';
-import { ITrait } from 'types/tokens';
+import { getCatsRankProbability } from 'utils/getCatsRankProbability';
+import { formatTraits } from 'utils/formatTraits';
+import { addPrefixSuffix } from 'utils/addressFormatting';
 
 export interface IAdoptWithVoucherLogs {
   voucherInfo: IVoucherInfo;
@@ -93,12 +95,18 @@ export default function useAdoptWithVoucher() {
     [contractAddress],
   );
 
-  const showResultModal = (traitData: IAdoptImageInfo, isRare: boolean, traits: ITrait[]) => {
+  const showResultModal = (
+    traitData: IAdoptImageInfo,
+    isRare: boolean,
+    voucherInfo: IVoucherInfo,
+    catsRankProbability?: TRankInfoAddLevelInfo[] | false,
+  ) => {
     // TODO
     adoptResultModal.show({
       traitData,
       isRare,
-      traits,
+      voucherInfo,
+      catsRankProbability,
     });
   };
 
@@ -117,8 +125,16 @@ export default function useAdoptWithVoucher() {
             signature: result.signature,
           });
           console.log('res', res);
-          tgAdoptLoading.hide();
           if (res && res.adoptId && walletInfo?.address) {
+            const traits = formatTraits(voucherInfo.attributes.data);
+            let catsRankProbability: TRankInfoAddLevelInfo[] | false = [];
+            if (traits) {
+              catsRankProbability = await getCatsRankProbability({
+                catsTraits: [traits],
+                address: addPrefixSuffix(walletInfo.address),
+              });
+              console.log('catsRankProbability', catsRankProbability);
+            }
             const blindInfo = await fetchTraitsAndImages({
               adoptId: res.adoptId,
               transactionHash: res.transactionHash,
@@ -126,14 +142,14 @@ export default function useAdoptWithVoucher() {
               address: walletInfo.address,
             });
             console.log('blindInfo', blindInfo);
-            showResultModal(blindInfo, result.isRare, voucherInfo.attributes.data);
+            showResultModal(blindInfo, result.isRare, voucherInfo, catsRankProbability);
             return;
           }
           showErrorResultModal();
         } else {
           // Remind the user that they did not obtain a rare cat
           adoptResultModal.show({
-            traits: voucherInfo.attributes.data,
+            voucherInfo,
           });
         }
       } else {
