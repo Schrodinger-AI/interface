@@ -17,9 +17,10 @@ import { useCallback, useEffect, useState } from 'react';
 import PoolModule from './components/PoolModule';
 import TgModal from 'components/TgModal';
 import TGButton from 'components/TGButton';
+import { ResultModule } from './components/ResultModule';
 
 export default function TgHome() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [rareSuper, setRareSuper] = useState<RareItem>();
   const [rareGold, setRareGold] = useState<RareItem>();
   const [rareSilver, setRareSilver] = useState<RareItem>();
@@ -100,7 +101,7 @@ export default function TgHome() {
         </div>
       </Flex>
 
-      <TgModal
+      {/* <TgModal
         title="Notice"
         open={isOpen}
         hideHeader={false}
@@ -219,6 +220,15 @@ export default function TgHome() {
             </Flex>
           </Flex>
         </div>
+      </TgModal> */}
+
+      <TgModal
+        title="DETAILS"
+        open={isOpen}
+        hideHeader={false}
+        onOk={() => setIsOpen(false)}
+        onCancel={() => setIsOpen(false)}>
+        <ResultModule data={rareSuper?.data?.[0]} />
       </TgModal>
     </div>
   );

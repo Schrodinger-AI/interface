@@ -9,6 +9,7 @@ import { fetchTraitsAndImages } from './Adopt/AdoptStep';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useModal } from '@ebay/nice-modal-react';
 import TGAdoptLoading from 'components/TGAdoptLoading';
+import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal';
 
 export interface IAdoptWithVoucherLogs {
   voucher_info: IVoucherInfo;
@@ -18,6 +19,7 @@ export default function useAdoptWithVoucher() {
   const cmsInfo = useCmsInfo();
   const { walletInfo } = useConnectWallet();
   const tgAdoptLoading = useModal(TGAdoptLoading);
+  const adoptResultModal = useModal(AdoptResultModal);
 
   const contractAddress = useMemo(() => cmsInfo?.schrodingerSideAddress, [cmsInfo?.schrodingerSideAddress]);
 
@@ -91,21 +93,25 @@ export default function useAdoptWithVoucher() {
 
   const showResultModal = () => {
     // TODO
-    console.log('=====showResultModal');
+    adoptResultModal.show();
   };
 
   const adoptWithVoucher = useCallback(
     async ({ tick }: { tick: string }) => {
       tgAdoptLoading.show();
       const voucherInfo = await adopt({ tick });
+      console.log('voucherInfo', voucherInfo);
       if (voucherInfo && voucherInfo.voucher_id) {
         const result = await getVoucherAdoptionResult(voucherInfo);
+        console.log('result', result);
         if (result && result.isRare) {
           // rare
           const res = await getBlind({
             voucherId: voucherInfo.voucher_id,
             signature: result.signature,
           });
+          tgAdoptLoading.hide();
+          console.log('res', res);
           if (res && res.adopt_id && walletInfo?.address) {
             const blindInfo = fetchTraitsAndImages({
               adoptId: res.adopt_id,
@@ -119,6 +125,7 @@ export default function useAdoptWithVoucher() {
           showErrorResultModal();
         } else {
           // Remind the user that they did not obtain a rare cat
+          adoptResultModal.show();
         }
       } else {
         showErrorResultModal();
