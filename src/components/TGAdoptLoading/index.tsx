@@ -1,6 +1,6 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import Image from 'next/image';
-import loadingCatWhite from 'assets/img/loading-cat-white.gif';
+import loadingCat from 'assets/img/loading-cat-transparent.gif';
 import TgModal from 'components/TgModal';
 import { Flex } from 'antd';
 import { ReactComponent as InfoSVG } from 'assets/img/telegram/spin/info.svg';
@@ -17,7 +17,7 @@ function TGAdoptLoading() {
       afterClose={modal.remove}>
       <div className="p-[8px]">
         <Flex align="center" gap={24} vertical>
-          <Image src={loadingCatWhite} alt="" className="w-[120px] h-[120px] rounded-[8px] z-10" />
+          <Image src={loadingCat} alt="" className="w-[120px] h-[120px] rounded-[8px] z-10" />
           <Flex align="stretch" gap={16} className="p-[16px] bg-pixelsModalTextBg rounded-[8px]">
             <div className="flex items-center w-[20px] shrink">
               <InfoSVG />
