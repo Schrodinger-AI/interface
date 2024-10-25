@@ -1,9 +1,10 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import TGButton from 'components/TGButton';
 import TgModal from 'components/TgModal';
-import { ReactComponent as GoSVG } from 'assets/img/telegram/spin/Go.svg';
+import goText from 'assets/img/telegram/spin/go-text.png';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
 
 function NoticeModal({
   title = 'Notice',
@@ -32,7 +33,7 @@ function NoticeModal({
       <div className="p-[8px]">
         <p className="text-center text-white text-[12px] font-medium">{tips}</p>
         <TGButton type="success" className="w-full mt-[24px]" onClick={() => router.push('/telegram/tasks')}>
-          <GoSVG />
+          <Image src={goText} className="w-auto h-[20px]" alt="go" />
         </TGButton>
       </div>
     </TgModal>
