@@ -111,7 +111,7 @@ export default function AdoptModule({
           <ShoppingTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
-      <div onClick={handleShow} className="absolute top-[40vw] right-0 z-20">
+      <div onClick={() => router.push('/telegram/spin-pool')} className="absolute top-[40vw] right-0 z-20">
         <Flex
           vertical
           justify="center"
