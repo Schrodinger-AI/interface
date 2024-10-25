@@ -5,12 +5,11 @@ import TgModal from 'components/TgModal';
 import { Flex } from 'antd';
 import { ReactComponent as AdoptSVG } from 'assets/img/telegram/spin/Adopt.svg';
 import { ReactComponent as VoucherSVG } from 'assets/img/telegram/spin/Voucher.svg';
-import { SpinRewardType } from 'types/misc';
 import { throttle } from 'lodash-es';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 
-function ItemModal({ quantity }: { quantity: number; rewardType?: SpinRewardType }) {
+function ItemModal({ quantity }: { quantity: string }) {
   const modal = useModal();
   const { adoptWithVoucher } = useAdoptWithVoucher();
   const tgAdoptLoading = useModal(TGAdoptLoading);

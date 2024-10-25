@@ -165,7 +165,7 @@ export const GetAdoptionVoucherAmount = async (
     account: string;
   },
   options?: IContractOptions,
-): Promise<string> => {
+): Promise<{ value: string }> => {
   try {
     const res: any = await schrodingerContractRequest('GetAdoptionVoucherAmount', params, {
       ...options,

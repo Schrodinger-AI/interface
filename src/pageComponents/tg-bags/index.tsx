@@ -21,9 +21,9 @@ export default function TgHome() {
   const getTickAmount = useCallback(async () => {
     if (!walletInfo?.address || !isLogin) return;
     try {
-      const amount = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
-      console.log('amount', amount);
-      setAmount(Number(amount) || 0);
+      const { value } = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
+      console.log('value', value);
+      setAmount(Number(value) || 0);
     } catch (error) {
       /* empty */
     }
