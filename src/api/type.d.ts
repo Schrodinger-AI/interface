@@ -465,7 +465,7 @@ interface ISpin {
 }
 
 interface ICouponAdoption {
-  voucher_id: string;
+  voucherId: string;
   signature: string;
   isRare: boolean;
 }

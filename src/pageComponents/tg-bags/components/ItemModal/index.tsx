@@ -9,7 +9,7 @@ import { throttle } from 'lodash-es';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 
-function ItemModal({ quantity }: { quantity: string }) {
+function ItemModal({ amount }: { amount: number }) {
   const modal = useModal();
   const { adoptWithVoucher } = useAdoptWithVoucher();
   const tgAdoptLoading = useModal(TGAdoptLoading);
@@ -18,9 +18,8 @@ function ItemModal({ quantity }: { quantity: string }) {
     async () => {
       try {
         tgAdoptLoading.show();
-        const data = await adoptWithVoucher({ tick: 'SGR' });
+        await adoptWithVoucher({ tick: 'SGR' });
         tgAdoptLoading.hide();
-        console.log(data);
       } catch (error) {
         /* empty */
       }
@@ -46,7 +45,7 @@ function ItemModal({ quantity }: { quantity: string }) {
           />
           <Flex gap={4} align="center" vertical>
             <VoucherSVG />
-            <p className="text-center text-white text-[14px] font-semibold">Quantity: {quantity}</p>
+            <p className="text-center text-white text-[14px] font-semibold">Quantity: {amount}</p>
           </Flex>
           <p className="text-center leading-[20px] text-white text-[12px] font-medium">
             Use your voucher to adopt a GEN9 cat for free! You get to keep Rare GEN9 cats, but be aware that Common GEN9

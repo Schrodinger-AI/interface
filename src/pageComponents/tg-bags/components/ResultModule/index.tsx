@@ -1,83 +1,88 @@
-import { Flex, Tooltip } from 'antd';
-import TGButton from 'components/TGButton';
-import { ReactComponent as ConfirmSVG } from 'assets/img/telegram/spin/Confirm.svg';
-import { ReactComponent as UnboxSVG } from 'assets/img/telegram/spin/Unbox.svg';
-import { ReactComponent as StrongSVG } from 'assets/img/telegram/spin/Strong.svg';
-import { ReactComponent as CongratulationsSVG } from 'assets/img/telegram/spin/Congratulations.svg';
-import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+/* eslint-disable @next/next/no-img-element */
+import { Collapse, Flex } from 'antd';
+import { ReactComponent as ArrowSVG } from 'assets/img/icon_arrow.svg';
 import SkeletonImage from 'components/SkeletonImage';
-import clsx from 'clsx';
-import { PropsWithChildren } from 'react';
 import { TModalTheme } from 'components/CommonModal';
 import TraitsList from 'components/TraitsList';
 import { ITrait } from 'types/tokens';
+import styles from './index.module.css';
 
-type IProps = { data?: ISpinPrizesPoolItem; traits: ITrait[]; isRare: boolean; theme?: TModalTheme };
-
-interface IDescriptionItemProps extends PropsWithChildren {
-  title: string;
-  theme?: TModalTheme;
-  tip?: string | React.ReactNode;
-}
-
-function DescriptionItem({ title, tip, children, theme }: IDescriptionItemProps) {
-  return (
-    <div className="flex flex-col gap-[16px]">
-      <div className="flex items-center gap-2">
-        <div className={clsx('text-lg font-medium', theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
-          {title}
-        </div>
-        {tip && (
-          <Tooltip title={tip}>
-            <QuestionSVG className="fill-pixelsWhiteBg" />
-          </Tooltip>
-        )}
-      </div>
-      {children}
-    </div>
-  );
-}
+type IProps = { traitData?: IAdoptImageInfo; traits: ITrait[]; isRare: boolean; theme?: TModalTheme };
 
 const commonItem = {
-  amount: 99999,
-  describe: 'Common,,',
-  generation: 9,
-  inscriptionImageUri: 'https://schrodinger-testnet.s3.amazonaws.com/30b0a134-ca62-46ea-98fa-b079ae992b2c.png',
+  adoptImageInfo: {
+    // describe: 'Common,,',
+    images: [],
+    attributes: [],
+    generation: 9,
+    boxImage: 'https://schrodinger-testnet.s3.amazonaws.com/30b0a134-ca62-46ea-98fa-b079ae992b2c.png',
+  },
+  image: '',
+  signature: '',
+  imageUri: '',
 };
 
-export function ResultModule({ data = commonItem, traits, isRare, theme }: IProps) {
+export function ResultModule({ traitData = commonItem, traits, isRare, theme = 'dark' }: IProps) {
+  const { adoptImageInfo } = traitData;
+
   return (
-    <div className="p-[8px]">
-      <Flex align="center" gap={24} vertical>
-        <Flex align="stretch" gap={16} className="p-[16px] bg-pixelsModalTextBg rounded-[8px]">
-          <div className="flex items-center w-[24px] shrink">{isRare ? <CongratulationsSVG /> : <StrongSVG />}</div>
-          <p className="text-white leading-[22px] text-[14px] font-medium ">
-            {isRare ? 'Congratulations!/n Your cat is ready for adoption.' : 'Keep trying to get Rare GEN9 cats!'}
-          </p>
-        </Flex>
-        <SkeletonImage
-          img={data?.inscriptionImageUri}
-          tag={`GEN ${data?.generation}`}
-          rarity={data?.describe}
-          imageSizeType="contain"
-          className="!rounded-[4px] border-[3px] border-solid border-pixelsWhiteBg shadow-btnShadow"
-          imageClassName="!rounded-[4px]"
-          tagPosition="small"
-        />
-        <DescriptionItem title="Traits" theme={theme}>
-          <TraitsList data={traits} theme={theme} />
-        </DescriptionItem>
-        <Flex gap={10} className="w-full">
-          <TGButton type="success" className="flex-1">
-            <ConfirmSVG />
-          </TGButton>
-          {isRare && (
-            <TGButton className="flex-1">
-              <UnboxSVG />
-            </TGButton>
+    <div className="py-[8px]">
+      <Flex align="stretch" gap={16} className="p-[16px] bg-pixelsModalTextBg rounded-[8px]">
+        <div className="flex items-center w-[24px] shrink">
+          {!isRare ? (
+            <img
+              src={require('assets/img/telegram/spin/Strong.png').default.src}
+              alt=""
+              className="w-[24px] h-[24px] z-10"
+            />
+          ) : (
+            <img
+              src={require('assets/img/telegram/spin/Congratulations.png').default.src}
+              alt=""
+              className="w-[24px] h-[24px] z-10"
+            />
           )}
-        </Flex>
+        </div>
+        <p className="text-white leading-[22px] text-[14px] font-medium ">
+          {isRare ? 'Congratulations!/n Your cat is ready for adoption.' : 'Keep trying to get Rare GEN9 cats!'}
+        </p>
       </Flex>
+      <SkeletonImage
+        img={adoptImageInfo?.boxImage}
+        tag={`GEN ${adoptImageInfo?.generation}`}
+        imageSizeType="contain"
+        className="mt-[16px] !rounded-[8px] shadow-btnShadow"
+        imageClassName="!rounded-[4px]"
+        tagPosition="small"
+      />
+
+      <div className="mt-[16px] bg-pixelsHover shadow-collapseShadow rounded-[8px] px-[16px] py-[12px]">
+        <Flex align="center" justify="space-between">
+          <span className="text-[16px] font-black text-white py-[7px]">Info</span>
+          <span></span>
+        </Flex>
+        <Flex>
+          <span className="text-[14px] text-pixelsDivider py-[7px] font-bold">Name</span>
+          <span></span>
+        </Flex>
+        <Flex>
+          <span className="text-[14px] text-pixelsDivider py-[7px] font-bold">Rank</span>
+          <span></span>
+        </Flex>
+      </div>
+
+      <Collapse
+        className={styles.collapse}
+        expandIcon={({ isActive }) => <ArrowSVG className={isActive ? '' : 'rotate-180'} />}
+        expandIconPosition="end"
+        items={[
+          {
+            key: 'Traits',
+            label: 'Traits',
+            children: <TraitsList data={traits} theme={theme} className="!rounded-[8px]" />,
+          },
+        ]}
+      />
     </div>
   );
 }

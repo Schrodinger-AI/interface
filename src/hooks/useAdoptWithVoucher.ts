@@ -10,9 +10,10 @@ import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useModal } from '@ebay/nice-modal-react';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal';
+import { ITrait } from 'types/tokens';
 
 export interface IAdoptWithVoucherLogs {
-  voucher_info: IVoucherInfo;
+  voucherInfo: IVoucherInfo;
 }
 
 export default function useAdoptWithVoucher() {
@@ -40,9 +41,10 @@ export default function useAdoptWithVoucher() {
           logsName: 'AdoptedWithVoucher',
           TransactionResult,
         });
+        console.log('logs', logs);
         if (!logs) return;
         return {
-          ...logs.voucher_info,
+          ...logs.voucherInfo,
           transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId,
         };
       } catch (error) {
@@ -55,9 +57,9 @@ export default function useAdoptWithVoucher() {
 
   const getVoucherAdoptionResult = useCallback(async (params: IVoucherInfo) => {
     try {
-      const { voucher_id } = params;
-      const res = await voucherAdoption({ voucherId: voucher_id });
-      if (res.voucher_id) {
+      const { voucherId } = params;
+      const res = await voucherAdoption({ voucherId });
+      if (res.voucherId) {
         return res;
       }
       await sleep(1000);
@@ -84,16 +86,20 @@ export default function useAdoptWithVoucher() {
       });
       if (!logs) return;
       return {
-        ...logs.voucher_info,
+        ...logs.voucherInfo,
         transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId,
       };
     },
     [contractAddress],
   );
 
-  const showResultModal = () => {
+  const showResultModal = (traitData: IAdoptImageInfo, isRare: boolean, traits: ITrait[]) => {
     // TODO
-    adoptResultModal.show();
+    adoptResultModal.show({
+      traitData,
+      isRare,
+      traits,
+    });
   };
 
   const adoptWithVoucher = useCallback(
@@ -101,36 +107,40 @@ export default function useAdoptWithVoucher() {
       tgAdoptLoading.show();
       const voucherInfo = await adopt({ tick });
       console.log('voucherInfo', voucherInfo);
-      if (voucherInfo && voucherInfo.voucher_id) {
+      if (voucherInfo && voucherInfo.voucherId) {
         const result = await getVoucherAdoptionResult(voucherInfo);
         console.log('result', result);
         if (result && result.isRare) {
           // rare
           const res = await getBlind({
-            voucherId: voucherInfo.voucher_id,
+            voucherId: voucherInfo.voucherId,
             signature: result.signature,
           });
-          tgAdoptLoading.hide();
           console.log('res', res);
-          if (res && res.adopt_id && walletInfo?.address) {
-            const blindInfo = fetchTraitsAndImages({
-              adoptId: res.adopt_id,
+          tgAdoptLoading.hide();
+          if (res && res.adoptId && walletInfo?.address) {
+            const blindInfo = await fetchTraitsAndImages({
+              adoptId: res.adoptId,
               transactionHash: res.transactionHash,
               adoptOnly: true,
               address: walletInfo.address,
             });
-            showResultModal();
+            console.log('blindInfo', blindInfo);
+            showResultModal(blindInfo, result.isRare, voucherInfo.attributes.data);
             return;
           }
           showErrorResultModal();
         } else {
           // Remind the user that they did not obtain a rare cat
-          adoptResultModal.show();
+          adoptResultModal.show({
+            traits: voucherInfo.attributes.data,
+          });
         }
       } else {
         showErrorResultModal();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [adopt, getBlind, getVoucherAdoptionResult, tgAdoptLoading, walletInfo?.address],
   );
 

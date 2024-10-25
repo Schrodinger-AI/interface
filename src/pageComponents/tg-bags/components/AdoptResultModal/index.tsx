@@ -1,18 +1,22 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { Button } from 'aelf-design';
-import clsx from 'clsx';
+import { ReactComponent as ConfirmSVG } from 'assets/img/telegram/spin/Confirm.svg';
+import { ReactComponent as UnboxSVG } from 'assets/img/telegram/spin/Unbox.svg';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import { useCallback, useMemo } from 'react';
 import { ResultModule } from '../ResultModule';
 import { ITrait } from 'types/tokens';
+import { Flex } from 'antd';
+import TGButton from 'components/TGButton';
 
 type IProps = {
+  traitData?: IAdoptImageInfo;
   isRare: boolean;
   traits: ITrait[];
   theme?: TModalTheme;
 };
 
-function AdoptResultModal({ isRare, traits, theme = 'dark' }: IProps) {
+function AdoptResultModal(props: IProps) {
+  const { isRare, theme = 'dark' } = props;
   const modal = useModal();
 
   const onCancel = useCallback(() => {
@@ -21,14 +25,18 @@ function AdoptResultModal({ isRare, traits, theme = 'dark' }: IProps) {
 
   const confirmBtn = useMemo(
     () => (
-      <Button
-        className={clsx('md:w-[356px]', theme === 'dark' && '!primary-button-dark')}
-        onClick={onCancel}
-        type="primary">
-        OK
-      </Button>
+      <Flex gap={10} className="w-full">
+        <TGButton type="success" className="flex-1">
+          <ConfirmSVG />
+        </TGButton>
+        {isRare && (
+          <TGButton className="flex-1">
+            <UnboxSVG />
+          </TGButton>
+        )}
+      </Flex>
     ),
-    [onCancel, theme],
+    [isRare],
   );
 
   return (
@@ -41,7 +49,7 @@ function AdoptResultModal({ isRare, traits, theme = 'dark' }: IProps) {
       afterClose={modal.remove}
       footer={confirmBtn}>
       <div className="flex flex-col gap-[16px]">
-        <ResultModule traits={traits} isRare={isRare} />
+        <ResultModule {...props} />
       </div>
     </CommonModal>
   );

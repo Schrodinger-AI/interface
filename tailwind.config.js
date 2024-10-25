@@ -168,6 +168,7 @@ module.exports = {
         boxDeepWorningTitleShadow: '0px 2px 0px 0px #FFFFFF4D inset, 0px -4px 0px 0px #D28A4F inset',
         boxGrayTitleShadow: '0px 2px 0px 0px #FFFFFF4D inset, 0px -4px 0px 0px #A1AEAA inset',
         tickShadow: '0px -4px 0px 0px rgb(0 0 0 / 20%) inset',
+        collapseShadow: '0px 2px 0px 0px #FFFFFF1A inset, 0px -4px 0px 0px #1C1C20 inset',
       },
       keyframes: {
         loading: {

@@ -4,8 +4,12 @@ import SkeletonImage from 'components/SkeletonImage';
 import { useModal } from '@ebay/nice-modal-react';
 import ItemModal from '../ItemModal';
 
+type Item = {
+  src: string;
+  amount: number;
+};
 type Props = {
-  data: [{ src: string; amount: number }];
+  data: Item[];
 };
 
 function ItemsModule({ data }: Props) {
@@ -24,7 +28,7 @@ function ItemsModule({ data }: Props) {
         <List.Item>
           <Flex
             className="rounded-[8px] overflow-hidden cursor-pointer"
-            onClick={() => item.amount > 0 && noticeModal.show({ quantity: '1' })}
+            onClick={() => item.amount > 0 && noticeModal.show({ amount: item.amount })}
             vertical>
             <SkeletonImage
               img={item.src}

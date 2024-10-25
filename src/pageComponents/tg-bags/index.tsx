@@ -8,7 +8,7 @@ import MyCatsModule from './components/MyCatsModule';
 import MyBoxModule from './components/MyBoxModule';
 import ItemsModule from './components/ItemsModule';
 import { GetAdoptionVoucherAmount } from 'contract/schrodinger';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './index.module.css';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -22,12 +22,16 @@ export default function TgHome() {
     if (!walletInfo?.address || !isLogin) return;
     try {
       const { value } = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
-      console.log('value', value);
       setAmount(Number(value) || 0);
     } catch (error) {
       /* empty */
     }
   }, [walletInfo, isLogin]);
+
+  const data = useMemo(
+    () => [{ src: require('assets/img/telegram/spin/CatTicket.png').default.src as string, amount }],
+    [amount],
+  );
 
   useEffect(() => {
     getTickAmount();
@@ -55,11 +59,7 @@ export default function TgHome() {
           {
             label: 'Items',
             key: '3',
-            children: (
-              <ItemsModule
-                data={[{ src: require('assets/img/telegram/spin/CatTicket.png').default.src as string, amount }]}
-              />
-            ),
+            children: <ItemsModule data={data} />,
           },
         ]}
       />
