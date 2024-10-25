@@ -452,3 +452,20 @@ interface ISpinPrizesPoolItem {
   describe: string;
   inscriptionImageUri: string;
 }
+interface ISpinReward {
+  name: string;
+  content: string;
+}
+
+interface ISpin {
+  seed: string;
+  tick: string;
+  expirationTime: number;
+  signature: string;
+}
+
+interface ICouponAdoption {
+  voucher_id: string;
+  signature: string;
+  isRare: boolean;
+}

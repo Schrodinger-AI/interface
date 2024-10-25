@@ -37,3 +37,5 @@ export const GEN0_SYMBOL = 'SGR-1';
 export const COLLECTION_NAME = 'Schrödinger';
 
 export const PORTKEY_LOGIN_CHAIN_ID_KEY = 'PortkeyOriginChainId';
+
+export const numberOfFishConsumedInDraw = 100;

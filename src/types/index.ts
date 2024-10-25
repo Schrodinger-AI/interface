@@ -179,3 +179,12 @@ export interface IListedNFTInfo {
   price: IPrice;
   duration: IListDuration;
 }
+
+export interface IVoucherInfo {
+  voucher_id: string;
+  adopter: string;
+  attributes: string;
+  tick: string;
+  is_rare: boolean;
+  adopt_id: string;
+}

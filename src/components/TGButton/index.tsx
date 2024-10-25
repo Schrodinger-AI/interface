@@ -11,9 +11,18 @@ interface INoticeBar {
   style?: React.CSSProperties;
   children?: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
-export default function TGButton({ children, type, size = 'medium', className, style, onClick }: INoticeBar) {
+export default function TGButton({
+  children,
+  type,
+  size = 'medium',
+  className,
+  disabled = false,
+  style,
+  onClick,
+}: INoticeBar) {
   const backgroundColor = useMemo(() => {
     switch (type) {
       case 'warning':
@@ -58,6 +67,7 @@ export default function TGButton({ children, type, size = 'medium', className, s
         className,
       )}
       style={style}
+      disabled={disabled}
       onClick={onClick}>
       <span
         className={clsx(

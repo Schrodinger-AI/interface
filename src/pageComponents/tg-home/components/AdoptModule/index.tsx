@@ -21,6 +21,7 @@ import clsx from 'clsx';
 // import { useCmsInfo } from 'redux/hooks';
 import styles from './index.module.css';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function AdoptModule({
   cId,
@@ -33,6 +34,7 @@ export default function AdoptModule({
 }) {
   // const { tgHomePageText } = useCmsInfo() || {};
   const { isLogin } = useGetLoginStatus();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleShow = () => {
@@ -89,7 +91,7 @@ export default function AdoptModule({
           <MyBagsTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
-      <div onClick={handleShow} className="absolute top-[37px] right-0 z-20">
+      <div onClick={() => router.push('/telegram/lucky-spin')} className="absolute top-[37px] right-0 z-20">
         <Flex
           vertical
           justify="center"
