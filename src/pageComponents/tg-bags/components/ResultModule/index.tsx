@@ -38,7 +38,13 @@ function replaceLastFiveWithDots(str: string) {
   return str.slice(0, -5) + '...';
 }
 
-export function ResultModule({ traitData = commonItem, isRare, catsRankProbability, theme = 'dark' }: IProps) {
+export function ResultModule({
+  traitData = commonItem,
+  isRare,
+  voucherInfo,
+  catsRankProbability,
+  theme = 'dark',
+}: IProps) {
   const { adoptImageInfo } = traitData;
 
   return (
@@ -59,14 +65,21 @@ export function ResultModule({ traitData = commonItem, isRare, catsRankProbabili
             />
           )}
         </div>
-        <p className="text-white leading-[22px] text-[14px] font-medium ">
-          {isRare ? 'Congratulations!/n Your cat is ready for adoption.' : 'Keep trying to get Rare GEN9 cats!'}
-        </p>
+        {isRare ? (
+          <p className="text-white leading-[22px] text-[14px] font-medium ">
+            Congratulations! <br /> Your cat is ready for adoption.
+          </p>
+        ) : (
+          <p className="text-white leading-[22px] text-[14px] font-medium ">Keep trying to get Rare GEN9 cats!</p>
+        )}
       </Flex>
       <SkeletonImage
         img={adoptImageInfo?.boxImage}
         tag={`GEN ${adoptImageInfo?.generation}`}
-        rarity={catsRankProbability && catsRankProbability?.[0]?.levelInfo?.describe}
+        rarity={
+          (catsRankProbability && catsRankProbability?.[0]?.levelInfo?.describe) ||
+          (!isRare ? commonItem.adoptImageInfo.describe : '')
+        }
         imageSizeType="contain"
         className="mt-[16px] !rounded-[8px] shadow-btnShadow"
         imageClassName="!rounded-[4px]"
@@ -109,7 +122,11 @@ export function ResultModule({ traitData = commonItem, isRare, catsRankProbabili
             key: 'Traits',
             label: 'Traits',
             children: (
-              <TraitsList data={traitData?.adoptImageInfo?.attributes} theme={theme} className="!rounded-[8px]" />
+              <TraitsList
+                data={isRare ? traitData?.adoptImageInfo?.attributes : voucherInfo?.attributes?.data}
+                theme={theme}
+                className="!rounded-[8px]"
+              />
             ),
           },
         ]}

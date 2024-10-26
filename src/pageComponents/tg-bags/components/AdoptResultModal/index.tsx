@@ -38,7 +38,7 @@ function AdoptResultModal(props: IProps) {
           amount: '',
           generation: 0,
           blockTime: 0,
-          decimals: 8,
+          decimals: 0,
           inscriptionImageUri: '',
           traits: [],
         },

@@ -50,7 +50,7 @@ function CommonModal(props: ModalProps) {
       wrapClassName={`${styles['modal-wrap']} ${wrapClassName}`}
       title={
         <div>
-          <div className={(clsx('pr-8 break-words'), styles['modal-title'])}>{title}</div>
+          <div className={clsx('!font-black !text-[14px]', styles['modal-title'])}>{title}</div>
           {subTitle && <div className="mt-2">{subTitle}</div>}
         </div>
       }>
