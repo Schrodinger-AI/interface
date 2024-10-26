@@ -15,11 +15,6 @@ import treasureChest from 'assets/img/telegram/treasure-chest.png';
 import treasureChestLight from 'assets/img/telegram/bg-light2.png';
 import lightRound from 'assets/img/telegram/light-round.png';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
-import { useState } from 'react';
-import TgModal from 'components/TgModal';
-import clsx from 'clsx';
-// import { useCmsInfo } from 'redux/hooks';
-import styles from './index.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -35,11 +30,6 @@ export default function AdoptModule({
   // const { tgHomePageText } = useCmsInfo() || {};
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleShow = () => {
-    setIsOpen(true);
-  };
 
   return (
     <div className="relative z-10">
@@ -121,20 +111,6 @@ export default function AdoptModule({
           <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-
-      <TgModal
-        title="Coming Soon"
-        open={isOpen}
-        hideHeader={false}
-        onOk={() => setIsOpen(false)}
-        onCancel={() => setIsOpen(false)}>
-        <Flex vertical justify="center" align="center" className="h-[184px]" gap={16}>
-          <img src={require('assets/img/telegram/lock.png').default.src} alt="" className="w-[72px] h-[72px]" />
-          <button
-            className={clsx(styles['modal-button'], '!w-[124px] !h-[48px]')}
-            onClick={() => setIsOpen(false)}></button>
-        </Flex>
-      </TgModal>
     </div>
   );
 }

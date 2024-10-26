@@ -33,6 +33,7 @@ interface IBaseTrait {
 
 interface IAdoptImageInfo {
   adoptImageInfo: {
+    tokenName?: string;
     generation: number;
     attributes: (IBaseTrait & { percent: number })[];
     images: string[];

@@ -6,6 +6,9 @@ import { TModalTheme } from 'components/CommonModal';
 import TraitsList from 'components/TraitsList';
 import styles from './index.module.css';
 import { IVoucherInfo } from 'types';
+import HonourLabel from 'components/ItemCard/components/HonourLabel';
+import { labelStyle } from 'components/SkeletonImage/config';
+import clsx from 'clsx';
 
 type IProps = {
   traitData?: IAdoptImageInfo;
@@ -17,7 +20,7 @@ type IProps = {
 
 const commonItem = {
   adoptImageInfo: {
-    // describe: 'Common,,',
+    describe: 'Common,,',
     images: [],
     attributes: [],
     generation: 9,
@@ -28,13 +31,14 @@ const commonItem = {
   imageUri: '',
 };
 
-export function ResultModule({
-  traitData = commonItem,
-  isRare,
-  voucherInfo,
-  catsRankProbability,
-  theme = 'dark',
-}: IProps) {
+function replaceLastFiveWithDots(str: string) {
+  if (str.length <= 5) {
+    return str;
+  }
+  return str.slice(0, -5) + '...';
+}
+
+export function ResultModule({ traitData = commonItem, isRare, catsRankProbability, theme = 'dark' }: IProps) {
   const { adoptImageInfo } = traitData;
 
   return (
@@ -69,6 +73,32 @@ export function ResultModule({
         tagPosition="small"
       />
 
+      {isRare && (
+        <div className="mt-[16px] bg-pixelsHover shadow-collapseShadow rounded-[8px] px-[16px] py-[12px]">
+          <Flex align="center" justify="space-between">
+            <span className="text-[16px] font-black text-white py-[7px]">Info</span>
+            {catsRankProbability && (
+              <div
+                className={clsx(
+                  'flex justify-center items-center',
+                  labelStyle.rarity.size['default'],
+                  labelStyle.rarity.position['small'],
+                )}>
+                <HonourLabel text={catsRankProbability?.[0]?.levelInfo?.describe} />
+              </div>
+            )}
+          </Flex>
+          <Flex align="center" justify="space-between">
+            <span className="text-[14px] leading-[22px] text-pixelsDivider py-[7px] font-bold">Name</span>
+            {catsRankProbability && (
+              <span className="text-[14px] leading-[22px] text-pixelsDivider font-semibold">
+                {replaceLastFiveWithDots(traitData?.adoptImageInfo?.tokenName || '')}
+              </span>
+            )}
+          </Flex>
+        </div>
+      )}
+
       <Collapse
         className={styles.collapse}
         defaultActiveKey={['Traits']}
@@ -78,7 +108,9 @@ export function ResultModule({
           {
             key: 'Traits',
             label: 'Traits',
-            children: <TraitsList data={voucherInfo?.attributes?.data} theme={theme} className="!rounded-[8px]" />,
+            children: (
+              <TraitsList data={traitData?.adoptImageInfo?.attributes} theme={theme} className="!rounded-[8px]" />
+            ),
           },
         ]}
       />

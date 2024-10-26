@@ -40,8 +40,8 @@ export default function PoolModule({ title, subTitle, data, row = 2, className }
               tag={`GEN ${item.generation}`}
               rarity={item.describe}
               imageSizeType="contain"
-              className="!rounded-[4px] border-[3px] border-solid border-pixelsWhiteBg shadow-btnShadow"
-              imageClassName="!rounded-[4px]"
+              className="!rounded-[8px]"
+              imageClassName="!rounded-[8px]"
               tagPosition="small"
             />
           </List.Item>

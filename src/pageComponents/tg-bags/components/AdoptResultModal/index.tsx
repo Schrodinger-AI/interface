@@ -78,6 +78,7 @@ function AdoptResultModal(props: IProps) {
   return (
     <CommonModal
       title={'Instant Adopt GEN9 Cat'}
+      titleClassName="!font-black !text-pixelsWhiteBg"
       open={modal.visible}
       onOk={onCancel}
       theme={theme}

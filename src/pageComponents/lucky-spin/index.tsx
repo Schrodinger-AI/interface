@@ -28,7 +28,6 @@ import NoticeModal from './components/NoticeModal';
 import SpinResultModal from './components/SpinResultModal';
 import { IContractError, ISpinInfo, ISpunLogs, SpinRewardType } from 'types';
 import { formatNumber } from 'utils/format';
-import throttle from 'lodash-es/throttle';
 
 export default function Spinner() {
   const { balanceData, fish, updatePoints } = useBalanceService();
@@ -51,10 +50,11 @@ export default function Spinner() {
   }, [fish]);
 
   const getSpinInfo = useCallback(
-    async (params: ISpin) => {
+    async (params: ISpin, lastFish?: number) => {
       const contractAddress = cmsInfo?.schrodingerSideAddress;
       if (!contractAddress) return;
-      const currentFish = BigNumber(fish).minus(100).toNumber();
+      console.log('=====spin lastFish', lastFish);
+      const currentFish = (lastFish ? BigNumber(lastFish) : BigNumber(fish)).minus(100).toNumber();
       console.log('=====spin updatePoints -100', fish, currentFish);
       updatePoints(currentFish);
       const result = await Spin(params);
@@ -79,35 +79,36 @@ export default function Spinner() {
     [spinPrizes],
   );
 
-  const onSpin = useCallback(async () => {
-    try {
-      if (drawsCounts <= 0) {
-        noticeModal.show();
-        return;
-      }
-      if (!myLucky.current) return;
-      myLucky.current.play();
-      setSpinDisabled(true);
-      const res = await toSpin();
-      if (res.signature) {
-        const info = await getSpinInfo(res);
-        if (info) {
-          const index = getPrizesIndex(info.spinInfo.name);
-          myLucky.current.stop(index);
-          setSpinInfo({ ...info.spinInfo, tick: info.tick });
-        } else {
-          myLucky.current.stop(0);
+  const onSpin = useCallback(
+    async (lastFish?: number) => {
+      try {
+        if (drawsCounts <= 0) {
+          noticeModal.show();
+          return;
         }
+        if (!myLucky.current) return;
+        myLucky.current.play();
+        setSpinDisabled(true);
+        const res = await toSpin();
+        if (res.signature) {
+          const info = await getSpinInfo(res, lastFish);
+          if (info) {
+            const index = getPrizesIndex(info.spinInfo.name);
+            myLucky.current.stop(index);
+            setSpinInfo({ ...info.spinInfo, tick: info.tick });
+          } else {
+            myLucky.current.stop(0);
+          }
+        }
+      } catch (error) {
+        if (!myLucky.current) return;
+        myLucky.current.stop(0);
+        const resError = error as IContractError;
+        setErrorMessage(resError.errorMessage?.message);
       }
-    } catch (error) {
-      if (!myLucky.current) return;
-      myLucky.current.stop(0);
-      const resError = error as IContractError;
-      setErrorMessage(resError.errorMessage?.message);
-    }
-  }, [drawsCounts, getPrizesIndex, getSpinInfo, noticeModal]);
-
-  const handleSpin = throttle(onSpin, 700, { trailing: false });
+    },
+    [drawsCounts, getPrizesIndex, getSpinInfo, noticeModal],
+  );
 
   const showResultModal = useCallback(
     async (
@@ -120,11 +121,11 @@ export default function Spinner() {
         type: spinInfo.type,
         amount: spinInfo.amount,
         tick: spinInfo.tick,
-        onSpin: handleSpin,
+        onSpin: (lastFish?: number) => onSpin(lastFish),
       });
       setSpinInfo(undefined);
     },
-    [handleSpin, spinResultModal],
+    [onSpin, spinResultModal],
   );
 
   const myLucky = useRef<{
@@ -198,7 +199,7 @@ export default function Spinner() {
         </div>
       </div>
       <div className="w-full flex justify-center items-center flex-col">
-        <TGButton type="success" size="large" className="mt-[32px]" onClick={onSpin} disabled={spinDisabled}>
+        <TGButton type="success" size="large" className="mt-[32px]" onClick={() => onSpin()} disabled={spinDisabled}>
           <Image src={spinText} className="w-auto h-[24px]" alt="spin" />
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">

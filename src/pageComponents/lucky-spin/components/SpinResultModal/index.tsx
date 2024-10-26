@@ -14,6 +14,8 @@ import clsx from 'clsx';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import { SpinRewardType } from 'types';
 import { formatNumber } from 'utils/format';
+import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
+import throttle from 'lodash-es/throttle';
 
 function SpinResultModal({
   type,
@@ -24,11 +26,12 @@ function SpinResultModal({
   type: SpinRewardType;
   amount: string;
   tick: string;
-  onSpin?: () => void;
+  onSpin?: (n?: number) => void;
 }) {
   const modal = useModal();
   const pathname = usePathname();
   const { adoptWithVoucher } = useAdoptWithVoucher();
+  const { fish } = useBalanceService();
 
   const content = useMemo(() => {
     switch (type) {
@@ -58,9 +61,7 @@ function SpinResultModal({
           imageClassName: 'w-[96px] h-[96px]',
           button: {
             text: <Image src={spinText} className="w-auto h-[24px]" alt="spin" />,
-            onClick: () => {
-              onSpin && onSpin();
-            },
+            onClick: () => handleSpin(fish),
           },
         };
       default:
@@ -70,7 +71,15 @@ function SpinResultModal({
           rewardImg: null,
         };
     }
-  }, [type, amount, adoptWithVoucher, tick, onSpin]);
+  }, [type, amount, adoptWithVoucher, fish, tick, onSpin]);
+
+  const handleSpin = throttle(
+    async (fish: number) => {
+      onSpin?.(fish);
+    },
+    700,
+    { trailing: false },
+  );
 
   useEffect(() => {
     modal.hide();
