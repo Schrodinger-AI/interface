@@ -14,8 +14,8 @@ import clsx from 'clsx';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import { SpinRewardType } from 'types';
 import { formatNumber } from 'utils/format';
-import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import throttle from 'lodash-es/throttle';
+import useGetPoints from 'redux/hooks/useGetPoints';
 
 function SpinResultModal({
   type,
@@ -31,7 +31,7 @@ function SpinResultModal({
   const modal = useModal();
   const pathname = usePathname();
   const { adoptWithVoucher } = useAdoptWithVoucher();
-  const { fish } = useBalanceService();
+  const { points } = useGetPoints();
 
   const content = useMemo(() => {
     switch (type) {
@@ -61,7 +61,7 @@ function SpinResultModal({
           imageClassName: 'w-[96px] h-[96px]',
           button: {
             text: <Image src={spinText} className="w-auto h-[24px]" alt="spin" />,
-            onClick: () => handleSpin(fish),
+            onClick: () => handleSpin(points),
           },
         };
       default:
@@ -71,11 +71,11 @@ function SpinResultModal({
           rewardImg: null,
         };
     }
-  }, [type, amount, adoptWithVoucher, fish, tick, onSpin]);
+  }, [type, amount, adoptWithVoucher, tick, points]);
 
   const handleSpin = throttle(
-    async (fish: number) => {
-      onSpin?.(fish);
+    async (pot: number) => {
+      onSpin?.(pot);
     },
     700,
     { trailing: false },

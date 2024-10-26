@@ -28,9 +28,13 @@ import NoticeModal from './components/NoticeModal';
 import SpinResultModal from './components/SpinResultModal';
 import { IContractError, ISpinInfo, ISpunLogs, SpinRewardType } from 'types';
 import { formatNumber } from 'utils/format';
+import { dispatch } from 'redux/store';
+import { setPoints } from 'redux/reducer/userInfo';
+import useGetPoints from 'redux/hooks/useGetPoints';
 
 export default function Spinner() {
-  const { balanceData, fish, updatePoints } = useBalanceService();
+  const { points } = useGetPoints();
+  const { balanceData } = useBalanceService();
   const { showLoading, closeLoading } = useLoading();
   const cmsInfo = useCmsInfo();
   const [spinInfo, setSpinInfo] = useState<
@@ -46,17 +50,17 @@ export default function Spinner() {
   const [spinPrizes, setSpinPrizes] = useState<ILuckyWheelPrizes[]>([]);
 
   const drawsCounts = useMemo(() => {
-    return BigNumber(fish).dividedToIntegerBy(numberOfFishConsumedInDraw).toNumber();
-  }, [fish]);
+    return BigNumber(points).dividedToIntegerBy(numberOfFishConsumedInDraw).toNumber();
+  }, [points]);
 
   const getSpinInfo = useCallback(
-    async (params: ISpin, lastFish?: number) => {
+    async (params: ISpin, point?: number) => {
       const contractAddress = cmsInfo?.schrodingerSideAddress;
       if (!contractAddress) return;
-      console.log('=====spin lastFish', lastFish);
-      const currentFish = (lastFish ? BigNumber(lastFish) : BigNumber(fish)).minus(100).toNumber();
-      console.log('=====spin updatePoints -100', fish, currentFish);
-      updatePoints(currentFish);
+      const currentFish = (point ? BigNumber(point) : BigNumber(points)).minus(100).toNumber();
+      console.log('=====spin point -100', point, currentFish);
+      console.log('=====spin points -100', points, currentFish);
+      dispatch(setPoints(currentFish));
       const result = await Spin(params);
       const TransactionResult = result.TransactionResult;
       const logs = await ProtoInstance.getLogEventResult<ISpunLogs>({
@@ -68,7 +72,7 @@ export default function Spinner() {
       if (!logs) return;
       return { ...logs };
     },
-    [cmsInfo?.schrodingerSideAddress, fish, updatePoints],
+    [cmsInfo?.schrodingerSideAddress, points],
   );
 
   const getPrizesIndex = useCallback(
@@ -80,9 +84,12 @@ export default function Spinner() {
   );
 
   const onSpin = useCallback(
-    async (lastFish?: number) => {
+    async (point?: number) => {
       try {
-        if (drawsCounts <= 0) {
+        const drawsCount = (point ? BigNumber(point) : BigNumber(points))
+          .dividedToIntegerBy(numberOfFishConsumedInDraw)
+          .toNumber();
+        if (drawsCount <= 0) {
           noticeModal.show();
           return;
         }
@@ -91,7 +98,7 @@ export default function Spinner() {
         setSpinDisabled(true);
         const res = await toSpin();
         if (res.signature) {
-          const info = await getSpinInfo(res, lastFish);
+          const info = await getSpinInfo(res, point);
           if (info) {
             const index = getPrizesIndex(info.spinInfo.name);
             myLucky.current.stop(index);
@@ -121,7 +128,7 @@ export default function Spinner() {
         type: spinInfo.type,
         amount: spinInfo.amount,
         tick: spinInfo.tick,
-        onSpin: (lastFish?: number) => onSpin(lastFish),
+        onSpin,
       });
       setSpinInfo(undefined);
     },
@@ -147,17 +154,17 @@ export default function Spinner() {
     if (spinInfo) {
       showResultModal(spinInfo);
       if (spinInfo.type === SpinRewardType.Point) {
-        const currentFish = BigNumber(fish).plus(spinInfo.amount).toNumber();
-        console.log('=====spin updatePoints +point', fish, currentFish, spinInfo.amount);
+        const currentFish = BigNumber(points).plus(spinInfo.amount).toNumber();
+        console.log('=====spin updatePoints +point', points, currentFish, spinInfo.amount);
 
-        updatePoints(currentFish);
+        dispatch(setPoints(currentFish));
       }
     } else {
       message.error(errorMessage || 'Failure! Please try again.');
     }
 
     setSpinDisabled(false);
-  }, [fish, showResultModal, spinInfo, errorMessage, updatePoints]);
+  }, [points, showResultModal, spinInfo, errorMessage]);
 
   useEffect(() => {
     getPrizes();
