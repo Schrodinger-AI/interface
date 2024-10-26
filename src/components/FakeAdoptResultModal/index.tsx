@@ -29,7 +29,7 @@ function FakeAdoptResultModal() {
 
   const toSpin = () => {
     modal.hide();
-    router.push('/telegram/spin-pool');
+    router.push('/telegram/lucky-spin');
   };
 
   return (
