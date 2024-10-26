@@ -9,7 +9,7 @@ import { throttle } from 'lodash-es';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 
-function ItemModal({ amount }: { amount: number }) {
+function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => void }) {
   const modal = useModal();
   const { adoptWithVoucher } = useAdoptWithVoucher();
   const tgAdoptLoading = useModal(TGAdoptLoading);
@@ -20,6 +20,7 @@ function ItemModal({ amount }: { amount: number }) {
         tgAdoptLoading.show();
         await adoptWithVoucher({ tick: 'SGR' });
         tgAdoptLoading.hide();
+        onConfirm();
       } catch (error) {
         /* empty */
       }

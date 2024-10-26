@@ -65,7 +65,7 @@ export default function useAdoptWithVoucher() {
         return res;
       }
       await sleep(1000);
-      getVoucherAdoptionResult(params);
+      return await getVoucherAdoptionResult(params);
     } catch (error) {
       return false;
     }
@@ -118,43 +118,50 @@ export default function useAdoptWithVoucher() {
       if (voucherInfo && voucherInfo.voucherId) {
         const result = await getVoucherAdoptionResult(voucherInfo);
         console.log('result', result);
-        if (result && result.isRare) {
-          // rare
-          const res = await getBlind({
-            voucherId: voucherInfo.voucherId,
-            signature: result.signature,
-          });
-          console.log('res', res);
-          if (res && res.adoptId && walletInfo?.address) {
-            const traits = formatTraits(voucherInfo.attributes.data);
-            let catsRankProbability: TRankInfoAddLevelInfo[] | false = [];
-            if (traits) {
-              catsRankProbability = await getCatsRankProbability({
-                catsTraits: [traits],
-                address: addPrefixSuffix(walletInfo.address),
-              });
-              console.log('catsRankProbability', catsRankProbability);
-            }
-            const blindInfo = await fetchTraitsAndImages({
-              adoptId: res.adoptId,
-              transactionHash: res.transactionHash,
-              adoptOnly: true,
-              address: walletInfo.address,
+        if (result && result?.voucherId) {
+          if (result.isRare) {
+            // rare
+            const res = await getBlind({
+              voucherId: voucherInfo.voucherId,
+              signature: result.signature,
             });
-            console.log('blindInfo', blindInfo);
-            showResultModal(blindInfo, result.isRare, voucherInfo, catsRankProbability);
-            return;
+            console.log('res', res);
+            if (res && res.adoptId && walletInfo?.address) {
+              const traits = formatTraits(voucherInfo.attributes.data);
+              let catsRankProbability: TRankInfoAddLevelInfo[] | false = [];
+              if (traits) {
+                catsRankProbability = await getCatsRankProbability({
+                  catsTraits: [traits],
+                  address: addPrefixSuffix(walletInfo.address),
+                });
+                console.log('catsRankProbability', catsRankProbability);
+              }
+              const blindInfo = await fetchTraitsAndImages({
+                adoptId: res.adoptId,
+                transactionHash: res.transactionHash,
+                adoptOnly: true,
+                address: walletInfo.address,
+              });
+              console.log('blindInfo', blindInfo);
+              tgAdoptLoading.hide();
+              showResultModal(blindInfo, result.isRare, res, catsRankProbability);
+              return;
+            }
+            tgAdoptLoading.hide();
+            showErrorResultModal();
+          } else {
+            // Remind the user that they did not obtain a rare cat
+            tgAdoptLoading.hide();
+            adoptResultModal.show({
+              voucherInfo,
+            });
           }
-          showErrorResultModal();
-        } else {
-          // Remind the user that they did not obtain a rare cat
-          adoptResultModal.show({
-            voucherInfo,
-          });
         }
       } else {
+        tgAdoptLoading.hide();
         showErrorResultModal();
       }
+      return;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [adopt, getBlind, getVoucherAdoptionResult, tgAdoptLoading, walletInfo?.address],

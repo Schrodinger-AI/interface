@@ -28,8 +28,8 @@ function AdoptResultModal(props: IProps) {
   }, [modal]);
 
   const onUnbox = useCallback(() => {
+    console.log('onUnbox', voucherInfo, catsRankProbability);
     if (!voucherInfo.adoptId || !catsRankProbability || !catsRankProbability?.[0]) {
-      onCancel();
       return;
     }
     try {

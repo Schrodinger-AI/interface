@@ -5,10 +5,7 @@ import SkeletonImage from 'components/SkeletonImage';
 import { TModalTheme } from 'components/CommonModal';
 import TraitsList from 'components/TraitsList';
 import styles from './index.module.css';
-import clsx from 'clsx';
-import { labelStyle } from 'components/SkeletonImage/config';
 import { IVoucherInfo } from 'types';
-import HonourLabel from 'components/ItemCard/components/HonourLabel';
 
 type IProps = {
   traitData?: IAdoptImageInfo;
@@ -38,7 +35,6 @@ export function ResultModule({
   catsRankProbability,
   theme = 'dark',
 }: IProps) {
-  console.log('catsRankProbability', catsRankProbability && catsRankProbability?.[0]?.rank);
   const { adoptImageInfo } = traitData;
 
   return (
@@ -73,42 +69,9 @@ export function ResultModule({
         tagPosition="small"
       />
 
-      {isRare && (
-        <div className="mt-[16px] bg-pixelsHover shadow-collapseShadow rounded-[8px] px-[16px] py-[12px]">
-          <Flex align="center" justify="space-between">
-            <span className="text-[16px] font-black text-white py-[7px]">Info</span>
-            {catsRankProbability && (
-              <div
-                className={clsx(
-                  'flex justify-center items-center',
-                  labelStyle.rarity.size['default'],
-                  labelStyle.rarity.position['small'],
-                )}>
-                <HonourLabel text={catsRankProbability?.[0]?.levelInfo?.describe} />
-              </div>
-            )}
-          </Flex>
-          <Flex align="center" justify="space-between">
-            <span className="text-[14px] leading-[22px] text-pixelsDivider py-[7px] font-bold">Name</span>
-            {catsRankProbability && (
-              <span className="text-[14px] leading-[22px] text-pixelsDivider font-semibold">
-                {catsRankProbability?.[0]?.levelInfo?.name || ''}
-              </span>
-            )}
-          </Flex>
-          <Flex align="center" justify="space-between">
-            <span className="text-[14px] text-pixelsDivider py-[7px] font-bold">Rank</span>
-            {catsRankProbability && (
-              <span className="text-[14px] leading-[22px] text-pixelsDivider font-semibold">
-                {catsRankProbability?.[0]?.levelInfo?.rank}
-              </span>
-            )}
-          </Flex>
-        </div>
-      )}
-
       <Collapse
         className={styles.collapse}
+        defaultActiveKey={['Traits']}
         expandIcon={({ isActive }) => <ArrowSVG className={isActive ? '' : 'rotate-180'} />}
         expandIconPosition="end"
         items={[
