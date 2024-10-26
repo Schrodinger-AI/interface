@@ -50,10 +50,10 @@ function FakeAdoptModal() {
           <p className="text-center leading-[20px] text-white text-[12px] font-medium">Good luck!</p>
 
           <Flex align="stretch" gap={16} className="mt-[16px] p-[16px] bg-pixelsModalTextBg rounded-[8px]">
-            <div className="flex items-center w-[20px] shrink">
+            <div className="flex flex-none items-center w-[20px] shrink">
               <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
             </div>
-            <p className="text-white leading-[22px] text-[14px] font-medium ">
+            <p className="flex-auto text-white leading-[22px] text-[14px] font-medium ">
               If you close this pop-up, you will lose this free S-CAT voucher.
             </p>
           </Flex>

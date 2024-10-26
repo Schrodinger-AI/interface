@@ -51,11 +51,15 @@ export default function TokensPage() {
   const getTickAmount = useCallback(async () => {
     if (!walletInfo?.address || !isLogin) return;
     try {
-      const { value } = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
-      console.log('value', value);
-      setAmount(Number(value) || 0);
+      const result = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
+      console.log('result', result);
+      if (result?.value) {
+        setAmount(Number(result?.value) || 0);
+      } else {
+        setAmount(0);
+      }
     } catch (error) {
-      /* empty */
+      setAmount(0);
     }
   }, [walletInfo, isLogin]);
 
