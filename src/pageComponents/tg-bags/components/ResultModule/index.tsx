@@ -112,25 +112,27 @@ export function ResultModule({
         </div>
       )}
 
-      <Collapse
-        className={styles.collapse}
-        defaultActiveKey={['Traits']}
-        expandIcon={({ isActive }) => <ArrowSVG className={isActive ? '' : 'rotate-180'} />}
-        expandIconPosition="end"
-        items={[
-          {
-            key: 'Traits',
-            label: 'Traits',
-            children: (
-              <TraitsList
-                data={isRare ? traitData?.adoptImageInfo?.attributes : voucherInfo?.attributes?.data}
-                theme={theme}
-                className="!rounded-[8px]"
-              />
-            ),
-          },
-        ]}
-      />
+      {isRare && (
+        <Collapse
+          className={styles.collapse}
+          defaultActiveKey={['Traits']}
+          expandIcon={({ isActive }) => <ArrowSVG className={isActive ? '' : 'rotate-180'} />}
+          expandIconPosition="end"
+          items={[
+            {
+              key: 'Traits',
+              label: 'Traits',
+              children: (
+                <TraitsList
+                  data={isRare ? traitData?.adoptImageInfo?.attributes : voucherInfo?.attributes?.data}
+                  theme={theme}
+                  className="!rounded-[8px]"
+                />
+              ),
+            },
+          ]}
+        />
+      )}
     </>
   );
 }
