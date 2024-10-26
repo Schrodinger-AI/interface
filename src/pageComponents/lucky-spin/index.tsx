@@ -193,7 +193,7 @@ export default function Spinner() {
           <div className="relative -mt-[16px] flex justify-center items-center">
             <SpinRibbon className="w-[343px]" />
             <span className="absolute text-sm font-black text-black flex w-full h-full justify-center items-center mb-[10px]">
-              Your Spin: {formatNumber(drawsCounts)}
+              Available Spins: {formatNumber(drawsCounts)}
             </span>
           </div>
         </div>

@@ -36,7 +36,7 @@ export default function TgHome() {
   return (
     <div className={clsx('max-w-[2560px] w-full min-h-screen p-[16px] bg-neutralTitle')}>
       <BackCom className="w-full" theme="dark" />
-      <h4 className="leading-[24px] text-[16px] font-black text-pixelsWhiteBg mt-[16px] mb-[24px]">
+      <h4 className="leading-[24px] text-[16px] font-bold text-pixelsWhiteBg mt-[16px] mb-[24px]">
         Cat Box Rarity List
       </h4>
 

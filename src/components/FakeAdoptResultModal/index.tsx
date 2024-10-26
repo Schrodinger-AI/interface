@@ -42,7 +42,7 @@ function FakeAdoptResultModal() {
       onCancel={onCancel}
       afterClose={modal.remove}
       footer={
-        <TGButton type="success" className="w-full mt-[24px]" onClick={toSpin}>
+        <TGButton type="success" size="large" className="w-full mt-[24px]" onClick={toSpin}>
           Go To Spin
         </TGButton>
       }>

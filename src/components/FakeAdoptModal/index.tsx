@@ -58,7 +58,7 @@ function FakeAdoptModal() {
             </p>
           </Flex>
         </Flex>
-        <TGButton type="success" className="w-full mt-[24px]" onClick={handleAdopt}>
+        <TGButton type="success" size="large" className="w-full mt-[24px]" onClick={handleAdopt}>
           Adopt
         </TGButton>
       </div>

@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 function NoticeModal({
   title = 'Notice',
-  tips = 'Oh no, you do not have enough $Fish. Complete tasks to get more $Fish!',
+  tips = 'Oh no, you do not have enough $Fish.\n Complete tasks to get more $Fish!',
 }: {
   title?: string;
   tips?: string;
@@ -31,7 +31,7 @@ function NoticeModal({
       onOk={() => modal.hide()}
       onCancel={() => modal.hide()}>
       <div className="p-[8px]">
-        <p className="text-center text-white text-[12px] font-medium">{tips}</p>
+        <p className="text-center text-white text-[12px] font-medium whitespace-pre-wrap">{tips}</p>
         <TGButton type="success" className="w-full mt-[24px]" onClick={() => router.push('/telegram/tasks')}>
           <Image src={goText} className="w-auto h-[20px]" alt="go" />
         </TGButton>

@@ -62,11 +62,11 @@ function AdoptResultModal(props: IProps) {
   const confirmBtn = useMemo(
     () => (
       <Flex gap={10} className="w-full">
-        <TGButton type="success" className="flex-1" onClick={onCancel}>
+        <TGButton type="success" size="large" className="flex-1" onClick={onCancel}>
           Confirm
         </TGButton>
         {isRare && (
-          <TGButton className="flex-1" onClick={onUnbox}>
+          <TGButton className="flex-1" size="large" onClick={onUnbox}>
             Unbox
           </TGButton>
         )}

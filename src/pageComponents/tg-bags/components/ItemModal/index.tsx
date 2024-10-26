@@ -30,7 +30,7 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
 
   return (
     <TgModal
-      title="REWARD"
+      title="DETAILS"
       open={modal.visible}
       hideHeader={false}
       afterClose={modal.remove}
@@ -53,7 +53,7 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
           </p>
           <p className="text-center leading-[20px] text-white text-[12px] font-medium">Good luck!</p>
         </Flex>
-        <TGButton type="success" className="w-full mt-[24px]" onClick={handleAdopt}>
+        <TGButton type="success" size="large" className="w-full mt-[24px]" onClick={handleAdopt}>
           Adopt
         </TGButton>
       </div>
