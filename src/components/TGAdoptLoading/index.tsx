@@ -20,10 +20,10 @@ function TGAdoptLoading() {
         <Flex align="center" gap={24} vertical>
           <Image src={loadingCat} alt="" className="w-[120px] h-[120px] rounded-[8px] z-10" />
           <Flex align="stretch" gap={16} className="p-[16px] bg-pixelsModalTextBg rounded-[8px]">
-            <div className="flex items-center w-[20px] shrink">
+            <div className="flex flex-none items-center w-[20px]">
               <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
             </div>
-            <p className="text-white leading-[22px] text-[14px] font-medium ">
+            <p className="flex-auto text-white leading-[22px] text-[14px] font-medium ">
               Please do not close this window until adoption is completed
             </p>
           </Flex>
