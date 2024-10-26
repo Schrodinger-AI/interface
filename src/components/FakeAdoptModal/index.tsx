@@ -54,7 +54,7 @@ function FakeAdoptModal() {
               <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
             </div>
             <p className="text-white leading-[22px] text-[14px] font-medium ">
-              If you close this pop-up, you will lose this S-CAT voucher.
+              If you close this pop-up, you will lose this free S-CAT voucher.
             </p>
           </Flex>
         </Flex>
