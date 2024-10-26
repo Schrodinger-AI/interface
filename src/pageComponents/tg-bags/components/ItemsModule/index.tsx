@@ -10,11 +10,16 @@ type Item = {
 };
 type Props = {
   data: Item[];
-  onFinish: () => void;
+  onFinished: () => void;
 };
 
-function ItemsModule({ data, onFinish }: Props) {
+function ItemsModule({ data, onFinished }: Props) {
   const noticeModal = useModal(ItemModal);
+
+  const onConfirm = () => {
+    noticeModal.hide();
+    onFinished();
+  };
 
   return (
     <List
@@ -29,7 +34,7 @@ function ItemsModule({ data, onFinish }: Props) {
         <List.Item>
           <Flex
             className="rounded-[8px] overflow-hidden cursor-pointer"
-            onClick={() => item.amount > 0 && noticeModal.show({ amount: item.amount, onConfirm: onFinish })}
+            onClick={() => item.amount > 0 && noticeModal.show({ amount: item.amount, onConfirm })}
             vertical>
             <SkeletonImage
               img={item.src}

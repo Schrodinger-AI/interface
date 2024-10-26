@@ -100,6 +100,7 @@ export default function TokensPage() {
         {pageState === ListTypeEnum.Voucher ? (
           <ItemsModule
             data={[{ src: require('assets/img/telegram/spin/CatTicket.png').default.src as string, amount }]}
+            onFinished={getTickAmount}
           />
         ) : (
           <OwnedItems theme="dark" hideFilter={pageState === ListTypeEnum.Blind} />

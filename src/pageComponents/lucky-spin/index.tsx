@@ -28,6 +28,7 @@ import NoticeModal from './components/NoticeModal';
 import SpinResultModal from './components/SpinResultModal';
 import { IContractError, ISpinInfo, ISpunLogs, SpinRewardType } from 'types';
 import { formatNumber } from 'utils/format';
+import throttle from 'lodash-es/throttle';
 
 export default function Spinner() {
   const { balanceData, fish, updatePoints } = useBalanceService();
@@ -106,6 +107,8 @@ export default function Spinner() {
     }
   }, [drawsCounts, getPrizesIndex, getSpinInfo, noticeModal]);
 
+  const handleSpin = throttle(onSpin, 700, { trailing: false });
+
   const showResultModal = useCallback(
     async (
       spinInfo: ISpinInfo & {
@@ -117,11 +120,11 @@ export default function Spinner() {
         type: spinInfo.type,
         amount: spinInfo.amount,
         tick: spinInfo.tick,
-        onSpin,
+        onSpin: handleSpin,
       });
       setSpinInfo(undefined);
     },
-    [onSpin, spinResultModal],
+    [handleSpin, spinResultModal],
   );
 
   const myLucky = useRef<{

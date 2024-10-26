@@ -161,6 +161,7 @@ export default function useAdoptWithVoucher() {
         tgAdoptLoading.hide();
         showErrorResultModal();
       }
+      console.log('adoptWithVoucher end');
       return;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

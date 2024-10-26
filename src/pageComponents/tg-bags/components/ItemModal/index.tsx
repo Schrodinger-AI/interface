@@ -19,8 +19,9 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
       try {
         tgAdoptLoading.show();
         await adoptWithVoucher({ tick: 'SGR' });
-        tgAdoptLoading.hide();
         onConfirm();
+        console.log('adopt success');
+        tgAdoptLoading.hide();
       } catch (error) {
         /* empty */
       }
@@ -45,7 +46,7 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
             className="w-[140px] h-[140px] rounded-[8px] z-10"
           />
           <Flex gap={4} align="center" vertical>
-            <VoucherSVG />
+            <p className="text-[16px] leading-[24px] text-white font-black font-bold dark-btn-font">S-CAT Voucher</p>
             <p className="text-center text-white text-[14px] font-semibold">Quantity: {amount}</p>
           </Flex>
           <p className="text-center leading-[20px] text-white text-[12px] font-medium">
@@ -55,7 +56,7 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
           <p className="text-center leading-[20px] text-white text-[12px] font-medium">Good luck!</p>
         </Flex>
         <TGButton type="success" className="w-full mt-[24px]" onClick={handleAdopt}>
-          <AdoptSVG />
+          Adopt
         </TGButton>
       </div>
     </TgModal>

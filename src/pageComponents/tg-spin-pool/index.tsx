@@ -5,16 +5,13 @@ import { Flex } from 'antd';
 import { getSpinPrizesPool } from 'api/request';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
-import { ReactComponent as SuperRareSVG } from 'assets/img/telegram/spin-pool/SuperRare.svg';
+import { ReactComponent as UltraRareSVG } from 'assets/img/telegram/spin-pool/UltraRare.svg';
 import { ReactComponent as RareSVG } from 'assets/img/telegram/spin-pool/Rare.svg';
 import { ReactComponent as CommonSVG } from 'assets/img/telegram/spin-pool/Common.svg';
 import { useCallback, useEffect, useState } from 'react';
 import PoolModule from './components/PoolModule';
-import TgModal from 'components/TgModal';
-import { ResultModule } from './components/ResultModule';
 
 export default function TgHome() {
-  const [isOpen, setIsOpen] = useState(true);
   const [rareSuper, setRareSuper] = useState<RareItem>();
   const [rareGold, setRareGold] = useState<RareItem>();
   const [rareSilver, setRareSilver] = useState<RareItem>();
@@ -48,7 +45,7 @@ export default function TgHome() {
 
       <PoolModule
         data={rareSuper?.data || []}
-        title={<SuperRareSVG />}
+        title={<UltraRareSVG />}
         className="shadow-boxPurpleTitleShadow bg-pixelsPrimaryPurpleBg"
         subTitle={<p className="text-pixelsTextPurple text-[12px] font-bold">{rareSuper?.rate}</p>}
       />

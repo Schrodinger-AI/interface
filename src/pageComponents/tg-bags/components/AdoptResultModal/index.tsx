@@ -1,6 +1,4 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
-import { ReactComponent as ConfirmSVG } from 'assets/img/telegram/spin/Confirm.svg';
-import { ReactComponent as UnboxSVG } from 'assets/img/telegram/spin/Unbox.svg';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import { useCallback, useMemo } from 'react';
 import { ResultModule } from '../ResultModule';
@@ -28,7 +26,6 @@ function AdoptResultModal(props: IProps) {
   }, [modal]);
 
   const onUnbox = useCallback(() => {
-    console.log('onUnbox', voucherInfo, catsRankProbability);
     if (!voucherInfo.adoptId || !catsRankProbability || !catsRankProbability?.[0]) {
       return;
     }
@@ -60,17 +57,17 @@ function AdoptResultModal(props: IProps) {
       /* empty */
     }
     onCancel();
-  }, [catsRankProbability, getImageAndConfirm, onCancel, voucherInfo.adoptId]);
+  }, [catsRankProbability, getImageAndConfirm, onCancel, voucherInfo]);
 
   const confirmBtn = useMemo(
     () => (
       <Flex gap={10} className="w-full">
         <TGButton type="success" className="flex-1" onClick={onCancel}>
-          <ConfirmSVG />
+          Confirm
         </TGButton>
         {isRare && (
           <TGButton className="flex-1" onClick={onUnbox}>
-            <UnboxSVG />
+            Unbox
           </TGButton>
         )}
       </Flex>

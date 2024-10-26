@@ -43,7 +43,7 @@ export default function TGButton({
       case 'small':
         return 'rounded-[4px] text-[12px] !font-black';
       default:
-        return 'rounded-[6px] text-[14px] !font-black';
+        return 'rounded-[6px] text-[16px] !font-black';
     }
   }, [size]);
 
@@ -75,7 +75,7 @@ export default function TGButton({
           backgroundColor,
           styles[size],
           btnContentSize,
-          'flex items-center justify-center dark-btn-font z-10',
+          'flex items-center justify-center font-black dark-btn-font z-10',
         )}>
         {children}
       </span>

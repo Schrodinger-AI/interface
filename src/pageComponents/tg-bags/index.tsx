@@ -19,9 +19,11 @@ export default function TgHome() {
   const [amount, setAmount] = useState<number>(0);
 
   const getTickAmount = useCallback(async () => {
+    console.log('getTickAmount');
     if (!walletInfo?.address || !isLogin) return;
     try {
       const { value } = await GetAdoptionVoucherAmount({ tick: 'SGR', account: walletInfo?.address });
+      console.log('value', value);
       setAmount(Number(value) || 0);
     } catch (error) {
       /* empty */
@@ -59,7 +61,7 @@ export default function TgHome() {
           {
             label: 'Items',
             key: '3',
-            children: <ItemsModule data={data} onFinish={getTickAmount} />,
+            children: <ItemsModule data={data} onFinished={getTickAmount} />,
           },
         ]}
       />
