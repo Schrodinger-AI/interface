@@ -7,7 +7,7 @@ import { throttle } from 'lodash-es';
 import useAdoptWithVoucher from 'hooks/useAdoptWithVoucher';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 
-function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => void }) {
+function ItemModal({ amount, onConfirm, onClose }: { amount: number; onConfirm: () => void; onClose: () => void }) {
   const modal = useModal();
   const { adoptWithVoucher } = useAdoptWithVoucher();
   const tgAdoptLoading = useModal(TGAdoptLoading);
@@ -28,12 +28,18 @@ function ItemModal({ amount, onConfirm }: { amount: number; onConfirm: () => voi
     { trailing: false },
   );
 
+  const handleClose = () => {
+    onClose();
+    modal.remove();
+  };
+
   return (
     <TgModal
       title="DETAILS"
       open={modal.visible}
       hideHeader={false}
-      afterClose={modal.remove}
+      maskClosable={false}
+      afterClose={handleClose}
       onOk={() => modal.hide()}
       onCancel={() => modal.hide()}>
       <div className="p-[8px]">

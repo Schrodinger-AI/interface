@@ -17,7 +17,7 @@ function FakeAdoptModal() {
     async () => {
       modal.hide();
       tgAdoptLoading.show();
-      await sleep(2000);
+      await sleep(5000);
       fakeAdoptResultModal.show();
       tgAdoptLoading.hide();
     },
@@ -36,7 +36,7 @@ function FakeAdoptModal() {
       <div className="p-[8px]">
         <Flex align="center" gap={24} vertical>
           <p className="text-[16px] leading-[24px] text-white font-black font-bold dark-btn-font">
-            Lucky! You won n* S-CAT Voucher!
+            Lucky! You won 1 * S-CAT Voucher!
           </p>
           <img
             src={require('assets/img/telegram/spin/ticket.png').default.src}

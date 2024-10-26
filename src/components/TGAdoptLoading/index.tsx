@@ -8,7 +8,7 @@ function TGAdoptLoading() {
   const modal = useModal();
   return (
     <TgModal
-      title="DETAILS"
+      title="Adopting Cat..."
       open={modal.visible}
       hideHeader={false}
       maskClosable={false}

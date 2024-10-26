@@ -1,7 +1,7 @@
 import { AdoptWithVoucher, ConfirmVoucher } from 'contract/schrodinger';
 import ProtoInstance from 'utils/initializeProto';
 import { useCmsInfo } from 'redux/hooks';
-import { IVoucherInfo } from 'types';
+import { IContractError, IVoucherInfo } from 'types';
 import { useCallback, useMemo } from 'react';
 import { voucherAdoption } from 'api/request';
 import { sleep } from '@portkey/utils';
@@ -13,6 +13,7 @@ import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { formatTraits } from 'utils/formatTraits';
 import { addPrefixSuffix } from 'utils/addressFormatting';
+import { message } from 'antd';
 
 export interface IAdoptWithVoucherLogs {
   voucherInfo: IVoucherInfo;
@@ -50,7 +51,10 @@ export default function useAdoptWithVoucher() {
           transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId,
         };
       } catch (error) {
-        console.log('error');
+        const resError = error as unknown as IContractError;
+        if (resError) {
+          message.error(resError.errorMessage?.message || 'Voucher not enough.');
+        }
         return false;
       }
     },

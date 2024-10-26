@@ -34,7 +34,7 @@ function ItemsModule({ data, onFinished }: Props) {
         <List.Item>
           <Flex
             className="rounded-[8px] overflow-hidden cursor-pointer"
-            onClick={() => item.amount > 0 && noticeModal.show({ amount: item.amount, onConfirm })}
+            onClick={() => item.amount > 0 && noticeModal.show({ amount: item.amount, onConfirm, onClose: onConfirm })}
             vertical>
             <SkeletonImage
               img={item.src}

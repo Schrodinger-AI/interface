@@ -112,7 +112,7 @@ export default function useBalanceService(params?: {
   }, [fullAddress, walletInfo?.address]);
 
   const updatePoints = (fishScore: number) => {
-    setPoints(fishScore || 0);
+    dispatch(setPoints(fishScore));
   };
 
   return {
