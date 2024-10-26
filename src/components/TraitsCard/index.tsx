@@ -16,10 +16,12 @@ function TraitsCard({
   item,
   showNew = false,
   theme = 'light',
+  className,
 }: {
   item: ITrait;
   showNew?: boolean;
   theme?: TModalTheme;
+  className?: string;
 }) {
   const { isLG } = useResponsive();
 
@@ -85,6 +87,7 @@ function TraitsCard({
           !showNew && !isLG && 'px-[8px]',
           cardBg,
           isDark ? `rounded-none` : `rounded-lg`,
+          className,
         )}>
         <div key={item.traitType} className="flex-1 lg:flex-none lg:w-full overflow-hidden mr-[16px] lg:mr-0">
           <TextEllipsis
