@@ -9,10 +9,10 @@ import { TransactionFeeNotEnough } from 'utils/formatError';
 import useAutoJoin from './useAutoJoin';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
-import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import FakeAdoptModal from 'components/FakeAdoptModal';
+import { getTgStartParam } from 'utils/getTgStartParam';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
@@ -23,7 +23,8 @@ export const useCheckJoined = () => {
 
   const toJoin = async () => {
     return new Promise((resolve) => {
-      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+      const { start_param } = getTgStartParam();
+      const referrerAddress = start_param.address;
 
       if (referrerAddress) return;
 
@@ -89,7 +90,8 @@ export const useCheckJoined = () => {
       }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity],
   );
 
   return { checkJoined, toJoin, getJoinStatus };

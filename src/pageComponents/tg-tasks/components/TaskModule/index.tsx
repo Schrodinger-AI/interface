@@ -1,13 +1,19 @@
 import clsx from 'clsx';
-import { Flex, List } from 'antd';
+import { Flex, List, message as antdMessage } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { ReactComponent as TaskSVG } from 'assets/img/telegram/icon_Task.svg';
+import taskCat from 'assets/img/telegram/cat.png';
 import { ReactComponent as FishSVG } from 'assets/img/telegram/tasks/icon_silver.svg';
 import { ReactComponent as Finished } from 'assets/img/telegram/tasks/icon_finished.svg';
+import { ReactComponent as Voucher } from 'assets/img/telegram/tasks/icon_voucher.svg';
+import { ReactComponent as CopyIcon } from 'assets/img/telegram/tasks/copy.svg';
 import throttle from 'lodash-es/throttle';
 import { claimPoints, finishTask } from 'api/request';
 import { Toast } from 'components/Toast';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useCopyToClipboard } from 'react-use';
+import { getTgStartParam } from 'utils/getTgStartParam';
 
 type IProps = {
   title?: React.ReactNode;
@@ -16,11 +22,12 @@ type IProps = {
   onUpdate?: (i: number, data: ITaskResponse) => void;
 };
 
-export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps) {
+export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps) {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [, setCopied] = useCopyToClipboard();
 
   const toClaimPoints = throttle(
     async (taskId, score, index) => {
@@ -48,11 +55,13 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
       link,
       index,
       linkType,
+      rewardType,
     }: {
       taskId: string;
       link?: string;
       linkType?: TLinkType;
       index: number;
+      rewardType?: number;
     }) => {
       if (link) {
         if (linkType === 'link') {
@@ -70,7 +79,20 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
         }
       }
       try {
-        const data = await finishTask({ taskId });
+        let userName = '';
+        if (rewardType === 1) {
+          const { user } = getTgStartParam();
+          userName = `${user.first_name} ${user.last_name}`;
+        }
+
+        const data = await finishTask({
+          taskId,
+          extraData: userName
+            ? {
+                name: userName,
+              }
+            : undefined,
+        });
         const { status } = data;
         if (status === 1) {
           onUpdate?.(index, data);
@@ -116,12 +138,39 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
             )}
             key={item.taskId}>
             <List.Item.Meta
-              avatar={<TaskSVG />}
+              avatar={
+                item.rewardType === 1 ? (
+                  <div className="w-[40px] h-[40px] flex justify-center items-center">
+                    <Image src={taskCat} className="w-[40px]" alt="cat" />
+                  </div>
+                ) : (
+                  <TaskSVG />
+                )
+              }
               title={<span className="text-white text-[12px] font-bold">{item.name}</span>}
               description={
-                <Flex align="center" gap={4}>
-                  <FishSVG className="w-[16px] h-[16px]" />
-                  <span className="text-white font-semibold text-[10px]">+ {item.score} Fish</span>
+                <Flex align="center" justify="space-between" className="pr-[16px]" gap={4}>
+                  <Flex align="center" gap={4}>
+                    {item.rewardType === 1 ? <Voucher /> : <FishSVG className="w-[16px] h-[16px]" />}
+
+                    <span className="text-white font-semibold text-[10px]">
+                      {item.rewardType === 1 ? `+ ${item.score} S-CAT Voucher` : `+ ${item.score} Fish`}
+                    </span>
+                  </Flex>
+                  {item.rewardType === 1 ? (
+                    <Flex
+                      align="center"
+                      justify="center"
+                      className="border border-solid border-pixelsWhiteBg rounded-[4px] h-[18px] px-[6px]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCopied('🐱');
+                        antdMessage.success('Copied');
+                      }}>
+                      <CopyIcon className={item.status === 2 ? 'fill-pixelsBorder' : ''} />
+                      <span className="text-pixelsWhiteBg font-semibold text-[10px] ml-[4px]">Copy 🐱</span>
+                    </Flex>
+                  ) : null}
                 </Flex>
               }
             />
@@ -146,6 +195,7 @@ export default function AdoptModule({ title, subTitle, tasks, onUpdate }: IProps
                     link: item.link,
                     linkType: item.linkType,
                     index,
+                    rewardType: item.rewardType,
                   })
                 }>
                 Go

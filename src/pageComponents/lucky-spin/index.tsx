@@ -9,7 +9,7 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import spinBg from 'assets/img/telegram/spin/spin-bg.png';
 import { ReactComponent as SpinArrow } from 'assets/img/telegram/spin/spin-arrow.svg';
 import { ReactComponent as SpinRibbon } from 'assets/img/telegram/spin/ribbon.svg';
-import spinText from 'assets/img/telegram/spin/spin-text.png';
+// import spinText from 'assets/img/telegram/spin/spin-text.png';
 import Image from 'next/image';
 import { defaultConfig, spinBlocks, spinCenterButtons } from './config';
 import TGButton from 'components/TGButton';
@@ -114,7 +114,7 @@ export default function Spinner() {
         setErrorMessage(resError.errorMessage?.message);
       }
     },
-    [drawsCounts, getPrizesIndex, getSpinInfo, noticeModal],
+    [getPrizesIndex, getSpinInfo, noticeModal, points],
   );
 
   const showResultModal = useCallback(
@@ -207,7 +207,8 @@ export default function Spinner() {
       </div>
       <div className="w-full flex justify-center items-center flex-col">
         <TGButton type="success" size="large" className="mt-[32px]" onClick={() => onSpin()} disabled={spinDisabled}>
-          <Image src={spinText} className="w-auto h-[24px]" alt="spin" />
+          <span className="text-base font-black text-pixelsWhiteBg">Spin</span>
+          {/* <Image src={spinText} className="w-auto h-[24px]" alt="spin" /> */}
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">
           Use {numberOfFishConsumedInDraw} $Fish to spin!
