@@ -14,7 +14,6 @@ import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useGetLoginFish from './useGetLoginFish';
 import useTelegram from './useTelegram';
-import { sleep } from '@portkey/utils';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
@@ -36,17 +35,15 @@ export const useCheckJoined = () => {
           onConfirm: async () => {
             const domain = getDomain();
             try {
-              // TODO
-              // const res = await Join({
-              //   domain,
-              // });
-              await sleep(1000);
+              const res = await Join({
+                domain,
+              });
               store.dispatch(setIsJoin(true));
-              // if (isInTG) {
-              await getLoginFish();
-              // }
+              if (isInTG) {
+                await getLoginFish();
+              }
               resolve(true);
-              // console.log(res, 'res==checkJoined');
+              console.log(res, 'res==checkJoined');
             } catch (error) {
               resolve(false);
               const errorMessage = (error as IContractError).errorMessage?.message;
@@ -89,12 +86,11 @@ export const useCheckJoined = () => {
   const checkJoined = useCallback(
     async function (address: string) {
       if (!address) return;
-      // TODO
-      // const isJoin = await getJoinStatus(address);
-      // if (isJoin || notAutoJoin) {
-      //   showSpecialCatActivity();
-      //   return isJoin;
-      // }
+      const isJoin = await getJoinStatus(address);
+      if (isJoin || notAutoJoin) {
+        showSpecialCatActivity();
+        return isJoin;
+      }
       return await toJoin();
     },
     // Ignore toJoin
