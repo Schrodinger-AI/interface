@@ -6,6 +6,7 @@ import { Flex } from 'antd';
 import TGButton from 'components/TGButton';
 import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 import { IVoucherInfo } from 'types';
+import { useRouter } from 'next/navigation';
 
 type IProps = {
   traitData?: IAdoptImageInfo;
@@ -20,6 +21,7 @@ function AdoptResultModal(props: IProps) {
   const { isRare, voucherInfo, catsRankProbability, theme = 'dark' } = props;
   const getImageAndConfirm = useGetImageAndConfirm();
   const modal = useModal();
+  const router = useRouter();
 
   const onCancel = useCallback(() => {
     modal.hide();
@@ -59,11 +61,17 @@ function AdoptResultModal(props: IProps) {
     onCancel();
   }, [catsRankProbability, getImageAndConfirm, onCancel, voucherInfo]);
 
+  const onConfirm = useCallback(() => {
+    !isRare && router.push('/telegram/lucky-spin');
+    modal.hide();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modal, isRare]);
+
   const confirmBtn = useMemo(
     () => (
       <Flex gap={10} className="w-full">
-        <TGButton type="success" size="large" className="flex-1" onClick={onCancel}>
-          Confirm
+        <TGButton type="success" size="large" className="flex-1" onClick={onConfirm}>
+          {isRare ? 'Confirm' : 'Go To Spin'}
         </TGButton>
         {isRare && (
           <TGButton className="flex-1" size="large" onClick={onUnbox}>
@@ -72,7 +80,7 @@ function AdoptResultModal(props: IProps) {
         )}
       </Flex>
     ),
-    [isRare, onCancel, onUnbox],
+    [isRare, onConfirm, onUnbox],
   );
 
   return (

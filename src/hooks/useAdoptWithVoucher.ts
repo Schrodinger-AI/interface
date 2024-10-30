@@ -105,7 +105,6 @@ export default function useAdoptWithVoucher() {
     voucherInfo: IVoucherInfo,
     catsRankProbability?: TRankInfoAddLevelInfo[] | false,
   ) => {
-    // TODO
     adoptResultModal.show({
       traitData,
       isRare,

@@ -12,14 +12,16 @@ import { setIsJoin } from 'redux/reducer/info';
 import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-import FakeAdoptModal from 'components/FakeAdoptModal';
+import useGetLoginFish from './useGetLoginFish';
+import useTelegram from './useTelegram';
 
 export const useCheckJoined = () => {
   const JoinModalInit = useModal(JoinModal);
   const { walletInfo } = useConnectWallet();
   const [notAutoJoin] = useAutoJoin();
   const { showSpecialCatActivity } = useShowSpecialCatActivity();
-  const fakeAdoptModal = useModal(FakeAdoptModal);
+  const { getLoginFish } = useGetLoginFish();
+  const { isInTG } = useTelegram();
 
   const toJoin = async () => {
     return new Promise((resolve) => {
@@ -37,7 +39,9 @@ export const useCheckJoined = () => {
                 domain,
               });
               store.dispatch(setIsJoin(true));
-              fakeAdoptModal.show();
+              if (isInTG) {
+                await getLoginFish();
+              }
               resolve(true);
               console.log(res, 'res==checkJoined');
             } catch (error) {
@@ -89,7 +93,9 @@ export const useCheckJoined = () => {
       }
       return await toJoin();
     },
-    [getJoinStatus, notAutoJoin, showSpecialCatActivity, toJoin],
+    // Ignore toJoin
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getJoinStatus, notAutoJoin, showSpecialCatActivity],
   );
 
   return { checkJoined, toJoin, getJoinStatus };
