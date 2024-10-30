@@ -6,6 +6,7 @@ import { Flex } from 'antd';
 import TGButton from 'components/TGButton';
 import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 import { IVoucherInfo } from 'types';
+import { useRouter } from 'next/navigation';
 
 type IProps = {
   traitData?: IAdoptImageInfo;
@@ -20,10 +21,13 @@ function AdoptResultModal(props: IProps) {
   const { isRare, voucherInfo, catsRankProbability, theme = 'dark' } = props;
   const getImageAndConfirm = useGetImageAndConfirm();
   const modal = useModal();
+  const router = useRouter();
 
   const onCancel = useCallback(() => {
+    !isRare && router.push('/telegram/lucky-spin');
     modal.hide();
-  }, [modal]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modal, isRare]);
 
   const onUnbox = useCallback(() => {
     if (!voucherInfo.adoptId || !catsRankProbability || !catsRankProbability?.[0]) {
@@ -63,7 +67,7 @@ function AdoptResultModal(props: IProps) {
     () => (
       <Flex gap={10} className="w-full">
         <TGButton type="success" size="large" className="flex-1" onClick={onCancel}>
-          Confirm
+          {isRare ? 'Confirm' : 'Go To Spin'}
         </TGButton>
         {isRare && (
           <TGButton className="flex-1" size="large" onClick={onUnbox}>
