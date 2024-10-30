@@ -68,7 +68,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   const initPageData = useCallback(async () => {
     if (isNoNeedLoadingPage) {
       setIsCorrectDomain(true);
-      setLoading(false);
+      await fetchGlobalConfig();
       return;
     }
     const hostCorrect = await checkHost();

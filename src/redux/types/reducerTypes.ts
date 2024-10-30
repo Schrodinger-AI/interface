@@ -155,6 +155,7 @@ export type TCustomizationItemType = {
   prevSide: string;
   voteActivityStartTime: string;
   voteActivityEndTime: string;
+  taskClaimInterval?: number;
   [key: string]: any;
 };
 
