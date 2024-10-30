@@ -24,10 +24,8 @@ function AdoptResultModal(props: IProps) {
   const router = useRouter();
 
   const onCancel = useCallback(() => {
-    !isRare && router.push('/telegram/lucky-spin');
     modal.hide();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modal, isRare]);
+  }, [modal]);
 
   const onUnbox = useCallback(() => {
     if (!voucherInfo.adoptId || !catsRankProbability || !catsRankProbability?.[0]) {
@@ -63,10 +61,16 @@ function AdoptResultModal(props: IProps) {
     onCancel();
   }, [catsRankProbability, getImageAndConfirm, onCancel, voucherInfo]);
 
+  const onConfirm = useCallback(() => {
+    !isRare && router.push('/telegram/lucky-spin');
+    modal.hide();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modal, isRare]);
+
   const confirmBtn = useMemo(
     () => (
       <Flex gap={10} className="w-full">
-        <TGButton type="success" size="large" className="flex-1" onClick={onCancel}>
+        <TGButton type="success" size="large" className="flex-1" onClick={onConfirm}>
           {isRare ? 'Confirm' : 'Go To Spin'}
         </TGButton>
         {isRare && (
@@ -76,7 +80,7 @@ function AdoptResultModal(props: IProps) {
         )}
       </Flex>
     ),
-    [isRare, onCancel, onUnbox],
+    [isRare, onConfirm, onUnbox],
   );
 
   return (
