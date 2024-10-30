@@ -207,7 +207,8 @@ export default function Spinner() {
       </div>
       <div className="w-full flex justify-center items-center flex-col">
         <TGButton type="success" size="large" className="mt-[32px]" onClick={() => onSpin()} disabled={spinDisabled}>
-          <Image src={spinText} className="w-auto h-[24px]" alt="spin" />
+          <span className="text-pixelsWhiteBg text-base font-black">Spin</span>
+          {/* <Image src={spinText} className="w-auto h-[24px]" alt="spin" /> */}
         </TGButton>
         <span className="text-xs font-bold mt-[16px] text-pixelsWhiteBg">
           Use {numberOfFishConsumedInDraw} $Fish to spin!
