@@ -52,16 +52,14 @@ function TgReferral() {
     !isJoin && store.dispatch(setIsJoin(isJoin));
   }, [closeLoading, walletInfo?.address]);
 
-  // TODO: startapp
   const copyLink = useMemo(
-    () => `${cmsInfo?.tgWebAppUrl}/?startapp=address--${walletInfo?.address}__activityCode--A401`,
+    () => `${cmsInfo?.tgWebAppUrl}/?startapp=address--${walletInfo?.address}`,
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
-  // TODO: startapp
   const shareLink = useMemo(() => {
     const encodeParams = encodeURIComponent(
-      `${cmsInfo?.tgWebAppUrl}?startapp=address--${walletInfo?.address}__activityCode--A401&text=${shareText}`,
+      `${cmsInfo?.tgWebAppUrl}?startapp=address--${walletInfo?.address}&text=${shareText}`,
     );
     return `https://t.me/share/url?url=${encodeParams}`;
   }, [cmsInfo?.tgWebAppUrl, walletInfo?.address]);
