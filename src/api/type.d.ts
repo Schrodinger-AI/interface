@@ -415,6 +415,7 @@ interface ITaskItem {
   status: number;
   link?: string;
   linkType?: TLinkType;
+  rewardType: number; // 0: fish, 1: voucher
 }
 
 interface ITaskResponse {
@@ -469,4 +470,12 @@ interface ICouponAdoption {
   voucherId: string;
   signature: string;
   isRare: boolean;
+}
+
+interface ITaskLogParams {
+  userId: string;
+  userName: string;
+  from: string;
+  language: string;
+  loginTime: number;
 }
