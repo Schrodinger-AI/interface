@@ -55,11 +55,13 @@ export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps)
       link,
       index,
       linkType,
+      type,
     }: {
       taskId: string;
       link?: string;
       linkType?: TLinkType;
       index: number;
+      type?: number;
     }) => {
       if (link) {
         if (linkType === 'link') {
@@ -77,6 +79,10 @@ export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps)
         }
       }
       try {
+        if (type === 3) {
+          return;
+        }
+
         let userName = '';
         if (taskId === 'catEmoji') {
           const { user } = getTgStartParam();
@@ -193,6 +199,7 @@ export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps)
                     link: item.link,
                     linkType: item.linkType,
                     index,
+                    type: item.type,
                   })
                 }>
                 Go

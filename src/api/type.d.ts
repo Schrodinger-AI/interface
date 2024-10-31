@@ -416,6 +416,7 @@ interface ITaskItem {
   link?: string;
   linkType?: TLinkType;
   rewardType: number; // 0: fish, 1: voucher
+  type: number; // 1: dailyTasks, 2: socialTasks; 3: accomplishmentTasks
 }
 
 interface ITaskResponse {
