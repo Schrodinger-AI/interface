@@ -30,13 +30,13 @@ export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps)
   const [, setCopied] = useCopyToClipboard();
 
   const toClaimPoints = throttle(
-    async (taskId, score, index, rewardType) => {
+    async (taskId, score, index, rewardType, type) => {
       try {
         setLoading(true);
         const data = await claimPoints({ taskId });
         setLoading(false);
         const { status } = data;
-        if (status === 2 || status === 0) {
+        if (status === 2 || type === 3) {
           setMessage(rewardType === 1 ? `You got ${score} S-CAT voucher` : `You got ${score} $fish`);
           setVisible(true);
           onUpdate?.(index, data);
@@ -187,7 +187,7 @@ export default function TaskModule({ title, subTitle, tasks, onUpdate }: IProps)
               <button
                 disabled={loading}
                 className="w-[64px] h-[30px] rounded-[8px] bg-white text-black border-0 text-[12px] font-bold"
-                onClick={() => toClaimPoints(item.taskId, item.score, index, item.rewardType)}>
+                onClick={() => toClaimPoints(item.taskId, item.score, index, item.rewardType, item.type)}>
                 Claim
               </button>
             ) : (
