@@ -16,7 +16,6 @@ import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
-import { TelegramPlatform } from '@portkey/did-ui-react';
 import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
 import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 import { AcceptReferral } from 'contract/schrodinger';
@@ -31,6 +30,7 @@ import useBalanceService from './hooks/useBalanceService';
 import { useRouter } from 'next/navigation';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
+import { getTgStartParam } from 'utils/getTgStartParam';
 
 export default function TgHome() {
   const router = useRouter();
@@ -178,7 +178,8 @@ export default function TgHome() {
 
   useEffect(() => {
     if (isLogin && !isJoin) {
-      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+      const { start_param } = getTgStartParam();
+      const referrerAddress = start_param.address;
 
       console.log('=====referrerAddress', referrerAddress);
       if (referrerAddress) {
