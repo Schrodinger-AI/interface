@@ -53,13 +53,13 @@ function TgReferral() {
   }, [closeLoading, walletInfo?.address]);
 
   const copyLink = useMemo(
-    () => `${cmsInfo?.tgWebAppUrl}/?startapp=${walletInfo?.address}`,
+    () => `${cmsInfo?.tgWebAppUrl}/?startapp=address--${walletInfo?.address}`,
     [cmsInfo?.tgWebAppUrl, walletInfo?.address],
   );
 
   const shareLink = useMemo(() => {
     const encodeParams = encodeURIComponent(
-      `${cmsInfo?.tgWebAppUrl}?startapp=${walletInfo?.address}&text=${shareText}`,
+      `${cmsInfo?.tgWebAppUrl}?startapp=address--${walletInfo?.address}&text=${shareText}`,
     );
     return `https://t.me/share/url?url=${encodeParams}`;
   }, [cmsInfo?.tgWebAppUrl, walletInfo?.address]);

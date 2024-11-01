@@ -9,9 +9,9 @@ import { TransactionFeeNotEnough } from 'utils/formatError';
 import useAutoJoin from './useAutoJoin';
 import { store } from 'redux/store';
 import { setIsJoin } from 'redux/reducer/info';
-import { TelegramPlatform } from '@portkey/did-ui-react';
 import { useShowSpecialCatActivity } from './useShowSpecialCatActivity';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { getTgStartParam } from 'utils/getTgStartParam';
 import useGetLoginFish from './useGetLoginFish';
 import useTelegram from './useTelegram';
 
@@ -25,7 +25,8 @@ export const useCheckJoined = () => {
 
   const toJoin = async () => {
     return new Promise((resolve) => {
-      const referrerAddress = TelegramPlatform.getInitData()?.start_param;
+      const { start_param } = getTgStartParam();
+      const referrerAddress = start_param.address;
 
       if (referrerAddress) return;
 

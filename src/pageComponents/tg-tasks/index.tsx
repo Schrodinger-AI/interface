@@ -76,7 +76,7 @@ export default function TgHome() {
     setAccomplishmentTasks((prevItems) => {
       const newItems = [...prevItems];
       if (index >= 0 && index < newItems.length) {
-        newItems[index] = { ...newItems[index], status: data.status };
+        newItems[index] = { ...newItems[index], status: data.status, name: data.name };
       }
       return newItems;
     });
@@ -106,7 +106,7 @@ export default function TgHome() {
         {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={onSocialUpdate} />}
 
         {accomplishmentTasks.length > 0 && (
-          <TaskModule title="New Tasks" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />
+          <TaskModule title="Achievements" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />
         )}
       </div>
 

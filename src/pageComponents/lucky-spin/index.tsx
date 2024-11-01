@@ -9,7 +9,6 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import spinBg from 'assets/img/telegram/spin/spin-bg.png';
 import { ReactComponent as SpinArrow } from 'assets/img/telegram/spin/spin-arrow.svg';
 import { ReactComponent as SpinRibbon } from 'assets/img/telegram/spin/ribbon.svg';
-import spinText from 'assets/img/telegram/spin/spin-text.png';
 import Image from 'next/image';
 import { defaultConfig, spinBlocks, spinCenterButtons } from './config';
 import TGButton from 'components/TGButton';

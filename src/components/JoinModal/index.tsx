@@ -7,7 +7,7 @@ import { getAdoptErrorMessage } from 'hooks/Adopt/getErrorMessage';
 import { singleMessage } from '@portkey/did-ui-react';
 import styles from './index.module.css';
 import clsx from 'clsx';
-import { joinContent, joinTitle } from 'constants/joinMessage';
+import { joinContent, joinTitle, tgJoinContent } from 'constants/joinMessage';
 import useTelegram from 'hooks/useTelegram';
 
 interface IProps {
@@ -72,7 +72,10 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       title={
         <p className="flex flex-nowrap">
           <span
-            className={clsx('font-semibold text-xl lg:text-2xl', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            className={clsx(
+              'font-semibold text-xl lg:text-2xl',
+              isInTG ? 'dark-title text-pixelsWhiteBg' : 'text-neutralTitle',
+            )}>
             {joinTitle}
           </span>
         </p>
@@ -86,7 +89,17 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       afterClose={modal.remove}
       footer={modalFooter}>
       <div className={clsx('w-full h-full flex flex-col', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
-        {joinContent}
+        {isInTG ? (
+          tgJoinContent.map((item, index) => {
+            return (
+              <p key={index} className="mt-[16px] first:mt-0">
+                {item}
+              </p>
+            );
+          })
+        ) : (
+          <p>{joinContent}</p>
+        )}
       </div>
     </CommonModal>
   );

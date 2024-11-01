@@ -412,9 +412,11 @@ interface ITaskItem {
   [x: string]: any;
   taskId: string;
   name: string;
-  status: number;
+  status: number; // 0: unfinished, 1: completed but not received; 2: received;
   link?: string;
   linkType?: TLinkType;
+  rewardType: number; // 0: fish, 1: voucher
+  type: number; // 1: dailyTasks, 2: socialTasks; 3: accomplishmentTasks
 }
 
 interface ITaskResponse {
@@ -469,4 +471,12 @@ interface ICouponAdoption {
   voucherId: string;
   signature: string;
   isRare: boolean;
+}
+
+interface ITaskLogParams {
+  userId: string;
+  userName: string;
+  from: string;
+  language: string;
+  loginTime: number;
 }

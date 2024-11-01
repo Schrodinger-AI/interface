@@ -1,5 +1,6 @@
 'use client';
 import { message } from 'antd';
+import { useCollectTgData } from 'hooks/useCollectTgData';
 import useGetUnreadMessagesCount from 'hooks/useGetUnreadMessagesCount';
 import { useInitData } from 'hooks/useInitData';
 import useTelegram from 'hooks/useTelegram';
@@ -13,6 +14,7 @@ const Updater = () => {
   useNavigationGuard();
   useUpdateLoginStatus();
   useGetUnreadMessagesCount();
+  useCollectTgData();
 
   const { isInTG } = useTelegram();
 
