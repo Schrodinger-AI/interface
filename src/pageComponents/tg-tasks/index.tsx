@@ -106,7 +106,7 @@ export default function TgHome() {
         {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={onSocialUpdate} />}
 
         {accomplishmentTasks.length > 0 && (
-          <TaskModule title="New Tasks" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />
+          <TaskModule title="Achievements" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />
         )}
       </div>
 

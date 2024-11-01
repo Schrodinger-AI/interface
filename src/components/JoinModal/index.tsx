@@ -72,7 +72,10 @@ function JoinModal({ buttonInfo, onCancel }: IProps) {
       title={
         <p className="flex flex-nowrap">
           <span
-            className={clsx('font-semibold text-xl lg:text-2xl', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+            className={clsx(
+              'font-semibold text-xl lg:text-2xl',
+              isInTG ? 'dark-title text-pixelsWhiteBg' : 'text-neutralTitle',
+            )}>
             {joinTitle}
           </span>
         </p>
