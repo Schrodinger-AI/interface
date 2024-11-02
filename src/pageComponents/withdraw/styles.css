@@ -1,0 +1,361 @@
+/* stylelint-disable no-descending-specificity */
+.etransfer-ui-common-drawer {
+  .etransfer-ant-drawer-content {
+    @apply !bg-pixelsModalBg !rounded-none;
+
+    .etransfer-ant-drawer-wrapper-body {
+      .etransfer-ant-drawer-header {
+        .etransfer-ant-drawer-header-title {
+          .etransfer-ant-drawer-close {
+            .close-icon {
+              svg path {
+                @apply fill-pixelsDivider;
+              }
+            }
+          }
+          .etransfer-ant-drawer-title {
+            @apply text-pixelsWhiteBg text-xl font-medium;
+
+            text-shadow: 2px 2px 0 var(--pixels-primary-text-pink);
+
+          }
+        }
+      }
+      .etransfer-ant-drawer-body {
+        .etransfer-ui-flex-row-center.etransfer-ui-withdraw-tip {
+          @apply rounded-none bg-pixelsPageBg border-pixelsPageBg;
+
+          .text {
+            @apply text-pixelsBorder;
+
+            .token {
+              @apply text-pixelsDivider;
+            }
+          }
+        }
+        .withdraw-address {
+          @apply rounded-none border-pixelsBorder;
+          
+          .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
+            .address-text-title {
+              @apply text-pixelsBorder;
+            }
+            .etransfer-ui-flex-row-center {
+              .address-text-content {
+                @apply text-pixelsTertiaryTextPurple;
+              }
+              
+            }
+          }
+        }
+        .etransfer-ui-withdraw-info {
+          .info-line {
+            .info-title {
+              @apply text-pixelsBorder;
+            }
+            .info-value {
+              @apply text-pixelsWhiteBg;
+
+              .question-mark-icon {
+                .questionmark-icon {
+                  svg path {
+                    @apply stroke-pixelsWhiteBg;
+                  }
+                }
+              }
+            }
+            .info-exhibit {
+              @apply text-pixelsBorder;
+            }
+          }
+        }
+        .etransfer-ui-description-wrapper {
+          @apply bg-pixelsPageBg rounded-none;
+          >p {
+            @apply text-pixelsBorder;
+          }
+        }
+
+        .token-select-list {
+          .etransfer-ui-token-card-for-mobile {
+            @apply bg-pixelsModalBg border-transparent;
+
+            &.token-card-selected {
+              @apply bg-pixelsPageBg;
+            }
+            .token-card-name {
+              @apply text-pixelsWhiteBg text-base font-medium;
+            }
+            .token-card-symbol {
+              @apply text-pixelsBorder;
+            }
+          }
+          
+        }
+
+        .etransfer-ui-network-select {
+          .etransfer-ui-network-select-tip-wrapper.etransfer-ui-network-select-tip-wrapper-withdraw {
+            .network-select-tip {
+              @apply rounded-none bg-pixelsPageBg;
+
+              .etransfer-ui-common-svg.info-icon.network-select-tip-icon {
+                svg * {
+                  @apply fill-pixelsSecondaryTextPurple;
+                }
+              }
+
+              .network-select-tip-text {
+                @apply text-pixelsDivider;
+              }
+            }
+            
+          }
+          .network-select-list {
+            .etransfer-ui-network-list-skeleton-for-mobile {
+              .skeleton {
+                @apply rounded-none border-pixelsBorder;
+
+                .etransfer-ant-skeleton-input{
+                  @apply bg-[var(--fill-mask-3)];
+                }
+              }
+            }
+            .etransfer-ui-network-card-for-mobile {
+              @apply rounded-none bg-pixelsModalBg border border-solid border-pixelsBorder;
+
+              .network-card-name {
+                @apply text-pixelsWhiteBg;
+              }
+
+              .network-card-arrival-time, .network-card-confirm-time {
+                @apply text-pixelsDivider;
+                span {
+                  @apply !text-pixelsDivider;
+                }
+              }
+            }
+          }
+        }
+
+        .etransfer-ui-mobile-select-chain-drawer-content {
+          .drawer-item {
+            @apply rounded-none border-pixelsBorder bg-pixelsModalBg text-pixelsWhiteBg;
+          }
+          .drawer-item-selected {
+            @apply border-pixelsSecondaryTextPurple text-pixelsSecondaryTextPurple;  
+          }
+        }
+        
+      }
+    }
+
+    .etransfer-ant-modal-root {
+      .etransfer-ant-modal {
+        .etransfer-ant-modal-content {
+          @apply bg-pixelsPageBg;
+          .etransfer-ant-modal-body {
+            .etransfer-ui-view-contract-address-modal-body {
+              .view-contract-address-modal-title {
+                @apply dark-title;
+              }
+              .view-contract-address-modal-contract {
+                @apply text-pixelsDivider;
+              }
+            }
+            .etransfer-ui-view-contract-address-modal-footer {
+              .etransfer-ant-btn-default {
+                @apply primary-button-dark;
+              }
+            }
+          }
+        }
+        
+      }
+    }
+  }
+}
+
+.etransfer-ant-modal-wrap.etransfer-ant-modal-centered {
+  .etransfer-ant-modal-content {
+    @apply bg-pixelsModalBg rounded-none;
+    .etransfer-ui-circle-loading {
+      svg {
+        g {
+          g > path {
+            @apply stroke-pixelsPrimaryTextPurple;
+          }
+          :nth-child(odd) {
+            g > path {
+              @apply !stroke-pixelsTertiaryTextPurple;
+            }
+          }
+        }
+      }
+    }
+
+    .etransfer-ant-modal-header {
+      @apply rounded-none bg-pixelsModalBg;
+
+      .etransfer-ant-modal-title {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
+    .etransfer-ui-global-loading-modal-text {
+      @apply text-pixelsWhiteBg;
+    }
+
+    .etransfer-ant-modal-body {
+      @apply text-pixelsBorder;
+      .etransfer-ui-view-contract-address-modal-body {
+        .view-contract-address-modal-title {
+          @apply text-pixelsBorder;
+        }
+        .view-contract-address-modal-contract {
+          @apply text-pixelsTertiaryTextPurple;
+        }
+      }
+      .etransfer-ui-footer.etransfer-ui-common-modal-tips-footer.etransfer-ui-view-contract-address-modal-footer {
+        > button {
+          @apply !primary-button-dark;
+        } 
+      }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-footer {
+        button.etransfer-ui-common-button-primary {
+          @apply !primary-button-dark;
+        }
+      }
+      
+      .etransfer-ui-simple-modal-body {
+        @apply text-pixelsDivider;
+      }
+    }
+  }
+  
+}
+
+/* stylelint-disable-next-line selector-id-pattern */
+#etransferHistoryMobileFilterDrawer {
+  .etransfer-ant-drawer-body {
+    @apply border-pixelsBorder;
+    .etransfer-ui-history-mobile-filter-drawer-content {
+      .etransfer-ui-history-mobile-filter-drawer-label {
+        @apply text-pixelsBorder;
+      }
+      .etransfer-ant-select-selector {
+        @apply bg-pixelsModalBg border-pixelsBorder !rounded-none;
+
+        .etransfer-ant-select-selection-search {
+          input {
+            @apply placeholder:text-pixelsBorder text-pixelsWhiteBg;
+          }
+        }
+
+        .etransfer-ant-select-selection-item {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+      .etransfer-ant-select-arrow {
+        @apply text-pixelsDivider;
+      }
+      
+      .etransfer-ui-history-mobile-records-range-picker {
+        @apply bg-pixelsModalBg border-pixelsBorder rounded-none;
+
+        .etransfer-ant-picker-input {
+          input {
+            @apply placeholder:text-pixelsBorder text-pixelsWhiteBg;
+          }
+
+          .etransfer-ant-picker-suffix {
+            @apply text-pixelsDivider;
+          }
+        }
+      }
+    }
+    
+  }
+  .etransfer-ant-drawer-footer {
+    .etransfer-ui-history-mobile-cancel-button {
+      @apply !default-button-dark;
+    }
+    .etransfer-ui-history-mobile-ok-button {
+      @apply !primary-button-dark;
+    }
+  }
+}
+
+.etransfer-ant-picker-dropdown {
+  .etransfer-ant-picker-panel-container {
+    @apply bg-pixelsModalBg border border-solid border-pixelsBorder rounded-none shadow-darkPixelsShadow;
+
+    .etransfer-ant-picker-panel {
+      @apply border-0;
+    }
+
+    .etransfer-ant-picker-header {
+      @apply text-pixelsWhiteBg border-pixelsBorder;
+
+      button {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
+    .etransfer-ant-picker-body {
+      .etransfer-ant-picker-content {
+        th {
+          @apply text-pixelsWhiteBg;
+        }
+        tbody {
+          @apply text-pixelsWhiteBg;
+          .etransfer-ant-picker-cell {
+            @apply text-pixelsBorder;
+
+            &:not(.etransfer-ant-picker-cell-selected):hover {
+              .etransfer-ant-picker-cell-inner {
+                @apply !bg-pixelsHover;
+              }
+            }
+            
+            &.etransfer-ant-picker-cell-in-view {
+              @apply text-pixelsWhiteBg;
+            }
+
+            &.etransfer-ant-picker-cell-selected {
+              .etransfer-ant-picker-cell-inner {
+                @apply bg-pixelsSecondaryTextPurple;
+              }
+            }
+            &.etransfer-ant-picker-cell-today {
+              .etransfer-ant-picker-cell-inner::before {
+                @apply border-pixelsSecondaryTextPurple;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .etransfer-ant-picker-footer {
+      @apply border-pixelsBorder border-0 border-t;
+
+      .etransfer-ant-picker-today-btn {
+        @apply text-pixelsSecondaryTextPurple;
+      }
+    }
+  }
+}
+
+.etransfer-ant-select-dropdown.etransfer-ant-select-dropdown-placement-bottomLeft {
+  @apply border border-solid border-pixelsBorder bg-pixelsModalBg shadow-darkPixelsShadow;
+
+  .etransfer-ant-select-item.etransfer-ant-select-item-option {
+    @apply text-pixelsWhiteBg hover:!bg-pixelsHover;
+
+    &.etransfer-ant-select-item-option-selected {
+      @apply !text-pixelsSecondaryTextPurple;
+    }
+  }
+}
