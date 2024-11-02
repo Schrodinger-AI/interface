@@ -1,9 +1,10 @@
 import { webLoginInstance } from './webLogin';
-import { formatErrorMsg } from 'utils/formatError';
+import { formatErrorMsg, loginOnChainStatusFailMessage } from 'utils/formatError';
 import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
 import { store } from 'redux/store';
 import { getTxResultRetry } from 'utils/getTxResult';
 import { sleep } from '@portkey/utils';
+import { checkLoginOnChainStatus } from 'utils/checkLoginOnChainStatus';
 
 const multiTokenContractRequest = async <T, R>(
   method: string,
@@ -36,6 +37,9 @@ const multiTokenContractRequest = async <T, R>(
 
       return Promise.resolve(res.data);
     } else {
+      if (!checkLoginOnChainStatus()) {
+        return Promise.reject(loginOnChainStatusFailMessage);
+      }
       const res: R = await webLoginInstance.callSendMethod({
         chainId: curChain,
         contractAddress: address,
