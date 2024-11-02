@@ -29,7 +29,7 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
           </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
-          <Link href="/withdrawl">
+          <Link href="/withdraw">
             <div className="px-[8px]">
               <WithdrawlSVG className="w-[30px] h-[30px]" />
             </div>
