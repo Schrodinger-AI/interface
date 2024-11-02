@@ -2903,14 +2903,14 @@
     "@portkey/types" "^2.15.0"
     "@portkey/utils" "^2.15.0"
 
-"@portkey/contracts@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/contracts/-/contracts-2.11.0.tgz#d92105204fe53a403d25e3cc8a64412dee4c8f46"
-  integrity sha512-EmfdmfgADzEIsRfUfi2ShiHdzyLeJMb5oFQgBnASUc29DLHpterAVtm30+XTTY+UKhO0dO36tytIoqwPy821Ag==
+"@portkey/contracts@^2.14.0-alpha.6":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/contracts/-/contracts-2.15.2.tgz#18397f5fdc025268094d946ef2eee892e0651135"
+  integrity sha512-tFS9HaMjKrTTv+9zm86t7H4/H93yQkW2w774kJ81rv6RbjOPCJUXyg15NzqqffNWRIDfs4g7xnPdsRe5lU9t+g==
   dependencies:
     "@portkey/provider-types" "^2.1.0"
-    "@portkey/types" "^2.11.0"
-    "@portkey/utils" "^2.11.0"
+    "@portkey/types" "^2.15.2"
+    "@portkey/utils" "^2.15.2"
 
 "@portkey/contracts@^2.15.0", "@portkey/contracts@^2.15.1":
   version "2.15.1"
@@ -2990,16 +2990,6 @@
     "@portkey/types" "^2.15.1"
     "@portkey/utils" "^2.15.1"
 
-"@portkey/graphql@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/graphql/-/graphql-2.11.0.tgz#70c39d7693929d9856162068986b9f118b2e196c"
-  integrity sha512-BE68oTi2suRe3TBhVjon6c3sxz4oYrbMVSHivlcJ2KSfXdh4uMgRKc80TV5FRiJBU40rXBdF3NAbSKqwdeXAVw==
-  dependencies:
-    "@apollo/client" "^3.7.3"
-    "@portkey/types" "^2.15.0"
-    graphql "^16.6.0"
-    subscriptions-transport-ws "^0.11.0"
-
 "@portkey/graphql@^2.15.0", "@portkey/graphql@^2.15.1":
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/@portkey/graphql/-/graphql-2.15.1.tgz#2815efe6df47355ef334e0d2b9590f5f646350ce"
@@ -3007,6 +2997,16 @@
   dependencies:
     "@apollo/client" "^3.7.3"
     "@portkey/types" "^2.15.1"
+    graphql "^16.6.0"
+    subscriptions-transport-ws "^0.11.0"
+
+"@portkey/graphql@^2.15.2":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/graphql/-/graphql-2.15.2.tgz#156e3bdd65b76589b3ab3957cab2ebe5169dbbff"
+  integrity sha512-4FIAHxr0Smmm8izbH/yaBKgFx2huZ5mx9lZ5pNnm9V48Vjsj5J+RFuvG2lSN9o3SAqWwF/+OCD1JtdytWI7cIQ==
+  dependencies:
+    "@apollo/client" "^3.7.3"
+    "@portkey/types" "^2.15.2"
     graphql "^16.6.0"
     subscriptions-transport-ws "^0.11.0"
 
@@ -3077,20 +3077,20 @@
     "@portkey/types" "^2.15.0"
     query-string "^7.1.1"
 
-"@portkey/request@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/request/-/request-2.11.0.tgz#2b015f831e126159e9345f9f3ff7287b4f17ee75"
-  integrity sha512-jqMcQM30DaBbpnbaTvXCzXrdj4jBK2fYE6pSBW41Xh5dkjtKXfqHG4LvB1D/9mHMKXDTttvMMDqV54f5HAPvnA==
-  dependencies:
-    "@portkey/types" "^2.11.0"
-    query-string "^7.1.1"
-
 "@portkey/request@^2.15.0", "@portkey/request@^2.15.1":
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/@portkey/request/-/request-2.15.1.tgz#7fecc95a4ee093a5fb8fbca2b1d9d937194a58b5"
   integrity sha512-t7wSaFkMLRfVdpH17/yczpP3axbU4NiqxN7dX+FJtFgut1ybtnNYwgca1PdKTiPBUNGZ3L/uMbEAkl4iVp10lQ==
   dependencies:
     "@portkey/types" "^2.15.1"
+    query-string "^7.1.1"
+
+"@portkey/request@^2.15.2":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/request/-/request-2.15.2.tgz#fad6906cd04cee848f196fcb7d25e510df7d3efc"
+  integrity sha512-yKYqVt/BqBetTzCQnTZsEHTZTNBHfz39cCjDBNmAza1PAsJp4HUh1Z2kR5jBjZT3Fqo/5kw35SK6K5oFl3/6OQ==
+  dependencies:
+    "@portkey/types" "^2.15.2"
     query-string "^7.1.1"
 
 "@portkey/request@^2.7.1-alpha.0":
@@ -3129,15 +3129,15 @@
     "@portkey/types" "^2.7.1-alpha.0"
     "@portkey/utils" "^2.7.1-alpha.0"
 
-"@portkey/services@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/services/-/services-2.11.0.tgz#6da1166cdb2919b0d317f22c53918c8f6814a4ef"
-  integrity sha512-TKYOzI3xx5a0Rc+QMQE2kBkd7MdYABKoOxNBdZY5q0pcGFog2rybv97dzeqbiLHUXFF4YI0N9m/KlRjPQWbMfg==
+"@portkey/services@^2.14.0-alpha.6":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/services/-/services-2.15.2.tgz#a75d65b235271d7a06c310101870af1f5c4b01fb"
+  integrity sha512-YgfCZjgK+NThT5jvSmcJ5m0H/dPMeiMYyD+qqHEQxV8P06m2k/IcNKyZN1Gh5ZTblYDJU6aL/0PJJchIJqX9Ig==
   dependencies:
-    "@portkey/graphql" "^2.11.0"
-    "@portkey/request" "^2.11.0"
-    "@portkey/types" "^2.11.0"
-    "@portkey/utils" "^2.11.0"
+    "@portkey/graphql" "^2.15.2"
+    "@portkey/request" "^2.15.2"
+    "@portkey/types" "^2.15.2"
+    "@portkey/utils" "^2.15.2"
 
 "@portkey/services@^2.15.0", "@portkey/services@^2.15.1":
   version "2.15.1"
@@ -3226,15 +3226,15 @@
   resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.10.5.tgz#8f0d73299802b93a35cc1d678cce1f1db3ddb2cb"
   integrity sha512-SjmeuPrEInoVDUMUuWn2yZJo53BFdPkGkCu8sR8+YIZPYR8CHJDdB9cxg6EoNPbZ6lH5wYJiWaQoSz4M2wC3aw==
 
-"@portkey/types@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.11.0.tgz#cd2266c1a6cdfb03e37a812be8246cb82394ea2b"
-  integrity sha512-8FVsl1FtgmSO1759fr9T9zJzlN6wo0qd8cDlH4Cljy8Xyzu9xua3MRC6/s8wBaMyzk77dQa0NVxAczFJs2my9w==
-
 "@portkey/types@^2.15.0", "@portkey/types@^2.15.1":
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.15.1.tgz#751bcb3fde29684057a0793a7a42d03f88e2a1d1"
   integrity sha512-GgUSxZE+UD7OXCSmHm+zkYuhL+ruAPinqw4MAgNub28xOZNQ0p9cZOq9OQ2H/CoMkC2porR8gYQQxwDIXqKYoA==
+
+"@portkey/types@^2.15.2":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.15.2.tgz#d9cb23846a1a8110e79517bb578e050e8a79e55e"
+  integrity sha512-gNvoRcopUgQdQ8HxXR5NaJ//grpKFFBzpuG/xxjsRy+fsA0jEXQrVghHqFZI26dHNVk8/GdV3R49CcFUEKq+AQ==
 
 "@portkey/types@^2.7.1-alpha.4":
   version "2.7.1-alpha.4"
@@ -3248,10 +3248,10 @@
   dependencies:
     node-forge "^1.3.1"
 
-"@portkey/utils@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-2.11.0.tgz#0e285139247fef25a593ccbaf6c0494f778386b5"
-  integrity sha512-VQ4C5mNsQM906tQhTTBbtO2ACd9fNErMTq69O08q5ejkkzt0NZl4+w7MeDVC1Y/dnGZo22ihOimDIzlbb+kQZg==
+"@portkey/utils@^2.14.0-alpha.6", "@portkey/utils@^2.15.2":
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-2.15.2.tgz#a6311d37985434be8558144735501f6c11524540"
+  integrity sha512-zJ34xjXF60Hr1z9347mUuEC1FsDd/xmsy/t7pFgn8SdDP+GE0HLYTnBSiGt5DZRbDNBNFCnH5WN+morZsoXaEw==
   dependencies:
     node-forge "^1.3.1"
 

@@ -37,11 +37,11 @@ const useUpdateLoginStatus = () => {
   }, [hasToken, checkTokenValid, isConnected, walletInfo]);
 
   const onLoginFail = useCallback(async () => {
-    message.error('', 3000);
+    message.error('Syncing failed, please log in again.', 2);
     if (isInTG) {
       return;
     }
-    await sleep(3000);
+    await sleep(2000);
     router.push('/');
     disConnectWallet();
   }, [disConnectWallet, isInTG, router]);

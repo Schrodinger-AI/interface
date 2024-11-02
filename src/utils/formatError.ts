@@ -11,7 +11,7 @@ export const TransactionFeeNotEnough =
 
 export const loginOnChainStatusFailMessage = {
   errorMessage: {
-    message: '',
+    message: 'Syncing on-chain Data...',
   },
 };
 
