@@ -7,6 +7,10 @@
       }
     }
 
+    .etransfer-ui-common-dropdown-children-container {
+      @apply hidden;
+    }
+
     .etransfer-ui-withdraw-for-mobile {
       @apply pt-0 px-0;
     }
@@ -43,6 +47,10 @@
   @apply bg-pixelsPageBg px-[16px];
 
   :global {
+    .etransfer-ui-withdraw-select-chain.xxx-withdraw-chain, .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit {
+      @apply hidden;
+    }
+  
     .etransfer-ui-mobile-select-chain-trigger-container-border {
       @apply !border-pixelsBorder;
     }
@@ -66,8 +74,24 @@
       @apply !border-pixelsBorder;
     }
 
-    .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit::before {
-      @apply !bg-pixelsBorder;
+    .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit{
+      @apply hidden;
+
+      &::before {
+        @apply !bg-pixelsBorder;
+      }
+    }
+
+    .etransfer-ui-withdraw-form-footer.etransfer-ui-withdraw-form-footer-safe-area {
+      @apply !bg-pixelsModalBg !border-pixelsModalBg;
+      
+      .etransfer-ui-common-button-primary {
+        @apply bg-pixelsCardBg text-pixelsWhiteBg border-pixelsPrimaryTextPurple border-dashed rounded-none shadow-withdrawBtnShadow w-[134px] h-[48px] leading-[48px];
+      }
+    }
+
+    .etransfer-ui-flex-row-center.info-value.info-value-big-font {
+      @apply !text-pixelsWhiteBg;
     }
   
     .etransfer-ui-withdraw-select-token-network {

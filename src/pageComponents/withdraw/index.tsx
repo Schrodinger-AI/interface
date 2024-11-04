@@ -20,7 +20,6 @@ import { useCheckLoginAndToken } from 'hooks/useWallet';
 import { addPrefixSuffix } from 'utils/addressFormatting';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useOnFinish } from 'hooks/useOnFinish';
-import { TWithdrawActionData } from '@etransfer/ui-react/dist/_types/src/components/Withdraw/types';
 
 const DarkModal = dynamic(
   async () => {
