@@ -256,7 +256,12 @@ export const fetchTasksList = async (): Promise<ITaskListData> => {
   return request.post('/app/task/list', {});
 };
 
-export const finishTask = async (params: { taskId: string }): Promise<ITaskResponse> => {
+export const finishTask = async (params: {
+  taskId: string;
+  extraData?: {
+    name: string;
+  };
+}): Promise<ITaskResponse> => {
   return request.post('/app/task/finish', params);
 };
 
@@ -286,4 +291,8 @@ export const toSpin = async (): Promise<ISpin> => {
 
 export const voucherAdoption = async (data: { voucherId: string }): Promise<ICouponAdoption> => {
   return request.post('/app/task/voucher-adoption', data);
+};
+
+export const tgReporting = async (data: ITaskLogParams): Promise<null> => {
+  return request.post('/app/task/log', data);
 };

@@ -184,6 +184,9 @@
             }
           }
         }
+        .ant-menu-submenu:nth-child(2) {
+          @apply hidden;
+        }
       }
     }
 

@@ -9,7 +9,6 @@ import useBalanceService from 'pageComponents/tg-home/hooks/useBalanceService';
 import spinBg from 'assets/img/telegram/spin/spin-bg.png';
 import { ReactComponent as SpinArrow } from 'assets/img/telegram/spin/spin-arrow.svg';
 import { ReactComponent as SpinRibbon } from 'assets/img/telegram/spin/ribbon.svg';
-import spinText from 'assets/img/telegram/spin/spin-text.png';
 import Image from 'next/image';
 import { defaultConfig, spinBlocks, spinCenterButtons } from './config';
 import TGButton from 'components/TGButton';
@@ -31,6 +30,7 @@ import { formatNumber } from 'utils/format';
 import { dispatch } from 'redux/store';
 import { setPoints } from 'redux/reducer/userInfo';
 import useGetPoints from 'redux/hooks/useGetPoints';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 export default function Spinner() {
   const { points } = useGetPoints();
@@ -46,6 +46,7 @@ export default function Spinner() {
   const spinResultModal = useModal(SpinResultModal);
   const [spinDisabled, setSpinDisabled] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>();
+  useOnFinish();
 
   const [spinPrizes, setSpinPrizes] = useState<ILuckyWheelPrizes[]>([]);
 
