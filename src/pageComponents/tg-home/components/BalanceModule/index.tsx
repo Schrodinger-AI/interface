@@ -1,7 +1,7 @@
 import { Flex } from 'antd';
 import { ReactComponent as HeadSVG } from 'assets/img/telegram/head.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
-import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
+import { ReactComponent as WithdrawlSVG } from 'assets/img/telegram/Withdrawl.svg';
 import BalanceItem, { IBalanceItemProps } from '../BalanceItem';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
@@ -29,9 +29,9 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
           </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
-          <Link href="/assets">
+          <Link href="/withdraw">
             <div className="px-[8px]">
-              <WalletSVG className="w-[30px] h-[30px]" />
+              <WithdrawlSVG className="w-[30px] h-[30px]" />
             </div>
           </Link>
 

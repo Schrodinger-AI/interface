@@ -64,13 +64,6 @@ export default function ETransferHistory() {
                 ),
               },
               {
-                title: (
-                  <span className=" cursor-pointer" onClick={() => router.back()}>
-                    Deposit Assets
-                  </span>
-                ),
-              },
-              {
                 title: <div>History</div>,
               },
             ]}
