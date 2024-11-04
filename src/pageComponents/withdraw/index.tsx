@@ -45,8 +45,8 @@ export default function ETransferWithdraw() {
   const defaultParams = useMemo(() => {
     return {
       tokenSymbol: searchParams.get('tokenSymbol'),
-      depositToToken: searchParams.get('depositToToken'),
-      depositFromNetwork: searchParams.get('depositFromNetwork'),
+      withdrawToToken: searchParams.get('withdrawToToken'),
+      withdrawFromNetwork: searchParams.get('withdrawFromNetwork'),
     };
   }, [searchParams]);
 
@@ -80,11 +80,10 @@ export default function ETransferWithdraw() {
 
   useEffect(() => {
     ETransferConfig.setConfig({
-      depositConfig: {
-        defaultDepositToken: defaultParams.tokenSymbol || 'USDT',
-        defaultReceiveToken: defaultParams.depositToToken || 'SGR-1',
+      withdrawConfig: {
+        defaultToken: defaultParams.tokenSymbol || 'ELF',
         defaultChainId: cmsInfo?.curChain || 'tDVV',
-        defaultNetwork: defaultParams.depositFromNetwork || 'TRX',
+        defaultNetwork: defaultParams.withdrawFromNetwork || 'TRX',
       },
       accountInfo: {
         accounts: {
@@ -173,15 +172,6 @@ export default function ETransferWithdraw() {
             isShowMobilePoweredBy={false}
             isListenNoticeAuto={true}
             isShowProcessingTip={true}
-            onClickProcessingTip={() => {
-              // your logic
-            }}
-            onActionChange={(data: TWithdrawActionData) => {
-              // view data
-            }}
-            onLogin={() => {
-              // your logic
-            }}
           />
         </ETransferWithdrawProvider>
       ) : null}

@@ -43,6 +43,7 @@ import Lottie from 'lottie-react';
 import InviteItem from './components/InviteItem';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
+import WithdrawItem from './components/WithdrawItem';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -187,6 +188,7 @@ export default function Header() {
         key: 'asset',
         label: <AssetItem closeMenuModal={closeMenuModal} />,
       },
+      { key: 'withdraw', label: <WithdrawItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'invite', label: <InviteItem checkAndRedirect={checkAndRedirect} /> },

@@ -8,6 +8,7 @@ import { useCmsInfo } from 'redux/hooks';
 import CommonCopy from 'components/CommonCopy';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { SELL_ELF_URL } from 'constants/router';
 
 export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
   const { walletInfo } = useConnectWallet();
@@ -29,7 +30,7 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
           </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
-          <Link href="/withdraw">
+          <Link href={SELL_ELF_URL}>
             <div className="px-[8px]">
               <WithdrawlSVG className="w-[30px] h-[30px]" />
             </div>
