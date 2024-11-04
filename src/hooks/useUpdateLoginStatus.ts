@@ -7,7 +7,6 @@ import { useGetToken } from './useGetToken';
 import { resetAccount } from 'utils/resetAccount';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { LoginStatusEnum } from '@aelf-web-login/wallet-adapter-base';
-import { message } from 'antd';
 import { sleep } from '@portkey/utils';
 import { useRouter } from 'next/navigation';
 import useTelegram from './useTelegram';
@@ -37,7 +36,6 @@ const useUpdateLoginStatus = () => {
   }, [hasToken, checkTokenValid, isConnected, walletInfo]);
 
   const onLoginFail = useCallback(async () => {
-    message.error('Syncing failed, please log in again.', 2);
     if (isInTG) {
       return;
     }
@@ -47,6 +45,8 @@ const useUpdateLoginStatus = () => {
   }, [disConnectWallet, isInTG, router]);
 
   useEffect(() => {
+    console.log('=====checkLoginOnChainStatus loginOnChainStatus', loginOnChainStatus);
+
     if (loginOnChainStatus === LoginStatusEnum.FAIL) {
       onLoginFail();
     }

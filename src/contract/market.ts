@@ -53,9 +53,7 @@ const marketContractRequest = async <T, R>(
 
       return Promise.resolve(res.data);
     } else {
-      if (!checkLoginOnChainStatus()) {
-        return Promise.reject(loginOnChainStatusFailMessage);
-      }
+      if (!checkLoginOnChainStatus()) return Promise.reject('');
 
       const res: R = await webLoginInstance.callSendMethod({
         chainId: curChain,
