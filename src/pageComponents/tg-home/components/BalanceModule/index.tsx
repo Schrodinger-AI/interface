@@ -1,14 +1,13 @@
 import { Flex } from 'antd';
 import { ReactComponent as HeadSVG } from 'assets/img/telegram/head.svg';
 import { ReactComponent as LeaderBoardSVG } from 'assets/img/telegram/icon-leaderboard.svg';
-import { ReactComponent as WithdrawlSVG } from 'assets/img/telegram/Withdrawl.svg';
+import { ReactComponent as WalletSVG } from 'assets/img/telegram/icon-wallet.svg';
 import BalanceItem, { IBalanceItemProps } from '../BalanceItem';
 import Link from 'next/link';
 import { useCmsInfo } from 'redux/hooks';
 import CommonCopy from 'components/CommonCopy';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-import { SELL_ELF_URL } from 'constants/router';
 
 export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
   const { walletInfo } = useConnectWallet();
@@ -30,9 +29,9 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
           </CommonCopy>
         </Flex>
         <div className="flex items-center gap-[12px]">
-          <Link href={SELL_ELF_URL}>
+          <Link href="/assets">
             <div className="px-[8px]">
-              <WithdrawlSVG className="w-[30px] h-[30px]" />
+              <WalletSVG className="w-[30px] h-[30px]" />
             </div>
           </Link>
 
