@@ -44,8 +44,6 @@ export default function ETransferWithdraw() {
   const defaultParams = useMemo(() => {
     return {
       tokenSymbol: searchParams.get('tokenSymbol'),
-      withdrawToToken: searchParams.get('withdrawToToken'),
-      withdrawFromNetwork: searchParams.get('withdrawFromNetwork'),
     };
   }, [searchParams]);
 
@@ -82,14 +80,6 @@ export default function ETransferWithdraw() {
       withdrawConfig: {
         defaultToken: defaultParams.tokenSymbol || 'ELF',
         defaultChainId: cmsInfo?.curChain || 'tDVV',
-        defaultNetwork: defaultParams.withdrawFromNetwork || 'TRX',
-      },
-      accountInfo: {
-        accounts: {
-          AELF: addPrefixSuffix(walletInfo?.address || '', 'AELF'),
-          [cmsInfo?.curChain || 'tDVV']: addPrefixSuffix(walletInfo?.address || '', cmsInfo?.curChain || 'tDVV'),
-        },
-        walletType,
       },
     });
   }, [cmsInfo?.curChain, defaultParams, walletInfo?.address, walletType]);

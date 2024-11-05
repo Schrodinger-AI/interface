@@ -85,13 +85,6 @@ export default function ETransfer() {
         defaultChainId: cmsInfo?.curChain || 'tDVV',
         defaultNetwork: defaultParams.depositFromNetwork || 'TRX',
       },
-      accountInfo: {
-        accounts: {
-          AELF: addPrefixSuffix(walletInfo?.address || '', 'AELF'),
-          [cmsInfo?.curChain || 'tDVV']: addPrefixSuffix(walletInfo?.address || '', cmsInfo?.curChain || 'tDVV'),
-        },
-        walletType,
-      },
     });
   }, [cmsInfo?.curChain, defaultParams, walletInfo?.address, walletType]);
 
