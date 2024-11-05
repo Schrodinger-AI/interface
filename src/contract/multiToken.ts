@@ -1,5 +1,5 @@
 import { webLoginInstance } from './webLogin';
-import { formatErrorMsg, loginOnChainStatusFailMessage } from 'utils/formatError';
+import { formatErrorMsg } from 'utils/formatError';
 import { ContractMethodType, IContractError, IContractOptions, ISendResult, SupportedELFChainId } from 'types';
 import { store } from 'redux/store';
 import { getTxResultRetry } from 'utils/getTxResult';

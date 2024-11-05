@@ -1,5 +1,5 @@
 import { webLoginInstance } from './webLogin';
-import { formatErrorMsg, loginOnChainStatusFailMessage } from 'utils/formatError';
+import { formatErrorMsg } from 'utils/formatError';
 import {
   ContractMethodType,
   IContractError,
