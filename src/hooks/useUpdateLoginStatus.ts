@@ -10,6 +10,8 @@ import { LoginStatusEnum } from '@aelf-web-login/wallet-adapter-base';
 import { sleep } from '@portkey/utils';
 import { useRouter } from 'next/navigation';
 import useTelegram from './useTelegram';
+import { message } from 'antd';
+import { loginOnChainStatusFailMessage } from 'utils/formatError';
 
 const useUpdateLoginStatus = () => {
   const { isConnected, walletInfo, loginOnChainStatus, disConnectWallet } = useConnectWallet();
@@ -19,6 +21,7 @@ const useUpdateLoginStatus = () => {
   const { isInTG } = useTelegram();
 
   const onLoginFail = useCallback(async () => {
+    message.error(loginOnChainStatusFailMessage.errorMessage.message, 2);
     if (isInTG) {
       return;
     }
