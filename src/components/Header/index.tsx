@@ -188,8 +188,8 @@ export default function Header() {
         key: 'asset',
         label: <AssetItem closeMenuModal={closeMenuModal} />,
       },
-      { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'withdraw', label: <WithdrawItem checkAndRedirect={checkAndRedirect} /> },
+      { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'invite', label: <InviteItem checkAndRedirect={checkAndRedirect} /> },
       {
