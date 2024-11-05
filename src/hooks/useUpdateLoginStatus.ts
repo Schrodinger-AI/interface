@@ -18,23 +18,6 @@ const useUpdateLoginStatus = () => {
   const router = useRouter();
   const { isInTG } = useTelegram();
 
-  useEffect(() => {
-    const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
-    let hasLocalToken = !!accountInfo.token && checkTokenValid();
-    if (!isConnected) {
-      resetAccount();
-      hasLocalToken = false;
-      return;
-    }
-    dispatch(
-      setLoginStatus({
-        isConnectWallet: isConnected,
-        hasToken: hasLocalToken,
-        isLogin: isConnected && walletInfo?.address && hasLocalToken,
-      }),
-    );
-  }, [hasToken, checkTokenValid, isConnected, walletInfo]);
-
   const onLoginFail = useCallback(async () => {
     if (isInTG) {
       return;
@@ -51,6 +34,23 @@ const useUpdateLoginStatus = () => {
       onLoginFail();
     }
   }, [loginOnChainStatus, onLoginFail]);
+
+  useEffect(() => {
+    const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');
+    let hasLocalToken = !!accountInfo.token && checkTokenValid();
+    if (!isConnected) {
+      resetAccount();
+      hasLocalToken = false;
+      return;
+    }
+    dispatch(
+      setLoginStatus({
+        isConnectWallet: isConnected,
+        hasToken: hasLocalToken,
+        isLogin: isConnected && walletInfo?.address && hasLocalToken,
+      }),
+    );
+  }, [hasToken, checkTokenValid, isConnected, walletInfo]);
 };
 
 export default useUpdateLoginStatus;
