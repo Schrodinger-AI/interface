@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { setLoginStatus } from 'redux/reducer/loginStatus';
 import { dispatch } from 'redux/store';
@@ -6,11 +6,37 @@ import { storages } from 'constants/storages';
 import { useGetToken } from './useGetToken';
 import { resetAccount } from 'utils/resetAccount';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import { LoginStatusEnum } from '@aelf-web-login/wallet-adapter-base';
+import { sleep } from '@portkey/utils';
+import { useRouter } from 'next/navigation';
+import useTelegram from './useTelegram';
+import { message } from 'antd';
+import { loginOnChainStatusFailMessage } from 'utils/formatError';
 
 const useUpdateLoginStatus = () => {
-  const { isConnected, walletInfo } = useConnectWallet();
+  const { isConnected, walletInfo, loginOnChainStatus, disConnectWallet } = useConnectWallet();
   const { hasToken } = useGetLoginStatus();
   const { checkTokenValid } = useGetToken();
+  const router = useRouter();
+  const { isInTG } = useTelegram();
+
+  const onLoginFail = useCallback(async () => {
+    message.error(loginOnChainStatusFailMessage.errorMessage.message, 2);
+    if (isInTG) {
+      return;
+    }
+    await sleep(2000);
+    router.push('/');
+    disConnectWallet();
+  }, [disConnectWallet, isInTG, router]);
+
+  useEffect(() => {
+    console.log('=====checkLoginOnChainStatus loginOnChainStatus', loginOnChainStatus);
+
+    if (loginOnChainStatus === LoginStatusEnum.FAIL) {
+      onLoginFail();
+    }
+  }, [loginOnChainStatus, onLoginFail]);
 
   useEffect(() => {
     const accountInfo = JSON.parse(localStorage.getItem(storages.accountInfo) || '{}');

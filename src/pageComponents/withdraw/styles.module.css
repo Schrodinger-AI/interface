@@ -1,0 +1,358 @@
+/* stylelint-disable no-descending-specificity */
+.etransfer-withdraw-wrap {
+  @apply pb-[200px];
+  :global {
+    .etransfer-ui-common-svg {
+      svg {
+        @apply !h-auto !w-auto;
+      }
+    }
+
+    /* .etransfer-ui-common-dropdown-children-container {
+      @apply hidden;
+    } */
+
+    .etransfer-ui-withdraw-for-mobile {
+      @apply pt-0 px-0;
+    }
+
+    #etransfer-ui-withdraw-select-token-result .etransfer-ui-dynamic-arrow,
+    .etransfer-ui-withdraw-select-token-chain,
+
+    .etransfer-ui-withdraw-for-web {
+      .etransfer-ui-selected-data-wrapper {
+        @apply mb-[24px];
+        .space {
+          display: none !important;
+        }
+        .etransfer-ui-selected-token-wrapper:last-child {
+          display: none !important;
+        }
+
+        &.etransfer-ui-selected-row-2 {
+          .etransfer-ui-selected-chain-wrapper:last-child {
+            display: none !important;
+          }
+        }
+      }
+
+      .etransfer-ui-arrow-right {
+        display: none !important;
+      }
+    }
+
+  }
+}
+
+.etransfer-withdraw-wrap-dark {
+  @apply bg-pixelsPageBg px-[16px];
+
+  :global {
+    .etransfer-ui-withdraw-select-chain.xxx-withdraw-chain, .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit {
+      @apply hidden;
+    }
+
+    .etransfer-ui-withdraw-body {
+      @apply px-0;
+    }
+  
+    .etransfer-ui-mobile-select-chain-trigger-container-border {
+      @apply !border-pixelsBorder;
+    }
+
+    .etransfer-ui-withdraw-select-network-result.etransfer-ui-withdraw-select-network-result-form-item,
+    .etransfer-ui-withdraw-select-token-result.etransfer-ui-withdraw-select-token-result-form-item,
+    .etransfer-ui-from-textarea-wrapper,
+    .etransfer-ui-from-amount-input-wrapper {
+      @apply rounded-none border-solid border border-pixelsBorder bg-pixelsPageBg;
+    }
+
+    .etransfer-ui-withdraw-select-token-primary,
+    .etransfer-ui-withdraw-select-network-primary,
+    .etransfer-ui-from-textarea-wrapper textarea,
+    .etransfer-ui-from-amount-input-wrapper input,
+    .etransfer-ui-from-amount-input-unit.etransfer-ui-from-amount-input-unit-mobile {
+      @apply !text-pixelsWhiteBg placeholder:text-pixelsDivider;
+    }
+
+    .etransfer-ui-from-amount-input-dividing-line {
+      @apply !border-pixelsBorder;
+    }
+
+    .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit{
+      @apply hidden;
+
+      &::before {
+        @apply !bg-pixelsBorder;
+      }
+    }
+
+    .etransfer-ui-withdraw-form-footer.etransfer-ui-withdraw-form-footer-safe-area {
+      @apply !bg-pixelsModalBg !border-pixelsModalBg;
+
+      .etransfer-ui-withdraw-footer-info-wrapper {
+        .etransfer-ui-withdraw-receive-amount-wrapper {
+          .info-label {
+            @apply text-pixelsDivider;
+          }
+          .info-value {
+            @apply text-pixelsWhiteBg;
+          }
+          
+        }
+        .etransfer-ui-withdraw-fee-info-item {
+          @apply text-pixelsDivider;
+          .etransfer-ui-withdraw-fee-info-value {
+            @apply text-pixelsDivider;
+          }
+        }
+      }
+
+      .etransfer-ui-withdraw-form-submit-button {
+        @apply disabled:text-[#57566D];
+      }
+      
+      .etransfer-ui-common-button-primary {
+        @apply bg-pixelsCardBg text-pixelsWhiteBg border-pixelsPrimaryTextPurple border-dashed rounded-none shadow-withdrawBtnShadow w-[134px] h-[48px] leading-[48px];
+      }
+    }
+
+    .etransfer-ui-flex-row-center.info-value.info-value-big-font {
+      @apply !text-pixelsWhiteBg;
+    }
+  
+    .etransfer-ui-withdraw-select-token-network {
+      @apply rounded-none border-pixelsBorder;
+
+      .select-network-label {
+        @apply text-pixelsBorder;
+      }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-select-network-value-selected {
+        .primary {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+      .etransfer-ui-select-network-not-selected {
+        .select-network-value-placeholder {
+          @apply text-pixelsPrimaryTextPurple;
+        }
+        .etransfer-ui-common-svg.add-icon {
+          svg rect {
+            @apply fill-pixelsSecondaryTextPurple;
+          }
+          svg rect:nth-child(1) {
+            @apply fill-pixelsTertiaryTextPurple;
+          }
+        }
+      }
+
+      .etransfer-ui-flex-row-center.select-token-value-selected {
+        .primary {
+          @apply !text-pixelsWhiteBg;
+        }
+        .secondary {
+          @apply text-pixelsBorder;
+        }
+      }
+
+      .etransfer-ui-common-svg.down-icon.etransfer-ui-dynamic-arrow-icon {
+        svg {
+          @apply fill-pixelsDivider;
+        }
+      }
+    }
+    .etransfer-ui-withdraw-select-token-chain {
+      @apply rounded-none border-pixelsBorder;
+
+      .select-chain-label {
+        @apply text-pixelsBorder;
+      }
+
+      .select-chain {
+        @apply text-pixelsWhiteBg;
+      }
+      
+      .etransfer-ui-flex-row-center.select-token-value-selected {
+        .primary {
+          @apply !text-pixelsWhiteBg;
+        }
+        .secondary {
+          @apply text-pixelsBorder;
+        }
+      }
+
+      .etransfer-ui-common-sv.down-icon.etransfer-ui-dynamic-arrow-icon {
+        svg {
+          @apply fill-pixelsDivider;
+        }
+      }
+
+      .etransfer-ui-flex-row-center.etransfer-ui-mobile-select-chain-trigger-container.select-chain-container {
+        .select-chain-content {
+          @apply text-pixelsWhiteBg;
+        }
+      }
+
+    }
+
+    .etransfer-ui-withdraw-detail-for-mobile-next-button-wrapper.etransfer-ui-withdraw-detail-for-mobile-next-button-wrapper-safe-area {
+      @apply bg-pixelsModalBg;
+
+      .etransfer-ant-btn.etransfer-ant-btn-default {
+        @apply rounded-none bg-pixelsCardBg border border-dashed border-pixelsPrimaryTextPurple;
+
+        box-shadow: 4px 4px 4px 0 #262284;
+      }
+    }
+
+    .etransfer-ui-flex-row-between.etransfer-ui-exchange-rate {
+      @apply text-pixelsDivider;
+      .etransfer-ui-flex-row-center {
+        .value {
+          @apply text-pixelsDivider;
+        }
+        .etransfer-ui-common-svg.time-icon {
+          svg {
+            @apply fill-pixelsDivider;
+          }
+        }
+        .count-time {
+          @apply text-pixelsDivider;
+        }
+      }
+    }
+    
+    .etransfer-ui-calculator {
+      @apply bg-pixelsModalBg rounded-none;
+    }
+
+    .etransfer-ui-calculator-header {
+      .calculator-icon {
+        svg {
+          path {
+            @apply stroke-pixelsWhiteBg;
+          }
+        }
+      }
+      .calculator-header-title {
+        @apply text-pixelsWhiteBg;
+      }
+    }
+
+    .etransfer-ui-flex-row-start.etransfer-ui-calculator-content {
+      @apply flex-col;
+
+      .etransfer-ui-flex-1 {
+        @apply w-full;
+        .label, .min-receive-amount {
+          @apply text-pixelsBorder;
+        }
+
+        .receive-amount {
+          @apply text-pixelsWhiteBg;
+        }
+
+        .etransfer-ui-flex-row-center.you-pay-main {
+          @apply bg-pixelsPageBg rounded-none border-pixelsBorder;
+
+          .pay-input {
+            @apply text-pixelsWhiteBg;
+          }
+          .dividing-line {
+            @apply bg-pixelsBorder;
+          }
+          .unit {
+            @apply text-pixelsBorder;
+          }
+        }
+      }
+    }
+
+    
+
+    .etransfer-ui-withdraw-detail-for-mobile {
+
+      .etransfer-ui-flex-row-center.etransfer-ui-withdraw-tip {
+        @apply rounded-none bg-pixelsModalBg border-pixelsPageBg;
+  
+        .text {
+          @apply text-pixelsBorder;
+  
+          .token {
+            @apply text-pixelsDivider;
+          }
+        }
+      }
+
+      .withdraw-address {
+        @apply rounded-none border-none bg-pixelsModalBg;
+        
+        .etransfer-ui-flex-column.etransfer-ui-address-wrapper {
+          .address-text-title {
+            @apply text-pixelsBorder;
+          }
+          .etransfer-ui-flex-row-center {
+            .address-text-content {
+              @apply text-pixelsTertiaryTextPurple;
+            }
+            
+          }
+        }
+      }
+
+      .etransfer-ui-withdraw-info {
+        .info-line {
+          .info-title {
+            @apply text-pixelsBorder;
+          }
+          .info-value {
+            @apply text-pixelsWhiteBg;
+          }
+          .info-exhibit {
+            @apply text-pixelsBorder;
+          }
+          .etransfer-ui-text-underline-none {
+            @apply text-pixelsWhiteBg;
+          }
+          .question-mark-icon {
+            .questionmark-icon {
+              svg path {
+                @apply stroke-pixelsWhiteBg;
+              }
+            }
+          }
+        }
+      }
+      .etransfer-ui-description-wrapper {
+        @apply bg-pixelsModalBg rounded-none;
+        >p {
+          @apply text-pixelsBorder;
+        }
+      }
+
+    }
+
+    .etransfer-ui-withdraw-form-item-wrapper {
+      .etransfer-ant-form-item-label {
+        label, .etransfer-ui-withdraw-form-label { 
+          @apply !text-pixelsWhiteBg;
+        }
+      }
+    }
+
+    .etransfer-ui-withdraw-form-balance-wrapper {
+      .etransfer-ui-withdraw-form-info-label, .etransfer-ui-withdraw-form-info-value {
+        @apply text-pixelsDivider;
+      }
+    }
+    .etransfer-ant-form-item-control {
+      .etransfer-ui-from-amount-input-wrapper {
+        .etransfer-ui-from-amount-input-max {
+          @apply text-pixelsPrimaryTextPurple;
+        }
+      }
+    }
+  }
+}

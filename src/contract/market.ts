@@ -11,6 +11,7 @@ import {
 import { store } from 'redux/store';
 import { getTxResultRetry } from 'utils/getTxResult';
 import { sleep } from '@portkey/utils';
+import { checkLoginOnChainStatus } from 'utils/checkLoginOnChainStatus';
 
 const marketContractRequest = async <T, R>(
   method: string,
@@ -52,6 +53,8 @@ const marketContractRequest = async <T, R>(
 
       return Promise.resolve(res.data);
     } else {
+      if (!checkLoginOnChainStatus()) return Promise.reject('');
+
       const res: R = await webLoginInstance.callSendMethod({
         chainId: curChain,
         contractAddress: address,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { LeftOutlined } from '@ant-design/icons';
 
 import styles from './style.module.css';
@@ -10,7 +10,7 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import useTelegram from 'hooks/useTelegram';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { PortkeyAssetProvider, Asset, did } from '@portkey/did-ui-react';
-// import { LoginStatusEnum } from '@portkey/types'; // TODO: login acceleration
+import { LoginStatusEnum } from '@portkey/types';
 
 export default function MyAsset() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function MyAsset() {
     }
   }, [isInTG, isLogin, router]);
 
-  // const isLoginOnChain = did.didWallet.isLoginStatus === LoginStatusEnum.SUCCESS; // TODO: login acceleration
+  const isLoginOnChain = useMemo(() => did.didWallet.isLoginStatus === LoginStatusEnum.SUCCESS, []);
 
   if (!isLogin) {
     return null;
@@ -41,7 +41,7 @@ export default function MyAsset() {
           isShowRamp={isShowRampBuy || isShowRampSell}
           isShowRampBuy={isShowRampBuy}
           isShowRampSell={isShowRampSell}
-          // isLoginOnChain={isLoginOnChain} // TODO: login acceleration
+          isLoginOnChain={isLoginOnChain}
           backIcon={<LeftOutlined reversed={undefined} />}
           onOverviewBack={() => {
             router.back();
