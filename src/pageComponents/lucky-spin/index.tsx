@@ -30,6 +30,7 @@ import { formatNumber } from 'utils/format';
 import { dispatch } from 'redux/store';
 import { setPoints } from 'redux/reducer/userInfo';
 import useGetPoints from 'redux/hooks/useGetPoints';
+import { useOnFinish } from 'hooks/useOnFinish';
 
 export default function Spinner() {
   const { points } = useGetPoints();
@@ -45,6 +46,7 @@ export default function Spinner() {
   const spinResultModal = useModal(SpinResultModal);
   const [spinDisabled, setSpinDisabled] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>();
+  useOnFinish();
 
   const [spinPrizes, setSpinPrizes] = useState<ILuckyWheelPrizes[]>([]);
 

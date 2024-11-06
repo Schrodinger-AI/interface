@@ -9,6 +9,12 @@ export const AIServerError =
 export const TransactionFeeNotEnough =
   'Failed to be enrolled. Please transfer some ELF to this address before you try again.';
 
+export const loginOnChainStatusFailMessage = {
+  errorMessage: {
+    message: 'Syncing failed, please log in again.',
+  },
+};
+
 export const LoginFailed = 'Login failed!';
 
 enum SourceErrorType {

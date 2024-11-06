@@ -1,4 +1,4 @@
-import { Deposit, ETransferDepositProvider, ComponentStyle, ETransferConfig } from '@etransfer/ui-react';
+import { Withdraw, ETransferWithdrawProvider, ComponentStyle, ETransferConfig } from '@etransfer/ui-react';
 import '@etransfer/ui-react/dist/assets/index.css';
 import { useResponsive } from 'hooks/useResponsive';
 import { Breadcrumb, message } from 'antd';
@@ -29,7 +29,7 @@ const DarkModal = dynamic(
   { ssr: false },
 ) as any;
 
-export default function ETransfer() {
+export default function ETransferWithdraw() {
   const { isMD, isLG } = useResponsive();
   const cmsInfo = useCmsInfo();
   const searchParams = useSearchParams();
@@ -44,8 +44,6 @@ export default function ETransfer() {
   const defaultParams = useMemo(() => {
     return {
       tokenSymbol: searchParams.get('tokenSymbol'),
-      depositToToken: searchParams.get('depositToToken'),
-      depositFromNetwork: searchParams.get('depositFromNetwork'),
     };
   }, [searchParams]);
 
@@ -79,11 +77,11 @@ export default function ETransfer() {
 
   useEffect(() => {
     ETransferConfig.setConfig({
-      depositConfig: {
-        defaultDepositToken: defaultParams.tokenSymbol || 'USDT',
-        defaultReceiveToken: defaultParams.depositToToken || 'SGR-1',
+      withdrawConfig: {
+        defaultToken: defaultParams.tokenSymbol || 'ELF',
         defaultChainId: cmsInfo?.curChain || 'tDVV',
-        defaultNetwork: defaultParams.depositFromNetwork || 'TRX',
+        supportTokens: ['ELF', 'SGR-1'],
+        supportChainIds: cmsInfo?.curChain === 'tDVW' ? ['tDVW'] : ['tDVV'],
       },
     });
   }, [cmsInfo?.curChain, defaultParams, walletInfo?.address, walletType]);
@@ -98,8 +96,8 @@ export default function ETransfer() {
     <div
       className={clsx(
         'm-auto max-w-[1024px] relative',
-        styles['etransfer-deposit-wrap'],
-        isInTG && styles['etransfer-deposit-wrap-dark'],
+        styles['etransfer-withdraw-wrap'],
+        isInTG && styles['etransfer-withdraw-wrap-dark'],
       )}>
       {isLG || !isLogin ? null : (
         <Link
@@ -114,12 +112,16 @@ export default function ETransfer() {
       {isLG ? (
         <div className="mb-[16px]">
           <BackCom className="mt-6 m-4 ml-0 lg:ml-10" theme={isInTG ? 'dark' : 'light'} />
-          <div className="w-full flex justify-between items-center">
-            <span className={clsx('text-lg font-semibold', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
-              Deposit Assets
+          <div className="w-full relative flex justify-between items-center">
+            <span
+              className={clsx(
+                'text-lg font-semibold flex justify-center items-center w-full px-[40px]',
+                isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+              )}>
+              Withdraw Assets
             </span>
             {isLogin ? (
-              <Link href={'/etransfer-history'} className="pl-[16px]">
+              <Link href={'/etransfer-history'} className="absolute top-0 bottom-0 my-auto right-0 pl-[16px]">
                 <HistoryOutlined className={clsx(isInTG ? 'fill-pixelsTertiaryTextPurple' : 'fill-brandDefault')} />
               </Link>
             ) : null}
@@ -137,7 +139,7 @@ export default function ETransfer() {
                 ),
               },
               {
-                title: <div>Deposit Assets</div>,
+                title: <div>Withdraw Assets</div>,
               },
             ]}
           />
@@ -155,13 +157,15 @@ export default function ETransfer() {
         </div>
       ) : null}
       {isLogin ? (
-        <ETransferDepositProvider>
-          <Deposit
+        <ETransferWithdrawProvider>
+          <Withdraw
             componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web}
+            isShowErrorTip={true}
+            isShowMobilePoweredBy={false}
             isListenNoticeAuto={true}
             isShowProcessingTip={true}
           />
-        </ETransferDepositProvider>
+        </ETransferWithdrawProvider>
       ) : null}
     </div>
   );
