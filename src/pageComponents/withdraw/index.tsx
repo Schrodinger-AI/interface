@@ -112,12 +112,16 @@ export default function ETransferWithdraw() {
       {isLG ? (
         <div className="mb-[16px]">
           <BackCom className="mt-6 m-4 ml-0 lg:ml-10" theme={isInTG ? 'dark' : 'light'} />
-          <div className="w-full flex justify-between items-center">
-            <span className={clsx('text-lg font-semibold', isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle')}>
+          <div className="w-full relative flex justify-between items-center">
+            <span
+              className={clsx(
+                'text-lg font-semibold flex justify-center items-center w-full px-[40px]',
+                isInTG ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
+              )}>
               Withdraw Assets
             </span>
             {isLogin ? (
-              <Link href={'/etransfer-history'} className="pl-[16px]">
+              <Link href={'/etransfer-history'} className="absolute top-0 bottom-0 my-auto right-0 pl-[16px]">
                 <HistoryOutlined className={clsx(isInTG ? 'fill-pixelsTertiaryTextPurple' : 'fill-brandDefault')} />
               </Link>
             ) : null}
