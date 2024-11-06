@@ -154,9 +154,6 @@ export default function ETransferWithdraw() {
       {isLogin ? (
         <ETransferWithdrawProvider>
           <Withdraw
-            className={'xxx-withdraw'}
-            chainClassName={'xxx-withdraw-chain'}
-            fromClassName={'xxx-withdraw-from'}
             componentStyle={isMD ? ComponentStyle.Mobile : ComponentStyle.Web}
             isShowErrorTip={true}
             isShowMobilePoweredBy={false}

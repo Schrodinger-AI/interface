@@ -22,6 +22,26 @@
         }
       }
       .etransfer-ant-drawer-body {
+        .etransfer-ui-withdraw-double-check-modal-receive-amount-wrapper {
+          .etransfer-ui-withdraw-double-check-modal-label, .etransfer-ui-withdraw-double-check-modal-receive-amount-usd {
+            @apply text-pixelsDivider;
+          }
+          .etransfer-ui-withdraw-double-check-modal-value {
+            @apply text-pixelsWhiteBg;
+          }
+
+        }
+        .etransfer-ui-withdraw-double-check-modal-divider {
+          @apply bg-pixelsBorder;
+        }
+        .etransfer-ui-withdraw-double-check-modal-detail-wrapper {
+          .etransfer-ui-withdraw-double-check-modal-label, .etransfer-ui-withdraw-double-check-modal-amount-usd {
+            @apply text-pixelsDivider;
+          }
+          .etransfer-ui-withdraw-double-check-modal-value {
+            @apply text-pixelsWhiteBg;
+          }
+        }
         .etransfer-ui-flex-row-center.etransfer-ui-withdraw-tip {
           @apply rounded-none bg-pixelsPageBg border-pixelsPageBg;
 
@@ -145,7 +165,59 @@
             @apply border-pixelsSecondaryTextPurple text-pixelsSecondaryTextPurple;  
           }
         }
+
+        .etransfer-ui-withdraw-fail-modal-container {
+          .etransfer-ui-withdraw-fail-modal-title-wrapper {
+            .etransfer-ui-withdraw-fail-modal-title {
+              @apply text-pixelsWhiteBg;
+            }
+          }
+          .etransfer-ui-withdraw-fail-modal-fail-reason {
+            @apply text-pixelsDivider;
+          }
+        }
+
+        .etransfer-ui-withdraw-success-modal-container {
+          .etransfer-ui-withdraw-success-modal-title-wrapper {
+            .etransfer-ui-withdraw-success-modal-title {
+              @apply text-pixelsWhiteBg;
+            }
+          }
+          .etransfer-ui-withdraw-success-modal-content {
+            .etransfer-ui-withdraw-success-modal-label {
+              @apply text-pixelsDivider;
+            }
+            .etransfer-ui-withdraw-success-modal-value {
+              .etransfer-ui-withdraw-success-modal-value-center, .etransfer-ui-withdraw-success-modal-receive-amount-usd {
+                @apply text-pixelsDivider;
+              }
+            }
+          }
+          .etransfer-ui-withdraw-success-modal-divider {
+            @apply bg-pixelsBorder;
+          }
+
+          .etransfer-ui-withdraw-success-modal-detail {
+            .etransfer-ui-withdraw-success-modal-label {
+              @apply text-pixelsDivider;
+            }
+            .etransfer-ui-withdraw-success-modal-value {
+              @apply text-pixelsWhiteBg;
+            }
+          }
+        }
         
+      }
+      .etransfer-ant-drawer-footer {
+        .etransfer-ui-common-modal-auto-screen-drawer-footer-cancel-button {
+          @apply !default-button-dark;
+        }
+        .etransfer-ui-common-modal-auto-screen-drawer-footer-ok-button {
+          @apply !primary-button-dark;
+        }
+        >a {
+          @apply text-pixelsPrimaryTextPurple;
+        }
       }
     }
 
@@ -281,7 +353,7 @@
     .etransfer-ui-history-mobile-cancel-button {
       @apply !default-button-dark;
     }
-    .etransfer-ui-history-mobile-ok-button {
+    .etransfer-ui-history-mobile-ok-button, .etransfer-ui-common-modal-auto-screen-drawer-footer-ok-button {
       @apply !primary-button-dark;
     }
   }

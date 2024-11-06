@@ -50,6 +50,10 @@
     .etransfer-ui-withdraw-select-chain.xxx-withdraw-chain, .etransfer-ui-flex.etransfer-ui-withdraw-remaining-limit {
       @apply hidden;
     }
+
+    .etransfer-ui-withdraw-body {
+      @apply px-0;
+    }
   
     .etransfer-ui-mobile-select-chain-trigger-container-border {
       @apply !border-pixelsBorder;
@@ -67,7 +71,7 @@
     .etransfer-ui-from-textarea-wrapper textarea,
     .etransfer-ui-from-amount-input-wrapper input,
     .etransfer-ui-from-amount-input-unit.etransfer-ui-from-amount-input-unit-mobile {
-      @apply !text-pixelsWhiteBg;
+      @apply !text-pixelsWhiteBg placeholder:text-pixelsDivider;
     }
 
     .etransfer-ui-from-amount-input-dividing-line {
@@ -84,6 +88,28 @@
 
     .etransfer-ui-withdraw-form-footer.etransfer-ui-withdraw-form-footer-safe-area {
       @apply !bg-pixelsModalBg !border-pixelsModalBg;
+
+      .etransfer-ui-withdraw-footer-info-wrapper {
+        .etransfer-ui-withdraw-receive-amount-wrapper {
+          .info-label {
+            @apply text-pixelsDivider;
+          }
+          .info-value {
+            @apply text-pixelsWhiteBg;
+          }
+          
+        }
+        .etransfer-ui-withdraw-fee-info-item {
+          @apply text-pixelsDivider;
+          .etransfer-ui-withdraw-fee-info-value {
+            @apply text-pixelsDivider;
+          }
+        }
+      }
+
+      .etransfer-ui-withdraw-form-submit-button {
+        @apply disabled:text-[#57566D];
+      }
       
       .etransfer-ui-common-button-primary {
         @apply bg-pixelsCardBg text-pixelsWhiteBg border-pixelsPrimaryTextPurple border-dashed rounded-none shadow-withdrawBtnShadow w-[134px] h-[48px] leading-[48px];
@@ -307,6 +333,25 @@
 
     }
 
-    
+    .etransfer-ui-withdraw-form-item-wrapper {
+      .etransfer-ant-form-item-label {
+        label, .etransfer-ui-withdraw-form-label { 
+          @apply !text-pixelsWhiteBg;
+        }
+      }
+    }
+
+    .etransfer-ui-withdraw-form-balance-wrapper {
+      .etransfer-ui-withdraw-form-info-label, .etransfer-ui-withdraw-form-info-value {
+        @apply text-pixelsDivider;
+      }
+    }
+    .etransfer-ant-form-item-control {
+      .etransfer-ui-from-amount-input-wrapper {
+        .etransfer-ui-from-amount-input-max {
+          @apply text-pixelsPrimaryTextPurple;
+        }
+      }
+    }
   }
 }
