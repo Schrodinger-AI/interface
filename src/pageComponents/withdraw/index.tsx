@@ -80,7 +80,8 @@ export default function ETransferWithdraw() {
       withdrawConfig: {
         defaultToken: defaultParams.tokenSymbol || 'ELF',
         defaultChainId: cmsInfo?.curChain || 'tDVV',
-        supportTokens: ['ELF', 'SGR-1'],
+        // supportTokens: ['ELF', 'SGR-1'],
+        defaultNetwork: 'AELF',
         supportChainIds: cmsInfo?.curChain === 'tDVW' ? ['tDVW'] : ['tDVV'],
       },
     });
