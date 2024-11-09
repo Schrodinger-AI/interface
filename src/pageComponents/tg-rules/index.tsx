@@ -4,9 +4,16 @@ import { useCmsInfo } from 'redux/hooks';
 import styles from './style.module.css';
 import clsx from 'clsx';
 import BackCom from 'pageComponents/telegram/tokensPage/components/BackCom';
+import { useModal } from '@ebay/nice-modal-react';
+import CatSelections from './components/CatSelections';
+import Notice from './components/Notice';
+import Result from './components/ResultModal';
 
 export default function RulesPage() {
   const { tgRulesText, twitterUrlInTgRules } = useCmsInfo() || {};
+  const CatSelectModal = useModal(CatSelections);
+  const NoticeModal = useModal(Notice);
+  const ResultModal = useModal(Result);
 
   return (
     <section className={clsx('max-w-[2560px] w-full min-h-screen px-4 py-6', styles.rulesPageContainer)}>

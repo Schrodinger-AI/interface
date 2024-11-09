@@ -204,6 +204,7 @@ export default function TgHome() {
 
   return (
     <div
+      style={{ backgroundImage: `url(${cmsInfo?.homeBg})` }}
       className={clsx(
         'flex flex-col max-w-[2560px] w-full min-h-screen px-4 pt-[16px] pb-[112px]',
         isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
