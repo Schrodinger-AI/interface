@@ -27,6 +27,8 @@ export type InfoStateType = {
   hasNewActivities: boolean;
   catDetailInfo?: TSGRTokenInfo;
   voteInfo?: IVoteInfo;
+  homeTopCat?: string;
+  homeBg?: string;
 };
 
 export type TTradeItem = {

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Flex } from 'antd';
 import Link from 'next/link';
+import Lottie from 'lottie-web';
 import TGButton from 'components/TGButton';
 import { ReactComponent as BagSVG } from 'assets/img/telegram/icon-bags.svg';
 import { ReactComponent as WheelSVG } from 'assets/img/telegram/icon-wheel.svg';
@@ -10,13 +11,18 @@ import { ReactComponent as MyBagsTextSVG } from 'assets/img/telegram/home-list/m
 import { ReactComponent as PoolsTextSVG } from 'assets/img/telegram/home-list/pools.svg';
 import { ReactComponent as LuckySpinTextSVG } from 'assets/img/telegram/home-list/lucky-spin.svg';
 import { ReactComponent as ShoppingTextSVG } from 'assets/img/telegram/home-list/shopping.svg';
+import { ReactComponent as CatPowSVG } from 'assets/img/telegram/icon-cat-paw.svg';
+import { ReactComponent as BreedTextSVG } from 'assets/img/telegram/home-list/breed.svg';
+import { ReactComponent as BoxLeftSVG } from 'assets/img/telegram/box-left.svg';
+import { ReactComponent as BoxRightSVG } from 'assets/img/telegram/box-right.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
-import treasureChest from 'assets/img/telegram/treasure-chest.png';
-import treasureChestLight from 'assets/img/telegram/bg-light2.png';
 import lightRound from 'assets/img/telegram/light-round.png';
+import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useCmsInfo } from 'redux/hooks';
+import { useEffect } from 'react';
 
 export default function AdoptModule({
   cId,
@@ -28,8 +34,19 @@ export default function AdoptModule({
   isInActivity?: boolean;
 }) {
   // const { tgHomePageText } = useCmsInfo() || {};
+  const cmsInfo = useCmsInfo();
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
+
+  useEffect(() => {
+    Lottie.loadAnimation({
+      container: document.getElementById('treasure-lottie') as Element,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: HomeTreasure,
+    });
+  }, []);
 
   return (
     <div className="relative z-10">
@@ -45,6 +62,8 @@ export default function AdoptModule({
 
           {isInActivity ? (
             <img src={require('assets/img/telegram/cat-activity.png').default.src} alt="" className="w-[26.6vw] z-10" />
+          ) : cmsInfo?.homeTopCat ? (
+            <img src={cmsInfo?.homeTopCat} alt="" className="w-[26.6vw] z-10" />
           ) : (
             <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
           )}
@@ -59,16 +78,11 @@ export default function AdoptModule({
             </TGButton>
           </Flex>
         </div>
-        {!isInActivity && (
-          <div className="relative mt-4 ">
-            <Image
-              src={treasureChestLight}
-              className="absolute scale-125 bottom-[70%] left-0 right-0 m-auto z-1"
-              alt=""
-            />
-            <Image src={treasureChest} className="w-[50.7vw] z-10" alt="" />
-          </div>
-        )}
+        <div className="relative mt-[-22px] z-9">
+          <div id="treasure-lottie" className="w-[35.47vw] h-[35.47vw] z-10 overflow-hidden"></div>
+          <BoxLeftSVG className="absolute bottom-[20%] right-[100%] z-1" />
+          <BoxRightSVG className="absolute bottom-[20%] left-[100%] z-1" />
+        </div>
       </Flex>
 
       <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[37px] left-0 z-20">
@@ -111,6 +125,16 @@ export default function AdoptModule({
           <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
+      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[70vw] left-0 z-20">
+        <Flex
+          vertical
+          justify="center"
+          align="center"
+          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          <CatPowSVG className="w-[32px] h-[32px]" />
+          <BreedTextSVG className="mt-[4px]" />
+        </Flex>
+      </Link>
     </div>
   );
 }
