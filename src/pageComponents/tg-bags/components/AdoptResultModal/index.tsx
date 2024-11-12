@@ -12,7 +12,7 @@ type IProps = {
   traitData?: IAdoptImageInfo;
   isRare: boolean;
   voucherInfo: IVoucherInfo;
-  catsRankProbability: TRankInfoAddLevelInfo[] | false;
+  catsRankProbability: TRankInfoAddLevelInfo | false;
   theme?: TModalTheme;
   levelInfo: ILevelInfo;
 };
@@ -28,7 +28,7 @@ function AdoptResultModal(props: IProps) {
   }, [modal]);
 
   const onUnbox = useCallback(() => {
-    if (!voucherInfo.adoptId || !catsRankProbability || !catsRankProbability?.[0]) {
+    if (!voucherInfo.adoptId || !catsRankProbability) {
       return;
     }
     try {
@@ -47,8 +47,8 @@ function AdoptResultModal(props: IProps) {
         childrenItemInfo: {
           adoptId: voucherInfo.adoptId,
           outputAmount: 1,
-          symbol: catsRankProbability?.[0]?.levelInfo?.symbol,
-          tokenName: catsRankProbability?.[0]?.levelInfo?.tokenName,
+          symbol: catsRankProbability?.levelInfo?.symbol,
+          tokenName: catsRankProbability?.levelInfo?.tokenName,
           inputAmount: 0,
           isDirect: true,
         },

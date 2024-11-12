@@ -45,6 +45,10 @@ const rotateY = plugin(function ({ addUtilities }) {
       color: 'var(--pixels-white-bg)',
       textShadow: '2px 2px 0 #000000',
     },
+    '.black-title': {
+      color: 'var(--pixels-white-bg)',
+      textShadow: '2px 2px 0 #000',
+    },
   });
 });
 

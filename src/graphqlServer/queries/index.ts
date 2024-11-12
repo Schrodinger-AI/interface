@@ -102,7 +102,7 @@ export const GET_LATEST_SCHRODINGER_LIST_QUERY = gql`
 `;
 
 export const NFT_ACTIVITY_LIST_BY_CONDITION = gql`
-  query nftActivityListByCondition($input: GetActivitiesConditionDto) {
+  query nftActivityListByCondition($input: GetActivitiesConditionDto!) {
     nftActivityListByCondition(input: $input) {
       totalRecordCount
       data {

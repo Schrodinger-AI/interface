@@ -179,3 +179,13 @@ export const GetAdoptionVoucherAmount = async (
     return Promise.reject(error);
   }
 };
+
+export const Breed = async (
+  params: {
+    adoptIdA: string;
+    adoptIdB: string;
+    level: number;
+    signature: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('Breed', params, options);

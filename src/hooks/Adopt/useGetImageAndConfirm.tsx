@@ -21,7 +21,6 @@ import { AIServerError, DEFAULT_ERROR, formatErrorMsg } from 'utils/formatError'
 import { MethodType, SentryMessageType, captureMessage } from 'utils/captureMessage';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { renameSymbol } from 'utils/renameSymbol';
 import CardResultModal, { Status } from 'components/CardResultModal';
 import { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
@@ -346,15 +345,14 @@ export const useGetImageAndConfirm = () => {
   );
 
   const getRankInfo = useCallback(
-    async (allTraits: ITrait[]) => {
+    async (allTraits: ITrait[], symbol: string) => {
       const traits = formatTraits(allTraits);
       if (!traits || !walletInfo?.address) return;
       const catsRankProbability = await getCatsRankProbability({
-        catsTraits: [traits],
-        address: addPrefixSuffix(walletInfo.address),
+        symbol, // TODO: getCatsRankProbability symbol
       });
 
-      const info = (catsRankProbability && catsRankProbability?.[0]) || undefined;
+      const info = catsRankProbability || undefined;
 
       return info;
     },
@@ -411,7 +409,7 @@ export const useGetImageAndConfirm = () => {
 
         if (!infos) return;
 
-        const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes);
+        const rankInfo = await getRankInfo(infos.adoptImageInfo.attributes, childrenItemInfo.symbol);
 
         const { txResult, image, nextTokenName, nextSymbol } = await approveAdoptConfirm({
           infos,

@@ -125,7 +125,7 @@ export default function AdoptModule({
           <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[70vw] left-0 z-20">
+      <Link href={isLogin ? '/telegram/breed' : ''} className="absolute top-[70vw] left-0 z-20">
         <Flex
           vertical
           justify="center"

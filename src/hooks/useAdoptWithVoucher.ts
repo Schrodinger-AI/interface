@@ -12,7 +12,6 @@ import TGAdoptLoading from 'components/TGAdoptLoading';
 import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { formatTraits } from 'utils/formatTraits';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { message } from 'antd';
 
 export interface IAdoptWithVoucherLogs {
@@ -103,7 +102,7 @@ export default function useAdoptWithVoucher() {
     traitData: IAdoptImageInfo,
     isRare: boolean,
     voucherInfo: IVoucherInfo,
-    catsRankProbability?: TRankInfoAddLevelInfo[] | false,
+    catsRankProbability?: TRankInfoAddLevelInfo | false,
   ) => {
     adoptResultModal.show({
       traitData,
@@ -131,11 +130,10 @@ export default function useAdoptWithVoucher() {
             console.log('res', res);
             if (res && res.adoptId && walletInfo?.address) {
               const traits = formatTraits(voucherInfo.attributes.data);
-              let catsRankProbability: TRankInfoAddLevelInfo[] | false = [];
+              let catsRankProbability: TRankInfoAddLevelInfo | false = false;
               if (traits) {
                 catsRankProbability = await getCatsRankProbability({
-                  catsTraits: [traits],
-                  address: addPrefixSuffix(walletInfo.address),
+                  symbol: '', // TODO: getCatsRankProbability symbol
                 });
                 console.log('catsRankProbability', catsRankProbability);
               }

@@ -96,6 +96,12 @@ export type TCustomizationItemType = {
   isShowRampBuy: boolean;
   isShowRampSell: boolean;
   routerItems: Array<ICompassProps>;
+  detailedSynthesisProbability?: {
+    [key: string]: {
+      fail: string;
+      success: string;
+    };
+  };
   latestModal: {
     show: boolean;
     title: string;
