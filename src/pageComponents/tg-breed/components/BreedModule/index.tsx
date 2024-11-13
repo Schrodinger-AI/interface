@@ -11,7 +11,7 @@ import Notice from '../Notice';
 import CatSelections from '../CatSelections';
 import { useCmsInfo } from 'redux/hooks';
 import { catCombine } from 'api/request';
-import { Breed } from 'contract/schrodinger';
+import { Merge } from 'contract/schrodinger';
 import ResultModal from '../ResultModal';
 import { fetchTraitsAndImages } from 'hooks/Adopt/AdoptStep';
 import ProtoInstance from 'utils/initializeProto';
@@ -22,7 +22,6 @@ import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { TModalTheme } from 'components/CommonModal';
 import { Button } from 'aelf-design';
 import TGAdoptLoading from 'components/TGAdoptLoading';
-import { sleep } from '@portkey/utils';
 import KittenOnTheGrassAnimation from '../KittenOnTheGrassAnimation';
 
 export interface IBredAdoptInfo {
@@ -36,6 +35,8 @@ export interface IBredInfo {
   adoptIdB: string;
   amountA: number;
   amountB: number;
+  symbolA: string;
+  symbolB: string;
   adoptInfo: IBredAdoptInfo;
 }
 
@@ -105,53 +106,52 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
       const res = await catCombine({
         symbols: [selectedLeft.symbol, selectedRight?.symbol],
       });
-      await sleep(2000); // TODO: mock Breed
-      // const { TransactionId, TransactionResult } = await Breed({
-      //   adoptIdA: res.adoptIds[0],
-      //   adoptIdB: res.adoptIds[1],
-      //   level: res.level,
-      //   signature: res.signature,
-      // });
-      // const contractAddress = cmsInfo?.schrodingerSideAddress;
+      const { TransactionId, TransactionResult } = await Merge({
+        adoptIdA: res.adoptIds[0],
+        adoptIdB: res.adoptIds[1],
+        level: res.level,
+        signature: res.signature,
+        tick: res.tick,
+      });
+      const contractAddress = cmsInfo?.schrodingerSideAddress;
 
-      // if (!contractAddress) {
-      //   tgAdoptLoading.hide();
-      //   return;
-      // }
+      if (!contractAddress) {
+        tgAdoptLoading.hide();
+        return;
+      }
 
-      // const logs = await ProtoInstance.getLogEventResult<IBredInfo>({
-      //   contractAddress,
-      //   logsName: 'Bred',
-      //   TransactionResult,
-      // });
-      // if (!logs) {
-      //   tgAdoptLoading.hide();
-      //   return;
-      // }
+      const logs = await ProtoInstance.getLogEventResult<IBredInfo>({
+        contractAddress,
+        logsName: 'Merged',
+        TransactionResult,
+      });
+      if (!logs) {
+        tgAdoptLoading.hide();
+        return;
+      }
 
-      // const catInfo = await fetchTraitsAndImages({
-      //   adoptId: logs.adoptInfo.adoptId,
-      //   transactionHash: TransactionId,
-      //   adoptOnly: true,
-      //   address: walletInfo.address,
-      // });
+      console.log('=====Merge logs', logs);
 
-      // const catsRankProbability = await getCatsRankProbability({
-      //   symbol: logs.adoptInfo.symbol,
-      // });
+      const catInfo = await fetchTraitsAndImages({
+        adoptId: logs.adoptInfo.adoptId,
+        transactionHash: TransactionId,
+        adoptOnly: true,
+        address: walletInfo.address,
+      });
 
-      // const describe = catsRankProbability ? catsRankProbability.levelInfo?.describe : '';
-      const isSuccess = true;
-      // const isSuccess = describe !== selectedLeft.describe;
+      const catsRankProbability = await getCatsRankProbability({
+        symbol: logs.adoptInfo.symbol,
+      });
+
+      const describe = catsRankProbability ? catsRankProbability.levelInfo?.describe : '';
+      const isSuccess = describe !== selectedLeft.describe;
       tgAdoptLoading.hide();
       updateRank && updateRank();
       resultModal.show({
         type: isSuccess ? 'success' : 'fail',
         catInfo: {
-          // describe: describe,
-          // inscriptionImageUri: catInfo.adoptImageInfo.boxImage,
-          describe: selectedLeft.describe || '', // TODO: mock Breed
-          inscriptionImageUri: selectedLeft.inscriptionImageUri, // TODO: mock Breed
+          describe: describe,
+          inscriptionImageUri: catInfo.adoptImageInfo.boxImage,
         },
         onConfirm: () => {
           resultModal.hide();

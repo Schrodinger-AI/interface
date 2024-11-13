@@ -7,7 +7,7 @@ import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormat
 function Rank({ rankList, theme = 'light' }: { rankList: ICatPoolRankRes['rankList']; theme?: TModalTheme }) {
   const isDark = useMemo(() => theme === 'dark', [theme]);
   return (
-    <div className="px-[16px] mt-[9px]">
+    <div className="px-[16px] mt-[9px] pb-[32px]">
       <p
         className={clsx(
           'text-base font-black',
