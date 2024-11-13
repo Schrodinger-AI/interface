@@ -52,7 +52,7 @@ function Rewards({
             'text-base font-black',
             isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle flex items-center',
           )}>
-          Rewards
+          Prize Pool
           {isDark ? null : (
             <QuestionLightSVG
               className="ml-[8px]"
@@ -84,7 +84,7 @@ function Rewards({
         <ScrollAlert
           data={[
             {
-              text: 'First user to win Gold III wins the whole pot',
+              text: 'The first to own Gold III wins the entire Prize Pool!',
             },
           ]}
           theme={theme}
@@ -103,14 +103,24 @@ function Rewards({
           )}
         </div>
         <div className="mt-[10px] flex justify-between items-center">
-          <Countdown
-            className={clsx(styles.countdown, isDark ? styles['dark-countdown'] : '')}
-            value={deadline}
-            format={format}
-            onFinish={() => onFinish?.()}
-          />
+          <div className="flex items-center">
+            <span
+              className={clsx(
+                'text-xs font-semibold mr-[4px]',
+                isDark ? 'text-pixelsWhiteBg' : 'text-neutralSecondary',
+              )}>
+              Ends in:
+            </span>
+            <Countdown
+              className={clsx(styles.countdown, isDark ? styles['dark-countdown'] : '')}
+              value={deadline}
+              format={format}
+              onFinish={() => onFinish?.()}
+            />
+          </div>
+
           <span className={clsx('text-xs font-semibold', isDark ? 'text-pixelsWhiteBg' : 'text-neutralSecondary')}>
-            USDT Value: {usdtAmount ? formatNumber(usdtAmount) : '--'}
+            USDT value: {usdtAmount ? formatNumber(usdtAmount) : '--'}
           </span>
         </div>
       </div>

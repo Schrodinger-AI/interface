@@ -80,7 +80,7 @@ function TgBreed() {
         onFinish={getCatPoolRank}
       />
       {isOver ? <RewardResult winnerInfo={winnerInfo} /> : <BreedModule theme={theme} updateRank={getCatPoolRank} />}
-      {isOver || !rankList.length ? null : <Rank rankList={rankList} theme={theme} />}
+      {isOver || !rankList?.length ? null : <Rank rankList={rankList} theme={theme} />}
     </div>
   );
 }

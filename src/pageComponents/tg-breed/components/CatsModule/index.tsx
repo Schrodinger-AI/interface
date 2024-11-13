@@ -37,7 +37,7 @@ const endMessage = (theme: TModalTheme) => (
   </div>
 );
 
-const emptyCom = <TableEmpty description="No items found" theme="none" />;
+const emptyCom = <TableEmpty description="No item found" theme="none" />;
 
 export default function CatsModule({ onChange, type, currentSymbol, theme = 'light' }: IProps) {
   const pageSize = 32;
@@ -154,7 +154,8 @@ export default function CatsModule({ onChange, type, currentSymbol, theme = 'lig
 
   return (
     <div className="h-[415px] overflow-y-auto">
-      <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{total} Results</p>
+      {dataSource.length ? <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{total} Result</p> : null}
+
       {loading ? (
         <div className="h-[385px] w-full flex justify-center items-center">
           <Loading size={'default'} />

@@ -5,29 +5,16 @@ import bubblesCongrats from 'assets/img/telegram/breed/bubbles-congrats.png';
 import clsx from 'clsx';
 import Image from 'next/image';
 
-function KittenOnTheGrass({
-  className,
-  hasWinner,
-  isEnd,
-}: {
-  className?: string;
-  hasWinner?: boolean;
-  isEnd?: boolean;
-}) {
+function KittenOnTheGrass({ className, hasWinner }: { className?: string; hasWinner?: boolean }) {
   return (
     <div className={clsx('w-full', className)}>
       <div className="w-full">
         <div className="ml-[60%] relative z-10">
-          {isEnd ? (
-            <Image
-              src={hasWinner ? bubblesCongrats : bubblesBummer}
-              className={clsx('w-[111px] absolute -top-[38px]', hasWinner ? ' -left-[50px]' : ' -left-[90px]')}
-              alt=""
-            />
-          ) : (
-            false
-          )}
-
+          <Image
+            src={hasWinner ? bubblesCongrats : bubblesBummer}
+            className={clsx('w-[111px] absolute -top-[38px]', hasWinner ? ' -left-[50px]' : ' -left-[90px]')}
+            alt=""
+          />
           <Image src={cat} className="w-[72px]" alt="" />
         </div>
       </div>

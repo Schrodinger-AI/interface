@@ -35,7 +35,7 @@ function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
           </span>
         </div>
       </div>
-      <KittenOnTheGrass isEnd={true} hasWinner={hasWinner} className="fixed bottom-0 left-0 z-30" />
+      <KittenOnTheGrass hasWinner={hasWinner} className="fixed bottom-0 left-0 z-30" />
     </div>
   );
 }

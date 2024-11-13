@@ -15,7 +15,7 @@ function Rank({ rankList, theme = 'light' }: { rankList: ICatPoolRankRes['rankLi
             ? 'text-pixelsWhiteBg'
             : 'text-neutralDisable py-[13px] border-0 border-b border-solid border-neutralDivider',
         )}>
-        Rank
+        Ranking
       </p>
       <div className={clsx(isDark ? 'mt-[8px]' : '')}>
         {rankList.map((item, index) => {

@@ -18,10 +18,6 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
             cats and merging them into the rare Gold III. The chase is on: the first to own Gold III wins the entire
             Prize Pool! 💰
           </h4>
-          <p>
-            ONE winner takes it ALL! Level up by adopting cats and merging them into the rare Gold III. The chase is on:
-            the first to own Gold III wins the entire jackpot!
-          </p>
           <h3>🗓 Event Duration:</h3>
           <h4>Nov 13th - Dec 13th. Each week is a new `&quot;`Round`&quot;`!</h4>
           <h3>💵 Prize Pool:</h3>
@@ -32,29 +28,29 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
           <h3>💎 Bonus Prize:</h3>
           <ol>
             <li>
-              <p>Each cat adoption with SGR adds 0.55 SGR to the Prize Pool</p>
+              <p>Each cat adoption with SGR adds 0.55 SGR to the Bonus Prize Pool</p>
             </li>
             <li>
-              <p>Each cat adoption with S-CAT vouchers adds 0.25 SGR to the Prize Pool</p>
+              <p>Each cat adoption with S-CAT vouchers adds 0.25 SGR to the Bonus Prize Pool</p>
             </li>
             <li>
-              <p>Each Merge adds 0.25 SGR to the Prize Pool</p>
+              <p>Each Merge adds 0.25 SGR to the Bonus Prize Pool</p>
             </li>
             <li>
               <p>
-                If no Gold III emerges by week&apos;s end, 80% of the bonus prize will roll into the next round&apos;s
-                Prize Pool, keeping the stakes high and your pulse higher!
+                If no Gold III emerges by week&apos;s end, 80% of the Bonus Prize Pool will roll into the next
+                round&apos;s Prize Pool, keeping the stakes high and your pulse higher!
               </p>
             </li>
           </ol>
-          <h3>🧪 Cat Merge: </h3>
+          <h3>🧪 Cat Merge:</h3>
           <p>
             Two cats of the same rarity can be merged to a higher rarity. Each merge has a chance of failure, ramping up
             the suspense as each Merge contributes SGR to the growing Prize Pool!
           </p>
-          <h3>🔄 Reroll Update: </h3>
+          <h3>🔄 Reroll Update:</h3>
           <p>The reroll will burn the NFT and the owner will receive 0.5 SGR in return.</p>
-          <h3>🔑 Prize Distribution: </h3>
+          <h3>🔑 Prize Distribution:</h3>
           <p>
             The first to hit the &quot;Redeem&quot; button with a Gold III cat can claim the entire prize pool! The Gold
             III NFT will then be burnt.

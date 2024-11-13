@@ -17,7 +17,9 @@ function Notice({
   onConfirm,
   onClose,
   theme = 'light',
+  title,
 }: {
+  title?: string;
   onConfirm?: (v?: string) => void;
   onClose?: () => void;
   status?: boolean;
@@ -101,7 +103,7 @@ function Notice({
   if (theme === 'dark') {
     return (
       <TgModal
-        title="Notice"
+        title={title || 'Notice'}
         open={modal.visible}
         hideHeader={false}
         maskClosable={true}
@@ -130,7 +132,7 @@ function Notice({
   } else {
     return (
       <CommonModal
-        title="Notice"
+        title={title || 'Notice'}
         theme="light"
         open={modal.visible}
         hideHeader={false}

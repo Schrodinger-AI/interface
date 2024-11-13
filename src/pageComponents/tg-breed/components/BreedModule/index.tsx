@@ -7,7 +7,6 @@ import { ReactComponent as QuestionSVG } from 'assets/img/telegram/battle/icon_q
 import { useMemo, useState } from 'react';
 import { TSGRItem } from 'types/tokens';
 import { useModal } from '@ebay/nice-modal-react';
-import KittenOnTheGrass from '../KittenOnTheGrass';
 import Notice from '../Notice';
 import CatSelections from '../CatSelections';
 import { useCmsInfo } from 'redux/hooks';
@@ -23,6 +22,8 @@ import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { TModalTheme } from 'components/CommonModal';
 import { Button } from 'aelf-design';
 import TGAdoptLoading from 'components/TGAdoptLoading';
+import { sleep } from '@portkey/utils';
+import KittenOnTheGrassAnimation from '../KittenOnTheGrassAnimation';
 
 export interface IBredAdoptInfo {
   adoptId: string;
@@ -64,56 +65,60 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
       const res = await catCombine({
         symbols: [selectedLeft.symbol, selectedRight?.symbol],
       });
-      const { TransactionId, TransactionResult } = await Breed({
-        adoptIdA: res.adoptIds[0],
-        adoptIdB: res.adoptIds[1],
-        level: res.level,
-        signature: res.signature,
-      });
-      const contractAddress = cmsInfo?.schrodingerSideAddress;
+      await sleep(2000); // TODO: mock Breed
+      // const { TransactionId, TransactionResult } = await Breed({
+      //   adoptIdA: res.adoptIds[0],
+      //   adoptIdB: res.adoptIds[1],
+      //   level: res.level,
+      //   signature: res.signature,
+      // });
+      // const contractAddress = cmsInfo?.schrodingerSideAddress;
 
-      if (!contractAddress) {
-        tgAdoptLoading.hide();
-        return;
-      }
+      // if (!contractAddress) {
+      //   tgAdoptLoading.hide();
+      //   return;
+      // }
 
-      const logs = await ProtoInstance.getLogEventResult<IBredInfo>({
-        contractAddress,
-        logsName: 'Bred',
-        TransactionResult,
-      });
-      if (!logs) {
-        tgAdoptLoading.hide();
-        return;
-      }
+      // const logs = await ProtoInstance.getLogEventResult<IBredInfo>({
+      //   contractAddress,
+      //   logsName: 'Bred',
+      //   TransactionResult,
+      // });
+      // if (!logs) {
+      //   tgAdoptLoading.hide();
+      //   return;
+      // }
 
-      const catInfo = await fetchTraitsAndImages({
-        adoptId: logs.adoptInfo.adoptId,
-        transactionHash: TransactionId,
-        adoptOnly: true,
-        address: walletInfo.address,
-      });
+      // const catInfo = await fetchTraitsAndImages({
+      //   adoptId: logs.adoptInfo.adoptId,
+      //   transactionHash: TransactionId,
+      //   adoptOnly: true,
+      //   address: walletInfo.address,
+      // });
 
-      const catsRankProbability = await getCatsRankProbability({
-        symbol: logs.adoptInfo.symbol,
-      });
+      // const catsRankProbability = await getCatsRankProbability({
+      //   symbol: logs.adoptInfo.symbol,
+      // });
 
-      const describe = catsRankProbability ? catsRankProbability.levelInfo?.describe : '';
-      const isSuccess = describe !== selectedLeft.describe;
+      // const describe = catsRankProbability ? catsRankProbability.levelInfo?.describe : '';
+      const isSuccess = true;
+      // const isSuccess = describe !== selectedLeft.describe;
       tgAdoptLoading.hide();
-      setSelectedLeft(undefined);
-      setSelectedRight(undefined);
       updateRank && updateRank();
       resultModal.show({
         type: isSuccess ? 'success' : 'fail',
         catInfo: {
-          describe: describe,
-          inscriptionImageUri: catInfo.adoptImageInfo.boxImage,
+          // describe: describe,
+          // inscriptionImageUri: catInfo.adoptImageInfo.boxImage,
+          describe: selectedLeft.describe || '', // TODO: mock Breed
+          inscriptionImageUri: selectedLeft.inscriptionImageUri, // TODO: mock Breed
         },
         onConfirm: () => {
           resultModal.hide();
         },
       });
+      setSelectedLeft(undefined);
+      setSelectedRight(undefined);
     } catch (error) {
       tgAdoptLoading.hide();
       if (typeof error === 'string') {
@@ -125,14 +130,19 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     }
   };
 
+  const showNoticeMergeInvalid = () => {
+    notice.show({
+      status: true,
+      hideCancel: true,
+      tips: 'Merge two cats of the same rarity!',
+      theme,
+      title: 'Alert',
+    });
+  };
+
   const onBreed = () => {
     if (!selectedRight || !selectedLeft || selectedRight?.describe !== selectedLeft?.describe) {
-      notice.show({
-        status: true,
-        hideCancel: true,
-        tips: 'You should use two equal rarity cats!',
-        theme,
-      });
+      showNoticeMergeInvalid();
       return;
     }
     const probability = getProbability(selectedLeft.describe);
@@ -150,7 +160,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
           inscriptionImageUri: selectedRight.inscriptionImageUri,
         },
       ],
-      tips: 'Are you sure you want to Merge these 2 cats?',
+      tips: 'Merge these 2 cats?',
       onConfirm: () => {
         notice.hide();
         toCatCombine();
@@ -160,7 +170,10 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
   };
 
   const showCompositionRules = () => {
-    if (!selectedRight || !selectedLeft || selectedRight?.describe !== selectedLeft?.describe) return;
+    if (!selectedRight || !selectedLeft || selectedRight?.describe !== selectedLeft?.describe) {
+      showNoticeMergeInvalid();
+      return;
+    }
 
     const probability = getProbability(selectedLeft.describe);
 
@@ -183,11 +196,15 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     });
   };
 
-  const showCatSelections = (catData?: TSGRItem) => {
+  const showCatSelections = (type: string, catData?: TSGRItem) => {
     catSelections.show({
       currentSymbol: catData?.symbol,
       onConfirm: (data) => {
-        setSelectedLeft(data);
+        if (type === 'left') {
+          setSelectedLeft(data);
+        } else {
+          setSelectedRight(data);
+        }
         catSelections.hide();
       },
       theme,
@@ -202,13 +219,13 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
         <SelectCard
           imageUrl={selectedLeft?.inscriptionImageUri}
           describe={selectedLeft?.describe}
-          onClick={() => showCatSelections(selectedRight)}
+          onClick={() => showCatSelections('left', selectedRight)}
         />
         <CatPaw />
         <SelectCard
           describe={selectedRight?.describe}
           imageUrl={selectedRight?.inscriptionImageUri}
-          onClick={() => showCatSelections(selectedLeft)}
+          onClick={() => showCatSelections('right', selectedLeft)}
         />
       </div>
       <div className="relative z-20 px-[80px] w-full pb-[39px]">
@@ -229,7 +246,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
           </div>
         </div>
       </div>
-      {isDark ? <KittenOnTheGrass isEnd={false} /> : null}
+      {isDark ? <KittenOnTheGrassAnimation /> : null}
     </div>
   );
 }

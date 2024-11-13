@@ -12,7 +12,7 @@ import { ReactComponent as PoolsTextSVG } from 'assets/img/telegram/home-list/po
 import { ReactComponent as LuckySpinTextSVG } from 'assets/img/telegram/home-list/lucky-spin.svg';
 import { ReactComponent as ShoppingTextSVG } from 'assets/img/telegram/home-list/shopping.svg';
 import { ReactComponent as CatPowSVG } from 'assets/img/telegram/icon-cat-paw.svg';
-import { ReactComponent as BreedTextSVG } from 'assets/img/telegram/home-list/breed.svg';
+import { ReactComponent as MergeTextSVG } from 'assets/img/telegram/home-list/merge.svg';
 import { ReactComponent as BoxLeftSVG } from 'assets/img/telegram/box-left.svg';
 import { ReactComponent as BoxRightSVG } from 'assets/img/telegram/box-right.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
@@ -132,7 +132,7 @@ export default function AdoptModule({
           align="center"
           className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
           <CatPowSVG className="w-[32px] h-[32px]" />
-          <BreedTextSVG className="mt-[4px]" />
+          <MergeTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
     </div>

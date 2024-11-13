@@ -24,7 +24,7 @@ function CatSelections({
 
   return (
     <TgModal
-      title="Select a Cat"
+      title="Select A Cat"
       open={modal.visible}
       hideHeader={false}
       maskClosable={true}
@@ -36,7 +36,7 @@ function CatSelections({
         className={styles['customized-tabs']}
         items={[
           {
-            label: 'My Cats',
+            label: 'My Cat',
             key: '1',
             children: (
               <CatsModule
@@ -48,7 +48,7 @@ function CatSelections({
             ),
           },
           {
-            label: 'Box',
+            label: 'Cat Box',
             key: '2',
             children: (
               <CatsModule
