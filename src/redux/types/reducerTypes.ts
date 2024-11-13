@@ -102,6 +102,13 @@ export type TCustomizationItemType = {
       success: string;
     };
   };
+  rarityInfo?: Record<
+    string,
+    {
+      image: string;
+    }
+  >;
+  rarityList?: string[];
   latestModal: {
     show: boolean;
     title: string;

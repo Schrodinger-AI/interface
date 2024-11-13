@@ -1,9 +1,0 @@
-.radioItem {
-  :global(.aelfd-radio) {
-    @apply hidden m-0;
-  }
-
-  :global(span.aelfd-radio+*) {
-    @apply p-0;
-  }
-}

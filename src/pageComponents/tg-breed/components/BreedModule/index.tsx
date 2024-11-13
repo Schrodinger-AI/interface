@@ -58,6 +58,46 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     return cmsInfo.detailedSynthesisProbability[`${rarity[0]}${rarity[2]}`] || '';
   };
 
+  const getBoxInfo = (describe?: string) => {
+    const currentInfo = {
+      image: '',
+      describe,
+    };
+    const nextInfo = {
+      image: '',
+      describe: '',
+    };
+    if (!describe || !cmsInfo?.rarityList?.length) {
+      return {
+        currentInfo,
+        nextInfo,
+      };
+    }
+    const rarityInfo = cmsInfo?.rarityInfo || {};
+    for (let index = 0; index < cmsInfo.rarityList.length; index++) {
+      const currentDescribe = cmsInfo.rarityList[index];
+      if (currentDescribe === describe) {
+        const currentRarity = currentDescribe.split(',')[0];
+        currentInfo.image = rarityInfo[currentRarity].image;
+        const nextDescribe = cmsInfo?.rarityList?.[index + 1] || currentDescribe;
+        const nextRarity = nextDescribe?.split(',')[0] || currentRarity;
+        nextInfo.describe = nextDescribe;
+        nextInfo.image = rarityInfo[nextRarity].image;
+        break;
+      }
+      if (currentDescribe === 'Diamond,,') {
+        currentInfo.image = rarityInfo['Diamond'].image;
+        nextInfo.describe = 'Diamond';
+        nextInfo.image = rarityInfo['Diamond'].image;
+        break;
+      }
+    }
+    return {
+      currentInfo,
+      nextInfo,
+    };
+  };
+
   const toCatCombine = async () => {
     try {
       if (!selectedLeft?.symbol || !selectedRight?.symbol || !walletInfo?.address) return;
@@ -140,59 +180,58 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     });
   };
 
-  const onBreed = () => {
+  const showNoticeMergeInfo = ({
+    tips,
+    onConfirm,
+    status,
+  }: {
+    tips?: string;
+    status: boolean;
+    onConfirm?: () => void;
+  }) => {
     if (!selectedRight || !selectedLeft || selectedRight?.describe !== selectedLeft?.describe) {
       showNoticeMergeInvalid();
       return;
     }
-    const probability = getProbability(selectedLeft.describe);
+    const currentDescribe = selectedLeft.describe;
+    const probability = getProbability(currentDescribe);
+    const { currentInfo, nextInfo } = getBoxInfo(currentDescribe);
+
     notice.show({
-      status: true,
+      status,
       catInfo: [
         {
-          amount: probability ? probability.success : '',
-          describe: selectedLeft.describe || '',
-          inscriptionImageUri: selectedLeft.inscriptionImageUri,
+          amount: probability ? probability.fail : '',
+          describe: currentInfo.describe || '',
+          inscriptionImageUri: currentInfo.image,
         },
         {
-          amount: probability ? probability.fail : '',
-          describe: selectedRight.describe || '',
-          inscriptionImageUri: selectedRight.inscriptionImageUri,
+          amount: probability ? probability.success : '',
+          describe: nextInfo.describe || '',
+          inscriptionImageUri: nextInfo.image,
         },
       ],
+      tips,
+      onConfirm,
+      theme,
+    });
+  };
+
+  const onBreed = () => {
+    showNoticeMergeInfo({
+      status: true,
       tips: 'Merge these 2 cats?',
       onConfirm: () => {
         notice.hide();
         toCatCombine();
       },
-      theme,
     });
   };
 
   const showCompositionRules = () => {
-    if (!selectedRight || !selectedLeft || selectedRight?.describe !== selectedLeft?.describe) {
-      showNoticeMergeInvalid();
-      return;
-    }
-
-    const probability = getProbability(selectedLeft.describe);
-
-    notice.show({
+    showNoticeMergeInfo({
       status: false,
-      catInfo: [
-        {
-          amount: probability ? probability.success : '',
-          describe: selectedLeft.describe || '',
-          inscriptionImageUri: selectedLeft.inscriptionImageUri,
-        },
-        {
-          amount: probability ? probability.fail : '',
-          describe: selectedRight.describe || '',
-          inscriptionImageUri: selectedRight.inscriptionImageUri,
-        },
-      ],
-      onConfirm: toCatCombine,
-      theme,
+      onConfirm: notice.hide,
     });
   };
 

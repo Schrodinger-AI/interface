@@ -486,6 +486,7 @@ interface ICatCombineRes {
   adoptIds: [string, string];
   level: number;
   signature: string;
+  tick: string;
 }
 
 interface ICatPoolRes {

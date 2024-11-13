@@ -4,8 +4,6 @@ import TGButton from 'components/TGButton';
 import TgModal from 'components/TgModal';
 import { Button, Flex } from 'antd';
 import SkeletonImage from 'components/SkeletonImage';
-import { ReactComponent as FailSVG } from 'assets/img/fail.svg';
-import { ReactComponent as SuccessSVG } from 'assets/img/success.svg';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
 
@@ -70,7 +68,11 @@ function Notice({
                 />
 
                 <Flex className="w-full p-[12px]" justify="space-between">
-                  {index % 2 !== 0 ? <SuccessSVG /> : <FailSVG />}
+                  {index % 2 !== 0 ? (
+                    <span className="text-sm font-black text-pixelsWhiteBg black-title">Success</span>
+                  ) : (
+                    <span className="text-sm font-black text-pixelsWhiteBg black-title">Failure</span>
+                  )}
                   <div className="text-[12px] font-black text-neutralWhiteBg leading-[20px]">{item.amount}</div>
                 </Flex>
               </div>
