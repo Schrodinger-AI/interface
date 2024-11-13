@@ -329,11 +329,11 @@ export default function DetailPage() {
             ) : null}
           </HandleButtonPrimary>
         )}
-        {showAdopt && (
+        {/* {showAdopt && (
           <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onAdoptNextGeneration(false, theme)}>
             Next-Gen
           </HandleButtonDefault>
-        )}
+        )} */}
         {showReset && (
           <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onReset(theme)}>
             Reroll
@@ -370,11 +370,11 @@ export default function DetailPage() {
           'flex fixed bottom-0 gap-[16px] left-0 flex-row w-full justify-end p-[16px] border-0 border-t border-solid',
           theme === 'dark' ? 'bg-pixelsPageBg border-pixelsBorder' : 'bg-neutralWhiteBg border-neutralDivider',
         )}>
-        {showAdopt && (
+        {/* {showAdopt && (
           <HandleButtonDefault className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(false, theme)}>
             Next-Gen
           </HandleButtonDefault>
-        )}
+        )} */}
         {showAdoptDirectly && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
@@ -506,7 +506,7 @@ export default function DetailPage() {
               detail={schrodingerDetail}
               rankInfo={rankInfo}
               isBlind={isBlind}
-              onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
+              onAdoptNextGeneration={() => onAdoptNextGeneration(true, theme)}
             />
           )}
         </div>
@@ -548,7 +548,7 @@ export default function DetailPage() {
             rankInfo={rankInfo}
             source={isInTG ? 'telegram' : ''}
             theme={theme}
-            onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
+            onAdoptNextGeneration={() => onAdoptNextGeneration(true, theme)}
           />
         )}
         {adoptAndResetButtonSmall()}

@@ -80,7 +80,7 @@ export default function ItemInfo({
             className={clsx('mr-[12px] mt-[24px] mb-[56px] w-[239px]', isDark ? '!primary-button-dark' : '!rounded-lg')}
             size="large"
             onClick={onAdoptNextGeneration}>
-            Adopt Next-Gen Cat
+            Instant GEN9
           </Button>
         )}
       </div>
