@@ -9,7 +9,7 @@ module.exports = [
   },
   {
     source: '/forestGQL/:path*',
-    destination: 'https://test-indexer.eforest.finance/AElfIndexer_Forest/ForestIndexerPluginSchema/graphql/:path*',
+    destination: 'https://test-indexer-api.aefinder.io/api/app/graphql/forest/:path*',
   },
   { source: '/connect/:path*', destination: 'https://cat.schrodingerai.com/connect/:path*' },
   {

@@ -18,6 +18,7 @@ import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchroding
 import { useRouter } from 'next/navigation';
 import useTelegram from 'hooks/useTelegram';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
+import BigNumber from 'bignumber.js';
 
 function CancelAdoptModal({
   nftInfo,
@@ -168,7 +169,8 @@ function CancelAdoptModal({
           'text-base lg:text-2xl font-medium text-center mt-[16px] lg:mt-[32px]',
           theme === 'dark' ? 'text-pixelsWhiteBg' : 'text-neutralTitle',
         )}>
-        Are you sure you want to reroll {nftInfo.tokenName} to claim {amount} $SGR?
+        Are you sure you want to reroll {nftInfo.tokenName} to claim {BigNumber(amount).multipliedBy(0.5).toString()}{' '}
+        $SGR?
       </p>
       <p
         className={clsx(

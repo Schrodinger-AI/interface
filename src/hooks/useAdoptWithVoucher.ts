@@ -12,7 +12,6 @@ import TGAdoptLoading from 'components/TGAdoptLoading';
 import AdoptResultModal from 'pageComponents/tg-bags/components/AdoptResultModal';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
 import { formatTraits } from 'utils/formatTraits';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { message } from 'antd';
 
 export interface IAdoptWithVoucherLogs {
@@ -103,7 +102,7 @@ export default function useAdoptWithVoucher() {
     traitData: IAdoptImageInfo,
     isRare: boolean,
     voucherInfo: IVoucherInfo,
-    catsRankProbability?: TRankInfoAddLevelInfo[] | false,
+    catsRankProbability?: TRankInfoAddLevelInfo | false,
   ) => {
     adoptResultModal.show({
       traitData,
@@ -130,15 +129,6 @@ export default function useAdoptWithVoucher() {
             });
             console.log('res', res);
             if (res && res.adoptId && walletInfo?.address) {
-              const traits = formatTraits(voucherInfo.attributes.data);
-              let catsRankProbability: TRankInfoAddLevelInfo[] | false = [];
-              if (traits) {
-                catsRankProbability = await getCatsRankProbability({
-                  catsTraits: [traits],
-                  address: addPrefixSuffix(walletInfo.address),
-                });
-                console.log('catsRankProbability', catsRankProbability);
-              }
               const blindInfo = await fetchTraitsAndImages({
                 adoptId: res.adoptId,
                 transactionHash: res.transactionHash,
@@ -146,6 +136,14 @@ export default function useAdoptWithVoucher() {
                 address: walletInfo.address,
               });
               console.log('blindInfo', blindInfo);
+              const traits = formatTraits(voucherInfo.attributes.data);
+              let catsRankProbability: TRankInfoAddLevelInfo | false = false;
+              if (traits) {
+                catsRankProbability = await getCatsRankProbability({
+                  symbol: blindInfo?.adoptImageInfo?.symbol || '',
+                });
+                console.log('catsRankProbability', catsRankProbability);
+              }
               tgAdoptLoading.hide();
               showResultModal(blindInfo, result.isRare, res, catsRankProbability);
               return;

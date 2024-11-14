@@ -14,6 +14,8 @@ const initialState: InfoStateType = {
   isJoin: false,
   unreadMessagesCount: 0,
   hasNewActivities: false,
+  homeTopCat: '',
+  homeBg: '',
   voteInfo: {
     countdown: 0,
     votes: [],

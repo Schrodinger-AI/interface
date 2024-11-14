@@ -16,7 +16,6 @@ import MarketModal from 'components/MarketModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { formatTraits } from 'utils/formatTraits';
 import { getCatsRankProbability } from 'utils/getCatsRankProbability';
-import { addPrefixSuffix } from 'utils/addressFormatting';
 import { getBlindCatDetail, getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { renameSymbol } from 'utils/renameSymbol';
@@ -110,7 +109,7 @@ export default function DetailPage() {
     route.replace(path);
   }, [callbackPath, fromListAll, isInTG, pageFrom, route]);
 
-  const generateCatsRankInfo = async (generation: number, traits: ITrait[], address: string) => {
+  const generateCatsRankInfo = async (traits: ITrait[]) => {
     // if (generation !== 9) {
     //   setRankInfo(undefined);
     //   throw '';
@@ -120,11 +119,8 @@ export default function DetailPage() {
       setRankInfo(undefined);
       throw '';
     }
-    const catsRankProbability = await getCatsRankProbability({
-      catsTraits: [paramsTraits],
-      address: addPrefixSuffix(address),
-    });
-    setRankInfo((catsRankProbability && catsRankProbability?.[0]) || undefined);
+    const catsRankProbability = await getCatsRankProbability({ symbol });
+    setRankInfo(catsRankProbability || undefined);
   };
 
   const getDetail = useCallback(async () => {
@@ -134,12 +130,11 @@ export default function DetailPage() {
       showLoading();
       const getDetail = isBlind ? getBlindCatDetail : getCatDetail;
       result = await getDetail({ symbol, chainId: cmsInfo?.curChain || '', address: walletInfo?.address });
-      const generation = result?.generation;
       const traits = result?.traits;
       if (pageFrom === 'blind' && !result.symbol) {
         onBack();
       }
-      await generateCatsRankInfo(generation, traits, walletInfo?.address || '');
+      await generateCatsRankInfo(traits);
     } catch (error) {
       console.log('getDetailInGuestMode-error', error);
     } finally {
@@ -334,11 +329,11 @@ export default function DetailPage() {
             ) : null}
           </HandleButtonPrimary>
         )}
-        {showAdopt && (
+        {/* {showAdopt && (
           <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onAdoptNextGeneration(false, theme)}>
             Next-Gen
           </HandleButtonDefault>
-        )}
+        )} */}
         {showReset && (
           <HandleButtonDefault className="w-[200px] mr-[12px]" onClick={() => onReset(theme)}>
             Reroll
@@ -375,11 +370,11 @@ export default function DetailPage() {
           'flex fixed bottom-0 gap-[16px] left-0 flex-row w-full justify-end p-[16px] border-0 border-t border-solid',
           theme === 'dark' ? 'bg-pixelsPageBg border-pixelsBorder' : 'bg-neutralWhiteBg border-neutralDivider',
         )}>
-        {showAdopt && (
+        {/* {showAdopt && (
           <HandleButtonDefault className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(false, theme)}>
             Next-Gen
           </HandleButtonDefault>
-        )}
+        )} */}
         {showAdoptDirectly && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
@@ -511,7 +506,7 @@ export default function DetailPage() {
               detail={schrodingerDetail}
               rankInfo={rankInfo}
               isBlind={isBlind}
-              onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
+              onAdoptNextGeneration={() => onAdoptNextGeneration(true, theme)}
             />
           )}
         </div>
@@ -553,7 +548,7 @@ export default function DetailPage() {
             rankInfo={rankInfo}
             source={isInTG ? 'telegram' : ''}
             theme={theme}
-            onAdoptNextGeneration={() => onAdoptNextGeneration(false, theme)}
+            onAdoptNextGeneration={() => onAdoptNextGeneration(true, theme)}
           />
         )}
         {adoptAndResetButtonSmall()}

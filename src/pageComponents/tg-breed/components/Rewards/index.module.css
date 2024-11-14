@@ -1,0 +1,18 @@
+
+.countdown {
+  display: inline-block;
+
+  :global(.aelfd-statistic-content) {
+    @apply text-xs text-neutralSecondary font-semibold;
+  }
+}
+
+.dark-countdown {
+  :global(.aelfd-statistic-content) {
+    @apply text-xs text-pixelsWhiteBg font-semibold;
+  }
+}
+
+.dark-card-bg {
+  background: radial-gradient(50% 50% at 50% 50%, #4C48D9 0%, #3C38AF 100%);
+}

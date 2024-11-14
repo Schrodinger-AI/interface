@@ -27,6 +27,8 @@ export type InfoStateType = {
   hasNewActivities: boolean;
   catDetailInfo?: TSGRTokenInfo;
   voteInfo?: IVoteInfo;
+  homeTopCat?: string;
+  homeBg?: string;
 };
 
 export type TTradeItem = {
@@ -94,6 +96,19 @@ export type TCustomizationItemType = {
   isShowRampBuy: boolean;
   isShowRampSell: boolean;
   routerItems: Array<ICompassProps>;
+  detailedSynthesisProbability?: {
+    [key: string]: {
+      fail: string;
+      success: string;
+    };
+  };
+  rarityInfo?: Record<
+    string,
+    {
+      image: string;
+    }
+  >;
+  rarityList?: string[];
   latestModal: {
     show: boolean;
     title: string;

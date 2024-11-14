@@ -179,3 +179,14 @@ export const GetAdoptionVoucherAmount = async (
     return Promise.reject(error);
   }
 };
+
+export const Merge = async (
+  params: {
+    adoptIdA: string;
+    adoptIdB: string;
+    level: number;
+    signature: string;
+    tick: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('Merge', params, options);

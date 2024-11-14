@@ -45,6 +45,10 @@ const rotateY = plugin(function ({ addUtilities }) {
       color: 'var(--pixels-white-bg)',
       textShadow: '2px 2px 0 #000000',
     },
+    '.black-title': {
+      color: 'var(--pixels-white-bg)',
+      textShadow: '2px 2px 0 #000',
+    },
   });
 });
 
@@ -170,6 +174,8 @@ module.exports = {
         tickShadow: '0px -4px 0px 0px rgb(0 0 0 / 20%) inset',
         collapseShadow: '0px 2px 0px 0px #FFFFFF1A inset, 0px -4px 0px 0px #1C1C20 inset',
         withdrawBtnShadow: '4px 4px 4px 0px #262284',
+        selectedBoxShadow: '-4px 4px 0px 0px rgba(0 0 0 / 25%)',
+        selectBoxShadow: '0px -4px 0px 0px rgba(0 0 0 / 20%) inset',
       },
       keyframes: {
         loading: {

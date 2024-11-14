@@ -29,6 +29,7 @@ export default function useGetNoticeData() {
       try {
         const { data } = await getNftActivityListByCondition({
           input: {
+            nFTInfoId: '',
             skipCount: 0,
             maxResultCount: nftActivityListFilter?.maxResultCount || 5,
             sortType: nftActivityListFilter?.sortType || 'DESC',
