@@ -129,14 +129,6 @@ export default function useAdoptWithVoucher() {
             });
             console.log('res', res);
             if (res && res.adoptId && walletInfo?.address) {
-              const traits = formatTraits(voucherInfo.attributes.data);
-              let catsRankProbability: TRankInfoAddLevelInfo | false = false;
-              if (traits) {
-                catsRankProbability = await getCatsRankProbability({
-                  symbol: '', // TODO: getCatsRankProbability symbol
-                });
-                console.log('catsRankProbability', catsRankProbability);
-              }
               const blindInfo = await fetchTraitsAndImages({
                 adoptId: res.adoptId,
                 transactionHash: res.transactionHash,
@@ -144,6 +136,14 @@ export default function useAdoptWithVoucher() {
                 address: walletInfo.address,
               });
               console.log('blindInfo', blindInfo);
+              const traits = formatTraits(voucherInfo.attributes.data);
+              let catsRankProbability: TRankInfoAddLevelInfo | false = false;
+              if (traits) {
+                catsRankProbability = await getCatsRankProbability({
+                  symbol: blindInfo?.adoptImageInfo?.symbol || '', // TODO: getCatsRankProbability symbol
+                });
+                console.log('catsRankProbability', catsRankProbability);
+              }
               tgAdoptLoading.hide();
               showResultModal(blindInfo, result.isRare, res, catsRankProbability);
               return;

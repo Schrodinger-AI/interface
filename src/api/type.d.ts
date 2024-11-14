@@ -38,6 +38,7 @@ interface IAdoptImageInfo {
     attributes: (IBaseTrait & { percent: number })[];
     images: string[];
     boxImage: string;
+    symbol: string;
   };
   image: string;
   signature: string;
