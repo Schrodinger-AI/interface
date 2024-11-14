@@ -9,11 +9,13 @@ import { TSelectedCatInfo } from '../BreedModule';
 
 function CatSelections({
   onConfirm,
-  currentSymbol,
+  selectedSymbol,
+  selectedType,
   theme,
 }: {
   onConfirm: (data?: TSelectedCatInfo) => void;
-  currentSymbol?: string;
+  selectedSymbol?: string;
+  selectedType?: 'myCats' | 'box';
   theme?: TModalTheme;
 }) {
   const modal = useModal();
@@ -40,12 +42,28 @@ function CatSelections({
             {
               label: 'My Cat',
               key: '1',
-              children: <CatsModule currentSymbol={currentSymbol} theme={theme} type="myCats" onChange={onChange} />,
+              children: (
+                <CatsModule
+                  selectedSymbol={selectedSymbol}
+                  selectedType={selectedType}
+                  theme={theme}
+                  type="myCats"
+                  onChange={onChange}
+                />
+              ),
             },
             {
               label: 'Cat Box',
               key: '2',
-              children: <CatsModule currentSymbol={currentSymbol} theme={theme} type="box" onChange={onChange} />,
+              children: (
+                <CatsModule
+                  selectedSymbol={selectedSymbol}
+                  selectedType={selectedType}
+                  theme={theme}
+                  type="box"
+                  onChange={onChange}
+                />
+              ),
             },
           ]}
         />

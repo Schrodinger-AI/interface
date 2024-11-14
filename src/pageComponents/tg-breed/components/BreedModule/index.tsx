@@ -259,9 +259,10 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     });
   };
 
-  const showCatSelections = (type: string, catData?: TSGRItem) => {
+  const showCatSelections = (type: string, catData?: TSelectedCatInfo) => {
     catSelections.show({
-      currentSymbol: catData?.symbol,
+      selectedSymbol: catData?.symbol,
+      selectedType: catData?.type,
       onConfirm: (data) => {
         if (type === 'left') {
           setSelectedLeft(data);

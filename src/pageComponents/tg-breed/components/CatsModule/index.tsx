@@ -24,7 +24,8 @@ type IProps = {
   onChange?: (data: TSelectedCatInfo) => void;
   grid?: ListGridType;
   type?: 'myCats' | 'box';
-  currentSymbol?: string;
+  selectedType?: 'myCats' | 'box';
+  selectedSymbol?: string;
   theme?: TModalTheme;
 };
 
@@ -40,7 +41,7 @@ const endMessage = (theme: TModalTheme) => (
 
 const emptyCom = <TableEmpty description="No item found" theme="none" />;
 
-export default function CatsModule({ onChange, type, currentSymbol, theme = 'light' }: IProps) {
+export default function CatsModule({ onChange, type, selectedSymbol, selectedType, theme = 'light' }: IProps) {
   const pageSize = 32;
   const { walletInfo } = useConnectWallet();
   const cmsInfo = useCmsInfo();
@@ -87,10 +88,11 @@ export default function CatsModule({ onChange, type, currentSymbol, theme = 'lig
               address: walletInfo?.address,
             });
 
-      const total = res.totalCount ?? 0;
-      setTotal(total);
+      const totalCount = res.totalCount ?? 0;
+      if (totalCount) setTotal(totalCount);
+
       const data = (res.data || [])
-        .filter((item) => item.symbol !== currentSymbol)
+        .filter((item) => item.symbol !== selectedSymbol)
         .map((item) => {
           return {
             ...item,
@@ -154,9 +156,18 @@ export default function CatsModule({ onChange, type, currentSymbol, theme = 'lig
     onChange?.({ ...value, type: type || 'box' });
   };
 
+  const formatTotal = useMemo(() => {
+    if (selectedType && selectedType === type && total) {
+      return total - 1;
+    }
+    return total;
+  }, [selectedType, total, type]);
+
   return (
     <div className="h-full overflow-y-auto flex flex-col">
-      {dataSource.length ? <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{total} Result</p> : null}
+      {dataSource.length ? (
+        <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{formatTotal} Result</p>
+      ) : null}
 
       {loading ? (
         <div className="flex-1 w-full flex justify-center items-center">

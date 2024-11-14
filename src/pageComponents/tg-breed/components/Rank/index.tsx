@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { TModalTheme } from 'components/CommonModal';
+import HonourLabel from 'components/ItemCard/components/HonourLabel';
 import SkeletonImage from 'components/SkeletonImage';
 import { useMemo } from 'react';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
@@ -23,7 +24,7 @@ function Rank({ rankList, theme = 'light' }: { rankList: ICatPoolRankRes['rankLi
             <div
               key={index}
               className={clsx(
-                'flex justify-between items-center p-[8px] mb-[6px]',
+                'relative flex justify-between items-center p-[8px] mb-[6px]',
                 isDark ? 'border border-solid border-pixelsBorder' : '',
               )}>
               <div className="flex items-center">
@@ -38,8 +39,13 @@ function Rank({ rankList, theme = 'light' }: { rankList: ICatPoolRankRes['rankLi
                   {getOmittedStr(addPrefixSuffix(item.address), OmittedType.ADDRESS)}
                 </span>
               </div>
-              <div className="w-[36px] h-[36px] border border-solid border-pixelsWhiteBg rounded-[2px]">
-                <SkeletonImage img={item.image} />
+              <div className="flex items-center">
+                <div className="mr-[8px]">
+                  <HonourLabel text={item.describe} />
+                </div>
+                <div className="w-[36px] h-[36px] border border-solid border-pixelsWhiteBg rounded-[2px]">
+                  <SkeletonImage img={item.image} className="!rounded-[2px]" imageClassName="!rounded-[2px]" />
+                </div>
               </div>
             </div>
           );
