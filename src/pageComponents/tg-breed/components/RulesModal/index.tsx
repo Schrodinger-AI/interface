@@ -19,7 +19,7 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
             Prize Pool! 💰
           </h4>
           <h3>🗓 Event Duration:</h3>
-          <h4>Nov 13th - Dec 13th. Each week is a new `&quot;`Round`&quot;`!</h4>
+          <h4>Nov 14th - Dec 14th. Each week is a new &quot;Round&quot;!</h4>
           <h3>💵 Prize Pool:</h3>
           <p>
             Every round offers 1,000 $SGR Basic Prize Pool plus an ever-growing Bonus Prize that increases with every
