@@ -119,7 +119,7 @@ export default function DetailPage() {
       setRankInfo(undefined);
       throw '';
     }
-    const catsRankProbability = await getCatsRankProbability({ symbol }); // TODO: getCatsRankProbability symbol
+    const catsRankProbability = await getCatsRankProbability({ symbol });
     setRankInfo(catsRankProbability || undefined);
   };
 

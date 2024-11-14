@@ -140,7 +140,7 @@ export default function useAdoptWithVoucher() {
               let catsRankProbability: TRankInfoAddLevelInfo | false = false;
               if (traits) {
                 catsRankProbability = await getCatsRankProbability({
-                  symbol: blindInfo?.adoptImageInfo?.symbol || '', // TODO: getCatsRankProbability symbol
+                  symbol: blindInfo?.adoptImageInfo?.symbol || '',
                 });
                 console.log('catsRankProbability', catsRankProbability);
               }

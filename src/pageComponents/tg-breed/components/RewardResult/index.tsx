@@ -20,7 +20,7 @@ function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
             <span className="relative z-20 text-base text-pixelsWhiteBg font-black mb-[18px]">Winner</span>
           ) : null}
 
-          <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} />
+          <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} describe={winnerInfo?.winnerDescribe} />
           <div className={clsx('relative z-10 mt-[12px]')}>
             <Image src={winnerInfoBg} className="w-[270px]" alt={''} />
             <span className="absolute top-0 left-0 w-full h-full flex justify-center items-center text-sm font-black text-pixelsWhiteBg pb-[7px]">
@@ -30,9 +30,11 @@ function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
             </span>
           </div>
 
-          <span className="flex text-center w-[176px] text-pixelsWhiteBg text-xs font-semibold mt-[11px]">
-            80% of the Bonus Prize Pool rolls over to the next round
-          </span>
+          {hasWinner ? null : (
+            <span className="flex text-center w-[176px] text-pixelsWhiteBg text-xs font-semibold mt-[11px]">
+              80% of the Bonus Prize Pool rolls over to the next round
+            </span>
+          )}
         </div>
       </div>
       <KittenOnTheGrass hasWinner={hasWinner} className="fixed bottom-0 left-0 z-30" />

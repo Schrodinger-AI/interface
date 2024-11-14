@@ -548,7 +548,7 @@ export const useAdoptConfirm = () => {
       const traits = formatTraits(allTraits);
       if (!traits || !walletInfo?.address) return;
       const catsRankProbability = await getCatsRankProbability({
-        symbol, // TODO: getCatsRankProbability symbol
+        symbol,
       });
 
       const info = catsRankProbability || undefined;

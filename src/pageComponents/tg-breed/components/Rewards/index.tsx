@@ -17,11 +17,13 @@ function Rewards({
   onFinish,
   sgrAmount,
   usdtAmount,
+  isOver = false,
   theme = 'light',
 }: {
   countdown?: number;
   sgrAmount?: number | string;
   usdtAmount?: number | string;
+  isOver?: boolean;
   onFinish?: () => void;
   theme?: TModalTheme;
 }) {
@@ -109,14 +111,16 @@ function Rewards({
                 'text-xs font-semibold mr-[4px]',
                 isDark ? 'text-pixelsWhiteBg' : 'text-neutralSecondary',
               )}>
-              Ends in:
+              {isOver ? 'Ended' : 'Ends in:'}
             </span>
-            <Countdown
-              className={clsx(styles.countdown, isDark ? styles['dark-countdown'] : '')}
-              value={deadline}
-              format={format}
-              onFinish={() => onFinish?.()}
-            />
+            {isOver ? null : (
+              <Countdown
+                className={clsx(styles.countdown, isDark ? styles['dark-countdown'] : '')}
+                value={deadline}
+                format={format}
+                onFinish={() => onFinish?.()}
+              />
+            )}
           </div>
 
           <span className={clsx('text-xs font-semibold', isDark ? 'text-pixelsWhiteBg' : 'text-neutralSecondary')}>

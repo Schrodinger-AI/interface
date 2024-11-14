@@ -77,6 +77,7 @@ function TgBreed() {
         sgrAmount={prizePoolInfo?.prize}
         usdtAmount={prizePoolInfo?.usdtValue}
         theme={theme}
+        isOver={isOver}
         onFinish={getCatPoolRank}
       />
       {isOver ? <RewardResult winnerInfo={winnerInfo} /> : <BreedModule theme={theme} updateRank={getCatPoolRank} />}
