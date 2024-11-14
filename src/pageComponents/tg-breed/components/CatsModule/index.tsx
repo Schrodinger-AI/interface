@@ -13,14 +13,15 @@ import TableEmpty from 'components/TableEmpty';
 import InfiniteScrollList from 'components/InfiniteScrollList';
 import clsx from 'clsx';
 import SkeletonImage from 'components/SkeletonImage';
-import { Radio, theme } from 'antd';
+import { Radio } from 'antd';
 import styles from './index.module.css';
 import { RadioChangeEvent } from 'antd/lib/radio/interface';
 import useTelegram from 'hooks/useTelegram';
 import { TModalTheme } from 'components/CommonModal';
+import { TSelectedCatInfo } from '../BreedModule';
 
 type IProps = {
-  onChange?: (data: TSGRItem) => void;
+  onChange?: (data: TSelectedCatInfo) => void;
   grid?: ListGridType;
   type?: 'myCats' | 'box';
   currentSymbol?: string;
@@ -148,8 +149,9 @@ export default function CatsModule({ onChange, type, currentSymbol, theme = 'lig
   );
 
   const handleChange = (e: RadioChangeEvent) => {
-    setCurrentData(e.target.value);
-    onChange?.(e.target.value);
+    const value: TSGRItem = e.target.value;
+    setCurrentData(value);
+    onChange?.({ ...value, type: type || 'box' });
   };
 
   return (

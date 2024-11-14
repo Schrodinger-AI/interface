@@ -23,6 +23,7 @@ import { TModalTheme } from 'components/CommonModal';
 import { Button } from 'aelf-design';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 import KittenOnTheGrassAnimation from '../KittenOnTheGrassAnimation';
+import { checkAllowanceAndApprove } from 'utils/aelfUtils';
 
 export interface IBredAdoptInfo {
   adoptId: string;
@@ -40,14 +41,18 @@ export interface IBredInfo {
   adoptInfo: IBredAdoptInfo;
 }
 
+export type TSelectedCatInfo = TSGRItem & {
+  type: 'myCats' | 'box';
+};
+
 function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; updateRank?: () => void }) {
-  const [selectedLeft, setSelectedLeft] = useState<TSGRItem>();
-  const [selectedRight, setSelectedRight] = useState<TSGRItem>();
+  const [selectedLeft, setSelectedLeft] = useState<TSelectedCatInfo>();
+  const [selectedRight, setSelectedRight] = useState<TSelectedCatInfo>();
   const catSelections = useModal(CatSelections);
   const resultModal = useModal(ResultModal);
   const tgAdoptLoading = useModal(TGAdoptLoading);
   const cmsInfo = useCmsInfo();
-  const { walletInfo } = useConnectWallet();
+  const { walletInfo, walletType } = useConnectWallet();
 
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
@@ -103,6 +108,31 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
     try {
       if (!selectedLeft?.symbol || !selectedRight?.symbol || !walletInfo?.address) return;
       tgAdoptLoading.show();
+      const contractAddress = cmsInfo?.schrodingerSideAddress;
+      if (!contractAddress) {
+        tgAdoptLoading.hide();
+        return;
+      }
+
+      let check = true;
+
+      if (selectedLeft.type === 'myCats' || selectedRight.type === 'myCats') {
+        check = await checkAllowanceAndApprove({
+          spender: contractAddress,
+          address: walletInfo.address,
+          chainId: cmsInfo?.curChain,
+          symbol: 'SGR-1',
+          decimals: 8,
+          amount: selectedLeft.type === 'myCats' && selectedRight.type === 'myCats' ? '2' : '1',
+          walletType,
+        });
+      }
+
+      if (!check) {
+        tgAdoptLoading.hide();
+        return;
+      }
+
       const res = await catCombine({
         symbols: [selectedLeft.symbol, selectedRight?.symbol],
       });
@@ -113,12 +143,6 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
         signature: res.signature,
         tick: res.tick,
       });
-      const contractAddress = cmsInfo?.schrodingerSideAddress;
-
-      if (!contractAddress) {
-        tgAdoptLoading.hide();
-        return;
-      }
 
       const logs = await ProtoInstance.getLogEventResult<IBredInfo>({
         contractAddress,

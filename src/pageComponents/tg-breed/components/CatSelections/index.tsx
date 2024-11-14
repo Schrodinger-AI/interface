@@ -4,21 +4,21 @@ import TgModal from 'components/TgModal';
 import { Tabs } from 'antd';
 import styles from './index.module.css';
 import CatsModule from '../CatsModule';
-import { TSGRItem } from 'types/tokens';
 import { TModalTheme } from 'components/CommonModal';
+import { TSelectedCatInfo } from '../BreedModule';
 
 function CatSelections({
   onConfirm,
   currentSymbol,
   theme,
 }: {
-  onConfirm: (data?: TSGRItem) => void;
+  onConfirm: (data?: TSelectedCatInfo) => void;
   currentSymbol?: string;
   theme?: TModalTheme;
 }) {
   const modal = useModal();
 
-  const onChange = (value: TSGRItem) => {
+  const onChange = (value: TSelectedCatInfo) => {
     onConfirm?.(value);
   };
 
