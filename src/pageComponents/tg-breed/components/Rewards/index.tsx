@@ -10,7 +10,6 @@ import { useModal } from '@ebay/nice-modal-react';
 import RulesModal from '../RulesModal';
 import { TModalTheme } from 'components/CommonModal';
 import ScrollAlert from 'components/ScrollAlert';
-import { formatNumber } from 'utils/format';
 
 function Rewards({
   countdown,
@@ -94,7 +93,7 @@ function Rewards({
         />
         <div className="relative w-full flex justify-center items-center mt-[12px]">
           <span className={clsx('text-[38px]', isDark ? 'black-title' : 'text-neutralTitle')}>
-            {sgrAmount ? formatNumber(sgrAmount) : '--'}
+            {sgrAmount ? sgrAmount : '--'}
           </span>
           {isDark ? (
             <SGRSVG className="absolute bottom-0 right-0" />
@@ -124,7 +123,7 @@ function Rewards({
           </div>
 
           <span className={clsx('text-xs font-semibold', isDark ? 'text-pixelsWhiteBg' : 'text-neutralSecondary')}>
-            USDT value: {usdtAmount ? formatNumber(usdtAmount) : '--'}
+            USDT value: {usdtAmount ? usdtAmount : '--'}
           </span>
         </div>
       </div>
