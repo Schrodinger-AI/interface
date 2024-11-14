@@ -153,56 +153,57 @@ export default function CatsModule({ onChange, type, currentSymbol, theme = 'lig
   };
 
   return (
-    <div className="h-[415px] overflow-y-auto">
+    <div className="h-full overflow-y-auto flex flex-col">
       {dataSource.length ? <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{total} Result</p> : null}
 
       {loading ? (
-        <div className="h-[385px] w-full flex justify-center items-center">
+        <div className="flex-1 w-full flex justify-center items-center">
           <Loading size={'default'} />
         </div>
       ) : (
-        <InfiniteScrollList
-          infiniteScrollProps={{
-            next: loadMoreData,
-            dataLength: dataSource.length,
-            hasMore,
-            height: 385,
-            loader: (loadingMore || loading) && hasMore ? loader : <></>,
-            endMessage: endMessage(theme),
-            scrollableTarget: 'scrollableDiv',
-            children: (
-              <Radio.Group className="w-full" onChange={handleChange} value={currentData}>
-                <List
-                  grid={{
-                    xs: 2,
-                  }}
-                  dataSource={dataSource}
-                  locale={{ emptyText: emptyCom }}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <Radio value={item} className={styles.radioItem}>
-                        <SkeletonImage
-                          img={item.inscriptionImageUri}
-                          tag={`GEN ${item.generation}`}
-                          rarity={item.describe}
-                          imageSizeType="contain"
-                          className={clsx(
-                            '!rounded-[8px]',
-                            currentData?.symbol === item.symbol
-                              ? 'border-[2px] border-solid border-pixelsButtonSuccess shadow-selectedBoxShadow'
-                              : '',
-                          )}
-                          imageClassName="!rounded-[8px]"
-                          tagPosition="small"
-                        />
-                      </Radio>
-                    </List.Item>
-                  )}
-                />
-              </Radio.Group>
-            ),
-          }}
-        />
+        <div className={clsx(styles['infinite-scroll-list-wrap'])}>
+          <InfiniteScrollList
+            infiniteScrollProps={{
+              next: loadMoreData,
+              dataLength: dataSource.length,
+              hasMore,
+              loader: (loadingMore || loading) && hasMore ? loader : <></>,
+              endMessage: endMessage(theme),
+              scrollableTarget: 'scrollableDiv',
+              children: (
+                <Radio.Group className="w-full" onChange={handleChange} value={currentData}>
+                  <List
+                    grid={{
+                      xs: 2,
+                    }}
+                    dataSource={dataSource}
+                    locale={{ emptyText: emptyCom }}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <Radio value={item} className={styles.radioItem}>
+                          <SkeletonImage
+                            img={item.inscriptionImageUri}
+                            tag={`GEN ${item.generation}`}
+                            rarity={item.describe}
+                            imageSizeType="contain"
+                            className={clsx(
+                              '!rounded-[8px]',
+                              currentData?.symbol === item.symbol
+                                ? 'border-[2px] border-solid border-pixelsButtonSuccess shadow-selectedBoxShadow'
+                                : '',
+                            )}
+                            imageClassName="!rounded-[8px]"
+                            tagPosition="small"
+                          />
+                        </Radio>
+                      </List.Item>
+                    )}
+                  />
+                </Radio.Group>
+              ),
+            }}
+          />
+        </div>
       )}
     </div>
   );
