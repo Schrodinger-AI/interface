@@ -70,19 +70,20 @@ export default function ItemInfo({
             'font-medium	text-lg text-center mt-[10px]',
             isDark ? 'text-pixelsDivider' : 'text-neutralSecondary',
           )}>
-          Seems like this is a gen0 kitten with no traits. <br />
-          Take this kitten to the next level by adopting a next-gen cat, <br />
-          generating brand new and unpredictable traits.
+          This is a Gen0 cat without any traits. <br />
+          Click &quot;Instant Gen9&quot; to level up to Gen9 with 11 new traits. <br />
+          Good luck in unboxing a Rare Cat with a special rarity badge, and enjoying potential instant profits for
+          resale.
         </div>
-        {showAdopt && (
+        {/* {showAdopt && (
           <Button
             type="primary"
             className={clsx('mr-[12px] mt-[24px] mb-[56px] w-[239px]', isDark ? '!primary-button-dark' : '!rounded-lg')}
             size="large"
             onClick={onAdoptNextGeneration}>
-            Adopt Next-Gen Cat
+            Instant GEN9
           </Button>
-        )}
+        )} */}
       </div>
     );
   };

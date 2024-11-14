@@ -1,0 +1,43 @@
+.rules h2 {
+  @apply text-neutralTitle text-base font-semibold;
+}
+
+.rules h3 {
+  @apply text-neutralTitle text-base font-bold mt-[16px];
+}
+
+.rules h4 {
+  @apply text-neutralSecondary text-sm font-semibold mt-[4px];
+}
+
+.rules p {
+  @apply text-neutralSecondary text-sm mt-[4px];
+}
+
+.rules ul {
+  @apply list-decimal ml-[24px];
+}
+
+.rules ol {
+  @apply list-disc ml-[24px];
+}
+
+.rules li {
+  @apply text-neutralSecondary font-bold text-sm;
+}
+
+.dark-rules {
+  h2, h3 {
+    @apply text-rarityOrange;
+  }
+  h4 {
+    @apply text-pixelsLightPurple;
+  }
+  p {
+    @apply text-pixelsLighterPurple
+  }
+  li {
+    @apply text-pixelsLightPurple
+  }
+ 
+}

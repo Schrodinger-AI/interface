@@ -8,7 +8,7 @@ module.exports = [
   },
   {
     source: '/forestGQL/:path*',
-    destination: 'https://dapp.eforest.finance/AElfIndexer_Forest/ForestIndexerPluginSchema/graphql/:path*',
+    destination: 'https://indexer-api.aefinder.io/api/app/graphql/forest/:path*',
   },
   { source: '/connect/:path*', destination: 'https://schrodingernft.ai/connect/:path*' },
   {

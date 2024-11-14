@@ -183,6 +183,7 @@ export type TNftActivityListByConditionInput = {
   timestampMin: number;
   timestampMax: number;
   types: number[];
+  nFTInfoId: string;
 };
 
 export type TNftActivityListByConditionParams = {

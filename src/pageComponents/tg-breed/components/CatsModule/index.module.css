@@ -1,0 +1,21 @@
+.radioItem {
+  :global(.aelfd-radio) {
+    @apply hidden m-0;
+  }
+
+  :global(span.aelfd-radio+*) {
+    @apply p-0;
+  }
+}
+
+.infinite-scroll-list-wrap {
+  @apply flex-1 overflow-hidden;
+  :global {
+    .infinite-scroll-component__outerdiv {
+      @apply h-full;
+      .infinite-scroll-component {
+        @apply !h-full;
+      }
+    }
+  }
+}

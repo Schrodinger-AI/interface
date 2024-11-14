@@ -38,6 +38,7 @@ interface IAdoptImageInfo {
     attributes: (IBaseTrait & { percent: number })[];
     images: string[];
     boxImage: string;
+    symbol: string;
   };
   image: string;
   signature: string;
@@ -165,6 +166,7 @@ interface ICatsListParams {
   maxResultCount?: number;
   keyword?: string;
   rarities?: string[];
+  minAmount?: string;
 }
 
 interface ICatDetailParams {
@@ -479,4 +481,34 @@ interface ITaskLogParams {
   from: string;
   language: string;
   loginTime: number;
+}
+
+interface ICatCombineRes {
+  adoptIds: [string, string];
+  level: number;
+  signature: string;
+  tick: string;
+}
+
+interface ICatPoolRes {
+  prize: number | string;
+  usdtValue: number | string;
+  countdown: number;
+}
+
+interface IWinnerInfo {
+  winnerAddress: string;
+  winnerSymbol: string;
+  winnerDescribe: string;
+  winnerImage: string;
+}
+
+interface ICatPoolRankRes extends IWinnerInfo {
+  isOver: boolean;
+  rankList: {
+    address: string;
+    symbol: string;
+    describe: string;
+    image: string;
+  }[];
 }

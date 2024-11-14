@@ -14,7 +14,7 @@ type IProps = {
   traitData?: IAdoptImageInfo;
   isRare: boolean;
   voucherInfo: IVoucherInfo;
-  catsRankProbability: TRankInfoAddLevelInfo[] | false;
+  catsRankProbability: TRankInfoAddLevelInfo | false;
   theme?: TModalTheme;
 };
 
@@ -77,7 +77,7 @@ export function ResultModule({
         img={adoptImageInfo?.boxImage}
         tag={`GEN ${adoptImageInfo?.generation}`}
         rarity={
-          (catsRankProbability && catsRankProbability?.[0]?.levelInfo?.describe) ||
+          (catsRankProbability && catsRankProbability?.levelInfo?.describe) ||
           (!isRare ? commonItem.adoptImageInfo.describe : '')
         }
         imageSizeType="contain"
@@ -97,7 +97,7 @@ export function ResultModule({
                   labelStyle.rarity.size['default'],
                   labelStyle.rarity.position['small'],
                 )}>
-                <HonourLabel text={catsRankProbability?.[0]?.levelInfo?.describe} />
+                <HonourLabel text={catsRankProbability?.levelInfo?.describe} />
               </div>
             )}
           </Flex>

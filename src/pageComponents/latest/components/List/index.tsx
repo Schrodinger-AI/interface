@@ -12,9 +12,6 @@ import LearnMoreModal from 'components/LearnMoreModal';
 import { useModal } from '@ebay/nice-modal-react';
 import { TGetLatestSchrodingerListParams, useGetLatestSchrodingerList } from 'graphqlServer';
 import { formatTraits } from 'utils/formatTraits';
-import { getCatsRankProbability } from 'utils/getCatsRankProbability';
-import { addPrefixSuffix } from 'utils/addressFormatting';
-import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 const pageSize = 32;
 export default function List() {
@@ -25,7 +22,6 @@ export default function List() {
   const gutter = useLatestGutter();
   const column = useLatestColumns();
   const learnMoreModal = useModal(LearnMoreModal);
-  const { walletInfo } = useConnectWallet();
 
   const latestModal = useMemo(() => {
     return cmsInfo?.latestModal;
@@ -33,45 +29,32 @@ export default function List() {
 
   const getLatestSchrodingerList = useGetLatestSchrodingerList();
 
-  const getRankInfo = useCallback(
-    async (data: TSGRItem[]) => {
-      try {
-        const needShowRankingIndexList: number[] = [];
-        const catsRankProbabilityParams: TCatsRankProbabilityTraits[] = [];
-        const needShowRankingList = data.filter((item, index) => {
-          if (item.generation === 9) {
-            needShowRankingIndexList.push(index);
-            return true;
-          }
-          return false;
-        });
-
-        if (!needShowRankingList.length) return false;
-
-        needShowRankingList.map((item) => {
-          const params = formatTraits(item.traits);
-          params && catsRankProbabilityParams.push(params);
-        });
-
-        try {
-          const catsRankProbability = await getCatsRankProbability({
-            catsTraits: catsRankProbabilityParams,
-            address: addPrefixSuffix(walletInfo?.address || ''),
-          });
-
-          return {
-            catsRankProbability,
-            needShowRankingIndexList,
-          };
-        } catch (error) {
-          return false;
+  const getRankInfo = useCallback(async (data: TSGRItem[]) => {
+    try {
+      const needShowRankingIndexList: number[] = [];
+      const catsRankProbabilityParams: TCatsRankProbabilityTraits[] = [];
+      const needShowRankingList = data.filter((item, index) => {
+        if (item.generation === 9) {
+          needShowRankingIndexList.push(index);
+          return true;
         }
-      } catch (error) {
         return false;
-      }
-    },
-    [walletInfo?.address],
-  );
+      });
+
+      if (!needShowRankingList.length) return false;
+
+      needShowRankingList.map((item) => {
+        const params = formatTraits(item.traits);
+        params && catsRankProbabilityParams.push(params);
+      });
+
+      return {
+        needShowRankingIndexList,
+      };
+    } catch (error) {
+      return false;
+    }
+  }, []);
 
   const fetchData = useCallback(
     async ({ params }: { params: TGetLatestSchrodingerListParams['input']; loadMore?: boolean }) => {

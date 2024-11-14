@@ -63,8 +63,12 @@ export const getPoints = async (params: IGetPointsParams): Promise<IGetPointsDat
 
 export const checkAIService = () => request.get<boolean>('/app/schrodinger/IsOverloaded');
 
-export const catsRankProbability = async (data: ICatsRankProbabilityParams): Promise<ICatsRankProbabilityData[]> => {
-  return request.post('/app/item/level', data);
+// export const catsRankProbability = async (data: ICatsRankProbabilityParams): Promise<ICatsRankProbabilityData[]> => {
+//   return request.post('/app/item/level', data);
+// };
+
+export const catsRankProbability = async (data: { symbol: string }): Promise<ICatsRankProbabilityData> => {
+  return request.post('/app/cat/rarity', data);
 };
 
 export const catsList = async (data: ICatsListParams): Promise<ICatsListData> => {
@@ -79,7 +83,11 @@ export const catsListAll = async (data: ICatsListParams): Promise<ICatsListData>
   return request.post('/app/cat/all', data);
 };
 
-export const catsBlindListAll = async (data: ICatsListParams): Promise<ICatsListData> => {
+export const catsBlindListAll = async (
+  data: Omit<ICatsListParams, 'generations'> & {
+    generation: number;
+  },
+): Promise<ICatsListData> => {
   return request.post('/app/cat/box-list', data);
 };
 
@@ -295,4 +303,15 @@ export const voucherAdoption = async (data: { voucherId: string }): Promise<ICou
 
 export const tgReporting = async (data: ITaskLogParams): Promise<null> => {
   return request.post('/app/task/log', data);
+};
+
+export const catCombine = async (data: { symbols: string[] }): Promise<ICatCombineRes> => {
+  return request.post('/app/cat/combine', data);
+};
+
+export const catPool = async (): Promise<ICatPoolRes> => {
+  return request.get('/app/cat/pool');
+};
+export const catPoolRank = async (): Promise<ICatPoolRankRes> => {
+  return request.get('/app/cat/pool-rank');
 };
