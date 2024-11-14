@@ -14,7 +14,7 @@ function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
   return (
     <div className="relative z-20 w-full -mt-[70px] overflow-hidden pt-[50px]">
       <Image src={hasWinner ? winnerBg : noWinnerBg} className="relative z-10 w-full" alt={''} />
-      <div className="absolute z-20 top-0 left-0 w-full h-full pt-[70px]">
+      <div className="absolute z-20 top-0 left-0 w-full h-full pt-0">
         <div className="w-full h-full flex flex-col justify-center items-center">
           {hasWinner ? (
             <span className="relative z-20 text-base text-pixelsWhiteBg font-black mb-[18px]">Winner</span>
