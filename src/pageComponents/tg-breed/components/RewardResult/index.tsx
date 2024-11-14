@@ -1,6 +1,7 @@
 import winnerBg from 'assets/img/telegram/breed/winner-cloud-bg.png';
 import noWinnerBg from 'assets/img/telegram/breed/no-winner-cloud-bg.png';
 import winnerInfoBg from 'assets/img/telegram/breed/winner-info-bg.png';
+import defaultCard from 'assets/img/telegram/breed/default-card.png';
 import Image from 'next/image';
 import KittenOnTheGrass from '../KittenOnTheGrass';
 import SelectCard from '../SelectCard';
@@ -20,7 +21,12 @@ function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
             <span className="relative z-20 text-base text-pixelsWhiteBg font-black mb-[18px]">Winner</span>
           ) : null}
 
-          <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} describe={winnerInfo?.winnerDescribe} />
+          {hasWinner ? (
+            <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} describe={winnerInfo?.winnerDescribe} />
+          ) : (
+            <Image src={defaultCard} width={199} height={193} alt={''} />
+          )}
+
           <div className={clsx('relative z-10 mt-[12px]')}>
             <Image src={winnerInfoBg} className="w-[270px]" alt={''} />
             <span className="absolute top-0 left-0 w-full h-full flex justify-center items-center text-sm font-black text-pixelsWhiteBg pb-[7px]">
