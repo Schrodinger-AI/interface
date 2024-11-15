@@ -135,7 +135,7 @@ export default function TokensPage() {
                   type={item.buttonType}
                   loading={item.linkType === 'buyModal' && buyTokenLoading}
                   className={clsx(
-                    '!rounded-lg flex-1 overflow-hidden lg:flex-none',
+                    '!rounded-lg flex-1 overflow-hidden lg:flex-none w-[136px]',
                     index === 0 ? '' : 'ml-[16px]',
                     item?.buttonType === 'default' ? 'border-brandDefault text-brandDefault' : '',
                   )}
