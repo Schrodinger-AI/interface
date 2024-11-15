@@ -27,8 +27,6 @@ export type InfoStateType = {
   hasNewActivities: boolean;
   catDetailInfo?: TSGRTokenInfo;
   voteInfo?: IVoteInfo;
-  homeTopCat?: string;
-  homeBg?: string;
 };
 
 export type TTradeItem = {
@@ -240,6 +238,9 @@ export type TGlobalConfigType = {
   twitterUrlInTgRules: string;
   awakenSwapContractAddress?: string;
   awakenUrl?: string;
+  homeTopCat?: string;
+  homeBg?: string;
+  webAds?: string;
   [key: string]: any;
 };
 

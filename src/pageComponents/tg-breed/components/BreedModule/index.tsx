@@ -277,7 +277,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
 
   return (
     <div className="relative z-20 w-full -mt-[70px] overflow-hidden pt-[112px]">
-      {isDark ? <Image src={breedBg} className="absolute z-10 top-0 w-full left-0" alt={''} /> : null}
+      {isDark ? <Image src={breedBg} className="absolute z-10 top-0 w-full left-0 md:hidden" alt={''} /> : null}
 
       <div className="relative z-20 px-[10px] w-full flex justify-between items-center">
         <SelectCard

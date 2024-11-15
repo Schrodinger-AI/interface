@@ -68,8 +68,11 @@ function TgBreed() {
   }, [getCatPoolRank, isLogin]);
 
   return (
-    <div className={clsx('w-full h-full py-[16px]')}>
-      <div className="px-[16px]">
+    <div
+      className={clsx(
+        'w-full h-full py-[16px] max-w-[668px] mx-auto md:rounded-[12px] md:border md:border-solid md:border-neutralDivider',
+      )}>
+      <div className="px-[16px] block md:hidden">
         <MobileBackNav theme={theme} />
       </div>
       <Rewards

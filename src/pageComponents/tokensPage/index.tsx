@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import OwnedItems from 'components/OwnedItems';
 import { ListTypeEnum } from 'types';
@@ -111,6 +112,11 @@ export default function TokensPage() {
           onSegmentedChange={(value) => onSegmentedChange(value as ListTypeEnum)}
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />
+        {cmsInfo?.webAds ? (
+          <div
+            className="mx-[16px] mb-[16px] h-[34vw] rounded-[8px] overflow-hidden bg-center bg-no-repeat bg-cover block md:hidden"
+            style={{ backgroundImage: `url(${cmsInfo?.webAds})` }}></div>
+        ) : null}
         {noticeData && noticeData?.length ? (
           <div className="flex-1 overflow-hidden ml-0 lg:ml-5 h-[48px] mb-[16px] lg:mb-0 mr-0 lg:mr-[12px]">
             <ScrollAlert data={noticeData} type="notice" />
