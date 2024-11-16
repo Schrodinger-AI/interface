@@ -44,6 +44,7 @@ import InviteItem from './components/InviteItem';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 import WithdrawItem from './components/WithdrawItem';
+import MergeItem from './components/MergeItem';
 
 export default function Header() {
   const { checkLogin, checkTokenValid } = useCheckLoginAndToken();
@@ -190,6 +191,7 @@ export default function Header() {
       },
       { key: 'withdraw', label: <WithdrawItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'strayCats', label: <StrayCatsItem checkAndRedirect={checkAndRedirect} /> },
+      { key: 'merge', label: <MergeItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'points', label: <PointsItem checkAndRedirect={checkAndRedirect} /> },
       { key: 'invite', label: <InviteItem checkAndRedirect={checkAndRedirect} /> },
       {

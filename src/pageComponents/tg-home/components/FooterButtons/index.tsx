@@ -22,7 +22,7 @@ export default function FooterButtons() {
   const { isLogin } = useGetLoginStatus();
 
   return (
-    <div className="w-full fixed bottom-0 left-0 h-[72px] px-[16px] z-10">
+    <div className="w-full fixed bottom-0 left-0 h-[72px] px-[16px] z-[60]">
       <div className="shadow-floatingButtonsShadow bg-floatingButtonsBg rounded-[8px] h-[50px]">
         <div className="flex gap-[16px] justify-center items-center relative top-[-16px]">
           <Link href={'/telegram/home'} className="flex-1">

@@ -49,23 +49,23 @@ export default function AdoptModule({
   }, []);
 
   return (
-    <div className="relative z-10">
+    <div className="relative z-[60] -mt-[40px]">
       <Flex className="py-[16px] px-4 z-10 relative" align="center" vertical>
         <div className="relative w-full flex justify-center items-center">
-          {!isInActivity ? (
+          {/* {!isInActivity ? (
             <Image
               src={lightRound}
               alt=""
               className="absolute w-full scale-110 aspect-square top-0 bottom-0 left-0 right-0 m-auto z-1"
             />
-          ) : null}
+          ) : null} */}
 
           {isInActivity ? (
             <img src={require('assets/img/telegram/cat-activity.png').default.src} alt="" className="w-[26.6vw] z-10" />
           ) : cmsInfo?.homeTopCat ? (
-            <img src={cmsInfo?.homeTopCat} alt="" className="w-[26.6vw] z-10" />
+            <img src={cmsInfo?.homeTopCat} alt="" className="w-auto h-[60px] z-10" />
           ) : (
-            <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-[26.6vw] z-10" />
+            <img src={require('assets/img/telegram/cat.png').default.src} alt="" className="w-auto h-[60px] z-10" />
           )}
         </div>
 
@@ -73,7 +73,7 @@ export default function AdoptModule({
           <Flex vertical justify="center" align="center">
             <img src={require('assets/img/telegram/adopt-card.png').default.src} alt="" className="w-[40vw]" />
 
-            <TGButton type="success" size="large" className="mt-4" onClick={onAdopt}>
+            <TGButton size="large" className="mt-4 w-[150px]" onClick={onAdopt}>
               <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
             </TGButton>
           </Flex>
@@ -85,52 +85,52 @@ export default function AdoptModule({
         </div>
       </Flex>
 
-      <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[37px] left-0 z-20">
+      <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[70px] left-0 z-20">
         <Flex
           vertical
           justify="center"
           align="center"
-          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
           <BagSVG className="w-[32px] h-[32px]" />
           <MyBagsTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
-      <div onClick={() => router.push('/telegram/lucky-spin')} className="absolute top-[37px] right-0 z-20">
+      <div onClick={() => router.push('/telegram/lucky-spin')} className="absolute top-[70px] right-0 z-20">
         <Flex
           vertical
           justify="center"
           align="center"
-          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
           <WheelSVG className="w-[32px] h-[32px]" />
           <LuckySpinTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[40vw] left-0 z-20">
+      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[172px] left-0 z-20">
         <Flex
           vertical
           justify="center"
           align="center"
-          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
           <ShoppingSVG className="w-[32px] h-[32px]" />
           <ShoppingTextSVG className="mt-[4px]" />
         </Flex>
       </Link>
-      <div onClick={() => router.push('/telegram/spin-pool')} className="absolute top-[40vw] right-0 z-20">
+      <div onClick={() => router.push('/telegram/spin-pool')} className="absolute top-[172px] right-0 z-20">
         <Flex
           vertical
           justify="center"
           align="center"
-          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
           <PoolsSVG className="w-[32px] h-[32px]" />
           <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-      <Link href={isLogin ? '/telegram/breed' : ''} className="absolute top-[70vw] left-0 z-20">
+      <Link href={isLogin ? '/telegram/breed' : ''} className="absolute top-[274px] left-0 z-20">
         <Flex
           vertical
           justify="center"
           align="center"
-          className="w-[19.2vw] h-[19.2vw] bg-[var(--fill-mask-7)] rounded-[8px]">
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
           <CatPowSVG className="w-[32px] h-[32px]" />
           <MergeTextSVG className="mt-[4px]" />
         </Flex>

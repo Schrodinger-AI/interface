@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import OwnedItems from 'components/OwnedItems';
 import { ListTypeEnum } from 'types';
@@ -17,6 +18,8 @@ import CommonSegmented from 'components/CommonSegmented';
 import { useBuyToken } from 'hooks/useBuyToken';
 import { TBannerConfigButton } from 'redux/types/reducerTypes';
 import { useOnFinish } from 'hooks/useOnFinish';
+import WebAds from 'components/WebAds';
+import { useResponsive } from 'hooks/useResponsive';
 
 const pageStateList: ICommonRadioTabButton<ListTypeEnum>[] = [
   // {
@@ -49,6 +52,7 @@ export default function TokensPage() {
   const { checkLogin } = useCheckLoginAndToken();
   const { checkBalanceAndJump, loading: buyTokenLoading } = useBuyToken();
   useOnFinish();
+  const { isLG } = useResponsive();
 
   const cmsInfo = useCmsInfo();
   const { jumpToPage } = useJumpToPage();
@@ -111,6 +115,7 @@ export default function TokensPage() {
           onSegmentedChange={(value) => onSegmentedChange(value as ListTypeEnum)}
           className="mb-[16px] lg:mb-0 px-[16px] lg:px-0 w-full lg:w-[364px]"
         />
+        {cmsInfo?.webAds && isLG ? <WebAds /> : null}
         {noticeData && noticeData?.length ? (
           <div className="flex-1 overflow-hidden ml-0 lg:ml-5 h-[48px] mb-[16px] lg:mb-0 mr-0 lg:mr-[12px]">
             <ScrollAlert data={noticeData} type="notice" />
@@ -129,7 +134,7 @@ export default function TokensPage() {
                   type={item.buttonType}
                   loading={item.linkType === 'buyModal' && buyTokenLoading}
                   className={clsx(
-                    '!rounded-lg flex-1 overflow-hidden lg:flex-none',
+                    '!rounded-lg flex-1 overflow-hidden lg:flex-none w-[136px]',
                     index === 0 ? '' : 'ml-[16px]',
                     item?.buttonType === 'default' ? 'border-brandDefault text-brandDefault' : '',
                   )}
