@@ -1,43 +1,75 @@
 import winnerBg from 'assets/img/telegram/breed/winner-cloud-bg.png';
 import noWinnerBg from 'assets/img/telegram/breed/no-winner-cloud-bg.png';
 import winnerInfoBg from 'assets/img/telegram/breed/winner-info-bg.png';
+import defaultCard from 'assets/img/telegram/breed/default-card.png';
 import Image from 'next/image';
 import KittenOnTheGrass from '../KittenOnTheGrass';
 import SelectCard from '../SelectCard';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
+import { TModalTheme } from 'components/CommonModal';
 
-function RewardResult({ winnerInfo }: { winnerInfo?: IWinnerInfo }) {
+const textNoWinner = 'No Winner This Round';
+const textNoWinnerDesc = '80% of the Bonus Prize Pool rolls over to the next round';
+
+function RewardResult({ winnerInfo, theme }: { winnerInfo?: IWinnerInfo; theme?: TModalTheme }) {
   const hasWinner = useMemo(() => (winnerInfo?.winnerAddress ? true : false), [winnerInfo?.winnerAddress]);
 
+  const isDart = useMemo(() => theme === 'dark', [theme]);
+
   return (
-    <div className="relative z-20 w-full -mt-[70px] overflow-hidden pt-[50px]">
-      <Image src={hasWinner ? winnerBg : noWinnerBg} className="relative z-10 w-full" alt={''} />
-      <div className="absolute z-20 top-0 left-0 w-full h-full pt-0">
+    <div className={clsx('relative z-20 w-full overflow-hidden', isDart ? '-mt-[70px] pt-[50px]' : 'mt-0')}>
+      {isDart ? (
+        <Image src={hasWinner ? winnerBg : noWinnerBg} className="relative z-10 w-full lg:invisible" alt="" />
+      ) : null}
+
+      <div className={clsx('z-20 top-0 left-0 w-full h-full', isDart ? 'absolute pt-0' : 'relative pt-[40px]')}>
         <div className="w-full h-full flex flex-col justify-center items-center">
-          {hasWinner ? (
+          {hasWinner && isDart ? (
             <span className="relative z-20 text-base text-pixelsWhiteBg font-black mb-[18px]">Winner</span>
           ) : null}
 
-          <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} describe={winnerInfo?.winnerDescribe} />
-          <div className={clsx('relative z-10 mt-[12px]')}>
-            <Image src={winnerInfoBg} className="w-[270px]" alt={''} />
-            <span className="absolute top-0 left-0 w-full h-full flex justify-center items-center text-sm font-black text-pixelsWhiteBg pb-[7px]">
-              {winnerInfo?.winnerAddress
-                ? getOmittedStr(addPrefixSuffix(winnerInfo?.winnerAddress), OmittedType.ADDRESS)
-                : 'No Winner This Round'}
-            </span>
-          </div>
+          {hasWinner ? (
+            <SelectCard size="large" imageUrl={winnerInfo?.winnerImage} describe={winnerInfo?.winnerDescribe} />
+          ) : (
+            <Image src={defaultCard} width={199} height={193} alt={''} />
+          )}
+
+          {isDart ? (
+            <div className={clsx('relative z-10 mt-[12px]')}>
+              <Image src={winnerInfoBg} className="w-[270px]" alt={''} />
+              <span className="absolute top-0 left-0 w-full h-full flex justify-center items-center text-sm font-black text-pixelsWhiteBg pb-[7px]">
+                {winnerInfo?.winnerAddress
+                  ? getOmittedStr(addPrefixSuffix(winnerInfo?.winnerAddress), OmittedType.ADDRESS)
+                  : textNoWinner}
+              </span>
+            </div>
+          ) : (
+            <div
+              className={clsx(
+                'relative w-full z-10 p-[16px] rounded-lg bg-[#FFF5E6]',
+                isDart ? 'mt-[12px]' : 'mt-[45px]',
+              )}>
+              <span className="font-medium text-sm flex w-full justify-center text-warning900 opacity-60">
+                {hasWinner ? 'Winner' : textNoWinner}
+              </span>
+              <span className="font-medium text-lg flex w-full justify-center text-center text-warning900 mt-[8px]">
+                {winnerInfo?.winnerAddress
+                  ? getOmittedStr(addPrefixSuffix(winnerInfo?.winnerAddress), OmittedType.ADDRESS)
+                  : textNoWinnerDesc}
+              </span>
+            </div>
+          )}
 
           {hasWinner ? null : (
             <span className="flex text-center w-[176px] text-pixelsWhiteBg text-xs font-semibold mt-[11px]">
-              80% of the Bonus Prize Pool rolls over to the next round
+              {textNoWinnerDesc}
             </span>
           )}
         </div>
       </div>
-      <KittenOnTheGrass hasWinner={hasWinner} className="fixed bottom-0 left-0 z-30" />
+      {isDart ? <KittenOnTheGrass hasWinner={hasWinner} className="fixed bottom-0 left-0 z-30" /> : null}
     </div>
   );
 }

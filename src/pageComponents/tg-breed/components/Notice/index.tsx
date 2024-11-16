@@ -6,6 +6,7 @@ import { Button, Flex } from 'antd';
 import SkeletonImage from 'components/SkeletonImage';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
+import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 
 function Notice({
   status = false,
@@ -57,7 +58,12 @@ function Notice({
             {catInfo?.map((item, index) => (
               <div
                 key={index}
-                className="relative flex-1 border-[2px] border-solid border-neutralWhiteBg rounded-[8px] shadow-selectBoxShadow">
+                className={clsx(
+                  'relative flex-1 border-[2px] border-solid',
+                  isDark
+                    ? 'border-neutralWhiteBg rounded-[8px] shadow-selectBoxShadow'
+                    : 'border-neutralBorder rounded-[12px]',
+                )}>
                 <SkeletonImage
                   img={item.inscriptionImageUri}
                   rarity={item.describe}
@@ -69,11 +75,25 @@ function Notice({
 
                 <Flex className="w-full p-[12px]" justify="space-between">
                   {index % 2 !== 0 ? (
-                    <span className="text-sm font-black text-pixelsWhiteBg black-title">Success</span>
+                    <span
+                      className={clsx(
+                        'text-sm font-black',
+                        isDark ? 'text-pixelsWhiteBg black-title' : 'text-neutralPrimary',
+                      )}>
+                      Success
+                    </span>
                   ) : (
-                    <span className="text-sm font-black text-pixelsWhiteBg black-title">Failure</span>
+                    <span
+                      className={clsx(
+                        'text-sm font-black',
+                        isDark ? 'text-pixelsWhiteBg black-title' : 'text-neutralPrimary',
+                      )}>
+                      Failure
+                    </span>
                   )}
-                  <div className="text-[12px] font-black text-neutralWhiteBg leading-[20px]">{item.amount}</div>
+                  <div className={clsx('text-xs font-black', isDark ? 'text-neutralWhiteBg' : 'text-neutralPrimary')}>
+                    {item.amount}
+                  </div>
                 </Flex>
               </div>
             ))}
@@ -81,11 +101,25 @@ function Notice({
         ) : null}
 
         {!status ? (
-          <Flex align="stretch" gap={16} className="mt-[16px] p-[16px] bg-pixelsModalTextBg rounded-[8px]">
+          <Flex
+            align="stretch"
+            gap={16}
+            className={clsx(
+              'mt-[16px] p-[16px]',
+              isDark ? 'rounded-[8px] bg-pixelsModalTextBg' : 'rounded-[12px] bg-brandBg',
+            )}>
             <div className="flex flex-none items-center w-[20px]">
-              <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
+              {isDark ? (
+                <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
+              ) : (
+                <InfoSVG className="w-[20px] h-[20px] z-10" />
+              )}
             </div>
-            <p className="flex-auto text-white leading-[22px] text-[14px] font-medium">
+            <p
+              className={clsx(
+                'flex-auto leading-[22px] text-[14px] font-medium',
+                isDark ? 'text-white' : 'text-neutralTitle',
+              )}>
               0.25 SGR will be added to the Prize Pool on every merge, successful or not!
             </p>
           </Flex>
@@ -147,7 +181,11 @@ function Notice({
         footer={
           <Flex className="w-full" gap={8}>
             {hideCancel ? null : (
-              <Button type="primary" size="large" className="w-full" onClick={() => modal.remove()}>
+              <Button
+                type={status ? 'default' : 'primary'}
+                size="large"
+                className="w-full"
+                onClick={() => modal.remove()}>
                 {status ? 'cancel' : 'I understand'}
               </Button>
             )}

@@ -31,6 +31,7 @@ import { useRouter } from 'next/navigation';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
+import RewardsCard from './components/RewardsCard';
 
 export default function TgHome() {
   const router = useRouter();
@@ -210,11 +211,12 @@ export default function TgHome() {
         isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
       )}>
       <BalanceModule balanceData={balanceData} />
-      {noticeData && noticeData?.length ? (
+      {/* {noticeData && noticeData?.length ? (
         <div className="relative z-20 w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />
         </div>
-      ) : null}
+      ) : null} */}
+      <RewardsCard theme="dark" />
       <AdoptModule onAdopt={OpenAdoptModal} isInActivity={isActivity} cId={schrodingerDetail?.collectionId || ''} />
       <FooterButtons />
       <FloatingButton />

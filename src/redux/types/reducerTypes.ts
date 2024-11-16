@@ -27,8 +27,6 @@ export type InfoStateType = {
   hasNewActivities: boolean;
   catDetailInfo?: TSGRTokenInfo;
   voteInfo?: IVoteInfo;
-  homeTopCat?: string;
-  homeBg?: string;
 };
 
 export type TTradeItem = {
@@ -81,6 +79,18 @@ export type TBannerConfigItem = {
   };
   show?: boolean;
   button?: TBannerConfigButton[];
+};
+
+export type TWebAds = {
+  backgroundImage?: {
+    pc?: string;
+    mobile?: string;
+    mid?: string;
+  };
+  link?: string;
+  needLogin?: boolean;
+  linkType?: TLinkType;
+  show?: boolean;
 };
 
 export type TBuyTokenModalContent = {
@@ -240,6 +250,9 @@ export type TGlobalConfigType = {
   twitterUrlInTgRules: string;
   awakenSwapContractAddress?: string;
   awakenUrl?: string;
+  homeTopCat?: string;
+  homeBg?: string;
+  webAds?: TWebAds;
   [key: string]: any;
 };
 

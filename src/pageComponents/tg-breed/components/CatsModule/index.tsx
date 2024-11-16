@@ -19,6 +19,7 @@ import { RadioChangeEvent } from 'antd/lib/radio/interface';
 import useTelegram from 'hooks/useTelegram';
 import { TModalTheme } from 'components/CommonModal';
 import { TSelectedCatInfo } from '../BreedModule';
+import { useResponsive } from 'hooks/useResponsive';
 
 type IProps = {
   onChange?: (data: TSelectedCatInfo) => void;
@@ -39,7 +40,9 @@ const endMessage = (theme: TModalTheme) => (
   </div>
 );
 
-const emptyCom = <TableEmpty description="No item found" theme="none" />;
+const emptyCom = (theme: TModalTheme) => {
+  return <TableEmpty description="No item found" theme={theme} />;
+};
 
 export default function CatsModule({ onChange, type, selectedSymbol, selectedType, theme = 'light' }: IProps) {
   const pageSize = 32;
@@ -52,6 +55,9 @@ export default function CatsModule({ onChange, type, selectedSymbol, selectedTyp
   const [current, setCurrent] = useState(1);
   const [currentData, setCurrentData] = useState<TSGRItem>();
   const { isInTG } = useTelegram();
+  const { isMD } = useResponsive();
+
+  const isDark = useMemo(() => theme === 'dark', [theme]);
 
   const defaultRequestParams = useMemo(() => {
     return {
@@ -166,7 +172,9 @@ export default function CatsModule({ onChange, type, selectedSymbol, selectedTyp
   return (
     <div className="h-full overflow-y-auto flex flex-col">
       {dataSource.length ? (
-        <p className="text-pixelsWhiteBg text-base font-[11px] mb-[6px]">{formatTotal} Result</p>
+        <p className={clsx('text-base font-[11px] mb-[6px]', isDark ? 'text-pixelsWhiteBg' : 'text-neutralPrimary')}>
+          {formatTotal} Result
+        </p>
       ) : null}
 
       {loading ? (
@@ -188,9 +196,10 @@ export default function CatsModule({ onChange, type, selectedSymbol, selectedTyp
                   <List
                     grid={{
                       xs: 2,
+                      column: isMD ? 2 : 4,
                     }}
                     dataSource={dataSource}
-                    locale={{ emptyText: emptyCom }}
+                    locale={{ emptyText: emptyCom(theme) }}
                     renderItem={(item) => (
                       <List.Item>
                         <Radio value={item} className={styles.radioItem}>

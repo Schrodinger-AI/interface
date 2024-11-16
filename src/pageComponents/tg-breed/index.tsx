@@ -68,8 +68,8 @@ function TgBreed() {
   }, [getCatPoolRank, isLogin]);
 
   return (
-    <div className={clsx('w-full h-full py-[16px]')}>
-      <div className="px-[16px]">
+    <div className={clsx('w-full h-full py-[16px] max-w-[668px] mx-auto')}>
+      <div className={clsx('block', theme === 'dark' ? 'px-[16px]' : '')}>
         <MobileBackNav theme={theme} />
       </div>
       <Rewards
@@ -80,7 +80,11 @@ function TgBreed() {
         isOver={isOver}
         onFinish={getCatPoolRank}
       />
-      {isOver ? <RewardResult winnerInfo={winnerInfo} /> : <BreedModule theme={theme} updateRank={getCatPoolRank} />}
+      {isOver ? (
+        <RewardResult winnerInfo={winnerInfo} theme={theme} />
+      ) : (
+        <BreedModule theme={theme} updateRank={getCatPoolRank} />
+      )}
       {isOver || !rankList?.length ? null : <Rank rankList={rankList} theme={theme} />}
     </div>
   );
