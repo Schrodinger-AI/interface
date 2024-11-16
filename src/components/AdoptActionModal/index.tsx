@@ -132,7 +132,9 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     if (amount === '') return '--';
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
-    return ZERO.plus(amountNumber).minus(receiveToken).toFixed();
+    const rerollLoss = ZERO.plus(receiveToken).multipliedBy(0.5);
+
+    return ZERO.plus(amountNumber).minus(receiveToken).plus(rerollLoss).toFixed();
   }, [amount, isReset, receiveToken]);
 
   const priceAmount = useMemo(() => {
