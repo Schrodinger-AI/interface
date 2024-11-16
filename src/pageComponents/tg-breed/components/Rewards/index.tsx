@@ -18,6 +18,8 @@ function Rewards({
   usdtAmount,
   isOver = false,
   theme = 'light',
+  className,
+  hideTitle = false,
 }: {
   countdown?: number;
   sgrAmount?: number | string;
@@ -25,6 +27,8 @@ function Rewards({
   isOver?: boolean;
   onFinish?: () => void;
   theme?: TModalTheme;
+  className?: string;
+  hideTitle?: boolean;
 }) {
   const rulesModal = useModal(RulesModal);
   const deadline = useMemo(() => {
@@ -46,36 +50,39 @@ function Rewards({
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
   return (
-    <div className={clsx('relative z-50', isDark ? 'px-[16px]' : 'px-0')}>
-      <div className="w-full h-[32px] flex justify-center items-center relative px-[40px]">
-        <span
-          className={clsx(
-            'text-base font-black',
-            isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle flex items-center',
-          )}>
-          Prize Pool
-          {isDark ? null : (
-            <QuestionLightSVG
-              className="ml-[8px]"
+    <div className={clsx('relative z-50', isDark ? 'px-[16px]' : 'px-0', className)}>
+      {hideTitle ? null : (
+        <div className="w-full h-[32px] flex justify-center items-center relative px-[40px]">
+          <span
+            className={clsx(
+              'text-base font-black',
+              isDark ? 'text-pixelsWhiteBg' : 'text-neutralTitle flex items-center',
+            )}>
+            Prize Pool
+            {isDark ? null : (
+              <QuestionLightSVG
+                className="ml-[8px]"
+                onClick={() =>
+                  rulesModal.show({
+                    theme,
+                  })
+                }
+              />
+            )}
+          </span>
+          {isDark ? (
+            <QuestionSVG
+              className="absolute top-0 bottom-0 my-auto right-0 w-[32px] h-[32px]"
               onClick={() =>
                 rulesModal.show({
                   theme,
                 })
               }
             />
-          )}
-        </span>
-        {isDark ? (
-          <QuestionSVG
-            className="absolute top-0 bottom-0 my-auto right-0 w-[32px] h-[32px]"
-            onClick={() =>
-              rulesModal.show({
-                theme,
-              })
-            }
-          />
-        ) : null}
-      </div>
+          ) : null}
+        </div>
+      )}
+
       <div
         className={clsx(
           'mt-[7px] w-full p-[12px]',
