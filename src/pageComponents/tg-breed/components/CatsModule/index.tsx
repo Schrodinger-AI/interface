@@ -19,6 +19,7 @@ import { RadioChangeEvent } from 'antd/lib/radio/interface';
 import useTelegram from 'hooks/useTelegram';
 import { TModalTheme } from 'components/CommonModal';
 import { TSelectedCatInfo } from '../BreedModule';
+import { useResponsive } from 'hooks/useResponsive';
 
 type IProps = {
   onChange?: (data: TSelectedCatInfo) => void;
@@ -54,6 +55,7 @@ export default function CatsModule({ onChange, type, selectedSymbol, selectedTyp
   const [current, setCurrent] = useState(1);
   const [currentData, setCurrentData] = useState<TSGRItem>();
   const { isInTG } = useTelegram();
+  const { isMD } = useResponsive();
 
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
@@ -194,6 +196,7 @@ export default function CatsModule({ onChange, type, selectedSymbol, selectedTyp
                   <List
                     grid={{
                       xs: 2,
+                      column: isMD ? 2 : 4,
                     }}
                     dataSource={dataSource}
                     locale={{ emptyText: emptyCom(theme) }}
