@@ -96,6 +96,7 @@ module.exports = {
         warning100: 'var(--warning-100)',
         warning500: 'var(--warning-500)',
         warning600: 'var(--warning-600)',
+        warning900: 'var(--warning-900)',
 
         transparentWhite30: 'var(--transparent-white-30)',
         transparentWhite20: 'var(--transparent-white-20)',

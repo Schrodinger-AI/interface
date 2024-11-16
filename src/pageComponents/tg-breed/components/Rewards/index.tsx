@@ -46,7 +46,7 @@ function Rewards({
   const isDark = useMemo(() => theme === 'dark', [theme]);
 
   return (
-    <div className="relative z-50 px-[16px]">
+    <div className={clsx('relative z-50', isDark ? 'px-[16px]' : 'px-0')}>
       <div className="w-full h-[32px] flex justify-center items-center relative px-[40px]">
         <span
           className={clsx(

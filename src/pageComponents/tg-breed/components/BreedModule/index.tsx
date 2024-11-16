@@ -4,6 +4,7 @@ import SelectCard from '../SelectCard';
 import { ReactComponent as CatPaw } from 'assets/img/telegram/breed/cat-paw.svg';
 import TGButton from 'components/TGButton';
 import { ReactComponent as QuestionSVG } from 'assets/img/telegram/battle/icon_question.svg';
+import { ReactComponent as QuestionLightSVG } from 'assets/img/icons/question.svg';
 import { useMemo, useState } from 'react';
 import { TSGRItem } from 'types/tokens';
 import { useModal } from '@ebay/nice-modal-react';
@@ -24,6 +25,7 @@ import { Button } from 'aelf-design';
 import TGAdoptLoading from 'components/TGAdoptLoading';
 import KittenOnTheGrassAnimation from '../KittenOnTheGrassAnimation';
 import { checkAllowanceAndApprove } from 'utils/aelfUtils';
+import SyncAdoptModal from 'components/SyncAdoptModal';
 
 export interface IBredAdoptInfo {
   adoptId: string;
@@ -51,6 +53,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
   const catSelections = useModal(CatSelections);
   const resultModal = useModal(ResultModal);
   const tgAdoptLoading = useModal(TGAdoptLoading);
+  const syncAdoptModal = useModal(SyncAdoptModal);
   const cmsInfo = useCmsInfo();
   const { walletInfo, walletType } = useConnectWallet();
 
@@ -107,10 +110,16 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
   const toCatCombine = async () => {
     try {
       if (!selectedLeft?.symbol || !selectedRight?.symbol || !walletInfo?.address) return;
-      tgAdoptLoading.show();
+      if (isDark) {
+        tgAdoptLoading.show();
+      } else {
+        syncAdoptModal.show();
+      }
+
       const contractAddress = cmsInfo?.schrodingerSideAddress;
       if (!contractAddress) {
         tgAdoptLoading.hide();
+        syncAdoptModal.hide();
         return;
       }
 
@@ -130,6 +139,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
 
       if (!check) {
         tgAdoptLoading.hide();
+        syncAdoptModal.hide();
         return;
       }
 
@@ -151,6 +161,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
       });
       if (!logs) {
         tgAdoptLoading.hide();
+        syncAdoptModal.hide();
         return;
       }
 
@@ -170,6 +181,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
       const describe = catsRankProbability ? catsRankProbability.levelInfo?.describe : '';
       const isSuccess = describe !== selectedLeft.describe;
       tgAdoptLoading.hide();
+      syncAdoptModal.hide();
       updateRank && updateRank();
       resultModal.show({
         type: isSuccess ? 'success' : 'fail',
@@ -180,11 +192,13 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
         onConfirm: () => {
           resultModal.hide();
         },
+        theme,
       });
       setSelectedLeft(undefined);
       setSelectedRight(undefined);
     } catch (error) {
       tgAdoptLoading.hide();
+      syncAdoptModal.hide();
       if (typeof error === 'string') {
         message.error(error);
       } else {
@@ -277,7 +291,7 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
 
   return (
     <div className="relative z-20 w-full -mt-[70px] overflow-hidden pt-[112px]">
-      {isDark ? <Image src={breedBg} className="absolute z-10 top-0 w-full left-0" alt={''} /> : null}
+      {isDark ? <Image src={breedBg} className="absolute z-10 top-0 w-full left-0 md:hidden" alt={''} /> : null}
 
       <div className="relative z-20 px-[10px] w-full flex justify-between items-center">
         <SelectCard
@@ -296,7 +310,13 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
         <div className="w-full relative h-[72px] border border-pixelsBorder border-t-0 border-solid rounded-b-[5px]">
           <div className="w-full flex justify-center items-center flex-col !absolute -bottom-[25px] left-0 right-0 mx-auto">
             {selectedLeft && selectedRight ? (
-              <QuestionSVG className="w-[32px] h-[32px] mb-[2px]" onClick={() => showCompositionRules()} />
+              isDark ? (
+                <QuestionSVG className="w-[32px] h-[32px] mb-[2px]" onClick={() => showCompositionRules()} />
+              ) : (
+                <div className="w-[32px] h-[32px] mb-[2px] flex justify-center items-center">
+                  <QuestionLightSVG className="scale-[2]" onClick={() => showCompositionRules()} />
+                </div>
+              )
             ) : null}
             {isDark ? (
               <TGButton size="large" className="w-[168px]" onClick={onBreed}>
