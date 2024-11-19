@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { Flex } from 'antd';
-import Link from 'next/link';
 import Lottie from 'lottie-web';
 import TGButton from 'components/TGButton';
 import { ReactComponent as BagSVG } from 'assets/img/telegram/icon-bags.svg';

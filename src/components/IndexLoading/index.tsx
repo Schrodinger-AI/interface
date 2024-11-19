@@ -11,6 +11,8 @@ import cat from 'assets/img/telegram/breed/cat.png';
 import CommonProgress from 'components/CommonProgress';
 import useGetProgressPercent from 'hooks/useGetProgressPercent';
 import { sleep } from '@portkey/utils';
+import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
+import Lottie from 'lottie-react';
 
 export const showIndexLoading = async () => {
   store.dispatch(setShowIndexLoading(true));
@@ -61,6 +63,9 @@ function IndexLoading() {
             <Image src={cat} className="w-[50px] rotate-y-180" alt="" />
             <CommonProgress percent={percent} />
           </div>
+        </div>
+        <div className="w-full absolute bottom-0 left-0 flex justify-center items-center">
+          <Lottie animationData={HomeTreasure} autoPlay={true} loop={true} className="w-[30%]" />
         </div>
       </div>
     </Modal>
