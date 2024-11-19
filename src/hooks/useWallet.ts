@@ -96,7 +96,7 @@ export const useWalletInit = () => {
 
     if (publicKey && !token && walletType === WalletTypeEnum.aa) {
       getToken({
-        needLoading: true,
+        needLoading: false,
       });
     }
   }, [getToken, walletInfo?.extraInfo?.publicKey, walletType]);

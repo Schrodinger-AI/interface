@@ -52,7 +52,7 @@ function IndexLoading() {
     <Modal
       open={visible}
       className={styles['index-loading-wrap']}
-      closable={true} // TODO: mock
+      closable={false}
       destroyOnClose={true}
       onCancel={() => hideIndexLoading()}
       footer={null}>
