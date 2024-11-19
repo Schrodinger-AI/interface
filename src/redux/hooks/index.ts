@@ -7,6 +7,8 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
 export const useCmsInfo = () => useAppSelector((state) => state.info.cmsInfo);
 export const useJoinStatus = () => useAppSelector((state) => state.info.isJoin);
+export const useGetIndexLoadingStatus = () => useAppSelector((state) => state.loginStatus.showIndexLoading);
+export const useGetPercentFinish = () => useAppSelector((state) => state.loginStatus.percentFinish);
 
 export const useTxFeeStore = () => useAppSelector((state) => state.assets.txFee);
 export const useTokenPriceMapStore = () => useAppSelector((state) => state.assets.tokenPriceMap);

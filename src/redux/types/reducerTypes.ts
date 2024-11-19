@@ -271,6 +271,8 @@ export type TLoginStatusType = {
     hasToken: boolean;
     isLogin: boolean;
   };
+  showIndexLoading?: boolean;
+  percentFinish?: boolean;
 };
 
 export interface IRankList {

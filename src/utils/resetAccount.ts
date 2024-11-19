@@ -13,6 +13,7 @@ export const resetAccount = () => {
   localStorage.removeItem(storages.accountInfo);
   localStorage.removeItem(storages.walletInfo);
   localStorage.removeItem(ETRANSFER_TOKEN_KEY);
+  localStorage.removeItem(storages.currentLoginWalletType);
   dispatch(
     setWalletInfo({
       address: '',

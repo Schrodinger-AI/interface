@@ -13,13 +13,26 @@ import FriendsIcon from 'assets/img/telegram/tabs/friends.png';
 import EarnIcon from 'assets/img/telegram/tabs/earn.png';
 import Link from 'next/link';
 import { Flex } from 'antd';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
+import { useModal } from '@ebay/nice-modal-react';
 
 export default function FooterButtons() {
   const pathname = usePathname();
+  const router = useRouter();
+  const syncingOnChainLoading = useModal(SyncingOnChainLoading);
 
   const { isLogin } = useGetLoginStatus();
+  const onHandleClick = (href: string) => {
+    if (isLogin) {
+      router.push(href);
+    } else {
+      syncingOnChainLoading.show({
+        checkLogin: true,
+      });
+    }
+  };
 
   return (
     <div className="w-full fixed bottom-0 left-0 h-[72px] px-[16px] z-[60]">
@@ -36,7 +49,7 @@ export default function FooterButtons() {
               <Image src={HomeIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </Link>
-          <Link href={isLogin ? '/telegram/tasks' : '/telegram/tasks'} className="flex-1">
+          <div onClick={() => onHandleClick('/telegram/tasks')} className="flex-1">
             <Flex vertical align="center" justify="center" className="!w-full">
               {pathname === '/telegram/tasks' ? (
                 <TasksSelectedSVG className="w-[40px] h-[40px]" />
@@ -45,8 +58,8 @@ export default function FooterButtons() {
               )}
               <Image src={TasksIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
-          </Link>
-          <Link href={isLogin ? '/tg-referral' : ''} className="flex-1">
+          </div>
+          <div onClick={() => onHandleClick('/tg-referral')} className="flex-1">
             <Flex vertical align="center" justify="center" className="!w-full">
               {pathname === '/tg-referral' ? (
                 <FriendSelectedSVG className="w-[40px] h-[40px]" />
@@ -55,8 +68,8 @@ export default function FooterButtons() {
               )}
               <Image src={FriendsIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
-          </Link>
-          <Link href={isLogin ? '/summary-points' : ''} className="flex-1">
+          </div>
+          <div onClick={() => onHandleClick('/summary-points')} className="flex-1">
             <Flex vertical align="center" justify="center" className="!w-full">
               {pathname === '/summary-points' ? (
                 <EarnSelectedSVG className="w-[40px] h-[40px]" />
@@ -65,7 +78,7 @@ export default function FooterButtons() {
               )}
               <Image src={EarnIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
-          </Link>
+          </div>
         </div>
       </div>
     </div>

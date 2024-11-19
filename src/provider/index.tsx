@@ -30,6 +30,7 @@ import 'forest-ui-react/dist/assets/index.css';
 import Wrapper from './ForestInitWrapper';
 import { AElfReactProvider } from '@aelf-react/core';
 import { appName } from 'constants/common';
+import IndexLoading, { showIndexLoading } from 'components/IndexLoading';
 
 const Updater = dynamic(() => import('components/Updater'), { ssr: false });
 
@@ -80,6 +81,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   }, [checkHost, fetchGlobalConfig, isNoNeedLoadingPage]);
 
   useEffect(() => {
+    showIndexLoading();
     initPageData();
     forbidScale();
   }, [initPageData]);
@@ -101,6 +103,7 @@ function Provider({ children }: { children: React.ReactNode }) {
               button={{
                 autoInsertSpace: false,
               }}>
+              <IndexLoading />
               {loading ? (
                 <PageLoading content="Enrollment in progress"></PageLoading>
               ) : isCorrectDomain ? (
