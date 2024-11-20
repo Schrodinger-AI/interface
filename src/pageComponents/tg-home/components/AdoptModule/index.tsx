@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { Flex } from 'antd';
-import Link from 'next/link';
 import Lottie from 'lottie-web';
 import TGButton from 'components/TGButton';
 import { ReactComponent as BagSVG } from 'assets/img/telegram/icon-bags.svg';
@@ -16,13 +15,14 @@ import { ReactComponent as MergeTextSVG } from 'assets/img/telegram/home-list/me
 import { ReactComponent as BoxLeftSVG } from 'assets/img/telegram/box-left.svg';
 import { ReactComponent as BoxRightSVG } from 'assets/img/telegram/box-right.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
-import lightRound from 'assets/img/telegram/light-round.png';
 import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCmsInfo } from 'redux/hooks';
 import { useEffect } from 'react';
+import { useModal } from '@ebay/nice-modal-react';
+import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
 
 export default function AdoptModule({
   cId,
@@ -37,6 +37,7 @@ export default function AdoptModule({
   const cmsInfo = useCmsInfo();
   const { isLogin } = useGetLoginStatus();
   const router = useRouter();
+  const syncingOnChainLoading = useModal(SyncingOnChainLoading);
 
   useEffect(() => {
     Lottie.loadAnimation({
@@ -47,6 +48,16 @@ export default function AdoptModule({
       animationData: HomeTreasure,
     });
   }, []);
+
+  const onHandleClick = (href: string) => {
+    if (isLogin) {
+      router.push(href);
+    } else {
+      syncingOnChainLoading.show({
+        checkLogin: true,
+      });
+    }
+  };
 
   return (
     <div className="relative z-[60] -mt-[40px]">
@@ -85,7 +96,7 @@ export default function AdoptModule({
         </div>
       </Flex>
 
-      <Link href={isLogin ? '/telegram?pageState=1' : ''} className="absolute top-[70px] left-0 z-20">
+      <div onClick={() => onHandleClick('/telegram?pageState=1')} className="absolute top-[70px] left-0 z-20">
         <Flex
           vertical
           justify="center"
@@ -94,8 +105,8 @@ export default function AdoptModule({
           <BagSVG className="w-[32px] h-[32px]" />
           <MyBagsTextSVG className="mt-[4px]" />
         </Flex>
-      </Link>
-      <div onClick={() => router.push('/telegram/lucky-spin')} className="absolute top-[70px] right-0 z-20">
+      </div>
+      <div onClick={() => onHandleClick('/telegram/lucky-spin')} className="absolute top-[70px] right-0 z-20">
         <Flex
           vertical
           justify="center"
@@ -105,7 +116,9 @@ export default function AdoptModule({
           <LuckySpinTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-      <Link href={cId ? `/telegram/forest/trade?cId=${cId}` : ''} className="absolute top-[172px] left-0 z-20">
+      <div
+        onClick={() => onHandleClick(cId ? `/telegram/forest/trade?cId=${cId}` : '')}
+        className="absolute top-[172px] left-0 z-20">
         <Flex
           vertical
           justify="center"
@@ -114,8 +127,8 @@ export default function AdoptModule({
           <ShoppingSVG className="w-[32px] h-[32px]" />
           <ShoppingTextSVG className="mt-[4px]" />
         </Flex>
-      </Link>
-      <div onClick={() => router.push('/telegram/spin-pool')} className="absolute top-[172px] right-0 z-20">
+      </div>
+      <div onClick={() => onHandleClick('/telegram/spin-pool')} className="absolute top-[172px] right-0 z-20">
         <Flex
           vertical
           justify="center"
@@ -125,7 +138,7 @@ export default function AdoptModule({
           <PoolsTextSVG className="mt-[4px]" />
         </Flex>
       </div>
-      <Link href={isLogin ? '/telegram/breed' : ''} className="absolute top-[274px] left-0 z-20">
+      <div onClick={() => onHandleClick('/telegram/breed')} className="absolute top-[274px] left-0 z-20">
         <Flex
           vertical
           justify="center"
@@ -134,7 +147,7 @@ export default function AdoptModule({
           <CatPowSVG className="w-[32px] h-[32px]" />
           <MergeTextSVG className="mt-[4px]" />
         </Flex>
-      </Link>
+      </div>
     </div>
   );
 }

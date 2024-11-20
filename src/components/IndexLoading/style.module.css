@@ -1,0 +1,18 @@
+.index-loading-wrap {
+  @apply !w-full h-full !m-0 !max-w-[100vw] top-0 p-0;
+
+  >div {
+    @apply !w-full h-full;
+  }
+
+  :global {
+    .aelfd-modal-content {
+      @apply !w-full h-full rounded-none p-0 bg-pixelsModalBg;
+      .aelfd-modal-body {
+        @apply !w-full h-full;
+      }
+    }
+  }
+
+  
+}

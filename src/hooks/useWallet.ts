@@ -13,7 +13,6 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@portkey/types';
 import useDiscoverProvider from './useDiscoverProvider';
 import { MethodsWallet } from '@portkey/provider-types';
-import { setIsJoin } from 'redux/reducer/info';
 import { mainChain } from 'constants/index';
 import { setLoginStatus } from 'redux/reducer/loginStatus';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -23,6 +22,7 @@ import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 import { did } from '@portkey/did-ui-react';
 import useTelegram from './useTelegram';
+import { hideIndexLoading } from 'components/IndexLoading';
 
 export const useWalletInit = () => {
   const [, setLocalWalletInfo] = useLocalStorage<WalletInfoType>(storages.walletInfo);
@@ -71,9 +71,11 @@ export const useWalletInit = () => {
       if (walletType === WalletTypeEnum.aa) {
         walletInfoToLocal.portkeyInfo = walletInfo?.extraInfo?.portkeyInfo || {};
       }
-      getToken({
-        needLoading: true,
-      });
+      if (walletType !== WalletTypeEnum.aa) {
+        getToken({
+          needLoading: true,
+        });
+      }
       dispatch(setWalletInfo(cloneDeep(walletInfo)));
       setLocalWalletInfo(
         cloneDeep({
@@ -87,7 +89,22 @@ export const useWalletInit = () => {
   }, [setLocalWalletInfo, walletInfo, walletType]);
 
   useEffect(() => {
+    const publicKey = walletInfo?.extraInfo?.publicKey || '';
+    console.log('=====publicKey', publicKey);
+
+    const token = localStorage.getItem(storages.accountInfo);
+
+    if (publicKey && !token && walletType === WalletTypeEnum.aa) {
+      getToken({
+        needLoading: false,
+      });
+    }
+  }, [getToken, walletInfo?.extraInfo?.publicKey, walletType]);
+
+  useEffect(() => {
     if (isConnected && walletInfo?.address) {
+      hideIndexLoading();
+      localStorage.setItem(storages.currentLoginWalletType, walletType);
       AdTracker.trackEvent('connect_wallet', {
         address: walletInfo?.address,
         user_id: walletInfo?.address,
@@ -99,7 +116,7 @@ export const useWalletInit = () => {
         });
       }
     }
-  }, [isConnected, isInTG, walletInfo?.address]);
+  }, [isConnected, isInTG, walletInfo?.address, walletType]);
 
   useEffect(() => {
     if (loginError) {

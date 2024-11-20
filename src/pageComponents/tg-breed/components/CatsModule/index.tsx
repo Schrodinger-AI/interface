@@ -41,7 +41,7 @@ const endMessage = (theme: TModalTheme) => (
 );
 
 const emptyCom = (theme: TModalTheme) => {
-  return <TableEmpty description="No item found" theme={theme} />;
+  return <TableEmpty description="No item found" theme={theme === 'light' ? 'light' : 'none'} />;
 };
 
 export default function CatsModule({ onChange, type, selectedSymbol, selectedType, theme = 'light' }: IProps) {
