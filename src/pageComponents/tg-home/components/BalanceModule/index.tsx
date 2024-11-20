@@ -9,11 +9,28 @@ import CommonCopy from 'components/CommonCopy';
 import { addPrefixSuffix, getOmittedStr, OmittedType } from 'utils/addressFormatting';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { SELL_ELF_URL } from 'constants/router';
+import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
+import { useRouter } from 'next/navigation';
+import { useModal } from '@ebay/nice-modal-react';
+import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
 
 export default function BalanceModule({ balanceData }: { balanceData: Array<IBalanceItemProps> }) {
   const { walletInfo } = useConnectWallet();
+  const { isLogin } = useGetLoginStatus();
+  const router = useRouter();
   const cmsInfo = useCmsInfo();
+  const syncingOnChainLoading = useModal(SyncingOnChainLoading);
   const balance = balanceData.slice(0, 2);
+
+  const onHandleClick = (href: string) => {
+    if (isLogin) {
+      router.push(href);
+    } else {
+      syncingOnChainLoading.show({
+        checkLogin: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -35,11 +52,11 @@ export default function BalanceModule({ balanceData }: { balanceData: Array<IBal
               <WalletSVG className="w-[30px] h-[30px]" />
             </div>
           </Link> */}
-          <Link href={SELL_ELF_URL}>
+          <div onClick={() => onHandleClick(SELL_ELF_URL)}>
             <div className="px-[8px]">
               <WithdrawSVG className="w-[30px] h-[30px]" />
             </div>
-          </Link>
+          </div>
 
           {cmsInfo?.weeklyActivityRankingsEntrance ? (
             <Link href="/tg-weekly-activity-rankings">
