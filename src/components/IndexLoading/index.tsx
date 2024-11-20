@@ -13,6 +13,9 @@ import useGetProgressPercent from 'hooks/useGetProgressPercent';
 import { sleep } from '@portkey/utils';
 import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
 import Lottie from 'lottie-react';
+import { ENVIRONMENT } from 'constants/url';
+
+const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
 
 export const showIndexLoading = async () => {
   store.dispatch(setShowIndexLoading(true));
@@ -52,7 +55,7 @@ function IndexLoading() {
     <Modal
       open={visible}
       className={styles['index-loading-wrap']}
-      closable={false}
+      closable={env === 'test' ? true : false}
       destroyOnClose={true}
       onCancel={() => hideIndexLoading()}
       footer={null}>
