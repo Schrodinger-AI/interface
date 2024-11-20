@@ -9,6 +9,8 @@ const initialState: TLoginStatusType = {
     hasToken: false,
     isLogin: false,
   },
+  showIndexLoading: false,
+  percentFinish: false,
 };
 
 // Actual Slice
@@ -25,6 +27,12 @@ export const loginStatusSlice = createSlice({
     resetLoginStatus(state) {
       state.loginStatus = initialState.loginStatus;
     },
+    setShowIndexLoading(state, action) {
+      state.showIndexLoading = action.payload;
+    },
+    setPercentFinish(state, action) {
+      state.percentFinish = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -38,7 +46,8 @@ export const loginStatusSlice = createSlice({
   },
 });
 
-export const { setLoginStatus, resetLoginStatus } = loginStatusSlice.actions;
+export const { setLoginStatus, resetLoginStatus, setShowIndexLoading, setPercentFinish } = loginStatusSlice.actions;
 export const getLoginStatus = (state: AppState) => state.loginStatus.loginStatus;
+export const getShowIndexLoadings = (state: AppState) => state.loginStatus.showIndexLoading;
 
 export default loginStatusSlice.reducer;

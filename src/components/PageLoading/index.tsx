@@ -4,6 +4,7 @@ import styles from './style.module.css';
 import { useMount } from 'ahooks';
 import { useState } from 'react';
 import Loading from 'components/Loading';
+import useTelegram from 'hooks/useTelegram';
 
 export interface ILoadingProps {
   content?: string;
@@ -11,12 +12,13 @@ export interface ILoadingProps {
 
 export default function PageLoading({ content }: ILoadingProps) {
   const [isMount, setIsMount] = useState(false);
+  const { isInTG } = useTelegram();
 
   useMount(() => {
     setIsMount(true);
   });
 
-  if (!isMount) return null;
+  if (!isMount || isInTG) return null;
 
   return (
     <Modal className={styles.loading} centered open={true} footer={null} closable={false} closeIcon={null}>

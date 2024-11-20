@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { storages } from 'constants/storages';
 import { fetchToken } from 'api/request';
 import { message } from 'antd';
@@ -148,6 +148,7 @@ export const useGetToken = () => {
           source = 'portkey';
         }
       }
+      if (!publicKey) return;
       const res = await getTokenFromServer({
         params: {
           grant_type: 'signature',

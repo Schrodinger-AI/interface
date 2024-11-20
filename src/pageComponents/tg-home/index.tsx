@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchVoteInfo, getCatDetail } from 'api/request';
+import { getCatDetail } from 'api/request';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
 import { useCallback, useEffect, useState } from 'react';
@@ -16,8 +16,6 @@ import { AdTracker } from 'utils/ad';
 import moment from 'moment';
 import FooterButtons from './components/FooterButtons';
 import FloatingButton from './components/FloatingButton';
-import ScrollAlert, { IScrollAlertItem } from 'components/ScrollAlert';
-import useGetNoticeData from 'pageComponents/tokensPage/hooks/useGetNoticeData';
 import { AcceptReferral } from 'contract/schrodinger';
 import { dispatch, store } from 'redux/store';
 import { setCatDetailInfo, setIsJoin } from 'redux/reducer/info';
@@ -32,6 +30,7 @@ import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
 import RewardsCard from './components/RewardsCard';
+import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
 
 export default function TgHome() {
   const router = useRouter();
@@ -44,9 +43,8 @@ export default function TgHome() {
   const isActivity = useIsInActivity();
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
-  const [noticeData, setNoticeData] = useState<IScrollAlertItem[]>([]);
+  const syncingOnChainLoading = useModal(SyncingOnChainLoading);
 
-  const { getNoticeData } = useGetNoticeData();
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
 
@@ -77,18 +75,11 @@ export default function TgHome() {
     }
   }, [cmsInfo?.curChain, isLogin, walletInfo?.address]);
 
-  const getNotice = useCallback(async () => {
-    try {
-      const res = await getNoticeData({
-        theme: 'dark',
-      });
-      setNoticeData(res);
-    } catch (error) {
-      setNoticeData([]);
-    }
-  }, [getNoticeData]);
-
   const OpenAdoptModal = useCallback(() => {
+    if (!isLogin) {
+      syncingOnChainLoading.show({ checkLogin: true });
+      return;
+    }
     if (isActivity) {
       dispatch(setCatDetailInfo(schrodingerDetail));
       router.push('/telegram/battle');
@@ -192,10 +183,6 @@ export default function TgHome() {
   useEffect(() => {
     getDetail();
   }, [getDetail]);
-
-  useEffect(() => {
-    getNotice();
-  }, [getNotice]);
 
   useEffect(() => {
     if (isInTelegram()) {
