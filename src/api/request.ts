@@ -315,3 +315,7 @@ export const catPool = async (): Promise<ICatPoolRes> => {
 export const catPoolRank = async (): Promise<ICatPoolRankRes> => {
   return request.get('/app/cat/pool-rank');
 };
+
+export const catRedeem = async (): Promise<ICatRedeemRes> => {
+  return request.post('/app/cat/redeem', {});
+};

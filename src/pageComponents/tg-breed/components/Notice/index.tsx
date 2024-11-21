@@ -7,6 +7,7 @@ import SkeletonImage from 'components/SkeletonImage';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
+import { useResponsive } from 'hooks/useResponsive';
 
 function Notice({
   status = false,
@@ -32,6 +33,7 @@ function Notice({
   theme?: TModalTheme;
 }) {
   const modal = useModal();
+  const { isLG } = useResponsive();
 
   const handleClose = () => {
     if (onClose) {
@@ -177,9 +179,10 @@ function Notice({
         onClose={handleClose}
         afterClose={handleClose}
         onOk={() => modal.hide()}
+        width={isLG ? '' : 438}
         onCancel={() => modal.hide()}
         footer={
-          <Flex className="w-full" gap={8}>
+          <Flex className="w-full px-0 lg:px-[32px]" gap={8}>
             {hideCancel ? null : (
               <Button
                 type={status ? 'default' : 'primary'}

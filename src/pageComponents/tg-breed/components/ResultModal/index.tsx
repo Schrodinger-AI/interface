@@ -6,6 +6,8 @@ import { Flex } from 'antd';
 import SkeletonImage from 'components/SkeletonImage';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import { Button } from 'aelf-design';
+import useResponsive from 'hooks/useResponsive';
+
 import clsx from 'clsx';
 
 function ResultModal({
@@ -23,6 +25,7 @@ function ResultModal({
   theme?: TModalTheme;
 }) {
   const modal = useModal();
+  const { isLG } = useResponsive();
 
   const handleClose = () => {
     modal.remove();
@@ -88,9 +91,10 @@ function ResultModal({
         onClose={handleClose}
         disableMobileLayout={true}
         afterClose={handleClose}
+        width={isLG ? '' : 438}
         onCancel={() => modal.hide()}
         footer={
-          <Flex className="w-full" gap={8}>
+          <Flex className="w-full px-0 lg:px-[32px]" gap={8}>
             <Button type="primary" size="large" className="w-full" onClick={onConfirm}>
               Confirm
             </Button>
