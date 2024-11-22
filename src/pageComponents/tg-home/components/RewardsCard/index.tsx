@@ -1,6 +1,6 @@
-import { catPool } from 'api/request';
+import { catPool, catPoolRank } from 'api/request';
 import Rewards from 'pageComponents/tg-breed/components/Rewards';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { divDecimals } from 'utils/calculate';
 import { formatTokenPrice } from 'utils/format';
@@ -13,7 +13,7 @@ function RewardsCard({ theme = 'light' }: { theme?: TModalTheme }) {
   const [prizePoolInfo, setPrizePoolInfo] = useState<ICatPoolRes>();
 
   const getCatPool = async () => {
-    if (!isLogin || isOver) return;
+    if (isOver) return;
     const res = await catPool();
     const prize = formatTokenPrice(divDecimals(res.prize, 8));
     const usdtValue = formatTokenPrice(divDecimals(res.usdtValue, 8));
@@ -24,6 +24,15 @@ function RewardsCard({ theme = 'light' }: { theme?: TModalTheme }) {
     pollingInterval: 5000,
     refreshDeps: [isLogin, isOver],
   });
+
+  const getCatPoolRank = useCallback(async () => {
+    const res = await catPoolRank();
+    setIsOver(res.isOver);
+  }, []);
+
+  useEffect(() => {
+    getCatPoolRank();
+  }, [getCatPoolRank]);
 
   return (
     <Rewards

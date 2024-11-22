@@ -8,12 +8,14 @@ import loadingCatWhite from 'assets/img/loading-cat-white.gif';
 function SyncAdoptModal({
   closable = false,
   innerText = "Please don't close this window until you complete the adoption.",
+  title = 'Adopting Cat...',
   showLoading = true,
   theme = 'light',
   onCancel,
 }: {
   closable: boolean;
   innerText: string;
+  title?: string;
   showLoading: boolean;
   theme?: TModalTheme;
   onCancel: () => void;
@@ -30,7 +32,7 @@ function SyncAdoptModal({
       theme={theme}
       width={438}
       disableMobileLayout={true}
-      title={'Adopt Cats'}
+      title={title}
       footer={null}>
       <div className="flex flex-col gap-6">
         {showLoading && (

@@ -512,3 +512,10 @@ interface ICatPoolRankRes extends IWinnerInfo {
     image: string;
   }[];
 }
+
+interface ICatRedeemRes {
+  tick: string;
+  adoptId: string;
+  level: number;
+  signature: string;
+}

@@ -4,11 +4,11 @@ import loadingCat from 'assets/img/loading-cat-transparent.gif';
 import TgModal from 'components/TgModal';
 import { Flex } from 'antd';
 
-function TGAdoptLoading() {
+function TGAdoptLoading({ innerText, title }: { innerText?: string; title?: string }) {
   const modal = useModal();
   return (
     <TgModal
-      title="Adopting Cat..."
+      title={title || 'Adopting Cat...'}
       open={modal.visible}
       hideHeader={false}
       maskClosable={false}
@@ -24,7 +24,7 @@ function TGAdoptLoading() {
               <img src={require('assets/img/info.png').default.src} alt="" className="w-[20px] h-[20px] z-10" />
             </div>
             <p className="flex-auto text-white leading-[22px] text-[14px] font-medium ">
-              Please do not close this window until adoption is completed
+              {innerText || 'Please do not close this window until adoption is completed'}
             </p>
           </Flex>
         </Flex>
