@@ -34,10 +34,14 @@ function RewardResult({ winnerInfo, theme }: { winnerInfo?: IWinnerInfo; theme?:
 
   const onRedeemConfirm = async () => {
     redeemNotice.hide();
+    const adoptLoadingInfo = {
+      title: 'Redeeming Prize',
+      innerText: 'Please do not close this window until Redeem is completed',
+    };
     if (isDark) {
-      tgAdoptLoading.show();
+      tgAdoptLoading.show(adoptLoadingInfo);
     } else {
-      syncAdoptModal.show();
+      syncAdoptModal.show(adoptLoadingInfo);
     }
     try {
       const res = await catRedeem();
