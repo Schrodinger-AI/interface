@@ -190,3 +190,13 @@ export const Merge = async (
   },
   options?: IContractOptions,
 ): Promise<ISendResult> => await schrodingerContractRequest('Merge', params, options);
+
+export const Redeem = async (
+  params: {
+    tick: string;
+    adoptId: string;
+    level: number;
+    signature: string;
+  },
+  options?: IContractOptions,
+): Promise<ISendResult> => await schrodingerContractRequest('Redeem', params, options);
