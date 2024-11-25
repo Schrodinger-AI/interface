@@ -31,6 +31,7 @@ import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
 import RewardsCard from './components/RewardsCard';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
+import { Button } from 'antd';
 
 export default function TgHome() {
   const router = useRouter();
@@ -198,6 +199,12 @@ export default function TgHome() {
         isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
       )}>
       <BalanceModule balanceData={balanceData} />
+      <Button
+        onClick={() => {
+          console.log('=====');
+        }}>
+        add
+      </Button>
       {/* {noticeData && noticeData?.length ? (
         <div className="relative z-20 w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />

@@ -148,6 +148,16 @@ export default function AdoptModule({
           <MergeTextSVG className="mt-[4px]" />
         </Flex>
       </div>
+      <div onClick={() => router.push('/merge-tutorial')} className="absolute top-[274px] right-0 z-20">
+        <Flex
+          vertical
+          justify="center"
+          align="center"
+          className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
+          <CatPowSVG className="w-[32px] h-[32px]" />
+          <MergeTextSVG className="mt-[4px]" />
+        </Flex>
+      </div>
     </div>
   );
 }
