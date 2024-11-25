@@ -37,7 +37,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','GTM-MSLRBBX2');`,
         }}></Script>
-      <Script src="https://telegram.org/js/telegram-web-app.js" />
+      <Script src="https://telegram.org/js/telegram-web-app.js?version=8.0" />
       <Script src={`https://tma.tonjoy.ai/sdk/ttag.browser.js?media_id=${mediaId}`} />
       <body>
         <noscript
