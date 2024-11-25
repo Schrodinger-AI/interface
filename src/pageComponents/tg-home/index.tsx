@@ -37,7 +37,7 @@ export default function TgHome() {
   const router = useRouter();
   const adoptHandler = useAdoptHandler();
   const { walletInfo } = useConnectWallet();
-  const { isInTelegram } = useTelegram();
+  const { isInTelegram, isInTG } = useTelegram();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
@@ -152,17 +152,24 @@ export default function TgHome() {
     }
   };
 
-  const acceptReferral = async (referrerAddress: string) => {
-    try {
-      await AcceptReferral({
-        referrer: referrerAddress,
-      });
+  const acceptReferral = useCallback(
+    async (referrerAddress: string) => {
+      try {
+        await AcceptReferral({
+          referrer: referrerAddress,
+        });
 
-      store.dispatch(setIsJoin(true));
-    } catch (error) {
-      /* empty */
-    }
-  };
+        if (isInTG) {
+          await getLoginFish();
+        }
+
+        store.dispatch(setIsJoin(true));
+      } finally {
+        syncingOnChainLoading.hide();
+      }
+    },
+    [isInTG, syncingOnChainLoading],
+  );
 
   useEffect(() => {
     if (!walletInfo?.address) return;
@@ -176,10 +183,13 @@ export default function TgHome() {
 
       console.log('=====referrerAddress', referrerAddress);
       if (referrerAddress) {
+        syncingOnChainLoading.show({
+          closable: false,
+        });
         acceptReferral(referrerAddress);
       }
     }
-  }, [isLogin, isJoin]);
+  }, [isLogin, isJoin, acceptReferral, syncingOnChainLoading]);
 
   useEffect(() => {
     getDetail();
@@ -191,6 +201,14 @@ export default function TgHome() {
     }
   }, [isInTelegram]);
 
+  const addToHomeScreen = () => {
+    console.log('=====addToHomeScreen WebApp', window?.Telegram?.WebApp);
+    if (window?.Telegram?.WebApp?.addToHomeScreen) {
+      console.log('=====addToHomeScreen addToHomeScreen', window?.Telegram?.WebApp?.addToHomeScreen);
+      window?.Telegram?.WebApp?.addToHomeScreen();
+    }
+  };
+
   return (
     <div
       style={{ backgroundImage: `url(${cmsInfo?.homeBg})` }}
@@ -201,9 +219,9 @@ export default function TgHome() {
       <BalanceModule balanceData={balanceData} />
       <Button
         onClick={() => {
-          console.log('=====');
+          addToHomeScreen();
         }}>
-        add
+        addToHomeScreen
       </Button>
       {/* {noticeData && noticeData?.length ? (
         <div className="relative z-20 w-full h-[32px] overflow-hidden my-[8px] rounded-md">
@@ -216,4 +234,7 @@ export default function TgHome() {
       <FloatingButton />
     </div>
   );
+}
+function getLoginFish() {
+  throw new Error('Function not implemented.');
 }
