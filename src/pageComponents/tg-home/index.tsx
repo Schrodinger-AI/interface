@@ -203,8 +203,16 @@ export default function TgHome() {
 
   const addToHomeScreen = () => {
     console.log('=====addToHomeScreen WebApp', window?.Telegram?.WebApp);
+
+    const version = window?.Telegram?.WebApp?.version;
+    console.log('=====addToHomeScreen version', version);
+    console.log('=====addToHomeScreen addToHomeScreen', window?.Telegram?.WebApp?.addToHomeScreen);
+
+    if (version < 8) return;
+    console.log('=====addToHomeScreen version >= 8');
+
     if (window?.Telegram?.WebApp?.addToHomeScreen) {
-      console.log('=====addToHomeScreen addToHomeScreen', window?.Telegram?.WebApp?.addToHomeScreen);
+      console.log('=====addToHomeScreen run addToHomeScreen');
       window?.Telegram?.WebApp?.addToHomeScreen();
     }
   };
