@@ -42,6 +42,7 @@ interface IAdoptImageInfo {
   };
   image: string;
   signature: string;
+  underMaintenance?: boolean;
   imageUri: string;
 }
 

@@ -7,6 +7,7 @@ import { timesDecimals } from 'utils/calculate';
 import ProtoInstance from 'utils/initializeProto';
 import { AdoptActionErrorCode } from './adopt';
 import { WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
+import { message } from 'antd';
 
 export interface IAttribute {
   traitType: string;
@@ -139,10 +140,15 @@ export const fetchTraitsAndImages = async ({
   transactionHash?: string;
   count?: number;
   faction?: string;
-}): Promise<IAdoptImageInfo> => {
+}): Promise<IAdoptImageInfo | null> => {
   count++;
   try {
     const result = await fetchSchrodingerImagesByAdoptId({ adoptId, adoptOnly, address, transactionHash, faction });
+    console.log('=====fetchTraitsAndImages result', result);
+    if (result.underMaintenance) {
+      message.error('Unboxing is temporarily disabled during server maintenance.');
+      return null;
+    }
     if (adoptOnly) {
       if (result?.adoptImageInfo?.boxImage && result?.adoptImageInfo?.attributes) {
         return result;
@@ -154,6 +160,7 @@ export const fetchTraitsAndImages = async ({
     return result;
   } catch (error) {
     // Waiting to generate ai picture
+    console.log('=====fetchTraitsAndImages error', error);
     if (adoptOnly) {
       await sleep(1000);
     } else {
