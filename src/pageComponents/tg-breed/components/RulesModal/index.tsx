@@ -5,9 +5,11 @@ import styles from './index.module.css';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
+import { useCmsInfo } from 'redux/hooks';
 
 function RulesModal({ theme }: { theme?: TModalTheme }) {
   const modal = useModal();
+  const cmsInfo = useCmsInfo();
   const modalContent = () => {
     return (
       <div className={clsx(styles.rules, theme === 'dark' ? styles['dark-rules'] : '')}>
@@ -15,8 +17,8 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
           <h2>🌟 S-CAT $1,000+ Cat Merge Event Season 1 is LIVE! 🌟</h2>
           <h4>
             🎉 $1,000 SGR + an ever-growing Bonus Prize is up for grabs. ONE winner takes it ALL! Level up by adopting
-            cats and merging them into the rare Gold III. The chase is on: the first to own Gold III wins the entire
-            Prize Pool! 💰
+            cats and merging them into the rare {cmsInfo?.winningCatLevel || 'Gold III'} . The chase is on: the first to
+            own {cmsInfo?.winningCatLevel || 'Gold III'} wins the entire Prize Pool! 💰
           </h4>
           <h3>🗓 Event Duration:</h3>
           <h4>Nov 14th - Dec 14th. Each week is a new &quot;Round&quot;!</h4>
@@ -38,8 +40,8 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
             </li>
             <li>
               <p>
-                If no Gold III emerges by week&apos;s end, 80% of the Bonus Prize Pool will roll into the next
-                round&apos;s Prize Pool, keeping the stakes high and your pulse higher!
+                If no {cmsInfo?.winningCatLevel || 'Gold III'} emerges by week&apos;s end, 80% of the Bonus Prize Pool
+                will roll into the next round&apos;s Prize Pool, keeping the stakes high and your pulse higher!
               </p>
             </li>
           </ol>
@@ -52,8 +54,8 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
           <p>The reroll will burn the NFT and the owner will receive 0.5 SGR in return.</p>
           <h3>🔑 Prize Distribution:</h3>
           <p>
-            The first to hit the &quot;Redeem&quot; button with a Gold III cat can claim the entire prize pool! The Gold
-            III NFT will then be burnt.
+            The first to hit the &quot;Redeem&quot; button with a {cmsInfo?.winningCatLevel || 'Gold III'} cat can claim
+            the entire prize pool! The {cmsInfo?.winningCatLevel || 'Gold III'} NFT will then be burnt.
           </p>
           <h4 className="!mt-[16px]">
             🐱 Join the game and merge wisely —your path to take home the entire Prize is just a merge away! 👑

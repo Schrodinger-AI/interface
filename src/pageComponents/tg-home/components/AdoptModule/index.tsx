@@ -10,10 +10,13 @@ import { ReactComponent as MyBagsTextSVG } from 'assets/img/telegram/home-list/m
 import { ReactComponent as PoolsTextSVG } from 'assets/img/telegram/home-list/pools.svg';
 import { ReactComponent as LuckySpinTextSVG } from 'assets/img/telegram/home-list/lucky-spin.svg';
 import { ReactComponent as ShoppingTextSVG } from 'assets/img/telegram/home-list/shopping.svg';
+import { ReactComponent as TutorialSVG } from 'assets/img/telegram/home-list/tutorial.svg';
+import { ReactComponent as HowToWinTextSVG } from 'assets/img/telegram/home-list/how-to-win.svg';
 import { ReactComponent as CatPowSVG } from 'assets/img/telegram/icon-cat-paw.svg';
 import { ReactComponent as MergeTextSVG } from 'assets/img/telegram/home-list/merge.svg';
 import { ReactComponent as BoxLeftSVG } from 'assets/img/telegram/box-left.svg';
 import { ReactComponent as BoxRightSVG } from 'assets/img/telegram/box-right.svg';
+import { ReactComponent as VoucherSVG } from 'assets/img/telegram/home/icon_voucher.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
 import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -85,7 +88,17 @@ export default function AdoptModule({
             <img src={require('assets/img/telegram/adopt-card.png').default.src} alt="" className="w-[40vw]" />
 
             <TGButton size="large" className="mt-4 w-[150px]" onClick={onAdopt}>
-              <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
+              <div className="flex flex-col justify-center items-center">
+                <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
+                {cmsInfo?.adoptVoucherNumber ? (
+                  <div className="flex justify-center items-center h-[10px] overflow-hidden mt-[4px]">
+                    <VoucherSVG />
+                    <span className="text-pixelsWhiteBg text-xs font-medium ml-[2px]">
+                      +{cmsInfo.adoptVoucherNumber}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
             </TGButton>
           </Flex>
         </div>
@@ -154,8 +167,8 @@ export default function AdoptModule({
           justify="center"
           align="center"
           className="w-[72px] h-[72px] bg-[var(--fill-mask-7)] rounded-[8px]">
-          <CatPowSVG className="w-[32px] h-[32px]" />
-          <MergeTextSVG className="mt-[4px]" />
+          <TutorialSVG className="w-[32px] h-[32px]" />
+          <HowToWinTextSVG className="mt-[4px]" />
         </Flex>
       </div>
     </div>

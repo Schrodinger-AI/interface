@@ -181,6 +181,9 @@ export type TCustomizationItemType = {
   voteActivityStartTime: string;
   voteActivityEndTime: string;
   taskClaimInterval?: number;
+  winningCatLevel?: string;
+  adoptVoucherNumber?: number;
+
   [key: string]: any;
 };
 
