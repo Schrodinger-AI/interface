@@ -408,6 +408,7 @@ interface ITaskListData {
   dailyTasks: ITaskItem[];
   socialTasks: ITaskItem[];
   accomplishmentTasks: ITaskItem[];
+  partnerTasks: ITaskItem[];
 }
 
 interface ITaskItem {
