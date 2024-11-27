@@ -135,6 +135,10 @@ export default function useAdoptWithVoucher() {
                 adoptOnly: true,
                 address: walletInfo.address,
               });
+              if (!blindInfo) {
+                tgAdoptLoading.hide();
+                return;
+              }
               console.log('blindInfo', blindInfo);
               const traits = formatTraits(voucherInfo.attributes.data);
               let catsRankProbability: TRankInfoAddLevelInfo | false = false;

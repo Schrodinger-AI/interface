@@ -174,6 +174,12 @@ function BreedModule({ theme = 'light', updateRank }: { theme?: TModalTheme; upd
         address: walletInfo.address,
       });
 
+      if (!catInfo) {
+        tgAdoptLoading.hide();
+        syncAdoptModal.hide();
+        return;
+      }
+
       const catsRankProbability = await getCatsRankProbability({
         symbol: logs.adoptInfo.symbol,
       });
