@@ -141,6 +141,8 @@ module.exports = {
         pixelsTextGray: 'var(--pixels-text-gray)',
         pixelsModalTextBg: 'var(--pixels-modal-text-bg)',
         tgSubCyan: 'var(--tg-sub-cyan)',
+
+        botBrand: 'var(--bot-brand)',
       },
       fontSize: {
         xxs: ['10px', '16px'],

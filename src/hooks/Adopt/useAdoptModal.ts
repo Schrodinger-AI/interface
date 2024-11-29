@@ -149,7 +149,11 @@ const useAdoptHandler = () => {
       theme?: TModalTheme;
       isBlind?: boolean;
       adoptId?: string;
-    }): Promise<IAdoptedLogs> =>
+    }): Promise<
+      IAdoptedLogs & {
+        voucherAmount?: number;
+      }
+    > =>
       new Promise((resolve, reject) => {
         promptModal.show({
           info: {
@@ -291,15 +295,16 @@ const useAdoptHandler = () => {
               isBlind,
               blindMax,
             });
-        const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash } = await approveAdopt({
-          amount,
-          account,
-          isDirect,
-          parentItemInfo,
-          theme,
-          isBlind,
-          adoptId: blindAdoptId,
-        });
+        const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash, voucherAmount } =
+          await approveAdopt({
+            amount,
+            account,
+            isDirect,
+            parentItemInfo,
+            theme,
+            isBlind,
+            adoptId: blindAdoptId,
+          });
 
         await adoptConfirm({
           parentItemInfo,
@@ -308,6 +313,7 @@ const useAdoptHandler = () => {
           theme,
           prePage,
           faction,
+          voucherAmount,
         });
       } catch (error) {
         console.log(error, 'error==');

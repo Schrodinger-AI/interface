@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import clsx from 'clsx';
 import { useJumpToPage } from 'hooks/useJumpToPage';
 import useResponsive from 'hooks/useResponsive';
-import { usePathname, useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useCmsInfo } from 'redux/hooks';
 
 function WebAds() {
   const cmsInfo = useCmsInfo();
-  const router = useRouter();
   const { isLG, isXL } = useResponsive();
   const { jumpToPage } = useJumpToPage();
 
@@ -36,9 +33,11 @@ function WebAds() {
   if (currentBackgroundImage) {
     return (
       <div
-        className="mx-[16px] mb-[16px] h-[34vw] rounded-[8px] overflow-hidden bg-center bg-no-repeat bg-cover block"
-        style={{ backgroundImage: `url(${currentBackgroundImage})` }}
-        onClick={onClick}></div>
+        className="mb-[16px] px-[16px] lg:px-0 lg:mb-[32px] lg:mt-[16px]"
+        // style={{ backgroundImage: `url(${currentBackgroundImage})` }}
+        onClick={onClick}>
+        <img src={currentBackgroundImage} className="w-full h-auto" alt="" />
+      </div>
     );
   }
   return null;

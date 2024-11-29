@@ -31,12 +31,15 @@ import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
 import RewardsCard from './components/RewardsCard';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
+import { Button } from 'antd';
+import useGetLoginFish from 'hooks/useGetLoginFish';
+import BigNumber from 'bignumber.js';
 
 export default function TgHome() {
   const router = useRouter();
   const adoptHandler = useAdoptHandler();
   const { walletInfo } = useConnectWallet();
-  const { isInTelegram } = useTelegram();
+  const { isInTelegram, isInTG } = useTelegram();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
@@ -44,6 +47,7 @@ export default function TgHome() {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const syncingOnChainLoading = useModal(SyncingOnChainLoading);
+  const { getLoginFish } = useGetLoginFish();
 
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
@@ -151,17 +155,24 @@ export default function TgHome() {
     }
   };
 
-  const acceptReferral = async (referrerAddress: string) => {
-    try {
-      await AcceptReferral({
-        referrer: referrerAddress,
-      });
+  const acceptReferral = useCallback(
+    async (referrerAddress: string) => {
+      try {
+        await AcceptReferral({
+          referrer: referrerAddress,
+        });
 
-      store.dispatch(setIsJoin(true));
-    } catch (error) {
-      /* empty */
-    }
-  };
+        if (isInTG) {
+          await getLoginFish();
+        }
+
+        store.dispatch(setIsJoin(true));
+      } finally {
+        syncingOnChainLoading.hide();
+      }
+    },
+    [getLoginFish, isInTG, syncingOnChainLoading],
+  );
 
   useEffect(() => {
     if (!walletInfo?.address) return;
@@ -175,10 +186,13 @@ export default function TgHome() {
 
       console.log('=====referrerAddress', referrerAddress);
       if (referrerAddress) {
+        syncingOnChainLoading.show({
+          closable: false,
+        });
         acceptReferral(referrerAddress);
       }
     }
-  }, [isLogin, isJoin]);
+  }, [isLogin, isJoin, acceptReferral, syncingOnChainLoading]);
 
   useEffect(() => {
     getDetail();
@@ -190,6 +204,17 @@ export default function TgHome() {
     }
   }, [isInTelegram]);
 
+  const shareMessage = () => {
+    const telegramBotTokenTestnet = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN_TESTNET;
+    const telegramBotToken = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
+    const telegramBotIdTestnet = process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID_TESTNET;
+    const telegramBotId = process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID;
+    console.log('=====shareMessage telegramBotTokenTestnet', telegramBotTokenTestnet);
+    console.log('=====shareMessage telegramBotToken', telegramBotToken);
+    console.log('=====shareMessage telegramBotIdTestnet', telegramBotIdTestnet);
+    console.log('=====shareMessage telegramBotId', telegramBotId);
+  };
+
   return (
     <div
       style={{ backgroundImage: `url(${cmsInfo?.homeBg})` }}
@@ -198,13 +223,24 @@ export default function TgHome() {
         isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
       )}>
       <BalanceModule balanceData={balanceData} />
+      <Button
+        onClick={() => {
+          shareMessage();
+        }}>
+        share
+      </Button>
       {/* {noticeData && noticeData?.length ? (
         <div className="relative z-20 w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />
         </div>
       ) : null} */}
       <RewardsCard theme="dark" />
-      <AdoptModule onAdopt={OpenAdoptModal} isInActivity={isActivity} cId={schrodingerDetail?.collectionId || ''} />
+      <AdoptModule
+        fishBalance={balanceData?.[1].amount}
+        onAdopt={OpenAdoptModal}
+        isInActivity={isActivity}
+        cId={schrodingerDetail?.collectionId || ''}
+      />
       <FooterButtons />
       <FloatingButton />
     </div>

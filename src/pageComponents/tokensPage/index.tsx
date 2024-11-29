@@ -104,6 +104,7 @@ export default function TokensPage() {
   return (
     <div className="flex flex-col max-w-[2560px] w-full">
       {cmsInfo?.bannerConfig ? <TopBanner /> : null}
+      {cmsInfo?.webAds && !isLG ? <WebAds /> : null}
       <div
         className={clsx(
           'flex flex-col-reverse lg:flex-row justify-between px-0 lg:px-[40px]',

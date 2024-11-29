@@ -17,11 +17,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
 import { useModal } from '@ebay/nice-modal-react';
+import useGetUnfinishedTasks from './useGetUnfinishedTasks';
 
 export default function FooterButtons() {
   const pathname = usePathname();
   const router = useRouter();
   const syncingOnChainLoading = useModal(SyncingOnChainLoading);
+  const { hasUnfinishedTasks } = useGetUnfinishedTasks();
 
   const { isLogin } = useGetLoginStatus();
   const onHandleClick = (href: string) => {
@@ -51,11 +53,18 @@ export default function FooterButtons() {
           </Link>
           <div onClick={() => onHandleClick('/telegram/tasks')} className="flex-1">
             <Flex vertical align="center" justify="center" className="!w-full">
-              {pathname === '/telegram/tasks' ? (
-                <TasksSelectedSVG className="w-[40px] h-[40px]" />
-              ) : (
-                <TasksUnSelectedSVG className="w-[40px] h-[40px]" />
-              )}
+              <div className="relative">
+                {hasUnfinishedTasks ? (
+                  <div className="absolute top-[0] right-[0] w-[8px] h-[8px] rounded-[4px] bg-functionalError" />
+                ) : null}
+
+                {pathname === '/telegram/tasks' ? (
+                  <TasksSelectedSVG className="w-[40px] h-[40px]" />
+                ) : (
+                  <TasksUnSelectedSVG className="w-[40px] h-[40px]" />
+                )}
+              </div>
+
               <Image src={TasksIcon} className="w-auto h-[10px] mt-[4px]" alt="" />
             </Flex>
           </div>

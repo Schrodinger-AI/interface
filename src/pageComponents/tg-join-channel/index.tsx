@@ -9,6 +9,7 @@ import { useState } from 'react';
 import useTelegram from 'hooks/useTelegram';
 import throttle from 'lodash-es/throttle';
 import { useRouter } from 'next/navigation';
+import { ENVIRONMENT } from 'constants/url';
 
 function TgJoinChannel() {
   const [isShaking, setIsShaking] = useState(false);
@@ -16,7 +17,11 @@ function TgJoinChannel() {
   const cmsInfo = useCmsInfo();
   const { getTgUserId } = useTelegram();
   const userId = getTgUserId();
-  const token = cmsInfo?.telegramBotToken;
+  const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+  const token =
+    env === ENVIRONMENT.TEST
+      ? process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN_TESTNET
+      : process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
   const chatId = cmsInfo?.telegramBotChatId;
 
   const handleVerify = throttle(
