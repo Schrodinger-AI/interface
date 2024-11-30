@@ -17,6 +17,7 @@ export default function TgHome() {
   const [countdown, setCountdown] = useState(0);
   const [dailyTasks, setDailyTasks] = useState<ITaskItem[]>([]);
   const [socialTasks, setSocialTasks] = useState<ITaskItem[]>([]);
+  const [partnerTasks, setPartnerTasksTasks] = useState<ITaskItem[]>([]);
   const [accomplishmentTasks, setAccomplishmentTasks] = useState<ITaskItem[]>([]);
 
   const { isLogin } = useGetLoginStatus();
@@ -25,10 +26,11 @@ export default function TgHome() {
 
   const getTaskList = async () => {
     try {
-      const { countdown, dailyTasks, socialTasks, accomplishmentTasks } = await fetchTasksList();
+      const { countdown, dailyTasks, socialTasks, partnerTasks, accomplishmentTasks } = await fetchTasksList();
       setCountdown(countdown || 0);
       setDailyTasks(dailyTasks || []);
       setSocialTasks(socialTasks || []);
+      setPartnerTasksTasks(partnerTasks || []);
       setAccomplishmentTasks(accomplishmentTasks || []);
     } catch (error) {
       /* empty */
@@ -72,6 +74,17 @@ export default function TgHome() {
     data?.fishScore && updatePoints(data.fishScore);
   };
 
+  const onPartnerUpdate = (index: number, data: ITaskResponse) => {
+    setPartnerTasksTasks((prevItems) => {
+      const newItems = [...prevItems];
+      if (index >= 0 && index < newItems.length) {
+        newItems[index] = { ...newItems[index], status: data.status };
+      }
+      return newItems;
+    });
+    data?.fishScore && updatePoints(data.fishScore);
+  };
+
   const onNewUpdate = (index: number, data: ITaskResponse) => {
     setAccomplishmentTasks((prevItems) => {
       const newItems = [...prevItems];
@@ -104,6 +117,8 @@ export default function TgHome() {
         />
 
         {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={onSocialUpdate} />}
+
+        {partnerTasks.length > 0 && <TaskModule title="Partner" tasks={partnerTasks} onUpdate={onPartnerUpdate} />}
 
         {accomplishmentTasks.length > 0 && (
           <TaskModule title="Achievements" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />

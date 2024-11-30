@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { GlobalConfigProps } from '@portkey/did-ui-react/dist/_types/src/components/config-provider/types';
 import { appName } from 'constants/common';
 import { useCmsInfo } from 'redux/hooks';
+import { ENVIRONMENT } from 'constants/url';
 
 export default function useWebLoginConfig() {
   const cmsInfo = useCmsInfo();
@@ -16,13 +17,17 @@ export default function useWebLoginConfig() {
     graphqlServerV2,
     connectUrlV2,
     portkeyServerV2,
-    telegramBotId,
     rpcUrlAELF,
     rpcUrlTDVV,
     rpcUrlTDVW,
   } = cmsInfo || {};
 
   const didConfig: GlobalConfigProps = useMemo(() => {
+    const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+    const telegramBotId =
+      env === ENVIRONMENT.TEST
+        ? process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID_TESTNET
+        : process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID;
     return {
       graphQLUrl: graphqlServerV2,
       connectUrl: connectUrlV2,
@@ -49,7 +54,7 @@ export default function useWebLoginConfig() {
         },
       },
     };
-  }, [connectUrlV2, graphqlServerV2, networkTypeV2, portkeyServerV2, telegramBotId]);
+  }, [connectUrlV2, graphqlServerV2, networkTypeV2, portkeyServerV2]);
 
   const baseConfig: IBaseConfig = useMemo(() => {
     return {

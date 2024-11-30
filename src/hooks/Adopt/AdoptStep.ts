@@ -84,7 +84,25 @@ export const adoptStep1Handler = async ({
     TransactionResult,
   });
   if (!logs) throw AdoptActionErrorCode.adoptFailed;
-  return { ...logs, transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId };
+
+  let voucherAmount = 0;
+  if (isDirect) {
+    const voucherAddedLogs = await ProtoInstance.getLogEventResult<{
+      tick: string;
+      account: string;
+      amount: number;
+    }>({
+      contractAddress,
+      logsName: 'VoucherAdded',
+      TransactionResult,
+    });
+    voucherAmount = voucherAddedLogs ? voucherAddedLogs.amount : 0;
+  }
+  return {
+    ...logs,
+    voucherAmount,
+    transactionHash: TransactionResult.TransactionId || TransactionResult.transactionId,
+  };
 };
 
 export const adoptBlindHandler = async ({ adoptId }: { adoptId: string }) => {

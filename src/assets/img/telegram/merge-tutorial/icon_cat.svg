@@ -1,0 +1,46 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<mask id="mask0_34077_984" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="24" y="0" width="24" height="48">
+<rect x="24" width="24" height="48" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_34077_984)">
+<g filter="url(#filter0_d_34077_984)">
+<rect x="-4" y="-4" width="56" height="56" fill="url(#pattern0_34077_984)" shape-rendering="crispEdges"/>
+</g>
+</g>
+<mask id="mask1_34077_984" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="48">
+<rect width="24" height="48" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask1_34077_984)">
+<g filter="url(#filter1_d_34077_984)">
+<rect x="-4" y="-4" width="56" height="56" fill="url(#pattern1_34077_984)" shape-rendering="crispEdges"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_34077_984" x="-4" y="-4" width="56" height="58" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_34077_984"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_34077_984" result="shape"/>
+</filter>
+<pattern id="pattern0_34077_984" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_34077_984" transform="scale(0.0078125)"/>
+</pattern>
+<filter id="filter1_d_34077_984" x="-4" y="-4" width="56" height="58" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_34077_984"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_34077_984" result="shape"/>
+</filter>
+<pattern id="pattern1_34077_984" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_34077_984" transform="scale(0.0078125)"/>
+</pattern>
+<image id="image0_34077_984" width="128" height="128" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAgZJREFUeJzt3dFxgkAYhVGTSRPWgW3YhrZhG9ZhG1KHZSTvToY/zLIKuee8kgBmvtnJLiC7HQAAAAAAAAAAAACwbR+vPuAwDN8tvz+O48vPeY6tfb7PVx6M9RFAOAGEE0A4AYQTQDgBhPt69wk8u16vk9vP5/PkPLv3PLqa5//h/Bc9n1ZGgHACCCeAcAIIJ4BwAggngHCrWweoDMNQ/UjT9fgFjr8pRoBwAggngHACCCeAcAIIJ4Bwq1sHeDwek9vHcZzcfrlc3rq9Ov+1MQKEE0A4AYQTQDgBhBNAOAGEm30Pfevz79U8urfWeX5vrcef+1yEESCcAMIJINzqrgVUbrfb5Pbj8fivj780I0A4AYQTQLjZ/wNU88zWdYLe3j3Pb7X09x8YAcIJIJwAwm1uHaC6J7D3PPzdx1+aESCcAMIJIJwAwgkgnADCCSDc7HWA3mv91fX23vtvncf33n/193dPILMIIJwAwgkgnADCCSCcAMKt7p7Aap58Op1adl9ez6/2X70TqPd3BLknkEUJIJwAwgkgnADCCSCcAMJ1fc/ub6p1gurZvf1+P7m9ejdv9c6fap2gdR2g+ny93338zAgQTgDhBBBOAOEEEE4A4QQQbvE55/1+b7ofoJrHb121jlA5HA7uB2A5AggngHACCCeAcAIIJwAAAAAAAAAAAAAAgE37AYARd4VaQOlIAAAAAElFTkSuQmCC"/>
+<image id="image1_34077_984" width="128" height="128" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAiNJREFUeJzt3TFO3EAYhuEFRUpDiZR+cwfK5QQcJFunSBOhiCZF6uUgnADK3AF6pJRpUkGPovllzXix9T1P6zU26NWIGdvrzQYAAAAAAAAAAAAAWLeTYx/wy/nHl579b//8O/o5T7G23+/0mAdjeQQQTgDhBBBOAOEEEE4A4T689wm8dfj9o/2Bi+vmPHvueXQ1z6/Of39xPfR8ehkBwgkgnADCCSCcAMIJIJwAwi1uHaDy9fJz+wP3j13X47uPvzJGgHACCCeAcAIIJ4BwAggngHDLWwe4OzQ3b3ft3Q+7TwNP5n/+tjcX5780RoBwAggngHACCCeAcAIIJ4Bwk++h733+/fB97nn6uu1vnrv2n/pchBEgnADCCSDc8q4FFJ4ezprbt7tirX7lxx/NCBBOAOEEEG7y/wDVPLN3nYC20d9/YAQIJ4BwAgi3unWAX/ePze1z3xP43scfzQgQTgDhBBBOAOEEEE4A4QQQbvI6wNxr/dX19s2m7565ua/nz/3zq7+/ewKZRADhBBBOAOEEEE4A4QQQbvj7dcp36vQ+G3i179q9emdP+c6iSud3BFXPBronkKEEEE4A4QQQTgDhBBBOAOGGPxdQzlNvnmddJ6jm+dU7f+ZeJzj2PL9iBAgngHACCCeAcAIIJ4BwAgg3fM758vSz67mBah6+dr3rCCfbb+4HYBwBhBNAOAGEE0A4AYQTAAAAAAAAAAAAAADAqr0CYUpmfVY5u44AAAAASUVORK5CYII="/>
+</defs>
+</svg>

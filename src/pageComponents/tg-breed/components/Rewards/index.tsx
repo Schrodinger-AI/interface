@@ -10,6 +10,7 @@ import { useModal } from '@ebay/nice-modal-react';
 import RulesModal from '../RulesModal';
 import { TModalTheme } from 'components/CommonModal';
 import ScrollAlert from 'components/ScrollAlert';
+import { useCmsInfo } from 'redux/hooks';
 
 function Rewards({
   countdown,
@@ -34,6 +35,7 @@ function Rewards({
   const deadline = useMemo(() => {
     return countdown ? Date.now() + countdown * 1000 : 0;
   }, [countdown]);
+  const cmsInfo = useCmsInfo();
 
   const format = useMemo(
     () =>
@@ -92,7 +94,7 @@ function Rewards({
         <ScrollAlert
           data={[
             {
-              text: 'The first to own Gold III wins the entire Prize Pool!',
+              text: `The first to own ${cmsInfo?.winningCatLevel || 'Gold III'} wins the entire Prize Pool!`,
             },
           ]}
           theme={theme}

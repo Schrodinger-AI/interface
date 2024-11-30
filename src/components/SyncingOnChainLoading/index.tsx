@@ -10,9 +10,11 @@ import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 function SyncingOnChainLoading({
   checkLogin,
   checkLoginOnChainStatus,
+  closable = true,
 }: {
   checkLoginOnChainStatus?: boolean;
   checkLogin?: boolean;
+  closable?: boolean;
 }) {
   const { percent, onFinish } = useGetProgressPercent();
   const { isLogin } = useGetLoginStatus();
@@ -34,7 +36,7 @@ function SyncingOnChainLoading({
   }, [checkLogin, isLogin, loginOnChainStatus, modal, onFinish]);
 
   return (
-    <TgModal open={modal.visible} onCancel={modal.hide} afterClose={modal.remove} title="Loading">
+    <TgModal open={modal.visible} closable={closable} onCancel={modal.hide} afterClose={modal.remove} title="Loading">
       <div className="w-full px-[16px]">
         <span className="inline-block w-full text-pixelsWhiteBg text-center text-sm font-semibold mb-[24px]">
           Syncing on-chain account info.....

@@ -3,13 +3,18 @@ import useTelegram from './useTelegram';
 import { useCmsInfo } from 'redux/hooks';
 import { fetchChatMember } from 'api/request';
 import { useRouter } from 'next/navigation';
+import { ENVIRONMENT } from 'constants/url';
 
 export default function useUserIsInChannel() {
   const router = useRouter();
   const { isInTelegram, getTgUserId } = useTelegram();
   const cmsInfo = useCmsInfo();
   const userId = getTgUserId();
-  const token = cmsInfo?.telegramBotToken;
+  const env = process.env.NEXT_PUBLIC_APP_ENV as unknown as ENVIRONMENT;
+  const token =
+    env === ENVIRONMENT.TEST
+      ? process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN_TESTNET
+      : process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
   const chatId = cmsInfo?.telegramBotChatId;
 
   const getUserChannelStatus = useCallback(async () => {
