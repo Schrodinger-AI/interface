@@ -74,6 +74,17 @@ export default function TgHome() {
     data?.fishScore && updatePoints(data.fishScore);
   };
 
+  const onPartnerUpdate = (index: number, data: ITaskResponse) => {
+    setPartnerTasksTasks((prevItems) => {
+      const newItems = [...prevItems];
+      if (index >= 0 && index < newItems.length) {
+        newItems[index] = { ...newItems[index], status: data.status };
+      }
+      return newItems;
+    });
+    data?.fishScore && updatePoints(data.fishScore);
+  };
+
   const onNewUpdate = (index: number, data: ITaskResponse) => {
     setAccomplishmentTasks((prevItems) => {
       const newItems = [...prevItems];
@@ -107,7 +118,7 @@ export default function TgHome() {
 
         {socialTasks.length > 0 && <TaskModule title="Social Tasks" tasks={socialTasks} onUpdate={onSocialUpdate} />}
 
-        {partnerTasks.length > 0 && <TaskModule title="Partner" tasks={partnerTasks} onUpdate={onNewUpdate} />}
+        {partnerTasks.length > 0 && <TaskModule title="Partner" tasks={partnerTasks} onUpdate={onPartnerUpdate} />}
 
         {accomplishmentTasks.length > 0 && (
           <TaskModule title="Achievements" tasks={accomplishmentTasks} onUpdate={onNewUpdate} />

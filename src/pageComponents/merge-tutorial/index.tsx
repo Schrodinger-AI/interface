@@ -3,8 +3,6 @@ import clsx from 'clsx';
 import MobileBackNav from 'components/MobileBackNav';
 import RewardsCard from 'pageComponents/tg-home/components/RewardsCard';
 import styles from './style.module.css';
-import cat from 'assets/img/telegram/breed/cat.png';
-import Image from 'next/image';
 import TgCard from 'components/TgCard';
 import { useCmsInfo } from 'redux/hooks';
 
