@@ -18,26 +18,30 @@ function MergeTutorial() {
       </div>
       {cmsInfo?.mergeTutorial?.pageTitle ? (
         <div className="flex justify-center items-center mb-[16px]">
-          <Image src={cat} className="h-[20px] w-auto rotate-y-180" alt="" />
-          <span className="text-xl text-pixelsWhiteBg font-black mx-[12px]">{cmsInfo.mergeTutorial.pageTitle}</span>
-          <Image src={cat} className="h-[20px] w-auto" alt="" />
+          <span className="text-base text-pixelsWhiteBg font-black">🐱</span>
+          <span className="text-base black-title text-pixelsWhiteBg font-black mx-[12px]">
+            {cmsInfo.mergeTutorial.pageTitle}
+          </span>
+          <span className="text-base text-pixelsWhiteBg font-black">🐱</span>
         </div>
       ) : null}
 
       <RewardsCard theme="dark" />
       <div className="mt-[16px]">
         <TgCard>
-          <p className="w-full text-pixelsWhiteBg text-xl font-black">{cmsInfo?.mergeTutorial?.title}</p>
+          <p className="w-full text-pixelsWhiteBg text-center black-title text-lg font-black">
+            {cmsInfo?.mergeTutorial?.title}
+          </p>
 
           {cmsInfo?.mergeTutorial?.list?.map((item) => {
             return (
               <div key={item.id} className="flex mt-[24px]">
                 <div className=" w-[88px] h-[88px] bg-[#2F2C89] rounded-[8px] flex justify-center items-center">
-                  <Image width={48} height={48} src={item.icon} alt="" />
+                  <img src={item.icon} className="w-[48px] h-[48px]" alt="" />
                 </div>
                 <div className="flex-1 ml-[16px]">
-                  <h2 className="text-base text-pixelsWhiteBg font-black">{item.title}</h2>
-                  <p className="text-sm text-botBrand">{item.describe}</p>
+                  <h2 className="text-base black-title text-pixelsWhiteBg font-black">{item.title}</h2>
+                  <p className="text-xs text-botBrand">{item.describe}</p>
                 </div>
               </div>
             );
