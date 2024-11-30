@@ -182,6 +182,7 @@ export type TCustomizationItemType = {
   voteActivityEndTime: string;
   taskClaimInterval?: number;
   winningCatLevel?: string;
+  mergeActivityTime?: string;
   adoptVoucherNumber?: number;
   mergeTutorial?: {
     list?: {

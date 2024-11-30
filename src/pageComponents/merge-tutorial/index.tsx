@@ -35,7 +35,7 @@ function MergeTutorial() {
 
           {cmsInfo?.mergeTutorial?.list?.map((item) => {
             return (
-              <div key={item.id} className="flex mt-[24px]">
+              <div key={item.id} className="flex items-center mt-[24px]">
                 <div className=" w-[88px] h-[88px] bg-[#2F2C89] rounded-[8px] flex justify-center items-center">
                   <img src={item.icon} className="w-[48px] h-[48px]" alt="" />
                 </div>

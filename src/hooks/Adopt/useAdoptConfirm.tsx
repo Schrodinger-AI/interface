@@ -37,12 +37,14 @@ import { TModalTheme } from 'components/CommonModal';
 import { useGetImageAndConfirm } from './useGetImageAndConfirm';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import AdoptVouchersModal from 'components/AdoptVouchersModal';
+import useTelegram from 'hooks/useTelegram';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
   const adoptNextModal = useModal(AdoptNextModal);
   const adoptVouchersModal = useModal(AdoptVouchersModal);
   const cardResultModal = useModal(CardResultModal);
+  const { isInTG } = useTelegram();
 
   const { txFee: commonTxFee } = useTxFee();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
@@ -160,7 +162,7 @@ export const useAdoptConfirm = () => {
               }
             },
           });
-          if (voucherAmount) {
+          if (voucherAmount && isInTG) {
             adoptVouchersModal.show({
               voucherAmount,
             });
@@ -170,7 +172,7 @@ export const useAdoptConfirm = () => {
         }
       });
     },
-    [ELFPrice, adoptVouchersModal, adoptNextModal, commonTxFee, getImageAndConfirm, getParentBalance],
+    [ELFPrice, adoptVouchersModal, isInTG, adoptNextModal, commonTxFee, getImageAndConfirm, getParentBalance],
   );
 
   const retryAdoptConfirm = useCallback(

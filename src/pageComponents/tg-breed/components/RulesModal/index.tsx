@@ -21,7 +21,7 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
             own {cmsInfo?.winningCatLevel || 'Gold III'} wins the entire Prize Pool! 💰
           </h4>
           <h3>🗓 Event Duration:</h3>
-          <h4>Nov 14th - Dec 14th. Each week is a new &quot;Round&quot;!</h4>
+          <h4>{cmsInfo?.mergeActivityTime || 'Nov 14th - Dec 14th'}. Each week is a new &quot;Round&quot;!</h4>
           <h3>💵 Prize Pool:</h3>
           <p>
             Every round offers 1,000 $SGR Basic Prize Pool plus an ever-growing Bonus Prize that increases with every
