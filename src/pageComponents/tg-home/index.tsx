@@ -31,9 +31,7 @@ import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
 import RewardsCard from './components/RewardsCard';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
-import { Button } from 'antd';
 import useGetLoginFish from 'hooks/useGetLoginFish';
-import BigNumber from 'bignumber.js';
 
 export default function TgHome() {
   const router = useRouter();
@@ -171,7 +169,8 @@ export default function TgHome() {
         syncingOnChainLoading.hide();
       }
     },
-    [getLoginFish, isInTG, syncingOnChainLoading],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isInTG],
   );
 
   useEffect(() => {
@@ -192,7 +191,8 @@ export default function TgHome() {
         acceptReferral(referrerAddress);
       }
     }
-  }, [isLogin, isJoin, acceptReferral, syncingOnChainLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogin, isJoin]);
 
   useEffect(() => {
     getDetail();
@@ -204,17 +204,6 @@ export default function TgHome() {
     }
   }, [isInTelegram]);
 
-  const shareMessage = () => {
-    const telegramBotTokenTestnet = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN_TESTNET;
-    const telegramBotToken = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
-    const telegramBotIdTestnet = process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID_TESTNET;
-    const telegramBotId = process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID;
-    console.log('=====shareMessage telegramBotTokenTestnet', telegramBotTokenTestnet);
-    console.log('=====shareMessage telegramBotToken', telegramBotToken);
-    console.log('=====shareMessage telegramBotIdTestnet', telegramBotIdTestnet);
-    console.log('=====shareMessage telegramBotId', telegramBotId);
-  };
-
   return (
     <div
       style={{ backgroundImage: `url(${cmsInfo?.homeBg})` }}
@@ -223,12 +212,6 @@ export default function TgHome() {
         isActivity ? styles['pageContainer-activity'] : styles.pageContainer,
       )}>
       <BalanceModule balanceData={balanceData} />
-      <Button
-        onClick={() => {
-          shareMessage();
-        }}>
-        share
-      </Button>
       {/* {noticeData && noticeData?.length ? (
         <div className="relative z-20 w-full h-[32px] overflow-hidden my-[8px] rounded-md">
           <ScrollAlert data={noticeData} type="info" theme="dark" />
