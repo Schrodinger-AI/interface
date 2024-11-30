@@ -31,12 +31,13 @@ import useIsInActivity from 'pageComponents/tg-battle/hooks/useIsInActivity';
 import { getTgStartParam } from 'utils/getTgStartParam';
 import RewardsCard from './components/RewardsCard';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
+import useGetLoginFish from 'hooks/useGetLoginFish';
 
 export default function TgHome() {
   const router = useRouter();
   const adoptHandler = useAdoptHandler();
   const { walletInfo } = useConnectWallet();
-  const { isInTelegram } = useTelegram();
+  const { isInTelegram, isInTG } = useTelegram();
   const [schrodingerDetail, setSchrodingerDetail] = useState<TSGRTokenInfo>();
   const { isLogin } = useGetLoginStatus();
   const cmsInfo = useCmsInfo();
@@ -44,6 +45,7 @@ export default function TgHome() {
   const [sgrBalance, setSgrBalance] = useState('0');
   const [elfBalance, setElfBalance] = useState('0');
   const syncingOnChainLoading = useModal(SyncingOnChainLoading);
+  const { getLoginFish } = useGetLoginFish();
 
   const isJoin = useJoinStatus();
   const { checkBalanceAndJump } = useBuyToken();
@@ -151,17 +153,25 @@ export default function TgHome() {
     }
   };
 
-  const acceptReferral = async (referrerAddress: string) => {
-    try {
-      await AcceptReferral({
-        referrer: referrerAddress,
-      });
+  const acceptReferral = useCallback(
+    async (referrerAddress: string) => {
+      try {
+        await AcceptReferral({
+          referrer: referrerAddress,
+        });
 
-      store.dispatch(setIsJoin(true));
-    } catch (error) {
-      /* empty */
-    }
-  };
+        if (isInTG) {
+          await getLoginFish();
+        }
+
+        store.dispatch(setIsJoin(true));
+      } finally {
+        syncingOnChainLoading.hide();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isInTG],
+  );
 
   useEffect(() => {
     if (!walletInfo?.address) return;
@@ -175,9 +185,13 @@ export default function TgHome() {
 
       console.log('=====referrerAddress', referrerAddress);
       if (referrerAddress) {
+        syncingOnChainLoading.show({
+          closable: false,
+        });
         acceptReferral(referrerAddress);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin, isJoin]);
 
   useEffect(() => {
@@ -204,7 +218,12 @@ export default function TgHome() {
         </div>
       ) : null} */}
       <RewardsCard theme="dark" />
-      <AdoptModule onAdopt={OpenAdoptModal} isInActivity={isActivity} cId={schrodingerDetail?.collectionId || ''} />
+      <AdoptModule
+        fishBalance={balanceData?.[1].amount}
+        onAdopt={OpenAdoptModal}
+        isInActivity={isActivity}
+        cId={schrodingerDetail?.collectionId || ''}
+      />
       <FooterButtons />
       <FloatingButton />
     </div>

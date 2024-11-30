@@ -7,6 +7,7 @@ import CommonModal, { TModalTheme } from 'components/CommonModal';
 import clsx from 'clsx';
 import { ReactComponent as InfoSVG } from 'assets/img/icons/info.svg';
 import { useResponsive } from 'hooks/useResponsive';
+import { useCmsInfo } from 'redux/hooks';
 
 function RedeemNotice({
   tips,
@@ -22,6 +23,7 @@ function RedeemNotice({
   theme?: TModalTheme;
 }) {
   const modal = useModal();
+  const cmsInfo = useCmsInfo();
   const { isLG } = useResponsive();
 
   const handleClose = () => {
@@ -72,7 +74,7 @@ function RedeemNotice({
               'flex-auto leading-[22px] text-[14px] font-medium',
               isDark ? 'text-white' : 'text-neutralTitle',
             )}>
-            Your Gold III NFT will be burnt upon prize collection.
+            Your {cmsInfo?.winningCatLevel || 'Gold III'} NFT will be burnt upon prize collection.
           </p>
         </Flex>
       </>

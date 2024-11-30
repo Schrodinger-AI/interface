@@ -1,19 +1,19 @@
 import { catPool, catPoolRank } from 'api/request';
 import Rewards from 'pageComponents/tg-breed/components/Rewards';
 import React, { useCallback, useEffect, useState } from 'react';
-import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { divDecimals } from 'utils/calculate';
 import { formatTokenPrice } from 'utils/format';
 import { useRequest } from 'ahooks';
 import { TModalTheme } from 'components/CommonModal';
+import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 
 function RewardsCard({ theme = 'light' }: { theme?: TModalTheme }) {
-  const { isLogin } = useGetLoginStatus();
+  const { isConnected } = useConnectWallet();
   const [isOver, setIsOver] = useState<boolean>(false);
   const [prizePoolInfo, setPrizePoolInfo] = useState<ICatPoolRes>();
 
   const getCatPool = async () => {
-    if (isOver) return;
+    if (isOver || !isConnected) return;
     const res = await catPool();
     const prize = formatTokenPrice(divDecimals(res.prize, 8));
     const usdtValue = formatTokenPrice(divDecimals(res.usdtValue, 8));
@@ -22,7 +22,7 @@ function RewardsCard({ theme = 'light' }: { theme?: TModalTheme }) {
 
   useRequest(() => getCatPool(), {
     pollingInterval: 5000,
-    refreshDeps: [isLogin, isOver],
+    refreshDeps: [isConnected, isOver],
   });
 
   const getCatPoolRank = useCallback(async () => {
@@ -31,8 +31,9 @@ function RewardsCard({ theme = 'light' }: { theme?: TModalTheme }) {
   }, []);
 
   useEffect(() => {
+    if (!isConnected) return;
     getCatPoolRank();
-  }, [getCatPoolRank]);
+  }, [getCatPoolRank, isConnected]);
 
   return (
     <Rewards

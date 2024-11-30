@@ -88,6 +88,10 @@
   --pixels-text-gray: #8B918F;
   --tg-sub-cyan: #0BCFFC;
   --pixels-modal-text-bg: #2F2C89;
+
+  /* tg bot */
+  --bot-brand: #AEABFF;
+
 }
 
 .dark-theme {

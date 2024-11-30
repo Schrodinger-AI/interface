@@ -181,6 +181,19 @@ export type TCustomizationItemType = {
   voteActivityStartTime: string;
   voteActivityEndTime: string;
   taskClaimInterval?: number;
+  winningCatLevel?: string;
+  mergeActivityTime?: string;
+  adoptVoucherNumber?: number;
+  mergeTutorial?: {
+    list?: {
+      id: string;
+      icon: string;
+      title?: string;
+      describe?: string;
+    }[];
+    pageTitle?: string;
+    title?: string;
+  };
   [key: string]: any;
 };
 
@@ -225,8 +238,6 @@ export type TGlobalConfigType = {
   pixiePoints?: string;
   showNftQuantity?: number;
   buySGRFromETransfer?: string;
-  telegramBotId?: string;
-  telegramBotToken?: string;
   telegramBotChatId?: string;
   etransferConfig: {
     supportChainIds: string[];
