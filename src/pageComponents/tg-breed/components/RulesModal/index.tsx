@@ -14,7 +14,7 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
     return (
       <div className={clsx(styles.rules, theme === 'dark' ? styles['dark-rules'] : '')}>
         <div>
-          <h2>🌟 S-CAT $1,000+ Cat Merge Event Season 1 is LIVE! 🌟</h2>
+          <h2>🌟 S-CAT $1,000+ Cat Merge Event {cmsInfo?.winningCatSeason || 'Season 1'} is LIVE! 🌟</h2>
           <h4>
             🎉 $1,000 SGR + an ever-growing Bonus Prize is up for grabs. ONE winner takes it ALL! Level up by adopting
             cats and merging them into the rare {cmsInfo?.winningCatLevel || 'Gold III'} . The chase is on: the first to
