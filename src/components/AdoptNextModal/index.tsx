@@ -9,6 +9,8 @@ import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo, { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+import { ReactComponent as VoucherSVG } from 'assets/img/telegram/home/voucher.svg';
+import { ReactComponent as AddGoldSVG } from 'assets/img/telegram/gold.svg';
 import AIImageSelect from 'components/AIImageSelect';
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
@@ -262,16 +264,20 @@ function AdoptNextModal({
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
         <div>
-          {isBlind ? (
-            <div
-              className={clsx('text-sm mb-[16px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
-              <p>
-                Tap "Unbox" to reveal now or "X" in the top right corner to reveal later. The cat cannot be traded or
-                transferred until it is unboxed.
-              </p>
-            </div>
-          ) : null}
           <NoticeBar text={noticeText} type="success" theme={theme} />
+          <NoticeBar
+            text={noticeText}
+            type="custom"
+            theme={theme}
+            className="my-[6px]"
+            icon={<VoucherSVG className="w-[28px] h-[17px]" />}
+          />
+          <NoticeBar
+            text={noticeText}
+            type="custom"
+            theme={theme}
+            icon={<AddGoldSVG className="w-[28px] h-[28px]" />}
+          />
         </div>
 
         {images.length > 1 ? (

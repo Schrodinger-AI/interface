@@ -27,6 +27,7 @@ import { useEffect, useMemo } from 'react';
 import { useModal } from '@ebay/nice-modal-react';
 import SyncingOnChainLoading from 'components/SyncingOnChainLoading';
 import BigNumber from 'bignumber.js';
+import Tag from 'components/Tag';
 
 export default function AdoptModule({
   cId,
@@ -93,19 +94,22 @@ export default function AdoptModule({
           <Flex vertical justify="center" align="center">
             <img src={require('assets/img/telegram/adopt-card.png').default.src} alt="" className="w-[40vw]" />
 
-            <TGButton size="large" className="mt-4 w-[150px]" onClick={onAdopt}>
-              <div className="flex flex-col justify-center items-center">
-                <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
-                {cmsInfo?.adoptVoucherNumber ? (
-                  <div className="flex justify-center items-center h-[10px] overflow-hidden mt-[4px]">
-                    <VoucherSVG />
-                    <span className="text-pixelsWhiteBg text-xs font-medium ml-[2px]">
-                      +{cmsInfo.adoptVoucherNumber}
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            </TGButton>
+            <div className="relative mt-4 inline-block mx-auto">
+              <TGButton size="large" className="w-[150px]" onClick={onAdopt}>
+                <div className="flex flex-col justify-center items-center">
+                  <Image src={adoptButtonIcon} className="w-auto h-[24px]" alt="adopt" />
+                  {cmsInfo?.adoptVoucherNumber ? (
+                    <div className="flex justify-center items-center h-[10px] overflow-hidden mt-[4px]">
+                      <VoucherSVG />
+                      <span className="text-pixelsWhiteBg text-xs font-medium ml-[2px]">
+                        +{cmsInfo.adoptVoucherNumber}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              </TGButton>
+              <Tag className="absolute top-[-2px] right-[-2px]" />
+            </div>
           </Flex>
         </div>
         <div className="relative mt-[-22px] z-9">
