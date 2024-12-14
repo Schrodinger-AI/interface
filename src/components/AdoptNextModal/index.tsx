@@ -193,17 +193,14 @@ function AdoptNextModal({
     }
   }, [allTraits]);
 
-  const rebaseText = useMemo(() => {
+  const rebase = useMemo(() => {
     if (rebateAmount) {
-      if (rebateAmount.toString().slice(-1) === '0') {
-        return '1.2 $SGR, 1 $SGR';
-      }
       const amount = divDecimals(rebateAmount, 8).toFixed(2);
       if (amount) {
-        return `${parseFloat(amount)} $SGR`;
+        return parseFloat(amount);
       }
     }
-    return '0 $SGR';
+    return 0;
   }, [rebateAmount]);
 
   return (
@@ -264,7 +261,7 @@ function AdoptNextModal({
             />
           )}
           <NoticeBar
-            text={`Congrats! You got ${rebaseText}`}
+            text={`Congrats! You got ${rebase} $SGR`}
             type="custom"
             theme={theme}
             icon={<AddGoldSVG className="w-[28px] h-[28px]" />}
