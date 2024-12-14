@@ -198,7 +198,10 @@ function AdoptNextModal({
       if (rebateAmount.toString().slice(-1) === '0') {
         return '1.2 $SGR, 1 $SGR';
       }
-      return `${divDecimals(rebateAmount, 8).toFixed(2)} $SGR`;
+      const amount = divDecimals(rebateAmount, 8).toFixed(2);
+      if (amount) {
+        return `${parseFloat(amount)} $SGR`;
+      }
     }
     return '0 $SGR';
   }, [rebateAmount]);

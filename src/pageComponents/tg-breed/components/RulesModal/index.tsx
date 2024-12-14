@@ -30,7 +30,7 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
           <h3>💎 Bonus Prize:</h3>
           <ol>
             <li>
-              <p>Each SGR cat adoption adds 0.55 SGR to the Bonus Prize</p>
+              <p>Each SGR cat adoption adds up to 0.55 SGR to the Bonus Prize</p>
             </li>
             <li>
               <p>Each S-CAT voucher cat adoption adds 0.25 SGR to the Bonus Prize</p>
@@ -43,6 +43,19 @@ function RulesModal({ theme }: { theme?: TModalTheme }) {
                 If no {cmsInfo?.winningCatLevel || 'Gold III'} emerges, 80% of the jackpot difference each round will
                 carry over to the next round&apos;s jackpot, keeping the stakes high and your pulse higher!
               </p>
+            </li>
+          </ol>
+          <h3>🐱 SGR Adoption Rebate:</h3>
+          <p>
+            Users are charged 1.6 SGR to adopt a cat and have a 98% chance of receiving a rebate between 0 to 1.3 SGR,
+            making the net cost ranging from 0.3 SGR to 1.6 SGR.
+          </p>
+          <ol>
+            <li>
+              <p>For adoption spending between 0.3 SGR and 0.5 SGR, no SGR goes to the Bonus Prize.</p>
+            </li>
+            <li>
+              <p>For adoption spending over 0.5 SGR, half of the excess goes to the Bonus Prize.</p>
             </li>
           </ol>
           <h3>🧪 Interim Prize:</h3>

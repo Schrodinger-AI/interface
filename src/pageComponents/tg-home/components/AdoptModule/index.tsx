@@ -17,6 +17,7 @@ import { ReactComponent as MergeTextSVG } from 'assets/img/telegram/home-list/me
 import { ReactComponent as BoxLeftSVG } from 'assets/img/telegram/box-left.svg';
 import { ReactComponent as BoxRightSVG } from 'assets/img/telegram/box-right.svg';
 import { ReactComponent as VoucherSVG } from 'assets/img/telegram/home/icon_voucher.svg';
+import { ReactComponent as GoldSVG } from 'assets/img/telegram/gold.svg';
 import adoptButtonIcon from 'assets/img/telegram/home-list/adopt-button.png';
 import HomeTreasure from 'assets/animations/homepage_treasure_box.json';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
@@ -101,9 +102,11 @@ export default function AdoptModule({
                   {cmsInfo?.adoptVoucherNumber ? (
                     <div className="flex justify-center items-center h-[10px] overflow-hidden mt-[4px]">
                       <VoucherSVG />
-                      <span className="text-pixelsWhiteBg text-xs font-medium ml-[2px]">
+                      <span className="text-pixelsWhiteBg text-[9px] leading-[18px] font-medium ml-[2px]">
                         +{cmsInfo.adoptVoucherNumber}
                       </span>
+                      <GoldSVG className="w-[13px] h-[13px] ml-[10px]" />
+                      <span className="text-pixelsWhiteBg text-[9px] leading-[18px] font-medium ml-[2px]">+$SGR</span>
                     </div>
                   ) : null}
                 </div>
