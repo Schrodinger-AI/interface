@@ -126,7 +126,7 @@ function AdoptNextModal({
       });
       setNextLoading(false);
       modal.hide();
-      const res = await adoptHandler({
+      await adoptHandler({
         parentItemInfo: {
           tick: '',
           symbol: data.SGRToken.symbol,
@@ -146,7 +146,6 @@ function AdoptNextModal({
         prePage: 'adoptModal',
         adoptId: result.adoptId,
       });
-      console.log('res', res);
     } catch (error) {
       setNextLoading(false);
     }

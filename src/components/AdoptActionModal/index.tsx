@@ -3,15 +3,15 @@ import { Button } from 'aelf-design';
 import Balance from 'components/Balance';
 import CommonModal, { TModalTheme } from 'components/CommonModal';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
-import { ISGRAmountInputInterface, ISGRAmountInputProps } from 'components/SGRAmountInput';
+import { ISGRAmountInputProps } from 'components/SGRAmountInput';
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
 import { ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import {
   ADOPT_NEXT_MIN,
   ADOPT_NEXT_RATE,
-  DIRECT_ADOPT_GEN9_MAX,
+  DIRECT_ADOPT_GEN9_INIT,
   DIRECT_ADOPT_GEN9_MIN,
   DIRECT_ADOPT_GEN9_RATE,
 } from 'constants/common';
@@ -67,7 +67,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
 
-  const [amount] = useState<string>(isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MAX}` : '');
+  const [amount] = useState<string>(isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '');
   const receiveToken = useMemo(() => {
     if (amount === '') return '--';
     const amountNumber = ZERO.plus(amount);
@@ -85,7 +85,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const rateValue = useMemo(() => {
     if (isReset) return `Reroll 1 ${info.name} receive 0.5 ${renameSymbol(getOriginSymbol(info.name))}`;
     return isDirect
-      ? `Consume ${DIRECT_ADOPT_GEN9_MIN} ~ ${DIRECT_ADOPT_GEN9_MAX} $SGR to adopt one 9th-Gen cat`
+      ? `Consume ${DIRECT_ADOPT_GEN9_INIT} ~ ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt one 9th-Gen cat`
       : `Consume ${ADOPT_NEXT_MIN} ${info.name} to adopt 1 next-gen cat `;
   }, [info.name, isDirect, isReset]);
 
@@ -151,7 +151,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <div className="h-[32px]" />
       {renderList({
         title: inputTitle,
-        content: isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MAX}` : '',
+        content: isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
       })}
       {renderList({
         title: receiveLabel,
