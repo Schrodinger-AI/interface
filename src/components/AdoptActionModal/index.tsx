@@ -85,7 +85,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
   const rateValue = useMemo(() => {
     if (isReset) return `Reroll 1 ${info.name} receive 0.5 ${renameSymbol(getOriginSymbol(info.name))}`;
     return isDirect
-      ? `Consume ${DIRECT_ADOPT_GEN9_INIT} ~ ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt one 9th-Gen cat`
+      ? `Consume ${DIRECT_ADOPT_GEN9_INIT} - ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt one 9th-Gen cat`
       : `Consume ${ADOPT_NEXT_MIN} ${info.name} to adopt 1 next-gen cat `;
   }, [info.name, isDirect, isReset]);
 

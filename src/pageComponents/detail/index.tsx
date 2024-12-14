@@ -20,8 +20,6 @@ import { getBlindCatDetail, getCatDetail } from 'api/request';
 import useGetLoginStatus from 'redux/hooks/useGetLoginStatus';
 import { renameSymbol } from 'utils/renameSymbol';
 import { useJumpToPage } from 'hooks/useJumpToPage';
-import Image from 'next/image';
-import TagNewIcon from 'assets/img/event/tag-new.png';
 import useTelegram from 'hooks/useTelegram';
 import ListingInfo from './components/ListingInfo';
 import styles from './style.module.css';
@@ -324,7 +322,19 @@ export default function DetailPage() {
       <div className="flex flex-row">
         {showAdoptDirectly && (
           <HandleButtonPrimary className="mr-[12px] w-[240px]" onClick={() => onAdoptNextGeneration(true, theme)}>
+            {isInTG && (
+              <img
+                src={require('assets/img/telegram/icon_coin.png').default.src}
+                className="w-[15px] h-[15px] mr-[3px]"
+              />
+            )}
             Instant GEN9
+            {isInTG && (
+              <img
+                src={require('assets/img/telegram/icon_voucher.png').default.src}
+                className="w-[16px] h-[10px] ml-[3px]"
+              />
+            )}
             {cmsInfo?.adoptDirectlyNew && isInTG ? <Tag className="absolute top-[-2px] right-[-2px]" /> : null}
           </HandleButtonPrimary>
         )}
@@ -376,7 +386,19 @@ export default function DetailPage() {
         )} */}
         {showAdoptDirectly && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(true, theme)}>
+            {isInTG && (
+              <img
+                src={require('assets/img/telegram/icon_coin.png').default.src}
+                className="w-[15px] h-[15px] mr-[3px]"
+              />
+            )}
             Instant GEN9
+            {isInTG && (
+              <img
+                src={require('assets/img/telegram/icon_voucher.png').default.src}
+                className="w-[16px] h-[10px] ml-[3px]"
+              />
+            )}
             {cmsInfo?.adoptDirectlyNew && isInTG ? <Tag className="absolute top-[-2px] right-[-2px]" /> : null}
           </HandleButtonPrimary>
         )}
