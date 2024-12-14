@@ -39,6 +39,7 @@ import { useGetImageAndConfirm } from 'hooks/Adopt/useGetImageAndConfirm';
 import useIntervalGetSchrodingerDetail from 'hooks/Adopt/useIntervalGetSchrodingerDetail';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
 import { useOnFinish } from 'hooks/useOnFinish';
+import Tag from 'components/Tag';
 
 export default function DetailPage() {
   const route = useRouter();
@@ -324,9 +325,7 @@ export default function DetailPage() {
         {showAdoptDirectly && (
           <HandleButtonPrimary className="mr-[12px] w-[240px]" onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
-            {cmsInfo?.adoptDirectlyNew ? (
-              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
-            ) : null}
+            {cmsInfo?.adoptDirectlyNew && isInTG ? <Tag className="absolute top-[-2px] right-[-2px]" /> : null}
           </HandleButtonPrimary>
         )}
         {/* {showAdopt && (
@@ -378,9 +377,7 @@ export default function DetailPage() {
         {showAdoptDirectly && (
           <HandleButtonPrimary className={clsx('flex-1')} onClick={() => onAdoptNextGeneration(true, theme)}>
             Instant GEN9
-            {cmsInfo?.adoptDirectlyNew ? (
-              <Image alt="new" src={TagNewIcon} width={44} height={47} className="absolute -top-[2px] -right-[2px]" />
-            ) : null}
+            {cmsInfo?.adoptDirectlyNew && isInTG ? <Tag className="absolute top-[-2px] right-[-2px]" /> : null}
           </HandleButtonPrimary>
         )}
         {showReset && (

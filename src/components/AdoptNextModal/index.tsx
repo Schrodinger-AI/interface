@@ -264,16 +264,18 @@ function AdoptNextModal({
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
         <div>
-          <NoticeBar text={noticeText} type="success" theme={theme} />
+          <NoticeBar text="Congrats! You got a Cat Box!" type="success" className="mb-[6px]" theme={theme} />
+          {isInTG && (
+            <NoticeBar
+              text="Congrats! You got 1x S-CAT Voucher!"
+              type="custom"
+              theme={theme}
+              className="mb-[6px]"
+              icon={<VoucherSVG className="w-[28px] h-[17px]" />}
+            />
+          )}
           <NoticeBar
-            text={noticeText}
-            type="custom"
-            theme={theme}
-            className="my-[6px]"
-            icon={<VoucherSVG className="w-[28px] h-[17px]" />}
-          />
-          <NoticeBar
-            text={noticeText}
+            text={`Congrats! You got ${1.2} $SGR`}
             type="custom"
             theme={theme}
             icon={<AddGoldSVG className="w-[28px] h-[28px]" />}

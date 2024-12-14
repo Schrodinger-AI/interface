@@ -192,6 +192,7 @@ const useAdoptHandler = () => {
                   walletType,
                 });
               }
+              console.log('=====adoptBlindHandler', adoptedInfo, adoptId);
 
               AdTracker.trackEvent('adopt', {
                 generation: adoptedInfo.tokenName,

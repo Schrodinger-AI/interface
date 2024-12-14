@@ -76,6 +76,8 @@ export const adoptStep1Handler = async ({
     ? await AdoptMaxGen({ tick: 'SGR', amount: params.amount, domain: params.domain })
     : await Adopt(params);
 
+  console.log('isDirect', isDirect, result);
+
   const TransactionResult = result.TransactionResult;
 
   const logs = await ProtoInstance.getLogEventResult<IAdoptedLogs>({
