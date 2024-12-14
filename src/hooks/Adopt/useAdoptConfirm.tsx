@@ -36,15 +36,11 @@ import { formatTokenPrice } from 'utils/format';
 import { TModalTheme } from 'components/CommonModal';
 import { useGetImageAndConfirm } from './useGetImageAndConfirm';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-import AdoptVouchersModal from 'components/AdoptVouchersModal';
-import useTelegram from 'hooks/useTelegram';
 
 export const useAdoptConfirm = () => {
   const asyncModal = useModal(SyncAdoptModal);
   const adoptNextModal = useModal(AdoptNextModal);
-  const adoptVouchersModal = useModal(AdoptVouchersModal);
   const cardResultModal = useModal(CardResultModal);
-  const { isInTG } = useTelegram();
 
   const { txFee: commonTxFee } = useTxFee();
   const { tokenPrice: ELFPrice } = useTokenPrice(AELF_TOKEN_INFO.symbol);
@@ -76,7 +72,7 @@ export const useAdoptConfirm = () => {
       theme,
       adoptOnly = false,
       hideNext = false,
-      voucherAmount,
+      rebateAmount,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
@@ -88,6 +84,7 @@ export const useAdoptConfirm = () => {
       adoptOnly?: boolean;
       hideNext?: boolean;
       voucherAmount?: number;
+      rebateAmount?: number;
     }): Promise<{
       selectImage: string;
       getWatermarkImage: boolean;
@@ -133,6 +130,7 @@ export const useAdoptConfirm = () => {
             },
             hideNext,
             adoptId: childrenItemInfo.adoptId,
+            rebateAmount,
             onClose: () => {
               adoptNextModal.hide();
               reject(AdoptActionErrorCode.cancel);
@@ -162,17 +160,12 @@ export const useAdoptConfirm = () => {
               }
             },
           });
-          if (voucherAmount && isInTG) {
-            adoptVouchersModal.show({
-              voucherAmount,
-            });
-          }
         } catch (error) {
           reject(error);
         }
       });
     },
-    [ELFPrice, adoptVouchersModal, isInTG, adoptNextModal, commonTxFee, getImageAndConfirm, getParentBalance],
+    [ELFPrice, adoptNextModal, commonTxFee, getImageAndConfirm, getParentBalance],
   );
 
   const retryAdoptConfirm = useCallback(
@@ -260,9 +253,7 @@ export const useAdoptConfirm = () => {
       childrenItemInfo,
       image: originImage,
       parentItemInfo,
-      rankInfo,
       getWatermarkImage,
-      infos,
       theme = 'light',
       isDirect,
       prePage,
@@ -409,6 +400,7 @@ export const useAdoptConfirm = () => {
       prePage,
       hideNext = false,
       voucherAmount,
+      rebateAmount,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -421,6 +413,7 @@ export const useAdoptConfirm = () => {
       prePage?: string;
       hideNext?: boolean;
       voucherAmount?: number;
+      rebateAmount?: number;
     }) => {
       const params = await adoptConfirmInput({
         infos,
@@ -433,6 +426,7 @@ export const useAdoptConfirm = () => {
         adoptOnly,
         hideNext,
         voucherAmount,
+        rebateAmount,
       });
 
       if (params) {
@@ -583,6 +577,7 @@ export const useAdoptConfirm = () => {
       hideNext = false,
       faction,
       voucherAmount,
+      rebateAmount,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
@@ -593,6 +588,7 @@ export const useAdoptConfirm = () => {
       hideNext?: boolean;
       faction?: string;
       voucherAmount?: number;
+      rebateAmount?: number;
     }) => {
       try {
         const infos = await fetchImages({
@@ -619,6 +615,7 @@ export const useAdoptConfirm = () => {
           prePage,
           hideNext,
           voucherAmount,
+          rebateAmount,
         });
 
         if (result) {

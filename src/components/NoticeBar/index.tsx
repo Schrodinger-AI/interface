@@ -6,15 +6,17 @@ import clsx from 'clsx';
 import { TModalTheme } from 'components/CommonModal';
 import { useMemo } from 'react';
 
-type TNoticeBarType = 'warning' | 'success';
+type TNoticeBarType = 'warning' | 'success' | 'custom';
 
 interface INoticeBar {
   text: string;
   type?: TNoticeBarType;
   theme?: TModalTheme;
+  icon?: React.ReactNode;
+  className?: string;
 }
 
-export default function NoticeBar({ text, theme = 'light', type = 'warning' }: INoticeBar) {
+export default function NoticeBar({ text, theme = 'light', type = 'warning', icon, className }: INoticeBar) {
   const renderIcon = (type: TNoticeBarType, theme: TModalTheme) => {
     switch (type) {
       case 'warning':
@@ -25,6 +27,8 @@ export default function NoticeBar({ text, theme = 'light', type = 'warning' }: I
         );
       case 'success':
         return <SuccessSVG className="w-[28px] h-[28px] flex-none" />;
+      case 'custom':
+        return icon;
     }
   };
 
@@ -36,6 +40,7 @@ export default function NoticeBar({ text, theme = 'light', type = 'warning' }: I
         }
         return 'bg-functionalWarningBg';
       case 'success':
+      case 'custom':
         if (theme === 'dark') {
           return 'bg-pixelsPageBg';
         }
@@ -51,20 +56,16 @@ export default function NoticeBar({ text, theme = 'light', type = 'warning' }: I
         }
         return 'text-sm text-neutralSecondary';
       case 'success':
+      case 'custom':
         if (theme === 'dark') {
-          return 'text-sm text-pixelsDivider';
+          return 'text-sm text-white';
         }
         return 'text-base font-semibold text-neutralTitle';
     }
   }, [theme, type]);
 
   return (
-    <div
-      className={clsx(
-        'px-[12px] py-[16px] flex items-center gap-[8px]',
-        backgroundColor,
-        theme === 'dark' ? 'rounded-none' : 'rounded-md',
-      )}>
+    <div className={clsx('px-[12px] py-[7px] flex items-center gap-[8px] rounded-[8px]', backgroundColor, className)}>
       {renderIcon(type, theme)}
       <span className={fontStyle}>{text}</span>
     </div>

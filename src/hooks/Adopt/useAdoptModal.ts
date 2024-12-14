@@ -152,6 +152,7 @@ const useAdoptHandler = () => {
     }): Promise<
       IAdoptedLogs & {
         voucherAmount?: number;
+        rebateAmount?: number;
       }
     > =>
       new Promise((resolve, reject) => {
@@ -192,6 +193,7 @@ const useAdoptHandler = () => {
                   walletType,
                 });
               }
+              console.log('=====adoptBlindHandler', adoptedInfo, adoptId);
 
               AdTracker.trackEvent('adopt', {
                 generation: adoptedInfo.tokenName,
@@ -295,7 +297,7 @@ const useAdoptHandler = () => {
               isBlind,
               blindMax,
             });
-        const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash, voucherAmount } =
+        const { adoptId, outputAmount, symbol, tokenName, inputAmount, transactionHash, voucherAmount, rebateAmount } =
           await approveAdopt({
             amount,
             account,
@@ -314,6 +316,7 @@ const useAdoptHandler = () => {
           prePage,
           faction,
           voucherAmount,
+          rebateAmount,
         });
       } catch (error) {
         console.log(error, 'error==');

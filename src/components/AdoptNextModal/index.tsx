@@ -9,6 +9,8 @@ import NoticeBar from 'components/NoticeBar';
 import SGRTokenInfo, { ISGRTokenInfoProps } from 'components/SGRTokenInfo';
 import TraitsList from 'components/TraitsList';
 import { ReactComponent as QuestionSVG } from 'assets/img/icons/question.svg';
+import { ReactComponent as VoucherSVG } from 'assets/img/telegram/home/voucher.svg';
+import { ReactComponent as AddGoldSVG } from 'assets/img/telegram/gold.svg';
 import AIImageSelect from 'components/AIImageSelect';
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
 import { IAdoptNextData } from './type';
@@ -18,15 +20,10 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { timesDecimals } from 'utils/calculate';
+import { divDecimals, timesDecimals } from 'utils/calculate';
 import { getBlindCatDetail } from 'api/request';
 import { useCmsInfo } from 'redux/hooks';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-
-const boxRare = 'Congrats! You got a Rare Cat Box!';
-const boxNormal = 'Congrats! You got a Cat Box!';
-const isAcrossBoxRare = 'Congrats! You got a Rare Cat Box that evolved 2-Gen at a time!';
-const isAcrossBoxNormal = 'Congrats! You got a Common Cat Box that evolved 2-Gen at a time!';
 
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
@@ -60,6 +57,7 @@ interface IAdoptNextModal {
   theme?: TModalTheme;
   isBlind?: boolean;
   hideNext?: boolean;
+  rebateAmount?: number;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
@@ -72,6 +70,7 @@ function AdoptNextModal({
   onClose,
   adoptId,
   theme,
+  rebateAmount,
   isBlind = false,
   hideNext = false,
 }: IAdoptNextModal) {
@@ -127,7 +126,7 @@ function AdoptNextModal({
       });
       setNextLoading(false);
       modal.hide();
-      adoptHandler({
+      await adoptHandler({
         parentItemInfo: {
           tick: '',
           symbol: data.SGRToken.symbol,
@@ -193,27 +192,15 @@ function AdoptNextModal({
     }
   }, [allTraits]);
 
-  const isRare = useMemo(() => {
-    const describe = data?.SGRToken?.rankInfo?.levelInfo?.describe;
-    const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
-      ? data?.SGRToken?.rankInfo?.levelInfo?.describe.split(',')[0]
-      : '';
-    return describe && describeRarity !== 'Common';
-  }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
-
-  const noticeText = useMemo(() => {
-    const showAcross = isAcross && !isDirect;
-
-    if (isBlind) {
-      if (isRare) {
-        return showAcross ? isAcrossBoxRare : boxRare;
-      } else {
-        return showAcross ? isAcrossBoxNormal : boxNormal;
+  const rebase = useMemo(() => {
+    if (rebateAmount) {
+      const amount = divDecimals(rebateAmount, 8).toFixed(2);
+      if (amount) {
+        return parseFloat(amount);
       }
-    } else {
-      return 'Congratulations! Your Cat is ready for adoption.';
     }
-  }, [isAcross, isBlind, isDirect, isRare]);
+    return 0;
+  }, [rebateAmount]);
 
   return (
     <CommonModal
@@ -262,16 +249,22 @@ function AdoptNextModal({
       }>
       <div className="flex flex-col gap-[16px] lg:gap-[32px]">
         <div>
-          {isBlind ? (
-            <div
-              className={clsx('text-sm mb-[16px]', theme === 'dark' ? 'text-pixelsDivider' : 'text-neutralSecondary')}>
-              <p>
-                Tap "Unbox" to reveal now or "X" in the top right corner to reveal later. The cat cannot be traded or
-                transferred until it is unboxed.
-              </p>
-            </div>
-          ) : null}
-          <NoticeBar text={noticeText} type="success" theme={theme} />
+          <NoticeBar text="Congrats! You got a Cat Box!" type="success" className="mb-[6px]" theme={theme} />
+          {isInTG && (
+            <NoticeBar
+              text="Congrats! You got 1x S-CAT Voucher!"
+              type="custom"
+              theme={theme}
+              className="mb-[6px]"
+              icon={<VoucherSVG className="w-[28px] h-[17px]" />}
+            />
+          )}
+          <NoticeBar
+            text={`Congrats! You got ${rebase} $SGR`}
+            type="custom"
+            theme={theme}
+            icon={<AddGoldSVG className="w-[28px] h-[28px]" />}
+          />
         </div>
 
         {images.length > 1 ? (
