@@ -18,6 +18,7 @@ import {
 import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
 import { clsx } from 'clsx';
+import message from 'antd/lib/message';
 
 export type TBalanceItem = {
   amount: string;
@@ -108,12 +109,20 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     () => (
       <Button
         className={clsx('md:w-[356px]', theme === 'dark' ? '!primary-button-dark' : '')}
-        onClick={() => onConfirmProps?.(amount)}
+        onClick={() => {
+          if (balanceList?.[0]?.amount && Number(balanceList?.[0].amount) < DIRECT_ADOPT_GEN9_MIN) {
+            message.warning(
+              'Insufficient Funds, you have less than 1.6 SGR. Please go back to the homepage and deposit more SGR to continue.',
+            );
+          } else {
+            onConfirmProps?.(amount);
+          }
+        }}
         type="primary">
         {isReset ? 'Reroll' : 'Adopt'}
       </Button>
     ),
-    [amount, isReset, onConfirmProps, theme],
+    [amount, balanceList, isReset, onConfirmProps, theme],
   );
 
   const renderList = useCallback(
