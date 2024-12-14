@@ -20,15 +20,10 @@ import CancelAdoptModal from 'components/CancelAdoptModal';
 import useTelegram from 'hooks/useTelegram';
 import clsx from 'clsx';
 import useAdoptHandler from 'hooks/Adopt/useAdoptModal';
-import { timesDecimals } from 'utils/calculate';
+import { divDecimals, timesDecimals } from 'utils/calculate';
 import { getBlindCatDetail } from 'api/request';
 import { useCmsInfo } from 'redux/hooks';
 import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
-
-const boxRare = 'Congrats! You got a Rare Cat Box!';
-const boxNormal = 'Congrats! You got a Cat Box!';
-const isAcrossBoxRare = 'Congrats! You got a Rare Cat Box that evolved 2-Gen at a time!';
-const isAcrossBoxNormal = 'Congrats! You got a Common Cat Box that evolved 2-Gen at a time!';
 
 interface IDescriptionItemProps extends PropsWithChildren {
   title: string;
@@ -62,6 +57,7 @@ interface IAdoptNextModal {
   theme?: TModalTheme;
   isBlind?: boolean;
   hideNext?: boolean;
+  rebateAmount?: number;
   onConfirm?: (image: string, getWatermarkImage: boolean, SGRToken?: ISGRTokenInfoProps) => void;
   onClose?: () => void;
 }
@@ -74,6 +70,7 @@ function AdoptNextModal({
   onClose,
   adoptId,
   theme,
+  rebateAmount,
   isBlind = false,
   hideNext = false,
 }: IAdoptNextModal) {
@@ -129,7 +126,7 @@ function AdoptNextModal({
       });
       setNextLoading(false);
       modal.hide();
-      adoptHandler({
+      const res = await adoptHandler({
         parentItemInfo: {
           tick: '',
           symbol: data.SGRToken.symbol,
@@ -149,6 +146,7 @@ function AdoptNextModal({
         prePage: 'adoptModal',
         adoptId: result.adoptId,
       });
+      console.log('res', res);
     } catch (error) {
       setNextLoading(false);
     }
@@ -195,27 +193,15 @@ function AdoptNextModal({
     }
   }, [allTraits]);
 
-  const isRare = useMemo(() => {
-    const describe = data?.SGRToken?.rankInfo?.levelInfo?.describe;
-    const describeRarity = data?.SGRToken?.rankInfo?.levelInfo?.describe
-      ? data?.SGRToken?.rankInfo?.levelInfo?.describe.split(',')[0]
-      : '';
-    return describe && describeRarity !== 'Common';
-  }, [data?.SGRToken?.rankInfo?.levelInfo?.describe]);
-
-  const noticeText = useMemo(() => {
-    const showAcross = isAcross && !isDirect;
-
-    if (isBlind) {
-      if (isRare) {
-        return showAcross ? isAcrossBoxRare : boxRare;
-      } else {
-        return showAcross ? isAcrossBoxNormal : boxNormal;
+  const rebaseText = useMemo(() => {
+    if (rebateAmount) {
+      if (rebateAmount.toString().slice(-1) === '0') {
+        return '1.2 $SGR, 1 $SGR';
       }
-    } else {
-      return 'Congratulations! Your Cat is ready for adoption.';
+      return `${divDecimals(rebateAmount, 8).toFixed(2)} $SGR`;
     }
-  }, [isAcross, isBlind, isDirect, isRare]);
+    return '0 $SGR';
+  }, [rebateAmount]);
 
   return (
     <CommonModal
@@ -275,7 +261,7 @@ function AdoptNextModal({
             />
           )}
           <NoticeBar
-            text={`Congrats! You got ${1.2} $SGR`}
+            text={`Congrats! You got ${rebaseText}`}
             type="custom"
             theme={theme}
             icon={<AddGoldSVG className="w-[28px] h-[28px]" />}

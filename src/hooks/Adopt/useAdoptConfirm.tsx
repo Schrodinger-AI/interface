@@ -77,6 +77,7 @@ export const useAdoptConfirm = () => {
       adoptOnly = false,
       hideNext = false,
       voucherAmount,
+      rebateAmount,
     }: {
       infos: IAdoptImageInfo;
       parentItemInfo: TSGRToken;
@@ -88,6 +89,7 @@ export const useAdoptConfirm = () => {
       adoptOnly?: boolean;
       hideNext?: boolean;
       voucherAmount?: number;
+      rebateAmount?: number;
     }): Promise<{
       selectImage: string;
       getWatermarkImage: boolean;
@@ -133,6 +135,7 @@ export const useAdoptConfirm = () => {
             },
             hideNext,
             adoptId: childrenItemInfo.adoptId,
+            rebateAmount,
             onClose: () => {
               adoptNextModal.hide();
               reject(AdoptActionErrorCode.cancel);
@@ -260,9 +263,7 @@ export const useAdoptConfirm = () => {
       childrenItemInfo,
       image: originImage,
       parentItemInfo,
-      rankInfo,
       getWatermarkImage,
-      infos,
       theme = 'light',
       isDirect,
       prePage,
@@ -409,6 +410,7 @@ export const useAdoptConfirm = () => {
       prePage,
       hideNext = false,
       voucherAmount,
+      rebateAmount,
     }: {
       infos: IAdoptImageInfo;
       childrenItemInfo: IAdoptNextInfo;
@@ -421,6 +423,7 @@ export const useAdoptConfirm = () => {
       prePage?: string;
       hideNext?: boolean;
       voucherAmount?: number;
+      rebateAmount?: number;
     }) => {
       const params = await adoptConfirmInput({
         infos,
@@ -433,6 +436,7 @@ export const useAdoptConfirm = () => {
         adoptOnly,
         hideNext,
         voucherAmount,
+        rebateAmount,
       });
 
       if (params) {
@@ -583,6 +587,7 @@ export const useAdoptConfirm = () => {
       hideNext = false,
       faction,
       voucherAmount,
+      rebateAmount,
     }: {
       parentItemInfo: TSGRToken;
       childrenItemInfo: IAdoptNextInfo;
@@ -593,6 +598,7 @@ export const useAdoptConfirm = () => {
       hideNext?: boolean;
       faction?: string;
       voucherAmount?: number;
+      rebateAmount?: number;
     }) => {
       try {
         const infos = await fetchImages({
@@ -619,6 +625,7 @@ export const useAdoptConfirm = () => {
           prePage,
           hideNext,
           voucherAmount,
+          rebateAmount,
         });
 
         if (result) {
