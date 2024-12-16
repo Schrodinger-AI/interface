@@ -100,8 +100,8 @@ export default function TgHome() {
         purchaseMethodModal.show({
           type: 'buySGR',
           theme: 'dark',
-          sgrBalance: formatTokenPrice(sgrBalance),
-          elfBalance: formatTokenPrice(elfBalance),
+          sgrBalance: formatTokenPrice(divDecimals(sgrBalance, 8)),
+          elfBalance: formatTokenPrice(divDecimals(elfBalance, 8)),
           hideSwap: true,
           hideTutorial: true,
           defaultDescription: [description],
