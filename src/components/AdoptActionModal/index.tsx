@@ -5,7 +5,7 @@ import CommonModal, { TModalTheme } from 'components/CommonModal';
 import InfoCard, { IInfoCard } from 'components/InfoCard';
 import { ISGRAmountInputProps } from 'components/SGRAmountInput';
 import { DEFAULT_TOKEN_SYMBOL } from 'constants/assets';
-import { ZERO } from 'constants/misc';
+import { ONE, ZERO } from 'constants/misc';
 import { useTokenPrice, useTxFee } from 'hooks/useAssets';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import {
@@ -19,6 +19,7 @@ import { getOriginSymbol } from 'utils';
 import { renameSymbol } from 'utils/renameSymbol';
 import { clsx } from 'clsx';
 import message from 'antd/lib/message';
+import BigNumber from 'bignumber.js';
 
 export type TBalanceItem = {
   amount: string;
@@ -67,16 +68,52 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
+  const amount = isReset || isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '';
 
-  const [amount] = useState<string>(isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '');
+  const onConfirm = useCallback(() => {
+    if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
+      message.warning(
+        `Insufficient Funds, you have less than ${DIRECT_ADOPT_GEN9_MIN} $SGR. Please go back to the homepage and deposit more SGR to continue.`,
+      );
+      return;
+    }
+
+    if (inputProps?.max && BigNumber(amount).eq(inputProps?.max)) {
+      if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
+        message.warning(
+          `Insufficient balance, you need at least ${DIRECT_ADOPT_GEN9_MIN} $SGR to adopt 1 9th-Gen cat, `,
+        );
+        return;
+      }
+      if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
+        message.warning(`Insufficient balance, you need at least ${ADOPT_NEXT_MIN} $SGR to adopt 1 next-Gen cat, `);
+        return;
+      }
+    }
+
+    if (isDirect && !isReset && DIRECT_ADOPT_GEN9_RATE.times(amount).lt(ONE)) {
+      message.warning(
+        `Please enter at least ${DIRECT_ADOPT_GEN9_MIN} SGR to ensure you can receive 1 9th-gen cat with one click.`,
+      );
+      return;
+    }
+
+    if (!isReset && ADOPT_NEXT_RATE.times(amount).lt(ONE)) {
+      message.warning(`Please enter at least ${ADOPT_NEXT_MIN} to ensure you can receive at least 1 next-gen cat.`);
+      return;
+    }
+
+    onConfirmProps && onConfirmProps(amount);
+  }, [amount, inputProps?.max, isDirect, isReset, onConfirmProps]);
+
   const receiveToken = useMemo(() => {
     if (amount === '') return '--';
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
-    if (isReset) return amount;
+    if (isReset) return `${amountNumber.times(0.5)} ${renameSymbol(getOriginSymbol(info.name))}`;
     const rate = isDirect ? DIRECT_ADOPT_GEN9_RATE : ADOPT_NEXT_RATE;
     return ZERO.plus(amountNumber.multipliedBy(rate).toFixed(8)).toFixed();
-  }, [amount, isDirect, isReset]);
+  }, [amount, info.name, isDirect, isReset]);
 
   const priceAmount = useMemo(() => {
     if (!tokenPrice) return '0';
@@ -109,20 +146,12 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     () => (
       <Button
         className={clsx('md:w-[356px]', theme === 'dark' ? '!primary-button-dark' : '')}
-        onClick={() => {
-          if (balanceList?.[0]?.amount && Number(balanceList?.[0].amount) < DIRECT_ADOPT_GEN9_MIN) {
-            message.warning(
-              'Insufficient Funds, you have less than 1.6 SGR. Please go back to the homepage and deposit more SGR to continue.',
-            );
-          } else {
-            onConfirmProps?.(amount);
-          }
-        }}
+        onClick={() => onConfirm?.()}
         type="primary">
         {isReset ? 'Reroll' : 'Adopt'}
       </Button>
     ),
-    [amount, balanceList, isReset, onConfirmProps, theme],
+    [isReset, onConfirm, theme],
   );
 
   const renderList = useCallback(
@@ -142,11 +171,13 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     [theme],
   );
 
+  console.log('balanceList', balanceList);
+
   return (
     <CommonModal
       title={modalTitle}
       open={modal.visible}
-      onOk={() => onConfirmProps?.(amount)}
+      onOk={() => onConfirm?.()}
       onCancel={onCancel}
       afterClose={modal.remove}
       theme={theme}
@@ -160,7 +191,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <div className="h-[32px]" />
       {renderList({
         title: inputTitle,
-        content: isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
+        content: isReset || isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
       })}
       {renderList({
         title: receiveLabel,
