@@ -68,7 +68,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
-  const amount = isReset ? '1' : isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '';
+  const amount = isReset || isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '';
 
   const onConfirm = useCallback(() => {
     if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
@@ -110,7 +110,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     if (amount === '') return '--';
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
-    if (isReset) return `0.5 ${renameSymbol(getOriginSymbol(info.name))}`;
+    if (isReset) return `${amountNumber.times(0.5)} ${renameSymbol(getOriginSymbol(info.name))}`;
     const rate = isDirect ? DIRECT_ADOPT_GEN9_RATE : ADOPT_NEXT_RATE;
     return ZERO.plus(amountNumber.multipliedBy(rate).toFixed(8)).toFixed();
   }, [amount, info.name, isDirect, isReset]);
@@ -191,7 +191,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <div className="h-[32px]" />
       {renderList({
         title: inputTitle,
-        content: isReset ? '1' : isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
+        content: isReset || isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
       })}
       {renderList({
         title: receiveLabel,
