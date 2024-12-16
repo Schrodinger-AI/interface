@@ -68,7 +68,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
 
   const { txFee } = useTxFee();
   const { tokenPrice } = useTokenPrice();
-  const [amount] = useState<string>(isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '');
+  const amount = isReset ? '1' : isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '';
 
   const onConfirm = useCallback(() => {
     if (inputProps?.max && BigNumber(amount).gt(inputProps?.max)) {
@@ -110,10 +110,10 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     if (amount === '') return '--';
     const amountNumber = ZERO.plus(amount);
     if (amountNumber.eq(ZERO)) return '--';
-    if (isReset) return amount;
+    if (isReset) return `0.5 ${renameSymbol(getOriginSymbol(info.name))}`;
     const rate = isDirect ? DIRECT_ADOPT_GEN9_RATE : ADOPT_NEXT_RATE;
     return ZERO.plus(amountNumber.multipliedBy(rate).toFixed(8)).toFixed();
-  }, [amount, isDirect, isReset]);
+  }, [amount, info.name, isDirect, isReset]);
 
   const priceAmount = useMemo(() => {
     if (!tokenPrice) return '0';
@@ -171,11 +171,13 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
     [theme],
   );
 
+  console.log('balanceList', balanceList);
+
   return (
     <CommonModal
       title={modalTitle}
       open={modal.visible}
-      onOk={() => onConfirmProps?.(amount)}
+      onOk={() => onConfirm?.()}
       onCancel={onCancel}
       afterClose={modal.remove}
       theme={theme}
@@ -189,7 +191,7 @@ function AdoptActionModal(params: TAdoptActionModalProps) {
       <div className="h-[32px]" />
       {renderList({
         title: inputTitle,
-        content: isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
+        content: isReset ? '1' : isBlind ? `${inputProps?.max}` : isDirect ? `${DIRECT_ADOPT_GEN9_MIN}` : '',
       })}
       {renderList({
         title: receiveLabel,
